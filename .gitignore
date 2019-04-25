@@ -1,0 +1,72 @@
+# FILES REQUIRED TO BE LEFT UNTRACKED BY GIT
+
+*.pyc
+**/__pycache__/**
+**/node_modules/**
+**/.DS_STORE
+
+# Packages
+*.zip
+*.tar
+*.gz
+*.jar
+*.tgz
+
+# Binaries
+*.exe
+*.dll
+*.class
+*.so
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Operating system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+*.lnk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Caches and lock files
+pids
+.eslintcache
+.lock-wscript
+*.pid
+*.seed
+*.pid.lock
+
+# Node and NPM
+node_modules
+jspm_packages
+.node_repl_history
+.npm
+.grunt
+
+# Tests and code coverage
+coverage
+
+# IDE files
+.vs
+.code
+typings
+
+# Certificates
+# Never, ever, ever, ever check this in to git. No exceptions.
+.csr
+.cer
+.der
+.crt
+.p7b
+.p7r
+.spc
+.pfx
+.p12
+.pem
+.key
