@@ -1,7 +1,10 @@
+# Importing Required Libraries
 from imports import *
 
 
+# This Class has helper functions for pdf generation
 class PdfFunctions:
+    # Initialize Inputs
     def __init__(self, inputs, pdf):
         self.inputs = inputs
         self.version = inputs["version"]
@@ -12,6 +15,7 @@ class PdfFunctions:
         self.logger = inputs["logger"]
         self.pdf = pdf
 
+    # Add cluster information in PDF
     def clusterInfo(self, cluster_items):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -114,6 +118,7 @@ class PdfFunctions:
                 fill=True,
             )
 
+    # Add detailed information of all host in cluster
     def clusterHostInfo(self, cluster_host_items, all_host_data, os_version):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -504,6 +509,7 @@ class PdfFunctions:
                 True,
             )
 
+    # Add service installed data in PDF
     def clusterServiceInfo(self, cluster_service_item):
         service_df = pd.DataFrame(
             columns=["Service Name", "Health Status", "Health Concerns"]
@@ -611,6 +617,7 @@ class PdfFunctions:
                 fill=True,
             )
 
+    # Add average vcore utilization of cluster in PDF
     def clusterVcoreAvg(self, cluster_cpu_usage_avg):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -622,6 +629,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add cluster vcore data graph in PDF
     def clusterVcorePlot(self, cluster_total_cores_df, cluster_cpu_usage_df):
         plt.figure()
         cluster_total_cores_plot = cluster_total_cores_df["Mean"].plot(
@@ -652,6 +660,7 @@ class PdfFunctions:
             "cluster_cpu_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add average memory utilization of cluster in PDF
     def clusterMemoryAvg(self, cluster_memory_usage_avg):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -665,6 +674,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add cluster memory data graph in PDF
     def clusterMemoryPlot(self, cluster_total_memory_df, cluster_memory_usage_df):
         plt.figure()
         cluster_total_memory_plot = cluster_total_memory_df["Mean"].plot(
@@ -689,6 +699,7 @@ class PdfFunctions:
             "cluster_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add Hadoop version details in PDF
     def hadoopVersion(self, hadoopVersionMajor, hadoopVersionMinor, distribution):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -710,6 +721,7 @@ class PdfFunctions:
             230, 8, "Hadoop Distribution Is      : {} ".format(distribution), 0, ln=1
         )
 
+    # Add list on service installed with their verions in PDF
     def serviceInstalled(self, new_ref_df):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -730,6 +742,7 @@ class PdfFunctions:
                 70, 5, "{}".format(new_ref_df["sub_version"].iloc[pos]), 1, 1, "C", True
             )
 
+    # Add HDFS configured size in PDF
     def totalHDFSSize(self, total_storage):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -741,6 +754,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add HDFS replication faction in PDF
     def repFactor(self, replication_factor):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -754,6 +768,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add HDFS trash interval data in PDF
     def trashInterval(self, trash_flag):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -765,6 +780,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add HDFS available size in PDF
     def availableHDFSStorage(self, hdfs_storage_config):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -776,6 +792,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add HDFS used size in PDF
     def usedHDFSStorage(self, hdfs_storage_used):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -787,6 +804,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add HDFS storage size graph in PDF
     def HDFSStoragePlot(self, hdfs_capacity_df, hdfs_capacity_used_df):
         plt.figure()
         hdfs_usage_plot = hdfs_capacity_df["Mean"].plot(
@@ -806,6 +824,7 @@ class PdfFunctions:
             "hdfs_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn total vcore in PDF
     def yarnVcoreTotal(self, yarn_total_vcores_count):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -813,6 +832,7 @@ class PdfFunctions:
             230, 5, "Total Yarn Vcore : {:.0f}".format(yarn_total_vcores_count), 0, ln=1
         )
 
+    # Add yarn average vcore in PDF
     def yarnVcoreAvg(self, yarn_vcore_allocated_avg):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -824,6 +844,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add yarn vcore usage graph in PDF
     def yarnVcoreUsage(self, yarn_vcore_available_df, yarn_vcore_allocated_df):
         plt.figure()
         yarn_vcore_usage_plot = yarn_vcore_available_df["Mean"].plot(
@@ -843,6 +864,7 @@ class PdfFunctions:
             "yarn_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn vcore seasonality graph in PDF
     def yarnVcoreSeasonality(self, yarn_vcore_allocated_pivot_df):
         plt.figure()
         yarn_vcore_usage_heatmap = sns.heatmap(
@@ -854,6 +876,7 @@ class PdfFunctions:
             "yarn_vcore_usage_heatmap.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn total memory in PDF
     def yarnMemoryTotal(self, yarn_total_memory_count):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -865,6 +888,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add yarn average memory in PDF
     def yarnMemoryAvg(self, yarn_memory_allocated_avg):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -876,6 +900,7 @@ class PdfFunctions:
             ln=1,
         )
 
+    # Add yarn memory usage graph in PDF
     def yarnMemoryUsage(self, yarn_memory_available_df, yarn_memory_allocated_df):
         plt.figure()
         yarn_memory_usage_plot = yarn_memory_available_df["Mean"].plot(
@@ -895,6 +920,7 @@ class PdfFunctions:
             "yarn_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn memory seasonality graph in PDF
     def yarnMemorySeasonality(self, yarn_memory_allocated_pivot_df):
         plt.figure()
         yarn_memory_usage_heatmap = sns.heatmap(
@@ -906,6 +932,7 @@ class PdfFunctions:
             "yarn_memory_usage_heatmap.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn application count table in PDF
     def yarnAppCount(self, app_count_df):
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
@@ -933,6 +960,7 @@ class PdfFunctions:
                 30, 5, "{}".format(app_count_df["Count"].iloc[pos]), 1, 1, "C", True
             )
 
+    # Add yarn application type and status pie chart in PDF
     def yarnAppTypeStatus(self, app_type_count_df, app_status_count_df):
         x = self.pdf.get_x()
         y = self.pdf.get_y()
@@ -960,6 +988,7 @@ class PdfFunctions:
             "app_status_count_pie_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
 
+    # Add yarn vcore and memory by application pie chart in PDF
     def yarnAppVcoreMemory(self, app_vcore_df, app_memory_df):
         x = self.pdf.get_x()
         y = self.pdf.get_y()
@@ -985,6 +1014,7 @@ class PdfFunctions:
             "app_memory_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
 
+    # Add yarn vcore usage graph in PDF
     def yarnAppVcoreUsage(self, app_vcore_df, app_vcore_usage_df):
         plt.figure()
         for i in app_vcore_df["Application Type"].unique():
@@ -1019,6 +1049,7 @@ class PdfFunctions:
             "app_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn memory usage graph in PDF
     def yarnAppMemoryUsage(self, app_memory_df, app_memory_usage_df):
         plt.figure()
         for i in app_memory_df["Application Type"].unique():
@@ -1055,6 +1086,7 @@ class PdfFunctions:
             "app_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn bursty application details in PDF
     def yarnBurstyAppTime(self, bursty_app_time_df):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -1120,6 +1152,7 @@ class PdfFunctions:
             "bursty_app_time_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn bursty application vcore graph in PDF
     def yarnBurstyAppVcore(self, bursty_app_vcore_df):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -1185,6 +1218,7 @@ class PdfFunctions:
             "bursty_app_vcore_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn bursty application memory graph in PDF
     def yarBurstyAppMemory(self, bursty_app_mem_df):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -1250,6 +1284,7 @@ class PdfFunctions:
             "bursty_app_mem_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add failed or killed yarn application in PDF
     def yarnFailedApp(self, yarn_failed_app):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -1381,6 +1416,7 @@ class PdfFunctions:
                 y_pos = cell_y / y_pos
                 self.pdf.multi_cell(130, y_pos, "{}".format(diag), 1, "C", fill=True)
 
+    # Add yarn queue details in PDF
     def yarnQueue(self, yarn_queues_list):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -1421,6 +1457,7 @@ class PdfFunctions:
         )
         yarn_queue(yarn_queues_list, 1)
 
+    # Add yarn queued application count pie chart in PDF
     def yarnQueueApp(self, queue_app_count_df, queue_elapsed_time_df):
         def make_autopct(values):
             def my_autopct(pct):
@@ -1456,6 +1493,7 @@ class PdfFunctions:
             "queue_elapsed_time_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
 
+    # Add yarn queued application vcore graph in PDF
     def yarnQueueVcore(self, queue_vcore_df, queue_vcore_usage_df):
         plt.figure()
         for i in queue_vcore_df["Queue"].unique():
@@ -1492,6 +1530,7 @@ class PdfFunctions:
             "queue_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn queued application memory graph in PDF
     def yarnQueueMemory(self, queue_memory_df, queue_memory_usage_df):
         plt.figure()
         for i in queue_memory_df["Queue"].unique():
@@ -1528,6 +1567,7 @@ class PdfFunctions:
             "queue_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn pending queued application graph in PDF
     def yarnQueuePendingApp(self, app_queue_df, app_queue_usage_df):
         plt.figure()
         for i in app_queue_df["Queue"].unique():
@@ -1565,6 +1605,7 @@ class PdfFunctions:
             "app_queue_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn pending application count graph in PDF
     def yarnPendingApp(self, yarn_pending_apps_df):
         plt.figure()
         yarn_pending_apps_plot = yarn_pending_apps_df["Max"].plot(
@@ -1578,6 +1619,7 @@ class PdfFunctions:
             "yarn_pending_apps_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn pending application vcore graph in PDF
     def yarnPendingVcore(self, yarn_pending_vcore_df):
         plt.figure()
         yarn_pending_vcore_plot = yarn_pending_vcore_df["Mean"].plot(
@@ -1591,6 +1633,7 @@ class PdfFunctions:
             "yarn_pending_vcore_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
+    # Add yarn pending application memory graph in PDF
     def yarnPendingMemory(self, yarn_pending_memory_df):
         plt.figure()
         yarn_pending_memory_plot = yarn_pending_memory_df["Mean"].plot(
@@ -1603,4 +1646,3 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_pending_memory_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
-

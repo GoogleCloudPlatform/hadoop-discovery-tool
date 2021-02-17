@@ -1,7 +1,10 @@
+# Importing Required Libraries
 from imports import *
 
 
+# This Class has functions related to Frameworks and Software Details category
 class FrameworkDetailsAPI:
+    # Initialize Inputs
     def __init__(self, inputs):
         self.inputs = inputs
         self.version = inputs["version"]
@@ -11,6 +14,7 @@ class FrameworkDetailsAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
+    # Get Hadoop major and minor version and Hadoop Distribution
     def hadoopVersion(self):
         try:
             hversion = os.popen("hadoop version").read()
@@ -49,6 +53,7 @@ class FrameworkDetailsAPI:
             self.logger.error("hadoopVersion failed", exc_info=True)
             return None
 
+    # Get list of services installed in cluster with thier versions
     def versionMapping(self, clusterName):
         try:
             cluster_name = clusterName

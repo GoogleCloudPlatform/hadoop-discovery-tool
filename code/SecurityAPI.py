@@ -1,7 +1,10 @@
+# Importing Required Libraries
 from imports import *
 
 
+# This Class has functions related to Security category
 class SecurityAPI:
+    # Initialize Inputs
     def __init__(self, inputs):
         self.inputs = inputs
         self.version = inputs["version"]
@@ -11,6 +14,7 @@ class SecurityAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
+    # Get Kerberos details in a cluster
     def clusterKerberosInfo(self, clusterName):
         try:
             cluster_name = clusterName
@@ -55,6 +59,7 @@ class SecurityAPI:
             self.logger.error("clusterKerberosInfo failed", exc_info=True)
             return None
 
+    # Get AD server details for a cluster
     def ADServerNameAndPort(self, clusterName):
         try:
             cluster_name = clusterName
@@ -108,6 +113,7 @@ class SecurityAPI:
             self.logger.error("ADServerNameAndPort failed", exc_info=True)
             return None
 
+    # Get AD server details based on domain name
     def adServerBasedDN(self, clusterName):
         try:
             cluster_name = clusterName

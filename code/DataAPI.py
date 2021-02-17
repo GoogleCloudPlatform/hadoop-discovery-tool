@@ -1,7 +1,10 @@
+# Importing Required Libraries
 from imports import *
 
 
+# This Class has functions related to Cluster Data category
 class DataAPI:
+    # Initialize Inputs
     def __init__(self, inputs):
         self.inputs = inputs
         self.version = inputs["version"]
@@ -11,6 +14,7 @@ class DataAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
+    # Get total storage size and storage at each node for HDFS
     def totalSizeConfigured(self):
         try:
             os.popen("hdfs dfsadmin -report > ./data.csv").read()
@@ -62,6 +66,7 @@ class DataAPI:
             self.logger.error("totalSizeConfigured failed", exc_info=True)
             return None
 
+    # Get HDFS replication factor
     def replicationFactor(self):
         try:
             replication_factor = os.popen(
@@ -73,6 +78,7 @@ class DataAPI:
             self.logger.error("replicationFactor failed", exc_info=True)
             return None
 
+    # Get config value for HDFS trash interval
     def getTrashStatus(self):
         try:
             xml_data = os.popen("cat /etc/hadoop/conf/core-site.xml").read()
@@ -93,6 +99,7 @@ class DataAPI:
             self.logger.error("getTrashStatus failed", exc_info=True)
             return None
 
+    # Get HDFS size breakdown based on HDFS directory system
     def getCliresult(self, clipath):
         try:
             path = clipath
@@ -109,6 +116,7 @@ class DataAPI:
             self.logger.error("getCliresult failed", exc_info=True)
             return None
 
+    # Get HDFS storage available data over a date range
     def getHdfsCapacity(self, clusterName):
         try:
             cluster_name = clusterName
@@ -198,6 +206,7 @@ class DataAPI:
             self.logger.error("getHdfsCapacity failed", exc_info=True)
             return None
 
+    # Get HDFS storage used data over a date range
     def getHdfsCapacityUsed(self, clusterName):
         try:
             cluster_name = clusterName

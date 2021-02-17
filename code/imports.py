@@ -1,3 +1,4 @@
+# Importing Required Libraries
 import re
 import datetime
 import dateutil.parser
@@ -22,6 +23,7 @@ from requests.auth import HTTPBasicAuth
 from datetime import datetime, timedelta
 from getpass import getpass
 
+# Defining Default Setting and Date Range for Report
 sns.set(rc={"figure.figsize": (15, 5)})
 pd.set_option("display.max_colwidth", 0)
 pd.options.display.float_format = "{:,.2f}".format
@@ -33,6 +35,7 @@ start_date = date_range_start.strftime("%Y-%m-%dT%H:%M:%S")
 end_date = date_range_end.strftime("%Y-%m-%dT%H:%M:%S")
 
 
+# Get User Input for Host Ip, Username, Password and Cluster Name
 def getInput(version):
     inputs = {}
     inputs["version"] = version
@@ -58,6 +61,7 @@ def getInput(version):
     return inputs
 
 
+# Defining Custom Logger Object with Custom Formatter and File Handler
 def getLogger():
     global logger
     logger = logging.getLogger("hdt")

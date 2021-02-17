@@ -1,7 +1,10 @@
+# Importing Required Libraries
 from imports import *
 
 
+# This Class has functions related to Hardware and OS Footprint category
 class HardwareOSAPI:
+    # Initialize Inputs
     def __init__(self, inputs):
         self.inputs = inputs
         self.version = inputs["version"]
@@ -11,6 +14,7 @@ class HardwareOSAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
+    # Get OS version using system CLI command
     def osVersion(self):
         try:
             os_version = os.popen("cat /etc/*-release").read()
@@ -24,6 +28,7 @@ class HardwareOSAPI:
             self.logger.error("osVersion failed", exc_info=True)
             return None
 
+    # Get list of all clusters present in Cloudera Manager
     def clusterItems(self):
         try:
             r = None
@@ -70,6 +75,7 @@ class HardwareOSAPI:
             self.logger.error("clusterItems failed", exc_info=True)
             return None
 
+    # Get List of all hosts present in a cluster
     def clusterHostItems(self, clusterName):
         try:
             cluster_name = clusterName
@@ -120,6 +126,7 @@ class HardwareOSAPI:
             self.logger.error("clusterHostItems failed", exc_info=True)
             return None
 
+    # Get list of services present in a cluster with its details
     def clusterServiceItem(self, clusterName):
         try:
             cluster_name = clusterName
@@ -170,6 +177,7 @@ class HardwareOSAPI:
             self.logger.error("clusterServiceItem failed", exc_info=True)
             return None
 
+    # Get detailed specs of a host
     def hostData(self, hostId):
         try:
             hostid = hostId
@@ -214,6 +222,7 @@ class HardwareOSAPI:
             self.logger.error("hostData failed", exc_info=True)
             return None
 
+    # Get cores availability data over a date range
     def clusterTotalCores(self, clusterName):
         try:
             cluster_name = clusterName
@@ -303,6 +312,7 @@ class HardwareOSAPI:
             self.logger.error("clusterTotalCores failed", exc_info=True)
             return None
 
+    # Get cores usage data over a date range
     def clusterCpuUsage(self, clusterName):
         try:
             cluster_name = clusterName
@@ -402,6 +412,7 @@ class HardwareOSAPI:
             self.logger.error("clusterCpuUsage failed", exc_info=True)
             return None
 
+    # Get memory availability data over a date range
     def clusterTotalMemory(self, clusterName):
         try:
             cluster_name = clusterName
@@ -493,6 +504,7 @@ class HardwareOSAPI:
             self.logger.error("clusterTotalMemor failed", exc_info=True)
             return None
 
+    # Get memory usage data over a date range
     def clusterMemoryUsage(self, clusterName):
         try:
             cluster_name = clusterName
@@ -587,4 +599,3 @@ class HardwareOSAPI:
         except Exception as e:
             self.logger.error("clusterMemoryUsage failed", exc_info=True)
             return None
-

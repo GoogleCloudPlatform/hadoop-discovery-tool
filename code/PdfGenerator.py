@@ -1,3 +1,4 @@
+# Importing Required Libraries
 from imports import *
 from HardwareOSAPI import *
 from FrameworkDetailsAPI import *
@@ -7,7 +8,9 @@ from ApplicationAPI import *
 from PdfFunctions import *
 
 
+# This Class has functions for PDF generation based on different Cloudera versions
 class PdfGenerator:
+    # Initialize Inputs
     def __init__(self, inputs):
         self.inputs = inputs
         self.version = inputs["version"]
@@ -17,6 +20,7 @@ class PdfGenerator:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
+    # Generate PDF for CDH-5
     def run_5(self):
         pdf = FPDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)
@@ -429,6 +433,7 @@ class PdfGenerator:
 
         pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")
 
+    # Generate PDF for CDH-6
     def run_6(self):
         pdf = FPDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)
@@ -847,6 +852,7 @@ class PdfGenerator:
 
         pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")
 
+    # Generate PDF for CDP-7
     def run_7(self):
         pdf = FPDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)

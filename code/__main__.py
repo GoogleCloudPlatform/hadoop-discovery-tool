@@ -1,12 +1,19 @@
+# Importing Required Libraries
 import time
 
 p_start = time.time()
 from imports import *
 from PdfGenerator import *
 
+# Creating Logger Object
 global logger
 logger = getLogger()
+
+# Get Cloudera Distributed Hadoop Version
 hversion = os.popen("hadoop version").read()
+
+# Direct Code to Respective Function Based on Version
+# Get User Input
 if "CDH-7" in hversion:
     inputs = getInput(7)
     inputs["logger"] = logger
