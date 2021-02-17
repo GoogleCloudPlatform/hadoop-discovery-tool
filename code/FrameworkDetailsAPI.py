@@ -1,11 +1,21 @@
-# Importing Required Libraries
+# Importing required libraries
 from imports import *
 
 
-# This Class has functions related to Frameworks and Software Details category
 class FrameworkDetailsAPI:
-    # Initialize Inputs
+    """This Class has functions related to Frameworks and Software Details 
+    category.
+
+    Has functions which fetch different frameworks and software metrics 
+    from Hadoop cluster like Hadoop version, services version, etc.
+
+    Args:
+        inputs (dict): Contains user input attributes
+    """
+
     def __init__(self, inputs):
+        """Initialize inputs"""
+
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
@@ -14,8 +24,15 @@ class FrameworkDetailsAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
-    # Get Hadoop major and minor version and Hadoop Distribution
     def hadoopVersion(self):
+        """Get Hadoop major and minor version and Hadoop Distribution.
+
+        Returns:
+            hadoop_major (str): Hadoop major version
+            hadoop_minor (str): Hadoop miror version
+            distribution (str): Hadoop vendor name
+        """
+
         try:
             hversion = os.popen("hadoop version").read()
             hadoop_major = hversion[0:12]
@@ -53,10 +70,17 @@ class FrameworkDetailsAPI:
             self.logger.error("hadoopVersion failed", exc_info=True)
             return None
 
-    # Get list of services installed in cluster with thier versions
-    def versionMapping(self, clusterName):
+    def versionMapping(self, cluster_name):
+        """Get list of services installed in cluster with their versions.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            list_services_installed_df (DataFrame): List of services installed.
+            new_ref_df (DataFrame): Services mapped with their version.
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(

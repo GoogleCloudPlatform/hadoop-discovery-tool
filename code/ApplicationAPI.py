@@ -1,11 +1,20 @@
-# Importing Required Libraries
+# Importing required libraries
 from imports import *
 
 
-# This Class has functions related to Application category
 class ApplicationAPI:
-    # Initialize Inputs
+    """This Class has functions related to Application category.
+
+    Has functions which fetch different application metrics from Hadoop cluster 
+    like yarn, Hbase, Kafka, etc.
+
+    Args:
+        inputs (dict): Contains user input attributes
+    """
+
     def __init__(self, inputs):
+        """Initialize inputs"""
+
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
@@ -14,8 +23,15 @@ class ApplicationAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
-    # Get list of all yarn application over a date range
     def getApplicationDetails(self, yarn_rm):
+        """Get list of all yarn application over a date range.
+
+        Args:
+            yarn_rm (str): Yarn resource manager IP.
+        Returns:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        """
+
         try:
             r = requests.get("http://{}:8088/ws/v1/cluster/apps".format(yarn_rm))
             if r.status_code == 200:
@@ -136,8 +152,17 @@ class ApplicationAPI:
             self.logger.error("getApplicationDetails failed", exc_info=True)
             return None
 
-    # Get yarn application count based to its type and status
     def getApplicationTypeStatusCount(self, yarn_application_df):
+        """Get yarn application count based to its type and status.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            app_count_df (DataFrame): Application count in yarn.
+            app_type_count_df (DataFrame): Application count by type in yarn.
+            app_status_count_df (DataFrame): Application count by status in yarn.
+        """
+
         try:
             app_count_df = pd.DataFrame(
                 {
@@ -161,8 +186,16 @@ class ApplicationAPI:
             self.logger.error("getApplicationTypeStatusCount failed", exc_info=True)
             return None
 
-    # Get vcore and memory usage of yarn application
     def getApplicationVcoreMemoryUsage(self, yarn_application_df):
+        """Get vcore and memory usage of yarn application.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            app_vcore_df (DataFrame): Vcores usage by applications
+            app_memory_df (DataFrame): Memory usage by applications
+        """
+
         try:
             app_vcore_df = pd.DataFrame(
                 {
@@ -184,8 +217,17 @@ class ApplicationAPI:
             self.logger.error("getApplicationVcoreMemoryUsage failed", exc_info=True)
             return None
 
-    # Get details about busrty yarn application
     def getBurstyApplicationDetails(self, yarn_application_df):
+        """Get details about busrty yarn application.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            bursty_app_time_df (DataFrame): Time taken by bursty application.
+            bursty_app_vcore_df (DataFrame): Vcores taken by bursty application.
+            bursty_app_mem_df (DataFrame): Memory taken by bursty application.
+        """
+
         try:
             bursty_app_time_df = pd.DataFrame(
                 columns=["Application Name", "Min", "Mean", "Max"]
@@ -255,8 +297,15 @@ class ApplicationAPI:
             self.logger.error("getBurstyApplicationDetails failed", exc_info=True)
             return None
 
-    # Get details about failed or killed yarn application
     def getFailedApplicationDetails(self, yarn_application_df):
+        """Get details about failed or killed yarn application.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            yarn_failed_app (DataFrame): RCA of failed or killed application.
+        """
+
         try:
             yarn_failed_app = yarn_application_df[
                 (yarn_application_df["FinalStatus"] == "KILLED")
@@ -268,8 +317,15 @@ class ApplicationAPI:
             self.logger.error("getFailedApplicationDetails failed", exc_info=True)
             return None
 
-    # Get total vcore allocated to yarn
     def getYarnTotalVcore(self, yarn_rm):
+        """Get total vcores allocated to yarn.
+
+        Args:
+            yarn_rm (str): Yarn resource manager IP.
+        Returns:
+            yarn_total_vcores_count (float): Total vcores configured to yarn
+        """
+
         try:
             r = requests.get("http://{}:8088/ws/v1/cluster/metrics".format(yarn_rm))
             if r.status_code == 200:
@@ -288,8 +344,15 @@ class ApplicationAPI:
             self.logger.error("getYarnTotalVcore failed", exc_info=True)
             return None
 
-    # Get yarn vcore availability data over a date range
     def getYarnVcoreAvailable(self, cluster_name):
+        """Get yarn vcore availability data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            yarn_vcore_available_df (DataFrame): Vcores available over time.
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -379,8 +442,17 @@ class ApplicationAPI:
             self.logger.error("getYarnVcoreAvailable failed", exc_info=True)
             return None
 
-    # Get yarn vcore allocation data over a date range
     def getYarnVcoreAllocated(self, cluster_name):
+        """Get yarn vcore allocation data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            yarn_vcore_allocated_avg (float): Average vcores allocated in cluster.
+            yarn_vcore_allocated_df (DataFrame): Vcores allocation over time.
+            yarn_vcore_allocated_pivot_df (DataFrame): Seasonality of vcores allocation over time.
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -500,8 +572,15 @@ class ApplicationAPI:
             self.logger.error("getYarnVcoreAllocated failed", exc_info=True)
             return None
 
-    # Get total memory allocated to yarn
     def getYarnTotalMemory(self, yarn_rm):
+        """Get total memory allocated to yarn.
+
+        Args:
+            yarn_rm (str): Yarn resource manager IP.
+        Returns:
+            yarn_total_memory_count (float): Total memory configured to yarn.
+        """
+
         try:
             r = requests.get("http://{}:8088/ws/v1/cluster/metrics".format(yarn_rm))
             if r.status_code == 200:
@@ -521,8 +600,15 @@ class ApplicationAPI:
             self.logger.error("getYarnTotalMemory failed", exc_info=True)
             return None
 
-    # Get yarn memory availability data over a date range
     def getYarnMemoryAvailable(self, cluster_name):
+        """Get yarn memory availability data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            yarn_memory_available_df (DataFrame): Memory available over time.
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -612,8 +698,17 @@ class ApplicationAPI:
             self.logger.error("getYarnMemoryAvailable failed", exc_info=True)
             return None
 
-    # Get yarn memory allocation data over a date range
     def getYarnMemoryAllocated(self, cluster_name):
+        """Get yarn memory allocation data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            yarn_memory_allocated_avg (float): Average memory allocated in cluster.
+            yarn_memory_allocated_df (DataFrame): Memory allocation over time.
+            yarn_memory_allocated_pivot_df (DataFrame): Seasonality of memory allocation over time.
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -735,8 +830,18 @@ class ApplicationAPI:
             self.logger.error("getYarnMemoryAllocated failed", exc_info=True)
             return None
 
-    # Get vcore and memory breakdown by yarn application
     def getVcoreMemoryByApplication(self, yarn_application_df):
+        """Get vcore and memory breakdown by yarn application.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            app_vcore_df (DataFrame): Vcore breakdown by application
+            app_vcore_usage_df (DataFrame): Vcore usage over time
+            app_memory_df (DataFrame): Memory breakdown by application
+            app_memory_usage_df (DataFrame): Memory usage over time
+        """
+
         try:
             app_vcore_df = pd.DataFrame(None)
             app_vcore_df = pd.DataFrame(
@@ -804,8 +909,15 @@ class ApplicationAPI:
             self.logger.error("getVcoreMemoryByApplication failed", exc_info=True)
             return None
 
-    # Get pending application over a date range
     def getPendingApplication(self, cluster_name):
+        """Get pending application over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            yarn_pending_apps_df (DataFrame): Pending application count over time.
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -895,8 +1007,15 @@ class ApplicationAPI:
             self.logger.error("getPendingApplication failed", exc_info=True)
             return None
 
-    # Get pending memory over a date range
     def getPendingMemory(self, cluster_name):
+        """Get pending memory over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            yarn_pending_memory_df (DataFrame): Pending memory over time.
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -986,8 +1105,15 @@ class ApplicationAPI:
             self.logger.error("getPendingMemory failed", exc_info=True)
             return None
 
-    # Get pending vcore over a date range
     def getPendingVcore(self, cluster_name):
+        """Get pending vcore over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            yarn_pending_vcore_df (DataFrame): Pending vcores over time.
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -1077,8 +1203,15 @@ class ApplicationAPI:
             self.logger.error("getPendingVcore failed", exc_info=True)
             return None
 
-    # Get details about yarn queues
     def getQueueDetails(self, yarn_rm):
+        """Get details about yarn queues.
+
+        Args:
+            yarn_rm (str): Yarn resource manager IP.
+        Returns:
+            yarn_queues_list (list): Yarn queue details
+        """
+
         try:
             r = requests.get("http://{}:8088/ws/v1/cluster/scheduler".format(yarn_rm))
             if r.status_code == 200:
@@ -1098,8 +1231,16 @@ class ApplicationAPI:
             self.logger.error("getQueueDetails failed", exc_info=True)
             return None
 
-    # Get yarn application count based on different yarn queues
     def getQueueApplication(self, yarn_application_df):
+        """Get yarn application count based on different yarn queues.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            queue_app_count_df (DataFrame): Queued application count
+            queue_elapsed_time_df (DataFrame): Queued application elapsed time
+        """
+
         try:
             queue_app_count_df = pd.DataFrame(
                 {"Queue": yarn_application_df["Queue"], "Application Count": 1}
@@ -1118,8 +1259,16 @@ class ApplicationAPI:
             self.logger.error("getQueueApplication failed", exc_info=True)
             return None
 
-    # Get details about yarn application pending in yarn queues
     def getQueuePendingApplication(self, yarn_application_df):
+        """Get details about yarn application pending in yarn queues.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            app_queue_df (DataFrame): Pending queued application list
+            app_queue_usage_df (DataFrame): Pending queued application usage over time.
+        """
+
         try:
             app_queue_df = pd.DataFrame(
                 {
@@ -1154,8 +1303,18 @@ class ApplicationAPI:
             self.logger.error("getQueuePendingApplication failed", exc_info=True)
             return None
 
-    # Get vcore and memory used by yarn queues
     def getQueueVcoreMemory(self, yarn_application_df):
+        """Get vcore and memory used by yarn queues.
+
+        Args:
+            yarn_application_df (DataFrame): List of yarn application in cluster.
+        Returns:
+            queue_vcore_df (DataFrame): Queue vcores details
+            queue_vcore_usage_df (DataFrame): Queue vcores usage over time
+            queue_memory_df (DataFrame): Queue memory details
+            queue_memory_usage_df (DataFrame): Queue memory usage over time
+        """
+
         try:
             queue_vcore_df = pd.DataFrame(None)
             queue_vcore_df = pd.DataFrame(

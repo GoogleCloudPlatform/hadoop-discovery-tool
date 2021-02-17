@@ -1,11 +1,20 @@
-# Importing Required Libraries
+# Importing required libraries
 from imports import *
 
 
-# This Class has functions related to Cluster Data category
 class DataAPI:
-    # Initialize Inputs
+    """This Class has functions related to Cluster Data category.
+
+    Has functions which fetch different data metrics from Hadoop cluster 
+    like HDFS metrics, hive metrics, etc.
+
+    Args:
+        inputs (dict): Contains user input attributes
+    """
+
     def __init__(self, inputs):
+        """Initialize inputs"""
+
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
@@ -14,8 +23,14 @@ class DataAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
-    # Get total storage size and storage at each node for HDFS
     def totalSizeConfigured(self):
+        """Get total storage size and storage at each node for HDFS.
+
+        Returns:
+            individual_node_size (list): Total storage of all node.
+            total_storage (float): Total storage of cluster.
+        """
+
         try:
             os.popen("hdfs dfsadmin -report > ./data.csv").read()
             dt = "Live datanodes "
@@ -66,8 +81,13 @@ class DataAPI:
             self.logger.error("totalSizeConfigured failed", exc_info=True)
             return None
 
-    # Get HDFS replication factor
     def replicationFactor(self):
+        """Get HDFS replication factor.
+
+        Returns:
+            replication_factor (str): Replication factor value
+        """
+
         try:
             replication_factor = os.popen(
                 "hdfs getconf -confKey dfs.replication"
@@ -78,8 +98,13 @@ class DataAPI:
             self.logger.error("replicationFactor failed", exc_info=True)
             return None
 
-    # Get config value for HDFS trash interval
     def getTrashStatus(self):
+        """Get config value for HDFS trash interval.
+
+        Returns:
+            trash_flag (str): Trash interval value
+        """
+
         try:
             xml_data = os.popen("cat /etc/hadoop/conf/core-site.xml").read()
             root = ET.fromstring(xml_data)
@@ -99,8 +124,15 @@ class DataAPI:
             self.logger.error("getTrashStatus failed", exc_info=True)
             return None
 
-    # Get HDFS size breakdown based on HDFS directory system
     def getCliresult(self, clipath):
+        """Get HDFS size breakdown based on HDFS directory system.
+
+        Args:
+            clipath (str): HDFS path for storage breakdown
+        Returns:
+            hdfs_root_dir (str): HDFS storage breakdown
+        """
+
         try:
             path = clipath
             out = subprocess.Popen(
@@ -116,10 +148,17 @@ class DataAPI:
             self.logger.error("getCliresult failed", exc_info=True)
             return None
 
-    # Get HDFS storage available data over a date range
-    def getHdfsCapacity(self, clusterName):
+    def getHdfsCapacity(self, cluster_name):
+        """Get HDFS storage available data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            hdfs_capacity_df (DataFrame): HDFS storage available over time
+            hdfs_storage_config (float): Average HDFS storage available
+        """
+
         try:
-            cluster_name = clusterName
             if self.version == 7:
                 r = requests.get(
                     "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
@@ -206,10 +245,17 @@ class DataAPI:
             self.logger.error("getHdfsCapacity failed", exc_info=True)
             return None
 
-    # Get HDFS storage used data over a date range
-    def getHdfsCapacityUsed(self, clusterName):
+    def getHdfsCapacityUsed(self, cluster_name):
+        """Get HDFS storage used data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            hdfs_capacity_used_df (DataFrame): HDFS storage used over time
+            hdfs_storage_used (float): Average HDFS storage used
+        """
+
         try:
-            cluster_name = clusterName
             if self.version == 7:
                 r = requests.get(
                     "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
@@ -302,4 +348,3 @@ class DataAPI:
         except Exception as e:
             self.logger.error("getHdfsCapacityUsed failed", exc_info=True)
             return None
-

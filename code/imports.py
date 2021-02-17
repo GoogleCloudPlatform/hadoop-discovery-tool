@@ -1,4 +1,4 @@
-# Importing Required Libraries
+# Importing required libraries
 import re
 import datetime
 import dateutil.parser
@@ -23,7 +23,7 @@ from requests.auth import HTTPBasicAuth
 from datetime import datetime, timedelta
 from getpass import getpass
 
-# Defining Default Setting and Date Range for Report
+# Defining default setting and date range for discovery report
 sns.set(rc={"figure.figsize": (15, 5)})
 pd.set_option("display.max_colwidth", 0)
 pd.options.display.float_format = "{:,.2f}".format
@@ -35,14 +35,25 @@ start_date = date_range_start.strftime("%Y-%m-%dT%H:%M:%S")
 end_date = date_range_end.strftime("%Y-%m-%dT%H:%M:%S")
 
 
-# Get User Input for Host Ip, Username, Password and Cluster Name
 def getInput(version):
+    """Get input from user related to cloudera manger like Host Ip, Username, 
+    Password and Cluster Name.
+
+    Args:
+        version (int): Cloudera distributed Hadoop version
+    Returns:
+        inputs (dict): Contains user input attributes
+
+    """
+
     inputs = {}
-    inputs["version"] = version
-    # inputs['cloudera_manager_host_ip'] = input("Enter Cloudera Manager Host IP: ")
-    # inputs['cloudera_manager_username'] = input("Enter Cloudera Manager Username: ")
-    # inputs['cloudera_manager_password'] = getpass(prompt = "Enter Cloudera Manager Password: ")
-    # inputs['cluster_name'] = input("Enter Cluster Name: ")
+    # inputs["version"] = version
+    # inputs["cloudera_manager_host_ip"] = input("Enter Cloudera Manager Host IP: ")
+    # inputs["cloudera_manager_username"] = input("Enter Cloudera Manager Username: ")
+    # inputs["cloudera_manager_password"] = getpass(
+    #     prompt="Enter Cloudera Manager Password: "
+    # )
+    # inputs["cluster_name"] = input("Enter Cluster Name: ")
     if version == 7:
         inputs["cloudera_manager_host_ip"] = "10.0.0.16"
         inputs["cluster_name"] = "MSTECH"
@@ -61,14 +72,17 @@ def getInput(version):
     return inputs
 
 
-# Defining Custom Logger Object with Custom Formatter and File Handler
 def getLogger():
-    global logger
-    logger = logging.getLogger("hdt")
-    handler = logging.FileHandler("hdt.log")
+    """Defining custom logger object with custom formatter and file handler.
+
+    Returns:
+        logger (obj): Custom logger object
+    """
+
+    logger = logging.getLogger("hadoop_discovery_tool")
+    handler = logging.FileHandler("hadoop_discovery_tool_{}.log".format(datetime.now()))
     handler.setLevel(logging.DEBUG)
-    handler.setFormatter(
-        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    )
+    handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
     logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
     return logger

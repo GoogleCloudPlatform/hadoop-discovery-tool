@@ -1,11 +1,21 @@
-# Importing Required Libraries
+# Importing required libraries
 from imports import *
 
 
-# This Class has functions related to Hardware and OS Footprint category
 class HardwareOSAPI:
-    # Initialize Inputs
+    """This Class has functions related to Hardware and OS Footprint category.
+
+    Has functions which fetch different hardware and os metrics from Hadoop 
+    cluster like list of host and their details, list of services, core and 
+    memory usage pattern over time, etc.
+
+    Args:
+        inputs (dict): Contains user input attributes
+    """
+
     def __init__(self, inputs):
+        """Initialize inputs"""
+
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
@@ -14,8 +24,13 @@ class HardwareOSAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
-    # Get OS version using system CLI command
     def osVersion(self):
+        """Get OS version using system CLI command.
+        
+        Returns:
+            os_version (str): OS version and distribution of host
+        """
+
         try:
             os_version = os.popen("cat /etc/*-release").read()
             os_version = os_version.replace("\n", ",")
@@ -28,8 +43,13 @@ class HardwareOSAPI:
             self.logger.error("osVersion failed", exc_info=True)
             return None
 
-    # Get list of all clusters present in Cloudera Manager
     def clusterItems(self):
+        """Get list of all clusters present in Cloudera Manager.
+
+        Returns:
+            cluster_items (dict): Metrics of all clusters
+        """
+
         try:
             r = None
             if self.version == 7:
@@ -75,10 +95,17 @@ class HardwareOSAPI:
             self.logger.error("clusterItems failed", exc_info=True)
             return None
 
-    # Get List of all hosts present in a cluster
-    def clusterHostItems(self, clusterName):
+    def clusterHostItems(self, cluster_name):
+        """Get List of all hosts present in a cluster.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            cluster_host_items (dict): Summary of all hosts in cluster
+            cluster_host_len (int): Number of hosts in cluster
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
@@ -109,14 +136,14 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 cluster_host = r.json()
-                clusterHostLen = len(cluster_host["items"])
+                cluster_host_len = len(cluster_host["items"])
                 with open(
                     "Discovery_Report/{}/clusters_host.json".format(cluster_name), "w"
                 ) as fp:
                     json.dump(cluster_host, fp, indent=4)
                 cluster_host_items = cluster_host["items"]
                 self.logger.info("clusterHostItems successful")
-                return cluster_host_items, clusterHostLen
+                return cluster_host_items, cluster_host_len
             else:
                 self.logger.error(
                     "clusterHostItems failed due to invalid API call. HTTP Response: ",
@@ -126,10 +153,16 @@ class HardwareOSAPI:
             self.logger.error("clusterHostItems failed", exc_info=True)
             return None
 
-    # Get list of services present in a cluster with its details
-    def clusterServiceItem(self, clusterName):
+    def clusterServiceItem(self, cluster_name):
+        """Get list of services present in a cluster with its details.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            cluster_service_item (dict): All services installed in cluster
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
@@ -177,8 +210,15 @@ class HardwareOSAPI:
             self.logger.error("clusterServiceItem failed", exc_info=True)
             return None
 
-    # Get detailed specs of a host
     def hostData(self, hostId):
+        """Get detailed specs of a host.
+
+        Args:
+            hostId (str): Host ID present in cloudera manager.
+        Returns:
+            host_data (dict): Detailed specs of host
+        """
+
         try:
             hostid = hostId
             r = None
@@ -222,10 +262,16 @@ class HardwareOSAPI:
             self.logger.error("hostData failed", exc_info=True)
             return None
 
-    # Get cores availability data over a date range
-    def clusterTotalCores(self, clusterName):
+    def clusterTotalCores(self, cluster_name):
+        """Get cores availability data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            cluster_total_cores_df (DataFrame): Total cores available over time.
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
@@ -312,10 +358,17 @@ class HardwareOSAPI:
             self.logger.error("clusterTotalCores failed", exc_info=True)
             return None
 
-    # Get cores usage data over a date range
-    def clusterCpuUsage(self, clusterName):
+    def clusterCpuUsage(self, cluster_name):
+        """Get cores usage data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            cluster_cpu_usage_df (DataFrame): CPU usage over time
+            cluster_cpu_usage_avg (float): Average CPU usage in cluster
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
@@ -412,10 +465,16 @@ class HardwareOSAPI:
             self.logger.error("clusterCpuUsage failed", exc_info=True)
             return None
 
-    # Get memory availability data over a date range
-    def clusterTotalMemory(self, clusterName):
+    def clusterTotalMemory(self, cluster_name):
+        """Get memory availability data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            cluster_total_memory_df (DataFrame): Total memory available over time
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
@@ -504,10 +563,17 @@ class HardwareOSAPI:
             self.logger.error("clusterTotalMemor failed", exc_info=True)
             return None
 
-    # Get memory usage data over a date range
-    def clusterMemoryUsage(self, clusterName):
+    def clusterMemoryUsage(self, cluster_name):
+        """Get memory usage data over a date range.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            cluster_memory_usage_df (DataFrame): Memory usage over time
+            cluster_memory_usage_avg (float): Average memory usage in cluster
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(

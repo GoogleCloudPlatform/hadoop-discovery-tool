@@ -1,4 +1,4 @@
-# Importing Required Libraries
+# Importing required libraries
 from imports import *
 from HardwareOSAPI import *
 from FrameworkDetailsAPI import *
@@ -8,10 +8,17 @@ from ApplicationAPI import *
 from PdfFunctions import *
 
 
-# This Class has functions for PDF generation based on different Cloudera versions
 class PdfGenerator:
-    # Initialize Inputs
+    """This Class has functions for PDF generation based on different 
+    Cloudera versions.
+
+    Args:
+        inputs (dict): Contains user input attributes
+    """
+
     def __init__(self, inputs):
+        """Initialize inputs"""
+
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
@@ -20,8 +27,9 @@ class PdfGenerator:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
-    # Generate PDF for CDH-5
     def run_5(self):
+        """Generate PDF for CDH-5"""
+
         pdf = FPDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
@@ -433,8 +441,9 @@ class PdfGenerator:
 
         pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")
 
-    # Generate PDF for CDH-6
     def run_6(self):
+        """Generate PDF for CDH-6"""
+
         pdf = FPDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
@@ -852,8 +861,9 @@ class PdfGenerator:
 
         pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")
 
-    # Generate PDF for CDP-7
     def run_7(self):
+        """Generate PDF for CDP-7"""
+
         pdf = FPDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
@@ -1270,4 +1280,3 @@ class PdfGenerator:
             obj_pdf.yarnPendingMemory(yarn_pending_memory_df)
 
         pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")
-

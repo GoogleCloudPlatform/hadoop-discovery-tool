@@ -1,11 +1,20 @@
-# Importing Required Libraries
+# Importing required libraries
 from imports import *
 
 
-# This Class has functions related to Security category
 class SecurityAPI:
-    # Initialize Inputs
+    """This Class has functions related to Security category.
+
+    Has functions which fetch different security metrics from Hadoop 
+    cluster like kerberos details, AD server details, etc.
+
+    Args:
+        inputs (dict): Contains user input attributes
+    """
+
     def __init__(self, inputs):
+        """Initialize inputs"""
+
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
@@ -14,10 +23,16 @@ class SecurityAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
 
-    # Get Kerberos details in a cluster
-    def clusterKerberosInfo(self, clusterName):
+    def clusterKerberosInfo(self, cluster_name):
+        """Get Kerberos details in a cluster.
+        
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            cluster_kerberos_info (str): Kerberos information of cluster.
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
@@ -59,10 +74,16 @@ class SecurityAPI:
             self.logger.error("clusterKerberosInfo failed", exc_info=True)
             return None
 
-    # Get AD server details for a cluster
-    def ADServerNameAndPort(self, clusterName):
+    def ADServerNameAndPort(self, cluster_name):
+        """Get AD server details for a cluster.
+        
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            ADServer (str): Url and port of AD server.
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
@@ -113,10 +134,16 @@ class SecurityAPI:
             self.logger.error("ADServerNameAndPort failed", exc_info=True)
             return None
 
-    # Get AD server details based on domain name
-    def adServerBasedDN(self, clusterName):
+    def adServerBasedDN(self, cluster_name):
+        """Get AD server details based on domain name.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            Server_dn (str): Domain name of LDAP bind parameter.
+        """
+
         try:
-            cluster_name = clusterName
             r = None
             if self.version == 7:
                 r = requests.get(
