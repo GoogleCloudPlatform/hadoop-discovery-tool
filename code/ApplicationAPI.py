@@ -1,3 +1,9 @@
+# ------------------------------------------------------------------------------
+# This module will contain all the features of the Application category.
+# This module will contain the actual logic related to YARN Resource manager
+# API and other Generic features.
+# ------------------------------------------------------------------------------
+
 # Importing required libraries
 from imports import *
 
@@ -18,12 +24,14 @@ class ApplicationAPI:
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
+        self.cloudera_manager_port = inputs["cloudera_manager_port"]
         self.cloudera_manager_username = inputs["cloudera_manager_username"]
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.ssl = inputs["ssl"]
 
-    def getApplicationDetails(self, yarn_rm):
+    def getApplicationDetails(self, yarn_rm, yarn_port):
         """Get list of all yarn application over a date range.
 
         Args:
@@ -33,7 +41,9 @@ class ApplicationAPI:
         """
 
         try:
-            r = requests.get("http://{}:8088/ws/v1/cluster/apps".format(yarn_rm))
+            r = requests.get(
+                "http://{}:{}/ws/v1/cluster/apps".format(yarn_rm, yarn_port)
+            )
             if r.status_code == 200:
                 yarn_application = r.json()
                 yarn_application_list = yarn_application["apps"]["app"]
@@ -317,7 +327,7 @@ class ApplicationAPI:
             self.logger.error("getFailedApplicationDetails failed", exc_info=True)
             return None
 
-    def getYarnTotalVcore(self, yarn_rm):
+    def getYarnTotalVcore(self, yarn_rm, yarn_port):
         """Get total vcores allocated to yarn.
 
         Args:
@@ -327,7 +337,9 @@ class ApplicationAPI:
         """
 
         try:
-            r = requests.get("http://{}:8088/ws/v1/cluster/metrics".format(yarn_rm))
+            r = requests.get(
+                "http://{}:{}/ws/v1/cluster/metrics".format(yarn_rm, yarn_port)
+            )
             if r.status_code == 200:
                 yarn_total_vcores = r.json()
                 yarn_total_vcores_count = math.ceil(
@@ -357,8 +369,9 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -369,8 +382,9 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -381,8 +395,9 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -457,8 +472,9 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -469,8 +485,9 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -481,8 +498,9 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -572,7 +590,7 @@ class ApplicationAPI:
             self.logger.error("getYarnVcoreAllocated failed", exc_info=True)
             return None
 
-    def getYarnTotalMemory(self, yarn_rm):
+    def getYarnTotalMemory(self, yarn_rm, yarn_port):
         """Get total memory allocated to yarn.
 
         Args:
@@ -582,7 +600,9 @@ class ApplicationAPI:
         """
 
         try:
-            r = requests.get("http://{}:8088/ws/v1/cluster/metrics".format(yarn_rm))
+            r = requests.get(
+                "http://{}:{}/ws/v1/cluster/metrics".format(yarn_rm, yarn_port)
+            )
             if r.status_code == 200:
                 yarn_total_memory = r.json()
                 yarn_total_memory_count = math.ceil(
@@ -613,8 +633,9 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -625,8 +646,9 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -637,8 +659,9 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -713,8 +736,9 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -725,8 +749,9 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -737,8 +762,9 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -922,8 +948,9 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -934,8 +961,9 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -946,8 +974,9 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -1020,8 +1049,9 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -1032,8 +1062,9 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -1044,8 +1075,9 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -1118,8 +1150,9 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -1130,8 +1163,9 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -1142,8 +1176,9 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -1203,7 +1238,7 @@ class ApplicationAPI:
             self.logger.error("getPendingVcore failed", exc_info=True)
             return None
 
-    def getQueueDetails(self, yarn_rm):
+    def getQueueDetails(self, yarn_rm, yarn_port):
         """Get details about yarn queues.
 
         Args:
@@ -1213,7 +1248,9 @@ class ApplicationAPI:
         """
 
         try:
-            r = requests.get("http://{}:8088/ws/v1/cluster/scheduler".format(yarn_rm))
+            r = requests.get(
+                "http://{}:{}/ws/v1/cluster/scheduler".format(yarn_rm, yarn_port)
+            )
             if r.status_code == 200:
                 yarn_queues = r.json()
                 yarn_queues_list = yarn_queues["scheduler"]["schedulerInfo"]["queues"][
@@ -1387,4 +1424,554 @@ class ApplicationAPI:
             )
         except Exception as e:
             self.logger.error("getQueueVcoreMemory failed", exc_info=True)
+            return None
+
+    def getHbaseDataSize(self):
+        """Get HBase storage details.
+
+        Returns:
+            base_size (float) : Base size of HBase
+            disk_space_consumed (float) : Disk size consumed by HBase
+        """
+
+        try:
+            base_size = 0
+            disk_space_consumed = 0
+            out = subprocess.check_output("hdfs dfs -du -h /", shell=True)
+            output = str(out)
+            lines = output.split("\\n")
+            for i in lines:
+                if i.split("/")[-1] == "hbase":
+                    base_size = ""
+                    disk_space_consumed = ""
+                    hbase_data = i.split("/")[0].strip()
+                    hbase_data = hbase_data.split("'")[1]
+                    data_list = hbase_data.split(".")
+                    base_size = (
+                        data_list[0]
+                        + "."
+                        + data_list[1][0]
+                        + data_list[1][1]
+                        + data_list[1][2]
+                    )
+                    if len(data_list[1]) > 3:
+                        for j in data_list[1][3:]:
+                            if j != (" "):
+                                disk_space_consumed = disk_space_consumed + j
+                        disk_space_consumed = disk_space_consumed + "." + data_list[2]
+                    else:
+                        disk_space_consumed = 0
+            self.logger.info("getHbaseDataSize successful")
+            return base_size, disk_space_consumed
+        except Exception as e:
+            self.logger.error("getHbaseDataSize failed", exc_info=True)
+            return None
+
+    def getHbaseReplication(self, cluster_name):
+        """Get HBase replication factor.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            replication (str): HBase replication factor.
+        """
+
+        try:
+            r = None
+            if self.version == 7:
+                r = requests.get(
+                    "http://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 6:
+                r = requests.get(
+                    "http://{}:{}/api/v33/clusters/{}/services/hbase/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 5:
+                r = requests.get(
+                    "http://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            if r.status_code == 200:
+                hbase = r.json()
+                hbase_config = hbase["items"]
+                hbase_replication = "false"
+                replication = "No"
+                for i in hbase_config:
+                    if i["name"] == "hbase_enable_replication":
+                        hbase_replication = i["value"]
+                        if hbase_replication == "true":
+                            replication = "Yes"
+                self.logger.info("getHbaseReplication successful")
+                return replication
+            else:
+                self.logger.error(
+                    "getHbaseReplication failed due to invalid API call. HTTP Response: ",
+                    r.status_code,
+                )
+                return None
+        except Exception as e:
+            self.logger.error("getHbaseReplication failed", exc_info=True)
+            return None
+
+    def getHbaseSecondaryIndex(self, cluster_name):
+        """Get HBase secondary indexing details.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            indexing (str): HBase secondary index value.
+        """
+
+        try:
+            r = None
+            if self.version == 7:
+                r = requests.get(
+                    "http://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 6:
+                r = requests.get(
+                    "http://{}:{}/api/v33/clusters/{}/services/hbase/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 5:
+                r = requests.get(
+                    "http://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            if r.status_code == 200:
+                hbase = r.json()
+                hbase_config = hbase["items"]
+                hbase_indexing = "false"
+                hbase_replication = "false"
+                indexing = "No"
+                for i in hbase_config:
+                    if i["name"] == "hbase_enable_indexing":
+                        hbase_indexing = i["value"]
+                    if i["name"] == "hbase_enable_replication":
+                        hbase_replication = i["value"]
+                if hbase_indexing == hbase_replication == "true":
+                    indexing = "Yes"
+                self.logger.info("getHbaseSecondaryIndex successful")
+                return indexing
+            else:
+                self.logger.error(
+                    "getHbaseSecondaryIndex failed due to invalid API call. HTTP Response: ",
+                    r.status_code,
+                )
+                return None
+        except Exception as e:
+            self.logger.error("getHbaseSecondaryIndex failed", exc_info=True)
+            return None
+
+    def getDynamicAllocationAndSparkResourceManager(self):
+        """Get spark config details.
+
+        Returns:
+            dynamic_allocation (str): Dynamic Allocation value.
+            spark_resource_manager (str): Spark resource manager value.
+        """
+
+        try:
+            dynamic_allocation = ""
+            spark_resource_manager = ""
+            spark_config_filename = glob.glob("/etc/spark/conf.*/spark-defaults.conf")
+            with open(spark_config_filename[0], "r") as f:
+                for line in f:
+                    if line.split("=")[0] == "spark.dynamicAllocation.enabled":
+                        if line.split("=")[1].strip() == "true":
+                            dynamic_allocation = "Enabled"
+                        else:
+                            dynamic_allocation = "Disabled"
+                    elif line.split("=")[0] == "spark.master":
+                        spark_resource_manager = line.split("=")[1].strip()
+                    else:
+                        continue
+            self.logger.info("getDynamicAllocationAndSparkResourceManager successful")
+            return dynamic_allocation, spark_resource_manager
+        except Exception as e:
+            self.logger.error(
+                "getDynamicAllocationAndSparkResourceManager failed", exc_info=True
+            )
+            return None
+
+    def getSparkVersion(self):
+        """Get Spark version details.
+
+        Returns:
+            spark_version (str): Spark version
+        """
+
+        try:
+            out = subprocess.check_output(
+                '(spark-shell --version &> tmp.data ; grep version tmp.data | head -1 | awk "{print $NF}";rm tmp.data)',
+                shell=True,
+            )
+            spark_version = str(out.strip())
+            if spark_version != "b''":
+                spark_version = spark_version.split("'")[1]
+                spark_version = spark_version.split("version")[1]
+                spark_version = spark_version.strip()
+            self.logger.info("getSparkVersion successful")
+            return spark_version
+        except Exception as e:
+            self.logger.error("getSparkVersion failed", exc_info=True)
+            return None
+
+    def getSparkApiProgrammingLanguages(self):
+        """Get list of languages used by spark programs.
+
+        Returns:
+            language_list (str): List of languages separated by comma.
+        """
+
+        try:
+            command = "hdfs dfs -ls /user/spark/applicationHistory"
+            command = command + " | awk ' {print $8} '"
+            file_paths = subprocess.check_output(command, shell=True)
+            file_paths = str(file_paths)
+            l_list = file_paths.split("\\n")
+            language_list = []
+            if len(l_list) > 2:
+                l_list.pop(0)
+                l_list.pop(-1)
+                paths = []
+                if len(l_list) > 30:
+                    for item in l_list[:10]:
+                        paths.append(item)
+                    if (len(l_list) % 2) != 0:
+                        middle = int(len(l_list) / 2)
+                    else:
+                        middle = int(len(l_list) / 2) - 1
+                    for item in l_list[middle : middle + 10]:
+                        paths.append(item)
+                    for item in l_list[len(l_list) - 11 :]:
+                        paths.append(item)
+                    l_list = paths
+                for path in l_list:
+                    output = subprocess.check_output(
+                        "hdfs dfs -cat {}".format(path), shell=True
+                    )
+                    output = str(output)
+                    if output != "b''":
+                        language = (output).split('"sun.java.command":')[1]
+                        language = language.split(",")[0]
+                        if language.find(".py") != -1:
+                            if "Python" not in language_list:
+                                language_list.append("Python")
+                        elif language.find(".java") != -1:
+                            if "Java" not in language_list:
+                                language_list.append("Java")
+                        elif language.find(".scala") != -1:
+                            if "Scala" not in language_list:
+                                language_list.append("Scala")
+                        elif language.find(".R") != -1:
+                            if "R" not in language_list:
+                                language_list.append("R")
+            language_list = ", ".join(language_list)
+            self.logger.info("getSparkApiProgrammingLanguages successful")
+            return language_list
+        except Exception as e:
+            self.logger.error("getSparkApiProgrammingLanguages failed", exc_info=True)
+            return None
+
+    def retentionPeriodKafka(self):
+        """Get retention period of kafka.
+
+        Returns:
+            retention_period (str): Kafka retention period
+        """
+
+        try:
+            period = os.popen(
+                "grep -m 1 log.retention.hours /etc/kafka/server.properties"
+            ).read()
+            retention_period = int(period.split("=")[1].strip("\n"))
+            self.logger.info("retentionPeriodKafka successful")
+            return retention_period
+        except Exception as e:
+            self.logger.error("retentionPeriodKafka failed", exc_info=True)
+            return None
+
+    def numTopicsKafka(self, zookeeper_host, zookeeper_port):
+        """Get num of topics in kafka.
+        
+        Args:
+            zookeeper_host (str) Zookeeper host IP
+            zookeeper_port (str): Zookeeper port number
+        Returns:
+            num_topics (int): Number of topics in kafka.
+        """
+
+        try:
+            os.popen(
+                "kafka-topics --zookeeper "
+                + str(zookeeper_host)
+                + ":"
+                + str(zookeeper_port)
+                + " --list > topics_list.csv"
+            ).read()
+            topics_df = pd.read_csv("topics_list.csv", header=None)
+            topics_df.columns = ["topics"]
+            num_topics = len(topics_df.index)
+            self.logger.info("numTopicsKafka successful")
+            return num_topics
+        except Exception as e:
+            self.logger.error("numTopicsKafka failed", exc_info=True)
+            return None
+
+    def msgSizeKafka(self, zookeeper_host, zookeeper_port, broker_host, broker_port):
+        """Get volume of message in kafka in bytes.
+        
+        Args:
+            zookeeper_host (str) Zookeeper host IP
+            zookeeper_port (str): Zookeeper port number
+            broker_host (str): Broker host IP
+            broker_port (str): Broker port number
+        Returns:
+            sum_size (int): Message size of Kafka
+        """
+
+        try:
+            os.popen(
+                "kafka-topics --zookeeper "
+                + str(zookeeper_host)
+                + ":"
+                + str(zookeeper_port)
+                + " --list > topics_list.csv"
+            ).read()
+            topics_df = pd.read_csv("topics_list.csv", header=None)
+            topics_df.columns = ["topics"]
+            sum_size = 0
+            for i in topics_df["topics"]:
+                msg_size = os.popen(
+                    " kafka-log-dirs     --bootstrap-server "
+                    + str(broker_host)
+                    + ":"
+                    + str(broker_port)
+                    + "  --topic-list "
+                    + str(i)
+                    + "     --describe   | grep '^{'   | jq '[ ..|.size? | numbers ] | add'"
+                ).read()
+                msg_size = msg_size.strip("\n")
+                sum_size = sum_size + int(msg_size)
+            self.logger.info("msgSizeKafka successful")
+            return sum_size
+        except Exception as e:
+            self.logger.error("msgSizeKafka failed", exc_info=True)
+            return None
+
+    def msgCountKafka(self, zookeeper_host, zookeeper_port, broker_host, broker_port):
+        """Get count of messages in kafka topics.
+
+        Args:
+            zookeeper_host (str) Zookeeper host IP
+            zookeeper_port (str): Zookeeper port number
+            broker_host (str): Broker host IP
+            broker_port (str): Broker port number
+        Returns:
+            sum_count (int): Number of messages in Kafka
+        """
+
+        try:
+            os.popen(
+                "kafka-topics --zookeeper "
+                + str(zookeeper_host)
+                + ":"
+                + str(zookeeper_port)
+                + " --list > topics_list.csv"
+            ).read()
+            topics_df = pd.read_csv("topics_list.csv", header=None)
+            topics_df.columns = ["topics"]
+            sum_count = 0
+            for i in topics_df["topics"]:
+                msg_count = os.popen(
+                    "kafka-run-class kafka.tools.GetOffsetShell --broker-list "
+                    + str(broker_host)
+                    + str(":")
+                    + str(broker_port)
+                    + " --topic "
+                    + str(i)
+                    + " --time -1 --offsets 1 | awk -F  \":\" '{sum += $3} END {print sum}'"
+                ).read()
+                msg_count = msg_count.strip("\n")
+                sum_count = sum_count + int(msg_count)
+            self.logger.info("msgCountKafka successful")
+            return sum_count
+        except Exception as e:
+            self.logger.error("msgCountKafka failed", exc_info=True)
+            return None
+
+    def clusterSizeAndBrokerSizeKafka(self):
+        """Get per cluster storage and kafka cluster storage in kafka.
+
+        Returns:
+            total_size (float): Total size of kafka cluster
+            brokersize (DataFrame): Size for each broker.
+        """
+
+        try:
+            logs_dir = ["kafka-logs", "kafka-logs1"]
+            broker_id = 0
+            brokersize = pd.DataFrame(columns=["broker_size"])
+            j = 0
+            for k in logs_dir:
+                os.popen("du -sh /tmp/" + str(k) + "/* > broker_size.csv").read()
+                brokers_df = pd.read_csv("broker_size.csv", header=None)
+                brokers_df.columns = ["logs"]
+                size_sum = 0
+                for i in brokers_df["logs"]:
+                    size = i.split("\t", 1)[0]
+                    size = float(size.strip("K"))
+                    size_sum = size_sum + size
+                brokersize.loc[j] = size_sum
+                j = j + 1
+            total_size = 0
+            for i in brokersize["broker_size"]:
+                total_size = total_size + float(i)
+            broker_list = []
+            for index, row in brokersize.iterrows():
+                broker_list.append(str(row["broker_size"]) + " KB")
+            broker_list = ", ".join(broker_list)
+            self.logger.info("clusterSizeAndBrokerSizeKafka successful")
+            return total_size, broker_list
+        except Exception as e:
+            self.logger.error("clusterSizeAndBrokerSizeKafka failed", exc_info=True)
+            return None
+
+    def useOfImpala(self):
+        """Get impala service in cluster.
+
+        Returns:
+            output (str): Impala information for cluster.
+        """
+
+        try:
+            output = ""
+            version_data = json.loads(
+                os.popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json").read()
+            )
+            data = version_data["components"]
+            df = pd.DataFrame(data)
+            services_df = df
+            found = 0
+            services_df["sub_version"] = services_df.version.str[:5]
+            for i in services_df["name"]:
+                if i == "impala":
+                    found = 1
+            if found == 1:
+                output = (
+                    "Impala found with version: "
+                    + services_df.loc[services_df["name"] == i].sub_version.item()
+                )
+            else:
+                output = "Impala is not found"
+            self.logger.info("useOfImpala successful")
+            return output
+        except Exception as e:
+            self.logger.error("useOfImpala failed", exc_info=True)
+            return None
+
+    def useOfSentry(self):
+        """Get sentry service in cluster.
+
+        Returns:
+            output (str): Sentry information for cluster.
+        """
+
+        try:
+            output = ""
+            version_data = json.loads(
+                os.popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json").read()
+            )
+            data = version_data["components"]
+            df = pd.DataFrame(data)
+            services_df = df
+            found = 0
+            services_df["sub_version"] = services_df.version.str[:5]
+            for i in services_df["name"]:
+                if i == "sentry":
+                    found = 1
+            if found == 1:
+                output = (
+                    "Apache Sentry found with version: "
+                    + services_df.loc[services_df["name"] == i].sub_version.item()
+                )
+            else:
+                output = "Apache Sentry is not found"
+            self.logger.info("useOfSentry successful")
+            return output
+        except Exception as e:
+            self.logger.error("useOfSentry failed", exc_info=True)
+            return None
+
+    def useOfKudu(self):
+        """Get kudu service in cluster.
+
+        Returns:
+            output (str): Kudu information for cluster.
+        """
+
+        try:
+            output = ""
+            version_data = json.loads(
+                os.popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json").read()
+            )
+            data = version_data["components"]
+            df = pd.DataFrame(data)
+            services_df = df
+            found = 0
+            services_df["sub_version"] = services_df.version.str[:5]
+            for i in services_df["name"]:
+                if i == "kudu":
+                    found = 1
+            if found == 1:
+                output = (
+                    "Apache Kudu found with version: "
+                    + services_df.loc[services_df["name"] == i].sub_version.item()
+                )
+            else:
+                output = "Apache Kudu is not found"
+            self.logger.info("useOfKudu successful")
+            return output
+        except Exception as e:
+            self.logger.error("useOfKudu failed", exc_info=True)
             return None

@@ -1,3 +1,9 @@
+# ------------------------------------------------------------------------------
+# This module will contain all the features of the category Framework and
+# software details. This module will contain the actual logic which contains
+# Cloudera Manager API, Generic API and commands.
+# -------------------------------------------------------------------------------
+
 # Importing required libraries
 from imports import *
 
@@ -19,10 +25,12 @@ class FrameworkDetailsAPI:
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
+        self.cloudera_manager_port = inputs["cloudera_manager_port"]
         self.cloudera_manager_username = inputs["cloudera_manager_username"]
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.ssl = inputs["ssl"]
 
     def hadoopVersion(self):
         """Get Hadoop major and minor version and Hadoop Distribution.
@@ -84,8 +92,10 @@ class FrameworkDetailsAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/clusters/{}/services".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v41/clusters/{}/services".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -93,8 +103,10 @@ class FrameworkDetailsAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/clusters/{}/services".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v33/clusters/{}/services".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -102,8 +114,10 @@ class FrameworkDetailsAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/clusters/{}/services".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v19/clusters/{}/services".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password

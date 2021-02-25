@@ -1,3 +1,9 @@
+# ------------------------------------------------------------------------------
+# This module will use the cloudera API and CLI commands for the category
+# Security. This module will spot the other third party tools whichever is
+# integarted with the Hadoop cluster to enhanced security
+# ------------------------------------------------------------------------------
+
 # Importing required libraries
 from imports import *
 
@@ -18,10 +24,12 @@ class SecurityAPI:
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
+        self.cloudera_manager_port = inputs["cloudera_manager_port"]
         self.cloudera_manager_username = inputs["cloudera_manager_username"]
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.ssl = inputs["ssl"]
 
     def clusterKerberosInfo(self, cluster_name):
         """Get Kerberos details in a cluster.
@@ -36,8 +44,10 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/clusters/{}/kerberosInfo".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v41/clusters/{}/kerberosInfo".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -45,8 +55,10 @@ class SecurityAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/clusters/{}/kerberosInfo".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v33/clusters/{}/kerberosInfo".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -54,8 +66,10 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/clusters/{}/kerberosInfo".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -63,6 +77,11 @@ class SecurityAPI:
                 )
             if r.status_code == 200:
                 cluster_kerberos_info = r.json()
+                kerberized_status = str(cluster_kerberos_info["kerberized"])
+                if kerberized_status == "True":
+                    cluster_kerberos_info = "Cluster is kerberized"
+                else:
+                    cluster_kerberos_info = "Cluster is not kerberized"
                 self.logger.info("clusterKerberosInfo successful")
                 return cluster_kerberos_info
             else:
@@ -87,8 +106,10 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/cm/deployment".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v41/cm/deployment".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -96,8 +117,10 @@ class SecurityAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/cm/deployment".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v33/cm/deployment".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -105,8 +128,10 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/cm/deployment".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v19/cm/deployment".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -114,6 +139,7 @@ class SecurityAPI:
                 )
             if r.status_code == 200:
                 ad_server = r.json()
+                ADServer = None
                 with open(
                     "Discovery_Report/{}/AD_server_port.json".format(cluster_name), "w"
                 ) as fp:
@@ -147,8 +173,10 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/cm/deployment".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v41/cm/deployment".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -156,8 +184,10 @@ class SecurityAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/cm/deployment".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v33/cm/deployment".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -165,8 +195,10 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/cm/deployment".format(
-                        self.cloudera_manager_host_ip, cluster_name
+                    "http://{}:{}/api/v19/cm/deployment".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -174,6 +206,7 @@ class SecurityAPI:
                 )
             if r.status_code == 200:
                 ad_server = r.json()
+                Server_dn = None
                 with open(
                     "Discovery_Report/{}/AD_server_DN.json".format(cluster_name), "w"
                 ) as fp:
@@ -192,4 +225,29 @@ class SecurityAPI:
                 return None
         except Exception as e:
             self.logger.error("adServerBasedDN failed", exc_info=True)
+            return None
+
+    def keytabFilesInfo(self):
+        """Get AD server details based on domain name.
+
+        Returns:
+            keytab (str): Keytab files information.
+        """
+
+        try:
+            keytab = ""
+            os.popen('find / -iname "*.keytab" > ./keytab.txt ').read()
+            with open("./keytab.txt", "r") as read_obj:
+                for line in read_obj:
+                    if "keytab" in line:
+                        keytab = "Keytab exist"
+                        break
+                    else:
+                        keytab = "Keytab not exist"
+                        break
+            os.popen("rm ./keytab.txt")
+            self.logger.info("keytabFilesInfo successful")
+            return keytab
+        except Exception as e:
+            self.logger.error("keytabFilesInfo failed", exc_info=True)
             return None

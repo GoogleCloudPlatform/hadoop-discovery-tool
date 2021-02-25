@@ -1,3 +1,10 @@
+# ------------------------------------------------------------------------------
+# This module is used to get the storage and the size of the Hadoop clusters.
+# unveiling the usage over the period of time over the customized range
+# specified by the user. Module generated the clear output of various key
+# specification of hadoop distributed file system.
+# ------------------------------------------------------------------------------
+
 # Importing required libraries
 from imports import *
 
@@ -18,10 +25,12 @@ class DataAPI:
         self.inputs = inputs
         self.version = inputs["version"]
         self.cloudera_manager_host_ip = inputs["cloudera_manager_host_ip"]
+        self.cloudera_manager_port = inputs["cloudera_manager_port"]
         self.cloudera_manager_username = inputs["cloudera_manager_username"]
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.ssl = inputs["ssl"]
 
     def totalSizeConfigured(self):
         """Get total storage size and storage at each node for HDFS.
@@ -74,9 +83,8 @@ class DataAPI:
             total_storage = (mapped_df["Configured_Capacity_bytes"].sum()) / (
                 1024 * 1024 * 1024
             )
-            individual_node_size = mapped_df["Configured_Capacity"].tolist()
             self.logger.info("totalSizeConfigured successful")
-            return individual_node_size, total_storage
+            return mapped_df, total_storage
         except Exception as e:
             self.logger.error("totalSizeConfigured failed", exc_info=True)
             return None
@@ -159,10 +167,12 @@ class DataAPI:
         """
 
         try:
+            r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -173,8 +183,9 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -185,8 +196,9 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -256,10 +268,12 @@ class DataAPI:
         """
 
         try:
+            r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:7180/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -270,8 +284,9 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:7180/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -282,8 +297,9 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:7180/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                         start_date,
                         cluster_name,
                         end_date,
@@ -348,3 +364,464 @@ class DataAPI:
         except Exception as e:
             self.logger.error("getHdfsCapacityUsed failed", exc_info=True)
             return None
+
+    def getHiveConfigItems(self, cluster_name):
+        """Get Hive metastore config details from cluster.
+
+        Args:
+            cluster_name (str): Cluster name present in cloudera manager.
+        Returns:
+            mt_db_host (str): Metastore database host name
+            mt_db_name (str): Metastore database name
+            mt_db_type (str): Metastore database type
+            mt_db_port (str): Metastore database port number
+        """
+
+        try:
+            r = None
+            if self.version == 7:
+                r = requests.get(
+                    "http://{}:{}/api/v41/clusters/{}/services/hive/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 6:
+                r = requests.get(
+                    "http://{}:{}/api/v33/clusters/{}/services/hive/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 5:
+                r = requests.get(
+                    "http://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            if r.status_code == 200:
+                hive_config = r.json()
+                hive_config_items = hive_config["items"]
+                mt_db_host = ""
+                mt_db_name = ""
+                mt_db_type = ""
+                mt_db_port = ""
+                for i in hive_config_items:
+                    if i["name"] == "hive_metastore_database_host":
+                        mt_db_host = i["value"]
+                    elif i["name"] == "hive_metastore_database_name":
+                        mt_db_name = i["value"]
+                    elif i["name"] == "hive_metastore_database_port":
+                        mt_db_port = i["value"]
+                    elif i["name"] == "hive_metastore_database_type":
+                        mt_db_type = i["value"]
+                self.logger.info("getHiveConfigItems successful")
+                return mt_db_host, mt_db_name, mt_db_type, mt_db_port
+            else:
+                self.logger.error(
+                    "getHiveConfigItems failed due to invalid API call. HTTP Response: ",
+                    r.status_code,
+                )
+                return None
+        except Exception as e:
+            self.logger.error("getHiveConfigItems failed", exc_info=True)
+            return None
+
+    def gethiveMetaStore(self, database_uri, database_type):
+        """Get Hive tables and databases details.
+
+        Args:
+            database_uri (str): Metastore database connection URI.
+            database_type (str): Metastore database type.
+        Returns:
+            table_df (DataFrame): List of tables and database in hive.
+        """
+
+        try:
+            engine = create_engine(database_uri)
+            table_count = 0
+            table_df = pd.DataFrame(
+                columns=["Table_Name", "Last_Access_Time", "Data_Type", "Database"]
+            )
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                select t."TBL_NAME",t."LAST_ACCESS_TIME", d."NAME" 
+                from 
+                "DBS" as d join "TBLS" as t 
+                on 
+                t."DB_ID"=d."DB_ID" 
+                where 
+                d."NAME" not in ('information_schema','sys');
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select t.TBL_NAME,t.LAST_ACCESS_TIME, d.NAME 
+                from 
+                DBS as d join TBLS as t 
+                on 
+                t.DB_ID=d.DB_ID 
+                where 
+                d.NAME not in ('information_schema','sys');
+                """
+                )
+            for row in result:
+                table_count = table_count + 1
+                table_name = row[0]
+                last_access_time = (int(row[1]) + 500) / 1000
+                database = row[2]
+                table_tmp_df = pd.DataFrame(
+                    {
+                        "Table_Name": table_name,
+                        "Last_Access_Time": datetime.fromtimestamp(
+                            last_access_time
+                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                        "Database": database,
+                    },
+                    index=[table_count],
+                )
+                table_df = table_df.append(table_tmp_df)
+            table_df["Last_Access_Time"] = pd.to_datetime(table_df["Last_Access_Time"])
+            warm = date_range_end - timedelta(days=1)
+            cold = date_range_end - timedelta(days=3)
+            table_df.loc[table_df["Last_Access_Time"] > warm, "Data_Type"] = "Hot"
+            table_df.loc[
+                (table_df["Last_Access_Time"] <= warm)
+                & (table_df["Last_Access_Time"] > cold),
+                "Data_Type",
+            ] = "Warm"
+            table_df.loc[(table_df["Last_Access_Time"] <= cold), "Data_Type"] = "Cold"
+            table_df["Count"] = 1
+            table_df = pd.DataFrame(
+                {"Data_Type": table_df["Data_Type"], "Table Count": table_df["Count"]}
+            )
+            table_df = table_df.groupby(["Data_Type"]).sum()
+            self.logger.info("gethiveMetaStore successful")
+            return table_df
+        except Exception as e:
+            self.logger.error("gethiveMetaStore failed", exc_info=True)
+            return None
+
+    def getHiveDatabaseInfo(self, database_uri, database_type):
+        """Get Hive databases details.
+
+        Args:
+            database_uri (str): Metastore database connection URI.
+            database_type (str): Metastore database type.
+        Returns:
+            database_df (DataFrame): List of databases and thier size in hive.
+        """
+
+        try:
+            engine = create_engine(database_uri)
+            table_count = 0
+            database_df = pd.DataFrame(columns=["Database", "File_Size", "Count"])
+            out = subprocess.check_output('hive -e "show databases"', shell=True)
+            out = str(out)
+            out = out.split("\\n")
+            for db in out:
+                database_location = ""
+                if (
+                    (db.find("+--") == -1)
+                    and (db.find("database_name") == -1)
+                    and (db != "'")
+                    and (db.find("WARN") == -1)
+                ):
+                    if db.find("'") != -1:
+                        db = db.split("'")[1]
+                    if db.find("|") != -1:
+                        db = db.split("|")[1]
+                    db = db.strip()
+                    if (db != "information_schema") and (db != "sys"):
+                        if database_type == "postgresql":
+                            result = engine.execute(
+                                """
+                            SELECT count(t."TBL_ID")
+                            FROM
+                            "DBS" as d join "TBLS" as t
+                            on
+                            d."DB_ID"=t."DB_ID"
+                            where
+                            d."NAME" = '{}'
+                            GROUP BY d."DB_ID";
+                            """.format(
+                                    db
+                                )
+                            )
+                        elif database_type == "mysql":
+                            result = engine.execute(
+                                """
+                            SELECT count(t.TBL_ID)
+                            FROM
+                            DBS as d join TBLS as t
+                            on
+                            d.DB_ID=t.DB_ID
+                            where
+                            d.NAME = '{}'
+                            GROUP BY d.DB_ID;
+                            """.format(
+                                    db
+                                )
+                            )
+                        for row in result:
+                            table_count = row[0]
+                        database = subprocess.check_output(
+                            'hive -e "describe schema {}"'.format(db), shell=True
+                        )
+                        database = str(database)
+                        if (database.find("\\t")) and (database.find("+--") == -1):
+                            database = database.split("\\t")
+                            database_location = database[2].strip()
+                        elif database.find("\\n"):
+                            database = database.split("\\n")
+                            for row in database:
+                                if (
+                                    (row.find("+--") == -1)
+                                    and (row.find("db_name") == -1)
+                                    and (row != "'")
+                                    and (row.find("WARN") == -1)
+                                ):
+                                    row = row.split("|")
+                                    database_location = row[3].strip()
+                        database_location = database_location.split(":")[2]
+                        database_location = database_location[4:]
+                        command = "hdfs dfs -du -s -h {}".format(database_location)
+                        command = command + " | awk ' {print $2} '"
+                        database_size = subprocess.check_output(command, shell=True)
+                        database_size = str(database_size.strip())
+                        database_size = database_size.split("'")[1]
+                        database_tmp_df = pd.DataFrame(
+                            {
+                                "Database": db,
+                                "File_Size": database_size,
+                                "Count": table_count,
+                            },
+                            index=[table_count],
+                        )
+                        database_df = database_df.append(database_tmp_df)
+            database_df["File_Size"] = database_df["File_Size"].astype(str).astype(int)
+            database_df["Count"] = 1
+            database_df = database_df.groupby(["Database"]).sum()
+            database_df.reset_index(inplace=True)
+            self.logger.info("getHiveDatabaseInfo successful")
+            return database_df
+        except Exception as e:
+            self.logger.error("getHiveDatabaseInfo failed", exc_info=True)
+            return None
+
+    def getHiveDatabaseCount(self, database_uri, database_type):
+        """Get Hive databases count.
+
+        Args:
+            database_uri (str): Metastore database connection URI.
+            database_type (str): Metastore database type.
+        Returns:
+            database_count (int): Number of databases in hive.
+        """
+
+        try:
+            engine = create_engine(database_uri)
+            database_count = 0
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                select count("DB_ID") from "DBS" where "NAME" not in ('information_schema','sys')
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select count(DB_ID) from DBS where NAME not in ('information_schema','sys')
+                """
+                )
+            for row in result:
+                database_count = row[0]
+            self.logger.info("getHiveDatabaseCount successful")
+            return database_count
+        except Exception as e:
+            self.logger.error("getHiveDatabaseCount failed", exc_info=True)
+            return None
+
+    def getHivePartitionedTableCount(self, database_uri, database_type):
+        """Get Hive partitioned and non-partitioned tables details.
+
+        Args:
+            database_uri (str): Metastore database connection URI.
+            database_type (str): Metastore database type.
+        Returns:
+            number_of_tables_with_partition (int): Number of tables with partition in hive
+            number_of_tables_without_partition (int): Number of tables without partition in hive
+        """
+
+        try:
+            engine = create_engine(database_uri)
+            total_tables = 0
+            number_of_tables_without_partition = 0
+            number_of_tables_with_partition = 0
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                select count(distinct("TBL_ID")) from "PARTITIONS"
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select count(distinct(TBL_ID)) from PARTITIONS
+                """
+                )
+            for row in result:
+                number_of_tables_with_partition = row[0]
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                select count(t."TBL_NAME") 
+                from 
+                "DBS" as d join "TBLS" as t 
+                on 
+                t."DB_ID"=d."DB_ID" 
+                where 
+                d."NAME" not in ('information_schema','sys');
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select count(t.TBL_NAME) 
+                from 
+                DBS as d join TBLS as t 
+                on 
+                t.DB_ID=d.DB_ID 
+                where 
+                d.NAME not in ('information_schema','sys');
+                """
+                )
+            for row in result:
+                total_tables = row[0]
+            number_of_tables_without_partition = (
+                total_tables - number_of_tables_with_partition
+            )
+            self.logger.info("getHivePartitionedTableCount successful")
+            return number_of_tables_with_partition, number_of_tables_without_partition
+        except Exception as e:
+            self.logger.error("getHivePartitionedTableCount failed", exc_info=True)
+            return None
+
+    def getHiveInternalExternalTables(self, database_uri, database_type):
+        """Get Hive internal and external tables count.
+
+        Args:
+            database_uri (str): Metastore database connection URI.
+            database_type (str): Metastore database type.
+        Returns:
+            internal_tables (int): Number of internal tables in hive
+            external_tables (int): Number of external tables in hive
+        """
+
+        try:
+            engine = create_engine(database_uri)
+            internal_tables = 0
+            external_tables = 0
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                SELECT count(b."TBL_ID")
+                FROM
+                "DBS" as a join "TBLS" as b
+                on
+                a."DB_ID"=b."DB_ID"
+                where
+                a."NAME" not in('information_schema','sys') and b."TBL_TYPE" = 'MANAGED_TABLE'
+                GROUP BY a."DB_ID"
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                SELECT count(b.TBL_ID)
+                FROM
+                DBS as a join TBLS as b
+                on
+                a.DB_ID=b.DB_ID
+                where
+                a.NAME not in('information_schema','sys') and b.TBL_TYPE = 'MANAGED_TABLE'
+                GROUP BY a.DB_ID
+                """
+                )
+            for row in result:
+                internal_tables = row[0]
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                SELECT count(b."TBL_ID")
+                FROM
+                "DBS" as a join "TBLS" as b
+                on
+                a."DB_ID"=b."DB_ID"
+                where
+                a."NAME" not in('information_schema','sys') and b."TBL_TYPE" = 'EXTERNAL_TABLE'
+                GROUP BY a."DB_ID"
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                SELECT count(b.TBL_ID)
+                FROM
+                DBS as a join TBLS as b
+                on
+                a.DB_ID=b.DB_ID
+                where
+                a.NAME not in('information_schema','sys') and b.TBL_TYPE = 'EXTERNAL_TABLE'
+                GROUP BY a.DB_ID
+                """
+                )
+            for row in result:
+                external_tables = row[0]
+            self.logger.info("getHiveInternalExternalTables successful")
+            return internal_tables, external_tables
+        except Exception as e:
+            self.logger.error("getHiveInternalExternalTables failed", exc_info=True)
+            return None
+
+    def getHiveExecutionEngine(self):
+        """Get Hive execution engine details.
+
+        Returns:
+            hive_execution_engine (str): Execution engine used by hive.
+        """
+
+        try:
+            hive_execution_engine = ""
+            hive_execution_engine = subprocess.check_output(
+                'hive -e "set hive.execution.engine"', shell=True
+            )
+            hive_execution_engine = str(hive_execution_engine)
+            hive_execution_engine = hive_execution_engine.split("\\n")
+            for line in hive_execution_engine:
+                if line.find("hive.execution.engine") != -1:
+                    hive_execution_engine = line.split("=")[1]
+                    if hive_execution_engine.find("|") != -1:
+                        hive_execution_engine = hive_execution_engine.split("|")[0]
+                        hive_execution_engine = hive_execution_engine.strip()
+            self.logger.info("getHiveExecutionEngine successful")
+            return hive_execution_engine
+        except Exception as e:
+            self.logger.error("getHiveExecutionEngine failed", exc_info=True)
+            return None
+
