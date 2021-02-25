@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
-# This module will contain all the features of the category Framework and
-# software details. This module will contain the actual logic which contains
-# Cloudera Manager API, Generic API and commands.
+# This module contains all the features of the category Framework and
+# software details. This module contains the actual logic built with the help
+# of Cloudera Manager API, Generic API and commands.
 # -------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -13,7 +13,7 @@ class FrameworkDetailsAPI:
     category.
 
     Has functions which fetch different frameworks and software metrics 
-    from Hadoop cluster like Hadoop version, services version, etc.
+    from a Hadoop cluster like Hadoop version, services version, etc.
 
     Args:
         inputs (dict): Contains user input attributes
@@ -31,13 +31,19 @@ class FrameworkDetailsAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
         self.ssl = inputs["ssl"]
+        if self.ssl:
+            self.http = "https"
+        else:
+            self.http = "http"
+        self.start_date = inputs["start_date"]
+        self.end_date = inputs["end_date"]
 
     def hadoopVersion(self):
-        """Get Hadoop major and minor version and Hadoop Distribution.
+        """Get Hadoop major and minor versions and Hadoop Distribution.
 
         Returns:
             hadoop_major (str): Hadoop major version
-            hadoop_minor (str): Hadoop miror version
+            hadoop_minor (str): Hadoop minor version
             distribution (str): Hadoop vendor name
         """
 
@@ -92,7 +98,8 @@ class FrameworkDetailsAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters/{}/services".format(
+                    "{}://{}:{}/api/v41/clusters/{}/services".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -103,7 +110,8 @@ class FrameworkDetailsAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters/{}/services".format(
+                    "{}://{}:{}/api/v33/clusters/{}/services".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -114,7 +122,8 @@ class FrameworkDetailsAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters/{}/services".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,

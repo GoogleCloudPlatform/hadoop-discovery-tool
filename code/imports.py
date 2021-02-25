@@ -1,7 +1,7 @@
 # -------------------------------------------------------------------------------
-# This modeule will import all the python packages requires throughout the code
-# and will also intialize GLOABL variables which will be used throughout
-# the code as a argument
+# This module imports all the python packages required throughout the code and
+# also initializes global variables which will be used throughout the code as
+# arguments.
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -30,8 +30,7 @@ from requests.auth import HTTPBasicAuth
 from datetime import datetime, timedelta
 from getpass import getpass
 from sqlalchemy import create_engine
-
-# from tqdm import tqdm
+from tqdm import tqdm
 
 # Defining default setting and date range for discovery report
 sns.set(rc={"figure.figsize": (15, 5)})
@@ -39,10 +38,10 @@ pd.set_option("display.max_colwidth", 0)
 pd.options.display.float_format = "{:,.2f}".format
 warnings.filterwarnings("ignore")
 sns.set(rc={"figure.figsize": (15, 5)})
-date_range_start = datetime(2021, 2, 20, 0, 0, 0, 0)
-date_range_end = datetime(2021, 2, 24, 15, 30, 0, 0)
-start_date = date_range_start.strftime("%Y-%m-%dT%H:%M:%S")
-end_date = date_range_end.strftime("%Y-%m-%dT%H:%M:%S")
+# date_range_start = datetime(2021, 2, 20, 0, 0, 0, 0)
+# date_range_end = datetime(2021, 2, 24, 15, 30, 0, 0)
+# start_date = date_range_start.strftime("%Y-%m-%dT%H:%M:%S")
+# end_date = date_range_end.strftime("%Y-%m-%dT%H:%M:%S")
 
 
 def checkSSL():
@@ -79,6 +78,20 @@ def clusterName(
     cloudera_manager_username,
     cloudera_manager_password,
 ):
+    """Get Cluster Name from User.
+
+    Args:
+        version (int): Cloudera distributed Hadoop version
+        cloudera_manager_host_ip (str): Cloudera Manager Host IP.
+        cloudera_manager_port (str): Cloudera Manager Port Number.
+        cloudera_manager_username (str): Cloudera Manager Username.
+        cloudera_manager_password (str): Cloudera Manager Password.
+
+    Returns:
+        cluster_name (str): Cluster name present in cloudera manager.
+
+    """
+
     initial_run = None
     if version == 7:
         initial_run = requests.get(
@@ -112,21 +125,22 @@ def clusterName(
         )
         cluster_dt = cluster_dt.append(cluster_temp)
         input_index = input_index + 1
+    print("Select cluster name from list below : ")
     for ind in cluster_dt.index:
-        print(cluster_dt["Index"][ind], cluster_dt["Name"][ind])
-    var = int(input("Enter value: "))
+        print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
+    var = int(input("Enter serial number for selected cluster name : "))
     name_list = cluster_dt["Index"].tolist()
-    output = None
+    cluster_name = None
     if var in name_list:
-        output = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
-        print(output)
+        cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
+        print("This cluster is selected : ", cluster_name)
     else:
         print("Incorrect Input")
-    return output
+    return cluster_name
 
 
 def getInput(version):
-    """Get input from user related to cloudera manger like Host Ip, Username, 
+    """Get input from user related to cloudera manager like Host Ip, Username, 
     Password and Cluster Name.
 
     Args:
@@ -138,6 +152,11 @@ def getInput(version):
 
     inputs = {}
     inputs["version"] = version
+    inputs["ssl"] = checkSSL()
+    if inputs["ssl"]:
+        print("Enter details accordingly as SSL is enabled.")
+    else:
+        print("Enter details accordingly as SSL is disabled.")
     inputs["cloudera_manager_host_ip"] = input("Enter Cloudera Manager Host IP: ")
     inputs["cloudera_manager_port"] = input("Enter Cloudera Manager Port : ")
     inputs["cloudera_manager_username"] = input("Enter Cloudera Manager Username: ")
@@ -151,9 +170,14 @@ def getInput(version):
         inputs["cloudera_manager_username"],
         inputs["cloudera_manager_password"],
     )
-    inputs["ssl"] = checkSSL()
-    inputs["hive_username"] = input("Enter Hive Username: ")
-    inputs["hive_password"] = getpass(prompt="Enter Hive Password: ")
+    inputs["hive_username"] = input("Enter Hive Metastore Username: ")
+    inputs["hive_password"] = getpass(prompt="Enter Hive Metastore Password: ")
+    inputs["start_date"] = datetime.strptime(
+        input("Enter Start Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
+    ).strftime("%Y-%m-%dT%H:%M:%S")
+    inputs["end_date"] = datetime.strptime(
+        input("Enter End Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
+    ).strftime("%Y-%m-%dT%H:%M:%S")
     # if inputs["ssl"]:
     #     inputs["cloudera_manager_port"] = 7183
     # else:

@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
-# This module will use the cloudera API and CLI commands for the category
-# Security. This module will spot the other third party tools whichever is
-# integarted with the Hadoop cluster to enhanced security
+# This module will use the cloudera API and CLI commands for the retrieval of
+# Security related features. This module will spot the other third party tools
+# whichever is integrated with the Hadoop cluster to enhanced security.
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -9,7 +9,7 @@ from imports import *
 
 
 class SecurityAPI:
-    """This Class has functions related to Security category.
+    """This Class has functions related to the Security category.
 
     Has functions which fetch different security metrics from Hadoop 
     cluster like kerberos details, AD server details, etc.
@@ -30,6 +30,12 @@ class SecurityAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
         self.ssl = inputs["ssl"]
+        if self.ssl:
+            self.http = "https"
+        else:
+            self.http = "http"
+        self.start_date = inputs["start_date"]
+        self.end_date = inputs["end_date"]
 
     def clusterKerberosInfo(self, cluster_name):
         """Get Kerberos details in a cluster.
@@ -44,7 +50,8 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters/{}/kerberosInfo".format(
+                    "{}://{}:{}/api/v41/clusters/{}/kerberosInfo".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -55,7 +62,8 @@ class SecurityAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters/{}/kerberosInfo".format(
+                    "{}://{}:{}/api/v33/clusters/{}/kerberosInfo".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -66,7 +74,8 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
+                    "{}://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -106,7 +115,8 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/cm/deployment".format(
+                    "{}://{}:{}/api/v41/cm/deployment".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -117,7 +127,8 @@ class SecurityAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/cm/deployment".format(
+                    "{}://{}:{}/api/v33/cm/deployment".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -128,7 +139,8 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/cm/deployment".format(
+                    "{}://{}:{}/api/v19/cm/deployment".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -173,7 +185,8 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/cm/deployment".format(
+                    "{}://{}:{}/api/v41/cm/deployment".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -184,7 +197,8 @@ class SecurityAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/cm/deployment".format(
+                    "{}://{}:{}/api/v33/cm/deployment".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -195,7 +209,8 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/cm/deployment".format(
+                    "{}://{}:{}/api/v19/cm/deployment".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -236,7 +251,7 @@ class SecurityAPI:
 
         try:
             keytab = ""
-            os.popen('find / -iname "*.keytab" > ./keytab.txt ').read()
+            os.popen('find / -iname "*.keytab" > ./keytab.txt 2>/dev/null').read()
             with open("./keytab.txt", "r") as read_obj:
                 for line in read_obj:
                     if "keytab" in line:

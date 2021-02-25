@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
-# This module will contain all the features of the category Hardware and
-# Operating System footprint.This module will contain the actual logic which
-# contains Cloudera Manager API, Generic API and commands.
+# This module contains all the features of the category Hardware and Operating
+# System footprint.This module contains the actual logic built with the help of
+# Cloudera Manager API, Generic API and commands.
 # -------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -31,6 +31,12 @@ class HardwareOSAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
         self.ssl = inputs["ssl"]
+        if self.ssl:
+            self.http = "https"
+        else:
+            self.http = "http"
+        self.start_date = inputs["start_date"]
+        self.end_date = inputs["end_date"]
 
     def osVersion(self):
         """Get OS version using system CLI command.
@@ -62,8 +68,10 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters".format(
-                        self.cloudera_manager_host_ip, self.cloudera_manager_port
+                    "{}://{}:{}/api/v41/clusters".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -71,8 +79,10 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters".format(
-                        self.cloudera_manager_host_ip, self.cloudera_manager_port
+                    "{}://{}:{}/api/v33/clusters".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -80,8 +90,10 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters".format(
-                        self.cloudera_manager_host_ip, self.cloudera_manager_port
+                    "{}://{}:{}/api/v19/clusters".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -117,7 +129,8 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters/{}/hosts".format(
+                    "{}://{}:{}/api/v41/clusters/{}/hosts".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -128,7 +141,8 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters/{}/hosts".format(
+                    "{}://{}:{}/api/v33/clusters/{}/hosts".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -139,7 +153,8 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters/{}/hosts".format(
+                    "{}://{}:{}/api/v19/clusters/{}/hosts".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -168,7 +183,7 @@ class HardwareOSAPI:
             return None
 
     def clusterServiceItem(self, cluster_name):
-        """Get list of services present in a cluster with its details.
+        """Get a list of services present in a cluster with its details.
 
         Args:
             cluster_name (str): Cluster name present in cloudera manager.
@@ -180,7 +195,8 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters/{}/services".format(
+                    "{}://{}:{}/api/v41/clusters/{}/services".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -191,7 +207,8 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters/{}/services".format(
+                    "{}://{}:{}/api/v33/clusters/{}/services".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -202,7 +219,8 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters/{}/services".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -244,7 +262,8 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/hosts/{}".format(
+                    "{}://{}:{}/api/v41/hosts/{}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         hostid,
@@ -255,7 +274,8 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/hosts/{}".format(
+                    "{}://{}:{}/api/v33/hosts/{}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         hostid,
@@ -266,7 +286,8 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/hosts/{}".format(
+                    "{}://{}:{}/api/v19/hosts/{}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         hostid,
@@ -301,12 +322,13 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -314,12 +336,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -327,12 +350,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -401,12 +425,13 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -414,12 +439,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -427,12 +453,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -510,12 +537,13 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -523,12 +551,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -536,12 +565,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -612,12 +642,13 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -625,12 +656,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -638,12 +670,13 @@ class HardwareOSAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password

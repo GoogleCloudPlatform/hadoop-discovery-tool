@@ -1,7 +1,8 @@
 # ------------------------------------------------------------------------------
-# Main module will decide the flow of the based on the cloudera manager
-# installed on the cluster and it will check forthe version installed
-# accordingly the code will generate the custom report.
+# Main module will decide the program flow. It will connect with the
+# cloudera manager and it checks for the installed cloudera version.
+# According to the version, program flow will proceed and generate the PDF
+# report.
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -14,7 +15,7 @@ from PdfGenerator import *
 # Creating logger object
 logger = getLogger()
 
-# Get Cloudera Distributed Hadoop Version
+# Get Cloudera Distribution and Hadoop Version
 hversion = os.popen("hadoop version").read()
 
 # Direct code to respective function based on cloudera version

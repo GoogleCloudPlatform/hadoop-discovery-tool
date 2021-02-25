@@ -1,10 +1,10 @@
 # ------------------------------------------------------------------------------
 # pdfgeneraor module contains the logic which will generate the pdf report with
-# the metrics realted to Hardware and Opearting system, Framework and software
-# details, Security, Application, Data, Network and traffic.
+# the metrics related to the Hardware and Operating system, Framework and
+# software details, Security, Application, Data, Network and traffic.
 #
-# pdfgenerator will take inputs from the other modules as a argument and based
-# on the input it will generate tabular and labelled reoprt.
+# pdfgenerator will take inputs from the other modules as an argument and based
+# on the input it will generate tabular and labelled reports.
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -37,11 +37,14 @@ class PdfGenerator:
         self.logger = inputs["logger"]
         self.hive_username = inputs["hive_username"]
         self.hive_password = inputs["hive_password"]
+        self.start_date = inputs["start_date"]
+        self.end_date = inputs["end_date"]
 
     def run(self):
         """Generate PDF for CDH-5, CDH-6 and CDP-7"""
 
         pdf = FPDF(format=(250, 350))
+        p_bar = tqdm(total=6, desc="Hadoop Discovery Tool")
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
         obj3 = FrameworkDetailsAPI(self.inputs)
@@ -62,17 +65,40 @@ class PdfGenerator:
         pdf.set_font("Arial", "B", 26)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Hadoop Discovery Report", 0, ln=1, align="C")
+        pdf.set_font("Arial", "B", 12)
+        pdf.set_fill_color(r=66, g=133, b=244)
+        pdf.set_text_color(r=255, g=255, b=255)
+        pdf.cell(0, 10, "", 0, 1)
+        pdf.cell(60, 16, "Report Date Range", 1, 0)
+        pdf.cell(40, 8, "Start Date", 1, 0)
+        pdf.cell(40, 8, "End Date", 1, 0)
+        pdf.cell(0, 8, "", 0, 1)
+        pdf.cell(60, 8, "", 0, 0)
         pdf.set_text_color(r=1, g=1, b=1)
+        pdf.set_fill_color(r=244, g=244, b=244)
         pdf.set_font("Arial", "", 12)
         pdf.cell(
-            230,
+            40,
             8,
-            "Report Date Range : Start  {} ".format(date_range_start),
+            datetime.strptime(self.start_date, "%Y-%m-%dT%H:%M:%S").strftime(
+                "%d-%b-%Y"
+            ),
+            1,
             0,
-            ln=1,
-            align="R",
         )
-        pdf.cell(0, 8, "End  {} ".format(date_range_end), 0, ln=1, align="R")
+        pdf.cell(
+            40,
+            8,
+            datetime.strptime(self.end_date, "%Y-%m-%dT%H:%M:%S").strftime("%d-%b-%Y"),
+            1,
+            1,
+        )
+        pdf.cell(0, 8, "", 0, 1)
+        pdf.cell(0, 8, "", 0, 1)
+
+        pdf.set_font("Arial", "B", 18)
+        pdf.set_text_color(r=66, g=133, b=244)
+        pdf.cell(230, 10, "Key Metrics", 0, ln=1)
 
         cluster_host_items, clusterHostLen = None, None
         all_host_data = None
@@ -84,32 +110,26 @@ class PdfGenerator:
                 host_data = obj1.hostData(i["hostId"])
                 if host_data != None:
                     all_host_data.append(host_data)
-            if len(all_host_data) != 0:
-                obj_pdf.clusterHostInfoSummary(cluster_host_items, all_host_data)
 
         cluster_cpu_usage_df, cluster_cpu_usage_avg = None, None
         temp2 = obj1.clusterCpuUsage(cluster_name)
         if type(temp2) != type(None):
             cluster_cpu_usage_df, cluster_cpu_usage_avg = temp2
-            obj_pdf.clusterVcoreAvg(cluster_cpu_usage_avg)
 
         cluster_memory_usage_df, cluster_memory_usage_avg = None, None
         temp2 = obj1.clusterMemoryUsage(cluster_name)
         if type(temp2) != type(None):
             cluster_memory_usage_df, cluster_memory_usage_avg = temp2
-            obj_pdf.clusterMemoryAvg(cluster_memory_usage_avg)
 
         hadoopVersionMajor, hadoopVersionMinor, distribution = None, None, None
         temp = obj3.hadoopVersion()
         if type(temp) != type(None):
             hadoopVersionMajor, hadoopVersionMinor, distribution = temp
-            obj_pdf.hadoopVersion(hadoopVersionMajor, hadoopVersionMinor, distribution)
 
         mapped_df, total_storage = None, None
         temp = obj2.totalSizeConfigured()
         if type(temp) != type(None):
             mapped_df, total_storage = temp
-            obj_pdf.totalHDFSSize(total_storage)
 
         hdfs_capacity_df, hdfs_storage_config = None, None
         hdfs_capacity_used_df, hdfs_storage_used = None, None
@@ -118,8 +138,6 @@ class PdfGenerator:
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             hdfs_capacity_df, hdfs_storage_config = temp1
             hdfs_capacity_used_df, hdfs_storage_used = temp2
-            obj_pdf.availableHDFSStorage(hdfs_storage_config)
-            obj_pdf.usedHDFSStorage(hdfs_storage_used)
 
         (
             yarn_vcore_allocated_avg,
@@ -133,7 +151,6 @@ class PdfGenerator:
                 yarn_vcore_allocated_df,
                 yarn_vcore_allocated_pivot_df,
             ) = temp2
-            obj_pdf.yarnVcoreAvg(yarn_vcore_allocated_avg)
 
         (
             yarn_memory_allocated_avg,
@@ -148,7 +165,23 @@ class PdfGenerator:
                 yarn_memory_allocated_df,
                 yarn_memory_allocated_pivot_df,
             ) = temp2
-            obj_pdf.yarnMemoryAvg(yarn_memory_allocated_avg)
+
+        obj_pdf.summaryTable(
+            all_host_data,
+            cluster_cpu_usage_avg,
+            cluster_memory_usage_avg,
+            hadoopVersionMajor,
+            hadoopVersionMinor,
+            distribution,
+            total_storage,
+            hdfs_storage_config,
+            hdfs_storage_used,
+            yarn_vcore_allocated_avg,
+            yarn_memory_allocated_avg,
+        )
+
+        p_bar.update(1)
+        p_bar.set_description(desc="Key Metrics Added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -214,8 +247,6 @@ class PdfGenerator:
             obj_pdf.clusterVcoreAvg(cluster_cpu_usage_avg)
             obj_pdf.clusterVcorePlot(cluster_total_cores_df, cluster_cpu_usage_df)
 
-        pdf.add_page()
-
         cluster_total_memory_df, cluster_memory_usage_df, cluster_memory_usage_avg = (
             None,
             None,
@@ -230,6 +261,9 @@ class PdfGenerator:
             cluster_memory_usage_df, cluster_memory_usage_avg = temp2
             obj_pdf.clusterMemoryAvg(cluster_memory_usage_avg)
             obj_pdf.clusterMemoryPlot(cluster_total_memory_df, cluster_memory_usage_df)
+
+        p_bar.update(1)
+        p_bar.set_description(desc="Hardware and OS footprint Metrics Added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -247,6 +281,9 @@ class PdfGenerator:
         if type(temp) != type(None):
             list_services_installed_df, new_ref_df = temp
             obj_pdf.serviceInstalled(new_ref_df)
+
+        p_bar.update(1)
+        p_bar.set_description(desc="Framework and software details Added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -400,6 +437,9 @@ class PdfGenerator:
                 table_df = temp1
                 obj_pdf.hiveAccessFrequency(table_df)
 
+        p_bar.update(1)
+        p_bar.set_description(desc="Data Metrics Added in PDF")
+
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -429,13 +469,16 @@ class PdfGenerator:
             keytab_files = temp
             obj_pdf.keytabFiles(keytab_files)
 
+        p_bar.update(1)
+        p_bar.set_description(desc="Security Metrics Added in PDF")
+
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Yarn Metrics", 0, ln=1)
 
         pdf.set_font("Arial", "", 12)
-        pdf.set_text_color(r=1, g=1, b=1)
+        pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "VCore Details:", 0, ln=1)
 
         yarn_total_vcores_count = None
@@ -467,7 +510,7 @@ class PdfGenerator:
 
         pdf.add_page()
         pdf.set_font("Arial", "", 12)
-        pdf.set_text_color(r=1, g=1, b=1)
+        pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Memory Details:", 0, ln=1)
 
         yarn_total_memory_count = None
@@ -520,8 +563,6 @@ class PdfGenerator:
                 app_vcore_df, app_memory_df = temp1
                 obj_pdf.yarnAppVcoreMemory(app_vcore_df, app_memory_df)
 
-            pdf.add_page()
-
             app_vcore_df, app_vcore_usage_df, app_memory_df, app_memory_usage_df = (
                 None,
                 None,
@@ -558,16 +599,16 @@ class PdfGenerator:
                     pdf.add_page()
                     obj_pdf.yarBurstyAppMemory(bursty_app_mem_df)
 
-            pdf.add_page()
-            pdf.set_font("Arial", "B", 18)
-            pdf.set_text_color(r=66, g=133, b=244)
-            pdf.cell(230, 10, "Failed Applications", 0, ln=1)
+            # pdf.add_page()
+            # pdf.set_font("Arial", "B", 18)
+            # pdf.set_text_color(r=66, g=133, b=244)
+            # pdf.cell(230, 10, "Failed Applications", 0, ln=1)
 
-            yarn_failed_app = None
-            temp1 = obj_app.getFailedApplicationDetails(yarn_application_df)
-            if type(temp1) != type(None):
-                yarn_failed_app = temp1
-                obj_pdf.yarnFailedApp(yarn_failed_app)
+            # yarn_failed_app = None
+            # temp1 = obj_app.getFailedApplicationDetails(yarn_application_df)
+            # if type(temp1) != type(None):
+            #     yarn_failed_app = temp1
+            #     obj_pdf.yarnFailedApp(yarn_failed_app)
 
             pdf.add_page()
             pdf.set_font("Arial", "B", 18)
@@ -585,8 +626,6 @@ class PdfGenerator:
             if type(temp1) != type(None):
                 queue_app_count_df, queue_elapsed_time_df = temp1
                 obj_pdf.yarnQueueApp(queue_app_count_df, queue_elapsed_time_df)
-
-            pdf.add_page()
 
             (
                 queue_vcore_df,
@@ -658,7 +697,7 @@ class PdfGenerator:
             indexing = temp
             obj_pdf.hbaseIndexing(indexing)
 
-        pdf.add_page()
+        pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Spark Metrics", 0, ln=1)
@@ -683,7 +722,7 @@ class PdfGenerator:
                 dynamic_allocation, spark_resource_manager
             )
 
-        pdf.add_page()
+        pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Kafka Metrics", 0, ln=1)
@@ -729,7 +768,7 @@ class PdfGenerator:
             total_size, brokersize = temp
             obj_pdf.clusterSizeAndBrokerSize(total_size, brokersize)
 
-        pdf.add_page()
+        pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Cloudera Services", 0, ln=1)
@@ -752,4 +791,9 @@ class PdfGenerator:
             kudu = temp
             obj_pdf.kudu(kudu)
 
+        p_bar.update(1)
+        p_bar.set_description(desc="Application Metrics Added in PDF")
+        p_bar.close()
+
+        print("Completed !!")
         pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")

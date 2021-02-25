@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # pdffunction is a helper module to generate pdf which handles exception and
-# based on that the flow will ho the particular module as a argument
+# based on that the flow will go the particular module as a argument
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -25,7 +25,128 @@ class PdfFunctions:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.start_date = inputs["start_date"]
+        self.end_date = inputs["end_date"]
         self.pdf = pdf
+
+    def summaryTable(
+        self,
+        all_host_data,
+        cluster_cpu_usage_avg,
+        cluster_memory_usage_avg,
+        hadoopVersionMajor,
+        hadoopVersionMinor,
+        distribution,
+        total_storage,
+        hdfs_storage_config,
+        hdfs_storage_used,
+        yarn_vcore_allocated_avg,
+        yarn_memory_allocated_avg,
+    ):
+        """Add cluster information in PDF
+
+        Args:
+            data (dict): Key value pair data for summary table
+        """
+
+        self.pdf.set_font("Arial", "B", 12)
+        self.pdf.set_fill_color(r=66, g=133, b=244)
+        self.pdf.set_text_color(r=255, g=255, b=255)
+        self.pdf.cell(175, 5, "Metrics", 1, 0, "C", True)
+        self.pdf.cell(50, 5, "Value", 1, 1, "C", True)
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=1, g=1, b=1)
+        self.pdf.set_fill_color(r=244, g=244, b=244)
+        if type(all_host_data) != type(None):
+            host_df = pd.DataFrame(columns=["Hostname"])
+            namenodes_df = pd.DataFrame(columns=["HostName"])
+            datanodes_df = pd.DataFrame(columns=["HostName"])
+            edgenodes_df = pd.DataFrame(columns=["HostName"])
+            for i, host in enumerate(all_host_data):
+                host_df = host_df.append(
+                    pd.DataFrame({"Hostname": [host["hostname"]],}), ignore_index=True,
+                )
+                for role in host["roleRefs"]:
+                    if re.search(r"\bNAMENODE\b", role["roleName"]):
+                        namenodes_df = namenodes_df.append(
+                            pd.DataFrame({"HostName": [host["hostname"]],}),
+                            ignore_index=True,
+                        )
+                    if re.search(r"\bDATANODE\b", role["roleName"]):
+                        datanodes_df = datanodes_df.append(
+                            pd.DataFrame({"HostName": [host["hostname"]],}),
+                            ignore_index=True,
+                        )
+                    if (
+                        re.search(r"\bGATEWAY\b", role["roleName"])
+                        and "hdfs" in role["serviceName"]
+                    ):
+                        edgenodes_df = edgenodes_df.append(
+                            pd.DataFrame({"HostName": [host["hostname"]],}),
+                            ignore_index=True,
+                        )
+            self.pdf.cell(175, 5, "Number of Host", 1, 0, "L", True)
+            self.pdf.cell(50, 5, str(len(host_df)), 1, 1, "L", True)
+            self.pdf.cell(175, 5, "Number of NameNodes", 1, 0, "L", True)
+            self.pdf.cell(50, 5, str(len(namenodes_df)), 1, 1, "L", True)
+            self.pdf.cell(175, 5, "Number of DataNodes", 1, 0, "L", True)
+            self.pdf.cell(50, 5, str(len(datanodes_df)), 1, 1, "L", True)
+            self.pdf.cell(175, 5, "Number of EdgeNodes", 1, 0, "L", True)
+            self.pdf.cell(50, 5, str(len(edgenodes_df)), 1, 1, "L", True)
+
+        if type(cluster_cpu_usage_avg) != type(None):
+            self.pdf.cell(175, 5, "Average Cluster CPU Utilization", 1, 0, "L", True)
+            self.pdf.cell(
+                50, 5, "{: .2f}%".format(cluster_cpu_usage_avg), 1, 1, "L", True
+            )
+
+        if type(cluster_memory_usage_avg) != type(None):
+            self.pdf.cell(175, 5, "Average Cluster Memory Utilization", 1, 0, "L", True)
+            self.pdf.cell(
+                50, 5, "{: .2f} GB".format(cluster_memory_usage_avg), 1, 1, "L", True
+            )
+
+        if type(hadoopVersionMajor) != type(None):
+            self.pdf.cell(175, 5, "Hadoop Major Version", 1, 0, "L", True)
+            self.pdf.cell(50, 5, hadoopVersionMajor, 1, 1, "L", True)
+
+        if type(hadoopVersionMinor) != type(None):
+            self.pdf.cell(175, 5, "Hadoop Minor Version", 1, 0, "L", True)
+            self.pdf.cell(50, 5, hadoopVersionMinor, 1, 1, "L", True)
+
+        if type(distribution) != type(None):
+            self.pdf.cell(175, 5, "Hadoop Distribution", 1, 0, "L", True)
+            self.pdf.cell(50, 5, distribution, 1, 1, "L", True)
+
+        if type(total_storage) != type(None):
+            self.pdf.cell(
+                175, 5, "Total Size Configured in the Cluster", 1, 0, "L", True
+            )
+            self.pdf.cell(50, 5, "{: .2f} GB".format(total_storage), 1, 1, "L", True)
+
+        if type(hdfs_storage_config) != type(None):
+            self.pdf.cell(175, 5, "HDFS Storage Available", 1, 0, "L", True)
+            self.pdf.cell(
+                50, 5, "{: .2f} GB".format(hdfs_storage_config), 1, 1, "L", True
+            )
+
+        if type(hdfs_storage_used) != type(None):
+            self.pdf.cell(175, 5, "HDFS Storage Used", 1, 0, "L", True)
+            self.pdf.cell(
+                50, 5, "{: .2f} GB".format(hdfs_storage_used), 1, 1, "L", True
+            )
+
+        if type(yarn_vcore_allocated_avg) != type(None):
+            self.pdf.cell(175, 5, "Average No. of Yarn Vcores Used", 1, 0, "L", True)
+            self.pdf.cell(
+                50, 5, "{: .2f}".format(yarn_vcore_allocated_avg), 1, 1, "L", True
+            )
+
+        if type(yarn_memory_allocated_avg) != type(None):
+            self.pdf.cell(175, 5, "Average Yarn Memory Used", 1, 0, "L", True)
+            self.pdf.cell(
+                50, 5, "{: .2f} GB".format(yarn_memory_allocated_avg), 1, 1, "L", True
+            )
 
     def clusterInfo(self, cluster_items):
         """Add cluster information in PDF
@@ -134,178 +255,7 @@ class PdfFunctions:
                 "C",
                 fill=True,
             )
-
-    def clusterHostInfoSummary(self, cluster_host_items, all_host_data):
-        """Add detailed information of all host in cluster in PDF.
-
-        Args:
-            cluster_host_items (dict): Summary of all hosts in cluster
-            all_host_all (list) : Detailed specs of all hosts
-            os_version (str): OS version and distribution of host
-        """
-
-        self.pdf.set_font("Arial", "", 12)
-        self.pdf.set_text_color(r=1, g=1, b=1)
-        host_df = pd.DataFrame(
-            columns=[
-                "Hostname",
-                "Host ip",
-                "Number of cores",
-                "Physical Memory",
-                "Health Status",
-                "Distribution",
-            ]
-        )
-        namenodes_df = pd.DataFrame(columns=["HostName", "Cores", "Memory"])
-        datanodes_df = pd.DataFrame(columns=["HostName", "Cores", "Memory"])
-        edgenodes_df = pd.DataFrame(columns=["HostName", "Cores", "Memory"])
-        client_gateway_df = pd.DataFrame(columns=["service"])
-        for i, host in enumerate(all_host_data):
-            if "distribution" in host:
-                host_df = host_df.append(
-                    pd.DataFrame(
-                        {
-                            "Hostname": [host["hostname"]],
-                            "Host IP": [host["ipAddress"]],
-                            "Number of cores": [host["numCores"]],
-                            "Physical Memory": [
-                                "{: .2f}".format(
-                                    float(host["totalPhysMemBytes"])
-                                    / 1024
-                                    / 1024
-                                    / 1024
-                                )
-                            ],
-                            "Health Status": [host["entityStatus"]],
-                            "Distribution": [
-                                host["distribution"]["name"]
-                                + " "
-                                + host["distribution"]["version"]
-                            ],
-                        }
-                    ),
-                    ignore_index=True,
-                )
-            else:
-                host_df = host_df.append(
-                    pd.DataFrame(
-                        {
-                            "Hostname": [host["hostname"]],
-                            "Host IP": [host["ipAddress"]],
-                            "Number of cores": [host["numCores"]],
-                            "Physical Memory": [
-                                "{: .2f}".format(
-                                    float(host["totalPhysMemBytes"])
-                                    / 1024
-                                    / 1024
-                                    / 1024
-                                )
-                            ],
-                            "Health Status": [host["entityStatus"]],
-                            "Distribution": [os_version],
-                        }
-                    ),
-                    ignore_index=True,
-                )
-            for role in host["roleRefs"]:
-                if re.search(r"\bNAMENODE\b", role["roleName"]):
-                    namenodes_df = namenodes_df.append(
-                        pd.DataFrame(
-                            {
-                                "HostName": [host["hostname"]],
-                                "Cores": [host["numCores"]],
-                                "Memory": [
-                                    "{: .2f}".format(
-                                        float(host["totalPhysMemBytes"])
-                                        / 1024
-                                        / 1024
-                                        / 1024
-                                    )
-                                ],
-                            }
-                        ),
-                        ignore_index=True,
-                    )
-                if re.search(r"\bDATANODE\b", role["roleName"]):
-                    datanodes_df = datanodes_df.append(
-                        pd.DataFrame(
-                            {
-                                "HostName": [host["hostname"]],
-                                "Cores": [host["numCores"]],
-                                "Memory": [
-                                    "{: .2f}".format(
-                                        float(host["totalPhysMemBytes"])
-                                        / 1024
-                                        / 1024
-                                        / 1024
-                                    )
-                                ],
-                            }
-                        ),
-                        ignore_index=True,
-                    )
-                if (
-                    re.search(r"\bGATEWAY\b", role["roleName"])
-                    and "hdfs" in role["serviceName"]
-                ):
-                    edgenodes_df = edgenodes_df.append(
-                        pd.DataFrame(
-                            {
-                                "HostName": [host["hostname"]],
-                                "Cores": [host["numCores"]],
-                                "Memory": [
-                                    "{: .2f}".format(
-                                        float(host["totalPhysMemBytes"])
-                                        / 1024
-                                        / 1024
-                                        / 1024
-                                    )
-                                ],
-                            }
-                        ),
-                        ignore_index=True,
-                    )
-                if "GATEWAY" in role["roleName"]:
-                    client_gateway_df = client_gateway_df.append(
-                        pd.DataFrame({"service": [role["serviceName"]]}),
-                        ignore_index=True,
-                    )
-        client_gateway_df.drop_duplicates()
-        self.pdf.cell(
-            230,
-            8,
-            "Number of Host               : {}".format(len(all_host_data)),
-            0,
-            ln=1,
-        )
-        self.pdf.cell(
-            230, 8, "Number of NameNodes  : {}".format(len(namenodes_df)), 0, ln=1
-        )
-        self.pdf.cell(
-            230, 8, "Number of DataNodes    : {}".format(len(datanodes_df)), 0, ln=1
-        )
-        self.pdf.cell(
-            230, 8, "Number of Edge Nodes  : {} ".format(len(edgenodes_df)), 0, ln=1
-        )
-        self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(
-            230,
-            8,
-            "Total Cores in the cluster       : {} ".format(
-                host_df["Number of cores"].sum()
-            ),
-            0,
-            ln=1,
-        )
-        self.pdf.cell(
-            230,
-            8,
-            "Total Memory in the cluster : {} GB  ".format(
-                host_df["Physical Memory"].astype("float64").sum()
-            ),
-            0,
-            ln=1,
-        )
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def clusterHostInfo(self, cluster_host_items, all_host_data, os_version):
         """Add detailed information of all host in cluster in PDF.
@@ -442,7 +392,7 @@ class PdfFunctions:
                         pd.DataFrame({"service": [role["serviceName"]]}),
                         ignore_index=True,
                     )
-        client_gateway_df.drop_duplicates()
+        client_gateway_df.drop_duplicates(inplace=True)
         self.pdf.cell(
             230,
             8,
@@ -474,7 +424,7 @@ class PdfFunctions:
         self.pdf.cell(
             230,
             8,
-            "Total Memory in the cluster : {} GB  ".format(
+            "Total Memory in the cluster : {: .2f} GB  ".format(
                 host_df["Physical Memory"].astype("float64").sum()
             ),
             0,
@@ -483,47 +433,135 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(90, 5, "Hostname", 1, 0, "C", True)
-        self.pdf.cell(20, 5, "Host IP", 1, 0, "C", True)
-        self.pdf.cell(15, 5, "Cores", 1, 0, "C", True)
+        self.pdf.cell(80, 5, "Hostname", 1, 0, "C", True)
+        self.pdf.cell(30, 5, "Host IP", 1, 0, "C", True)
+        self.pdf.cell(20, 5, "Cores", 1, 0, "C", True)
         self.pdf.cell(30, 5, "Memory", 1, 0, "C", True)
-        self.pdf.cell(30, 5, "Health Status", 1, 0, "C", True)
-        self.pdf.cell(40, 5, "Distribution", 1, 1, "C", True)
+        self.pdf.cell(35, 5, "Health Status", 1, 0, "C", True)
+        self.pdf.cell(30, 5, "Distribution", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
         for pos in range(0, len(host_df)):
-            self.pdf.cell(
-                90, 5, "{}".format(host_df["Hostname"].iloc[pos]), 1, 0, "C", True
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            line_width = 0
+            line_width = max(
+                line_width, self.pdf.get_string_width(host_df["Hostname"].iloc[pos]),
             )
-            self.pdf.cell(
-                20, 5, "{}".format(host_df["Host IP"].iloc[pos]), 1, 0, "C", True
+            cell_y = line_width / 79.0
+            line_width = max(
+                line_width, self.pdf.get_string_width(host_df["Host IP"].iloc[pos]),
             )
-            self.pdf.cell(
-                15,
-                5,
-                "{}".format(host_df["Number of cores"].iloc[pos]),
+            cell_y = max(cell_y, line_width / 29.0)
+            line_width = max(
+                line_width,
+                self.pdf.get_string_width(str(host_df["Number of cores"].iloc[pos])),
+            )
+            cell_y = max(cell_y, line_width / 19.0)
+
+            line_width = max(
+                line_width,
+                self.pdf.get_string_width(str(host_df["Physical Memory"].iloc[pos])),
+            )
+            cell_y = max(cell_y, line_width / 29.0)
+
+            line_width = max(
+                line_width,
+                self.pdf.get_string_width(host_df["Health Status"].iloc[pos]),
+            )
+            cell_y = max(cell_y, line_width / 34.0)
+            line_width = max(
+                line_width,
+                self.pdf.get_string_width(host_df["Distribution"].iloc[pos]),
+            )
+            cell_y = max(cell_y, line_width / 29.0)
+            cell_y = math.ceil(cell_y)
+            cell_y = max(cell_y, 1)
+            cell_y = cell_y * 5
+            line_width = self.pdf.get_string_width(host_df["Hostname"].iloc[pos])
+            y_pos = line_width / 79.0
+            y_pos = math.ceil(y_pos)
+            y_pos = max(y_pos, 1)
+            y_pos = cell_y / y_pos
+            self.pdf.multi_cell(
+                80,
+                y_pos,
+                "{}".format(host_df["Hostname"].iloc[pos]),
                 1,
-                0,
                 "C",
-                True,
+                fill=True,
             )
-            self.pdf.cell(
+            self.pdf.set_xy(x + 80, y)
+            line_width = self.pdf.get_string_width(host_df["Host IP"].iloc[pos])
+            y_pos = line_width / 29.0
+            y_pos = math.ceil(y_pos)
+            y_pos = max(y_pos, 1)
+            y_pos = cell_y / y_pos
+            self.pdf.multi_cell(
+                30, y_pos, "{}".format(host_df["Host IP"].iloc[pos]), 1, "C", fill=True,
+            )
+            self.pdf.set_xy(x + 110, y)
+            line_width = self.pdf.get_string_width(
+                str(host_df["Number of cores"].iloc[pos])
+            )
+            y_pos = line_width / 19.0
+            y_pos = math.ceil(y_pos)
+            y_pos = max(y_pos, 1)
+            y_pos = cell_y / y_pos
+            self.pdf.multi_cell(
+                20,
+                y_pos,
+                "{}".format(str(host_df["Number of cores"].iloc[pos])),
+                1,
+                "C",
+                fill=True,
+            )
+            self.pdf.set_xy(x + 130, y)
+            line_width = self.pdf.get_string_width(
+                str(host_df["Physical Memory"].iloc[pos])
+            )
+            y_pos = line_width / 29.0
+            y_pos = math.ceil(y_pos)
+            y_pos = max(y_pos, 1)
+            y_pos = cell_y / y_pos
+            self.pdf.multi_cell(
                 30,
-                5,
-                "{} GB".format(host_df["Physical Memory"].iloc[pos]),
+                y_pos,
+                "{}".format(str(host_df["Physical Memory"].iloc[pos])),
                 1,
-                0,
                 "C",
-                True,
+                fill=True,
             )
-            self.pdf.cell(
-                30, 5, "{}".format(host_df["Health Status"].iloc[pos]), 1, 0, "C", True
+            self.pdf.set_xy(x + 160, y)
+            line_width = self.pdf.get_string_width(host_df["Health Status"].iloc[pos])
+            y_pos = line_width / 34.0
+            y_pos = math.ceil(y_pos)
+            y_pos = max(y_pos, 1)
+            y_pos = cell_y / y_pos
+            self.pdf.multi_cell(
+                35,
+                y_pos,
+                "{}".format(host_df["Health Status"].iloc[pos]),
+                1,
+                "C",
+                fill=True,
             )
-            self.pdf.cell(
-                40, 5, "{}".format(host_df["Distribution"].iloc[pos]), 1, 1, "C", True
+            self.pdf.set_xy(x + 195, y)
+            line_width = self.pdf.get_string_width(host_df["Distribution"].iloc[pos])
+            y_pos = line_width / 29.0
+            y_pos = math.ceil(y_pos)
+            y_pos = max(y_pos, 1)
+            y_pos = cell_y / y_pos
+            self.pdf.multi_cell(
+                30,
+                y_pos,
+                "{}".format(host_df["Distribution"].iloc[pos]),
+                1,
+                "C",
+                fill=True,
             )
-        self.pdf.add_page()
+        self.pdf.cell(230, 10, "", 0, ln=1)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "MasterNodes Details : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -539,7 +577,7 @@ class PdfFunctions:
         self.pdf.cell(
             230,
             8,
-            "Total Memory Assigned to All the MasterNodes : {} GB  ".format(
+            "Total Memory Assigned to All the MasterNodes : {: .2f} GB  ".format(
                 namenodes_df["Memory"].astype("float64").sum()
             ),
             0,
@@ -577,6 +615,7 @@ class PdfFunctions:
                     "C",
                     True,
                 )
+        self.pdf.cell(230, 10, "", 0, ln=1)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "DataNodes Details : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -592,7 +631,7 @@ class PdfFunctions:
         self.pdf.cell(
             230,
             8,
-            "Total Memory Assigned to All the DataNodes : {} GB  ".format(
+            "Total Memory Assigned to All the DataNodes : {: .2f} GB  ".format(
                 datanodes_df["Memory"].astype("float64").sum()
             ),
             0,
@@ -630,6 +669,7 @@ class PdfFunctions:
                     "C",
                     True,
                 )
+        self.pdf.cell(230, 10, "", 0, ln=1)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "EdgeNodes Details : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -645,7 +685,7 @@ class PdfFunctions:
         self.pdf.cell(
             230,
             8,
-            "Total Memory Assigned to All the EdgeNodes : {} GB  ".format(
+            "Total Memory Assigned to All the EdgeNodes : {: .2f} GB  ".format(
                 edgenodes_df["Memory"].astype("float64").sum()
             ),
             0,
@@ -683,7 +723,7 @@ class PdfFunctions:
                     "C",
                     True,
                 )
-        self.pdf.add_page()
+        self.pdf.cell(230, 10, "", 0, ln=1)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Clients Installed on Gateway : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
@@ -704,6 +744,7 @@ class PdfFunctions:
                 "C",
                 True,
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def clusterServiceInfo(self, cluster_service_item):
         """Add service installed data in PDF.
@@ -817,6 +858,7 @@ class PdfFunctions:
                 "C",
                 fill=True,
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def clusterVcoreAvg(self, cluster_cpu_usage_avg):
         """Add average vcore utilization of cluster in PDF.
@@ -829,7 +871,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Average Cluster CPU Utilization is {: .2f}%".format(cluster_cpu_usage_avg),
             0,
             ln=1,
@@ -883,7 +925,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Average Cluster Memory Utilization is {: .2f}%".format(
                 cluster_memory_usage_avg
             ),
@@ -944,14 +986,14 @@ class PdfFunctions:
         )
 
     def serviceInstalled(self, new_ref_df):
-        """Add list on service installed with their verions in PDF.
+        """Add list of service installed with their versions in PDF.
 
         Args:
             new_ref_df (DataFrame): Services mapped with their version.
         """
 
         self.pdf.set_font("Arial", "", 12)
-        self.pdf.set_text_color(r=1, g=1, b=1)
+        self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "List of Services Installed  : ", 0, ln=1)
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
@@ -968,6 +1010,7 @@ class PdfFunctions:
             self.pdf.cell(
                 70, 5, "{}".format(new_ref_df["sub_version"].iloc[pos]), 1, 1, "C", True
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def totalHDFSSize(self, total_storage):
         """Add HDFS configured size in PDF.
@@ -1053,6 +1096,7 @@ class PdfFunctions:
                 "C",
                 fill=True,
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def repFactor(self, replication_factor):
         """Add HDFS replication faction in PDF.
@@ -1101,7 +1145,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "HDFS Storage Available : {: .0f} GB".format(hdfs_storage_config),
             0,
             ln=1,
@@ -1118,7 +1162,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "HDFS Storage Used       : {: .0f} GB".format(hdfs_storage_used),
             0,
             ln=1,
@@ -1162,19 +1206,19 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
-        self.pdf.cell(230, 5, "Hive Metastore Details:", 0, ln=1)
+        self.pdf.cell(230, 8, "Hive Metastore Details:", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 5, "Metastore Host                    : {}".format(mt_db_host), 0, ln=1
+            230, 8, "Metastore Host                    : {}".format(mt_db_host), 0, ln=1
         )
         self.pdf.cell(
-            230, 5, "Metastore Database            : {}".format(mt_db_type), 0, ln=1
+            230, 8, "Metastore Database            : {}".format(mt_db_type), 0, ln=1
         )
         self.pdf.cell(
-            230, 5, "Metastore Database Name : {}".format(mt_db_name), 0, ln=1
+            230, 8, "Metastore Database Name : {}".format(mt_db_name), 0, ln=1
         )
         self.pdf.cell(
-            230, 5, "Metastore Database Port    : {}".format(mt_db_port), 0, ln=1
+            230, 8, "Metastore Database Port    : {}".format(mt_db_port), 0, ln=1
         )
 
     def hiveDetails(
@@ -1199,25 +1243,25 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
-        self.pdf.cell(230, 5, "Hive Details:", 0, ln=1)
+        self.pdf.cell(230, 8, "Hive Details:", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Number of Databases                     : {}".format(database_count),
             0,
             ln=1,
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Number of tables with partition        : {}".format(tables_with_partition),
             0,
             ln=1,
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Number of tables without partition   : {}".format(
                 tables_without_partition
             ),
@@ -1226,21 +1270,21 @@ class PdfFunctions:
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Number of Internal Tables               : {}".format(internal_tables),
             0,
             ln=1,
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Number of External Tables              : {}".format(external_tables),
             0,
             ln=1,
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Hive Execution Engine                    : {}".format(
                 hive_execution_engine
             ),
@@ -1257,23 +1301,23 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
-        self.pdf.cell(230, 5, "Hive Databases:", 0, ln=1)
+        self.pdf.cell(230, 8, "Hive Databases:", 0, ln=1)
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=3, g=62, b=100)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(60, 5, "Database", 1, 0, "C", True)
-        self.pdf.cell(40, 5, "Size", 1, 0, "C", True)
-        self.pdf.cell(40, 5, "No. of Tables", 1, 1, "C", True)
+        self.pdf.cell(60, 8, "Database", 1, 0, "C", True)
+        self.pdf.cell(40, 8, "Size", 1, 0, "C", True)
+        self.pdf.cell(40, 8, "No. of Tables", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
         for pos in range(0, len(database_df)):
             self.pdf.cell(
-                60, 5, "{}".format(database_df["Database"].iloc[pos]), 1, 0, "C", True
+                60, 8, "{}".format(database_df["Database"].iloc[pos]), 1, 0, "C", True
             )
             self.pdf.cell(
                 40,
-                5,
+                8,
                 "{: .2f} GB".format(float(database_df["File_Size"].iloc[pos])),
                 1,
                 0,
@@ -1281,8 +1325,9 @@ class PdfFunctions:
                 True,
             )
             self.pdf.cell(
-                40, 5, "{}".format(database_df["Count"].iloc[pos]), 1, 1, "C", True
+                40, 8, "{}".format(database_df["Count"].iloc[pos]), 1, 1, "C", True
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def hiveAccessFrequency(self, table_df):
         """Add Hive access frequency graph in PDF.
@@ -1312,7 +1357,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "Kerberos Details : {}".format(kerberos), 0, ln=1)
+        self.pdf.cell(230, 8, "Kerberos Details : {}".format(kerberos), 0, ln=1)
 
     def ADServerNameAndPort(self, ADServer):
         """Add AD server details in PDF.
@@ -1323,7 +1368,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        pdf.cell(230, 8, "LDAP_URL : {} ".format(ADServer), 0, ln=1)
+        self.pdf.cell(230, 8, "LDAP_URL : {} ".format(ADServer), 0, ln=1)
 
     def adServerBasedDN(self, Server_dn):
         """Add AD server details based on domain name details in PDF.
@@ -1334,7 +1379,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        pdf.cell(230, 8, "TLDAP_BIND_DN  : {} ".format(Server_dn), 0, ln=1)
+        self.pdf.cell(230, 8, "TLDAP_BIND_DN  : {} ".format(Server_dn), 0, ln=1)
 
     def keytabFiles(self, keytab_files):
         """Add keytab files information in PDF.
@@ -1345,7 +1390,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "Keytab Files Details : {}".format(keytab_files), 0, ln=1)
+        self.pdf.cell(230, 8, "Keytab Files Details : {}".format(keytab_files), 0, ln=1)
 
     def yarnVcoreTotal(self, yarn_total_vcores_count):
         """Add yarn total vcore in PDF.
@@ -1357,7 +1402,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 5, "Total Yarn Vcore : {:.0f}".format(yarn_total_vcores_count), 0, ln=1
+            230, 8, "Total Yarn Vcore : {:.0f}".format(yarn_total_vcores_count), 0, ln=1
         )
 
     def yarnVcoreAvg(self, yarn_vcore_allocated_avg):
@@ -1371,7 +1416,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Average No. of Vcores Used : {: .2f}".format(yarn_vcore_allocated_avg),
             0,
             ln=1,
@@ -1431,7 +1476,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Total Yarn Memory : {:.0f} GB".format(yarn_total_memory_count),
             0,
             ln=1,
@@ -1448,7 +1493,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Average Yarn Memory Used : {:.0f} MB".format(yarn_memory_allocated_avg),
             0,
             ln=1,
@@ -1529,6 +1574,7 @@ class PdfFunctions:
             self.pdf.cell(
                 30, 5, "{}".format(app_count_df["Count"].iloc[pos]), 1, 1, "C", True
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def yarnAppTypeStatus(self, app_type_count_df, app_status_count_df):
         """Add yarn application type and status pie chart in PDF.
@@ -1689,7 +1735,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "Bursty Applications - Elapsed Time", 0, ln=1)
+        self.pdf.cell(230, 8, "Bursty Applications - Elapsed Time", 0, ln=1)
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -1737,6 +1783,7 @@ class PdfFunctions:
                 "C",
                 True,
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
         plt.figure()
         bursty_app_time_df = bursty_app_time_df.set_index("Application Name")
         bursty_app_time_plot = bursty_app_time_df.plot.barh(stacked=True).legend(
@@ -1760,7 +1807,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "Bursty Applications - Vcore Seconds", 0, ln=1)
+        self.pdf.cell(230, 8, "Bursty Applications - Vcore Seconds", 0, ln=1)
         self.pdf.set_font("Arial", "B", 11)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -1808,6 +1855,7 @@ class PdfFunctions:
                 "C",
                 True,
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
         plt.figure()
         bursty_app_vcore_df = bursty_app_vcore_df.set_index("Application Name")
         bursty_app_vcore_plot = bursty_app_vcore_df.plot.barh(stacked=True).legend(
@@ -1833,7 +1881,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "Bursty Applications - Memory Seconds", 0, ln=1)
+        self.pdf.cell(230, 8, "Bursty Applications - Memory Seconds", 0, ln=1)
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -1881,6 +1929,7 @@ class PdfFunctions:
                 "C",
                 True,
             )
+        self.pdf.cell(230, 10, "", 0, ln=1)
         plt.figure()
         bursty_app_mem_df = bursty_app_mem_df.set_index("Application Name")
         bursty_app_mem_plot = bursty_app_mem_df.plot.barh(stacked=True).legend(
@@ -1906,7 +1955,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Run time of Failed/Killed Applications = {: .2f} seconds".format(
                 yarn_failed_app["ElapsedTime"].sum()
             ),
@@ -1915,7 +1964,7 @@ class PdfFunctions:
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Vcores Seconds Used by Failed/Killed Applications = {} seconds".format(
                 yarn_failed_app["MemorySeconds"].sum()
             ),
@@ -1924,7 +1973,7 @@ class PdfFunctions:
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Memory Seconds Used Failed/Killed Applications = {} seconds".format(
                 yarn_failed_app["VcoreSeconds"].sum()
             ),
@@ -2031,6 +2080,7 @@ class PdfFunctions:
                 y_pos = max(y_pos, 1)
                 y_pos = cell_y / y_pos
                 self.pdf.multi_cell(130, y_pos, "{}".format(diag), 1, "C", fill=True)
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def yarnQueue(self, yarn_queues_list):
         """Add yarn queue details in PDF.
@@ -2077,6 +2127,7 @@ class PdfFunctions:
             230, 5, "Root - (Absolute Capacity - 100, Max Capacity - 100)", 0, ln=1
         )
         yarn_queue(yarn_queues_list, 1)
+        self.pdf.cell(230, 10, "", 0, ln=1)
 
     def yarnQueueApp(self, queue_app_count_df, queue_elapsed_time_df):
         """Add yarn queued application count pie chart in PDF.
@@ -2319,14 +2370,14 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Base Size of Data                         : {}".format(base_size),
             0,
             ln=1,
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Disk Space Consumed            : {}".format(disk_space_consumed),
             0,
             ln=1,
@@ -2343,7 +2394,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Is Hbase replicated to other datacenter: {}".format(replication),
             0,
             ln=1,
@@ -2360,7 +2411,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Do you use Secondary Index on Hbase?        : {}".format(indexing),
             0,
             ln=1,
@@ -2377,7 +2428,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Spark Version                       : {}".format(spark_version),
             0,
             ln=1,
@@ -2394,7 +2445,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Programming Languages Used By Spark Api  : {}".format(languages),
             0,
             ln=1,
@@ -2414,14 +2465,14 @@ class PdfFunctions:
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230,
-            5,
+            8,
             "Spark Resource Manager        : {}".format(spark_resource_manager),
             0,
             ln=1,
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             "Dynamic Allocation                   : {}".format(dynamic_allocation),
             0,
             ln=1,
@@ -2437,7 +2488,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 5, "Kafka Retention Period  :{}".format(retention_period), 0, ln=1
+            230, 8, "Kafka Retention Period  :{}".format(retention_period), 0, ln=1
         )
 
     def numTopics(self, num_topics):
@@ -2450,7 +2501,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 5, "Number Of Topics in Kafka :{}".format(num_topics), 0, ln=1
+            230, 8, "Number Of Topics in Kafka :{}".format(num_topics), 0, ln=1
         )
 
     def msgSize(self, sum_size):
@@ -2463,7 +2514,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 5, "Total Size Of Message in Kafka :{}".format(sum_size), 0, ln=1
+            230, 8, "Total Size Of Message in Kafka :{}".format(sum_size), 0, ln=1
         )
 
     def msgCount(self, sum_count):
@@ -2476,7 +2527,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 5, "Total Number Of Message in Kafka :{}".format(sum_count), 0, ln=1
+            230, 8, "Total Number Of Message in Kafka :{}".format(sum_count), 0, ln=1
         )
 
     def clusterSizeAndBrokerSize(self, total_size, brokersize):
@@ -2490,11 +2541,11 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 5, " Total Storage of Kafka Cluster :{}".format(total_size), 0, ln=1
+            230, 8, " Total Storage of Kafka Cluster :{}".format(total_size), 0, ln=1
         )
         self.pdf.cell(
             230,
-            5,
+            8,
             " Storage of Kafka Cluster Per Broker :{}".format(brokersize),
             0,
             ln=1,
@@ -2509,7 +2560,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "{}".format(impala), 0, ln=1)
+        self.pdf.cell(230, 8, "{}".format(impala), 0, ln=1)
 
     def sentry(self, sentry):
         """Add Sentry information in PDF.
@@ -2520,7 +2571,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "{}".format(sentry), 0, ln=1)
+        self.pdf.cell(230, 8, "{}".format(sentry), 0, ln=1)
 
     def kudu(self, kudu):
         """Add Kudu information in PDF.
@@ -2531,5 +2582,5 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 5, "{}".format(kudu), 0, ln=1)
+        self.pdf.cell(230, 8, "{}".format(kudu), 0, ln=1)
 

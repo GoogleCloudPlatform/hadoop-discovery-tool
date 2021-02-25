@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
-# This module will contain all the features of the Application category.
-# This module will contain the actual logic related to YARN Resource manager
-# API and other Generic features.
+# This module contains the logic to retrieve information of the features of the
+# category application. This module also contains the logic related to YARN
+# Resource manager API and other Generic features.
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -30,19 +30,25 @@ class ApplicationAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
         self.ssl = inputs["ssl"]
+        if self.ssl:
+            self.http = "https"
+        else:
+            self.http = "http"
+        self.start_date = inputs["start_date"]
+        self.end_date = inputs["end_date"]
 
     def getApplicationDetails(self, yarn_rm, yarn_port):
-        """Get list of all yarn application over a date range.
+        """Get list of all yarn related application over a date range.
 
         Args:
             yarn_rm (str): Yarn resource manager IP.
         Returns:
-            yarn_application_df (DataFrame): List of yarn application in cluster.
+            yarn_application_df (DataFrame): List of yarn related application in cluster.
         """
 
         try:
             r = requests.get(
-                "http://{}:{}/ws/v1/cluster/apps".format(yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port)
             )
             if r.status_code == 200:
                 yarn_application = r.json()
@@ -77,10 +83,10 @@ class ApplicationAPI:
                         }
                     )
                     yarn_application_df = yarn_application_df[
-                        (yarn_application_df["StartedTime"] < (end_date))
-                        & (yarn_application_df["StartedTime"] >= (start_date))
-                        & (yarn_application_df["LaunchTime"] >= (start_date))
-                        & (yarn_application_df["FinishedTime"] >= (start_date))
+                        (yarn_application_df["StartedTime"] < (self.end_date))
+                        & (yarn_application_df["StartedTime"] >= (self.start_date))
+                        & (yarn_application_df["LaunchTime"] >= (self.start_date))
+                        & (yarn_application_df["FinishedTime"] >= (self.start_date))
                     ]
                 elif self.version == 6:
                     yarn_application_df = pd.DataFrame(
@@ -111,10 +117,10 @@ class ApplicationAPI:
                         }
                     )
                     yarn_application_df = yarn_application_df[
-                        (yarn_application_df["StartedTime"] < (end_date))
-                        & (yarn_application_df["StartedTime"] >= (start_date))
-                        & (yarn_application_df["LaunchTime"] >= (start_date))
-                        & (yarn_application_df["FinishedTime"] >= (start_date))
+                        (yarn_application_df["StartedTime"] < (self.end_date))
+                        & (yarn_application_df["StartedTime"] >= (self.start_date))
+                        & (yarn_application_df["LaunchTime"] >= (self.start_date))
+                        & (yarn_application_df["FinishedTime"] >= (self.start_date))
                     ]
                 elif self.version == 5:
                     yarn_application_df = pd.DataFrame(
@@ -145,9 +151,9 @@ class ApplicationAPI:
                         }
                     )
                     yarn_application_df = yarn_application_df[
-                        (yarn_application_df["StartedTime"] < (end_date))
-                        & (yarn_application_df["StartedTime"] >= (start_date))
-                        & (yarn_application_df["FinishedTime"] >= (start_date))
+                        (yarn_application_df["StartedTime"] < (self.end_date))
+                        & (yarn_application_df["StartedTime"] >= (self.start_date))
+                        & (yarn_application_df["FinishedTime"] >= (self.start_date))
                     ]
                 yarn_application_df = yarn_application_df.reset_index(drop=True)
                 self.logger.info("getApplicationDetails successful")
@@ -163,10 +169,10 @@ class ApplicationAPI:
             return None
 
     def getApplicationTypeStatusCount(self, yarn_application_df):
-        """Get yarn application count based to its type and status.
+        """Get yarn related application count based to its type and status.
 
         Args:
-            yarn_application_df (DataFrame): List of yarn application in cluster.
+            yarn_application_df (DataFrame): List of yarn related application in cluster.
         Returns:
             app_count_df (DataFrame): Application count in yarn.
             app_type_count_df (DataFrame): Application count by type in yarn.
@@ -338,7 +344,7 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "http://{}:{}/ws/v1/cluster/metrics".format(yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port)
             )
             if r.status_code == 200:
                 yarn_total_vcores = r.json()
@@ -369,12 +375,13 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -382,12 +389,13 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -395,12 +403,13 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -472,12 +481,13 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -485,12 +495,13 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -498,12 +509,13 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -601,7 +613,7 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "http://{}:{}/ws/v1/cluster/metrics".format(yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port)
             )
             if r.status_code == 200:
                 yarn_total_memory = r.json()
@@ -633,12 +645,13 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -646,12 +659,13 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -659,12 +673,13 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -736,12 +751,13 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -749,12 +765,13 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -762,12 +779,13 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -948,12 +966,13 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -961,12 +980,13 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -974,12 +994,13 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -1049,12 +1070,13 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -1062,12 +1084,13 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -1075,12 +1098,13 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -1150,12 +1174,13 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -1163,12 +1188,13 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -1176,12 +1202,13 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -1249,7 +1276,9 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "http://{}:{}/ws/v1/cluster/scheduler".format(yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/scheduler".format(
+                    self.http, yarn_rm, yarn_port
+                )
             )
             if r.status_code == 200:
                 yarn_queues = r.json()
@@ -1480,7 +1509,8 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -1491,7 +1521,8 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v33/clusters/{}/services/hbase/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -1502,7 +1533,8 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -1546,7 +1578,8 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -1557,7 +1590,8 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v33/clusters/{}/services/hbase/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -1568,7 +1602,8 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -1722,7 +1757,9 @@ class ApplicationAPI:
 
         try:
             period = os.popen(
-                "grep -m 1 log.retention.hours /etc/kafka/server.properties"
+                "grep -m 1 log.retention.hours /etc/kafka/server.properties",
+                stdout=DEVNULL,
+                stderr=STDOUT,
             ).read()
             retention_period = int(period.split("=")[1].strip("\n"))
             self.logger.info("retentionPeriodKafka successful")
@@ -1747,7 +1784,9 @@ class ApplicationAPI:
                 + str(zookeeper_host)
                 + ":"
                 + str(zookeeper_port)
-                + " --list > topics_list.csv"
+                + " --list > topics_list.csv",
+                stdout=DEVNULL,
+                stderr=STDOUT,
             ).read()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -1776,7 +1815,9 @@ class ApplicationAPI:
                 + str(zookeeper_host)
                 + ":"
                 + str(zookeeper_port)
-                + " --list > topics_list.csv"
+                + " --list > topics_list.csv",
+                stdout=DEVNULL,
+                stderr=STDOUT,
             ).read()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -1817,7 +1858,9 @@ class ApplicationAPI:
                 + str(zookeeper_host)
                 + ":"
                 + str(zookeeper_port)
-                + " --list > topics_list.csv"
+                + " --list > topics_list.csv",
+                stdout=DEVNULL,
+                stderr=STDOUT,
             ).read()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -1854,7 +1897,11 @@ class ApplicationAPI:
             brokersize = pd.DataFrame(columns=["broker_size"])
             j = 0
             for k in logs_dir:
-                os.popen("du -sh /tmp/" + str(k) + "/* > broker_size.csv").read()
+                os.popen(
+                    "du -sh /tmp/" + str(k) + "/* > broker_size.csv",
+                    stdout=DEVNULL,
+                    stderr=STDOUT,
+                ).read()
                 brokers_df = pd.read_csv("broker_size.csv", header=None)
                 brokers_df.columns = ["logs"]
                 size_sum = 0
@@ -1887,7 +1934,11 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                os.popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json").read()
+                os.popen(
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                    stdout=DEVNULL,
+                    stderr=STDOUT,
+                ).read()
             )
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -1920,7 +1971,11 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                os.popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json").read()
+                os.popen(
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                    stdout=DEVNULL,
+                    stderr=STDOUT,
+                ).read()
             )
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -1953,7 +2008,11 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                os.popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json").read()
+                os.popen(
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                    stdout=DEVNULL,
+                    stderr=STDOUT,
+                ).read()
             )
             data = version_data["components"]
             df = pd.DataFrame(data)

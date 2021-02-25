@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
-# This module is used to get the storage and the size of the Hadoop clusters.
-# unveiling the usage over the period of time over the customized range
-# specified by the user. Module generated the clear output of various key
-# specification of hadoop distributed file system.
+# This module is used to get the storage related features like the size of
+# the Hadoop clusters.Unveiling the usage over the period of time for the
+# customized range specified by the user. This module generates the clear output
+# of various key specifications of hadoop distributed file system.
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
@@ -10,7 +10,7 @@ from imports import *
 
 
 class DataAPI:
-    """This Class has functions related to Cluster Data category.
+    """This Class has functions related to the Cluster Data category.
 
     Has functions which fetch different data metrics from Hadoop cluster 
     like HDFS metrics, hive metrics, etc.
@@ -31,12 +31,18 @@ class DataAPI:
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
         self.ssl = inputs["ssl"]
+        if self.ssl:
+            self.http = "https"
+        else:
+            self.http = "http"
+        self.start_date = inputs["start_date"]
+        self.end_date = inputs["end_date"]
 
     def totalSizeConfigured(self):
         """Get total storage size and storage at each node for HDFS.
 
         Returns:
-            individual_node_size (list): Total storage of all node.
+            individual_node_size (list): Total storage of all nodes.
             total_storage (float): Total storage of cluster.
         """
 
@@ -170,12 +176,13 @@ class DataAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -183,12 +190,13 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -196,12 +204,13 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -271,12 +280,13 @@ class DataAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -284,12 +294,13 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -297,12 +308,13 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        start_date,
+                        self.start_date,
                         cluster_name,
-                        end_date,
+                        self.end_date,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -381,7 +393,8 @@ class DataAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "http://{}:{}/api/v41/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v41/clusters/{}/services/hive/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -392,7 +405,8 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "http://{}:{}/api/v33/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v33/clusters/{}/services/hive/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -403,7 +417,8 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "http://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                        self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
                         cluster_name,
@@ -497,8 +512,12 @@ class DataAPI:
                 )
                 table_df = table_df.append(table_tmp_df)
             table_df["Last_Access_Time"] = pd.to_datetime(table_df["Last_Access_Time"])
-            warm = date_range_end - timedelta(days=1)
-            cold = date_range_end - timedelta(days=3)
+            warm = datetime.strptime(self.end_date, "%Y-%m-%d %H:%M") - timedelta(
+                days=1
+            )
+            cold = datetime.strptime(self.end_date, "%Y-%m-%d %H:%M") - timedelta(
+                days=3
+            )
             table_df.loc[table_df["Last_Access_Time"] > warm, "Data_Type"] = "Hot"
             table_df.loc[
                 (table_df["Last_Access_Time"] <= warm)
@@ -531,7 +550,9 @@ class DataAPI:
             engine = create_engine(database_uri)
             table_count = 0
             database_df = pd.DataFrame(columns=["Database", "File_Size", "Count"])
-            out = subprocess.check_output('hive -e "show databases"', shell=True)
+            out = subprocess.check_output(
+                'hive -e "show databases"', shell=True, stderr=subprocess.STDOUT
+            )
             out = str(out)
             out = out.split("\\n")
             for db in out:
@@ -581,7 +602,9 @@ class DataAPI:
                         for row in result:
                             table_count = row[0]
                         database = subprocess.check_output(
-                            'hive -e "describe schema {}"'.format(db), shell=True
+                            'hive -e "describe schema {}"'.format(db),
+                            shell=True,
+                            stderr=subprocess.STDOUT,
                         )
                         database = str(database)
                         if (database.find("\\t")) and (database.find("+--") == -1):
@@ -602,7 +625,9 @@ class DataAPI:
                         database_location = database_location[4:]
                         command = "hdfs dfs -du -s -h {}".format(database_location)
                         command = command + " | awk ' {print $2} '"
-                        database_size = subprocess.check_output(command, shell=True)
+                        database_size = subprocess.check_output(
+                            command, shell=True, stderr=subprocess.STDOUT
+                        )
                         database_size = str(database_size.strip())
                         database_size = database_size.split("'")[1]
                         database_tmp_df = pd.DataFrame(
@@ -809,7 +834,9 @@ class DataAPI:
         try:
             hive_execution_engine = ""
             hive_execution_engine = subprocess.check_output(
-                'hive -e "set hive.execution.engine"', shell=True
+                'hive -e "set hive.execution.engine"',
+                shell=True,
+                stderr=subprocess.STDOUT,
             )
             hive_execution_engine = str(hive_execution_engine)
             hive_execution_engine = hive_execution_engine.split("\\n")

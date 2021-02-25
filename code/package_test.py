@@ -1,6 +1,11 @@
+# ------------------------------------------------------------------------------
+# This script will detect the OS and install OS related packages required  for
+# the execution of the code.
+# ------------------------------------------------------------------------------
+
 import os
 
-print("Os Dependecies Installing...")
+print("Os Dependencies Installing...")
 
 # initialise flags to identify packages
 nload_dt, gcc_dt, odbc_dt, sasl_dt1 = "", "", "", ""
@@ -62,8 +67,8 @@ elif "suse" in os_name:
     sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
     odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
 
-"""Here Code will check if flags have been set then accordingly lists will be 
-appened with proper data
+"""Here Code will check if flags have been set and then accordingly lists will 
+be appended with proper data    
 """
 
 if nload_dt != "":
@@ -86,8 +91,8 @@ else:
 installed_string = ",".join(installed)
 not_installed_string = ",".join(not_installed)
 
-"""Here the code will decide based on the size of list which message to show 
-to user about os packages installation
+"""Based on the list size, here code will decide, which message to be shown to 
+the user about the os packages installation
 """
 
 if len(installed) == 0:
