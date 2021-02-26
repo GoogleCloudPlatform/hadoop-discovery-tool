@@ -251,7 +251,11 @@ class SecurityAPI:
 
         try:
             keytab = ""
-            os.popen('find / -iname "*.keytab" > ./keytab.txt 2>/dev/null').read()
+            os.popen(
+                'find / -iname "*.keytab" > ./keytab.txt 2>/dev/null',
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
+            ).read()
             with open("./keytab.txt", "r") as read_obj:
                 for line in read_obj:
                     if "keytab" in line:

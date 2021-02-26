@@ -69,10 +69,9 @@ class PdfGenerator:
         pdf.set_fill_color(r=66, g=133, b=244)
         pdf.set_text_color(r=255, g=255, b=255)
         pdf.cell(0, 10, "", 0, 1)
-        pdf.cell(60, 16, "Report Date Range", 1, 0)
-        pdf.cell(40, 8, "Start Date", 1, 0)
-        pdf.cell(40, 8, "End Date", 1, 0)
-        pdf.cell(0, 8, "", 0, 1)
+        pdf.cell(60, 16, "Report Date Range", 1, 0, "C", True)
+        pdf.cell(40, 8, "Start Date", 1, 0, "C", True)
+        pdf.cell(40, 8, "End Date", 1, 1, "C", True)
         pdf.cell(60, 8, "", 0, 0)
         pdf.set_text_color(r=1, g=1, b=1)
         pdf.set_fill_color(r=244, g=244, b=244)
@@ -85,6 +84,8 @@ class PdfGenerator:
             ),
             1,
             0,
+            "C",
+            True,
         )
         pdf.cell(
             40,
@@ -92,6 +93,8 @@ class PdfGenerator:
             datetime.strptime(self.end_date, "%Y-%m-%dT%H:%M:%S").strftime("%d-%b-%Y"),
             1,
             1,
+            "C",
+            True,
         )
         pdf.cell(0, 8, "", 0, 1)
         pdf.cell(0, 8, "", 0, 1)

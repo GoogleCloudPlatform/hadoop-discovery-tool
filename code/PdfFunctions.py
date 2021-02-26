@@ -86,66 +86,66 @@ class PdfFunctions:
                             ignore_index=True,
                         )
             self.pdf.cell(175, 5, "Number of Host", 1, 0, "L", True)
-            self.pdf.cell(50, 5, str(len(host_df)), 1, 1, "L", True)
+            self.pdf.cell(50, 5, str(len(host_df)), 1, 1, "C", True)
             self.pdf.cell(175, 5, "Number of NameNodes", 1, 0, "L", True)
-            self.pdf.cell(50, 5, str(len(namenodes_df)), 1, 1, "L", True)
+            self.pdf.cell(50, 5, str(len(namenodes_df)), 1, 1, "C", True)
             self.pdf.cell(175, 5, "Number of DataNodes", 1, 0, "L", True)
-            self.pdf.cell(50, 5, str(len(datanodes_df)), 1, 1, "L", True)
+            self.pdf.cell(50, 5, str(len(datanodes_df)), 1, 1, "C", True)
             self.pdf.cell(175, 5, "Number of EdgeNodes", 1, 0, "L", True)
-            self.pdf.cell(50, 5, str(len(edgenodes_df)), 1, 1, "L", True)
+            self.pdf.cell(50, 5, str(len(edgenodes_df)), 1, 1, "C", True)
 
         if type(cluster_cpu_usage_avg) != type(None):
             self.pdf.cell(175, 5, "Average Cluster CPU Utilization", 1, 0, "L", True)
             self.pdf.cell(
-                50, 5, "{: .2f}%".format(cluster_cpu_usage_avg), 1, 1, "L", True
+                50, 5, "{: .2f}%".format(cluster_cpu_usage_avg), 1, 1, "C", True
             )
 
         if type(cluster_memory_usage_avg) != type(None):
             self.pdf.cell(175, 5, "Average Cluster Memory Utilization", 1, 0, "L", True)
             self.pdf.cell(
-                50, 5, "{: .2f} GB".format(cluster_memory_usage_avg), 1, 1, "L", True
+                50, 5, "{: .2f} GB".format(cluster_memory_usage_avg), 1, 1, "C", True
             )
 
         if type(hadoopVersionMajor) != type(None):
             self.pdf.cell(175, 5, "Hadoop Major Version", 1, 0, "L", True)
-            self.pdf.cell(50, 5, hadoopVersionMajor, 1, 1, "L", True)
+            self.pdf.cell(50, 5, hadoopVersionMajor, 1, 1, "C", True)
 
         if type(hadoopVersionMinor) != type(None):
             self.pdf.cell(175, 5, "Hadoop Minor Version", 1, 0, "L", True)
-            self.pdf.cell(50, 5, hadoopVersionMinor, 1, 1, "L", True)
+            self.pdf.cell(50, 5, hadoopVersionMinor, 1, 1, "C", True)
 
         if type(distribution) != type(None):
             self.pdf.cell(175, 5, "Hadoop Distribution", 1, 0, "L", True)
-            self.pdf.cell(50, 5, distribution, 1, 1, "L", True)
+            self.pdf.cell(50, 5, distribution, 1, 1, "C", True)
 
         if type(total_storage) != type(None):
             self.pdf.cell(
                 175, 5, "Total Size Configured in the Cluster", 1, 0, "L", True
             )
-            self.pdf.cell(50, 5, "{: .2f} GB".format(total_storage), 1, 1, "L", True)
+            self.pdf.cell(50, 5, "{: .2f} GB".format(total_storage), 1, 1, "C", True)
 
         if type(hdfs_storage_config) != type(None):
             self.pdf.cell(175, 5, "HDFS Storage Available", 1, 0, "L", True)
             self.pdf.cell(
-                50, 5, "{: .2f} GB".format(hdfs_storage_config), 1, 1, "L", True
+                50, 5, "{: .2f} GB".format(hdfs_storage_config), 1, 1, "C", True
             )
 
         if type(hdfs_storage_used) != type(None):
             self.pdf.cell(175, 5, "HDFS Storage Used", 1, 0, "L", True)
             self.pdf.cell(
-                50, 5, "{: .2f} GB".format(hdfs_storage_used), 1, 1, "L", True
+                50, 5, "{: .2f} GB".format(hdfs_storage_used), 1, 1, "C", True
             )
 
         if type(yarn_vcore_allocated_avg) != type(None):
             self.pdf.cell(175, 5, "Average No. of Yarn Vcores Used", 1, 0, "L", True)
             self.pdf.cell(
-                50, 5, "{: .2f}".format(yarn_vcore_allocated_avg), 1, 1, "L", True
+                50, 5, "{: .2f}".format(yarn_vcore_allocated_avg), 1, 1, "C", True
             )
 
         if type(yarn_memory_allocated_avg) != type(None):
             self.pdf.cell(175, 5, "Average Yarn Memory Used", 1, 0, "L", True)
             self.pdf.cell(
-                50, 5, "{: .2f} GB".format(yarn_memory_allocated_avg), 1, 1, "L", True
+                50, 5, "{: .2f} GB".format(yarn_memory_allocated_avg), 1, 1, "C", True
             )
 
     def clusterInfo(self, cluster_items):
@@ -158,11 +158,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Number of Cluster Configured : {}".format(len(cluster_items)),
-            0,
-            ln=1,
+            150, 8, "Number of Cluster Configured", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(len(cluster_items)), 0, 1,
         )
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Cluster Details : ", 0, ln=1)
@@ -394,51 +393,57 @@ class PdfFunctions:
                     )
         client_gateway_df.drop_duplicates(inplace=True)
         self.pdf.cell(
-            230,
-            8,
-            "Number of Host               : {}".format(len(all_host_data)),
-            0,
-            ln=1,
+            150, 8, "Number of Host", 0, 0,
         )
         self.pdf.cell(
-            230, 8, "Number of NameNodes  : {}".format(len(namenodes_df)), 0, ln=1
+            75, 8, ": {}".format(len(all_host_data)), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Number of DataNodes    : {}".format(len(datanodes_df)), 0, ln=1
+            150, 8, "Number of NameNodes", 0, 0,
         )
         self.pdf.cell(
-            230, 8, "Number of Edge Nodes  : {} ".format(len(edgenodes_df)), 0, ln=1
+            75, 8, ": {}".format(len(namenodes_df)), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Number of DataNodes", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(len(datanodes_df)), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Number of Edge Nodes", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(len(edgenodes_df)), 0, 1,
         )
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Host Details : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Total Cores in the cluster       : {} ".format(
-                host_df["Number of cores"].sum()
-            ),
-            0,
-            ln=1,
+            150, 8, "Total Cores in the cluster", 0, 0,
         )
         self.pdf.cell(
-            230,
+            75, 8, ": {}".format(host_df["Number of cores"].sum()), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Total Memory in the cluster", 0, 0,
+        )
+        self.pdf.cell(
+            75,
             8,
-            "Total Memory in the cluster : {: .2f} GB  ".format(
-                host_df["Physical Memory"].astype("float64").sum()
-            ),
+            ": {: .2f} GB".format(host_df["Physical Memory"].astype("float64").sum()),
             0,
-            ln=1,
+            1,
         )
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(80, 5, "Hostname", 1, 0, "C", True)
+        self.pdf.cell(65, 5, "Hostname", 1, 0, "C", True)
         self.pdf.cell(30, 5, "Host IP", 1, 0, "C", True)
-        self.pdf.cell(20, 5, "Cores", 1, 0, "C", True)
-        self.pdf.cell(30, 5, "Memory", 1, 0, "C", True)
+        self.pdf.cell(15, 5, "Cores", 1, 0, "C", True)
+        self.pdf.cell(25, 5, "Memory", 1, 0, "C", True)
         self.pdf.cell(35, 5, "Health Status", 1, 0, "C", True)
-        self.pdf.cell(30, 5, "Distribution", 1, 1, "C", True)
+        self.pdf.cell(55, 5, "Distribution", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
@@ -449,7 +454,7 @@ class PdfFunctions:
             line_width = max(
                 line_width, self.pdf.get_string_width(host_df["Hostname"].iloc[pos]),
             )
-            cell_y = line_width / 79.0
+            cell_y = line_width / 64.0
             line_width = max(
                 line_width, self.pdf.get_string_width(host_df["Host IP"].iloc[pos]),
             )
@@ -458,13 +463,13 @@ class PdfFunctions:
                 line_width,
                 self.pdf.get_string_width(str(host_df["Number of cores"].iloc[pos])),
             )
-            cell_y = max(cell_y, line_width / 19.0)
+            cell_y = max(cell_y, line_width / 14.0)
 
             line_width = max(
                 line_width,
                 self.pdf.get_string_width(str(host_df["Physical Memory"].iloc[pos])),
             )
-            cell_y = max(cell_y, line_width / 29.0)
+            cell_y = max(cell_y, line_width / 24.0)
 
             line_width = max(
                 line_width,
@@ -475,24 +480,24 @@ class PdfFunctions:
                 line_width,
                 self.pdf.get_string_width(host_df["Distribution"].iloc[pos]),
             )
-            cell_y = max(cell_y, line_width / 29.0)
+            cell_y = max(cell_y, line_width / 54.0)
             cell_y = math.ceil(cell_y)
             cell_y = max(cell_y, 1)
             cell_y = cell_y * 5
             line_width = self.pdf.get_string_width(host_df["Hostname"].iloc[pos])
-            y_pos = line_width / 79.0
+            y_pos = line_width / 64.0
             y_pos = math.ceil(y_pos)
             y_pos = max(y_pos, 1)
             y_pos = cell_y / y_pos
             self.pdf.multi_cell(
-                80,
+                65,
                 y_pos,
                 "{}".format(host_df["Hostname"].iloc[pos]),
                 1,
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 80, y)
+            self.pdf.set_xy(x + 65, y)
             line_width = self.pdf.get_string_width(host_df["Host IP"].iloc[pos])
             y_pos = line_width / 29.0
             y_pos = math.ceil(y_pos)
@@ -501,39 +506,39 @@ class PdfFunctions:
             self.pdf.multi_cell(
                 30, y_pos, "{}".format(host_df["Host IP"].iloc[pos]), 1, "C", fill=True,
             )
-            self.pdf.set_xy(x + 110, y)
+            self.pdf.set_xy(x + 95, y)
             line_width = self.pdf.get_string_width(
                 str(host_df["Number of cores"].iloc[pos])
             )
-            y_pos = line_width / 19.0
+            y_pos = line_width / 14.0
             y_pos = math.ceil(y_pos)
             y_pos = max(y_pos, 1)
             y_pos = cell_y / y_pos
             self.pdf.multi_cell(
-                20,
+                15,
                 y_pos,
                 "{}".format(str(host_df["Number of cores"].iloc[pos])),
                 1,
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 130, y)
+            self.pdf.set_xy(x + 110, y)
             line_width = self.pdf.get_string_width(
                 str(host_df["Physical Memory"].iloc[pos])
             )
-            y_pos = line_width / 29.0
+            y_pos = line_width / 24.0
             y_pos = math.ceil(y_pos)
             y_pos = max(y_pos, 1)
             y_pos = cell_y / y_pos
             self.pdf.multi_cell(
-                30,
+                25,
                 y_pos,
                 "{}".format(str(host_df["Physical Memory"].iloc[pos])),
                 1,
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 160, y)
+            self.pdf.set_xy(x + 135, y)
             line_width = self.pdf.get_string_width(host_df["Health Status"].iloc[pos])
             y_pos = line_width / 34.0
             y_pos = math.ceil(y_pos)
@@ -547,14 +552,14 @@ class PdfFunctions:
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 195, y)
+            self.pdf.set_xy(x + 170, y)
             line_width = self.pdf.get_string_width(host_df["Distribution"].iloc[pos])
-            y_pos = line_width / 29.0
+            y_pos = line_width / 54.0
             y_pos = math.ceil(y_pos)
             y_pos = max(y_pos, 1)
             y_pos = cell_y / y_pos
             self.pdf.multi_cell(
-                30,
+                55,
                 y_pos,
                 "{}".format(host_df["Distribution"].iloc[pos]),
                 1,
@@ -566,22 +571,20 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "MasterNodes Details : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Total Cores Assigned to All the MasterNode        : {} ".format(
-                namenodes_df["Cores"].sum()
-            ),
-            0,
-            ln=1,
+            150, 8, "Total Cores Assigned to All the MasterNode", 0, 0,
         )
         self.pdf.cell(
-            230,
+            75, 8, ": {}".format(namenodes_df["Cores"].sum()), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Total Memory Assigned to All the MasterNodes", 0, 0,
+        )
+        self.pdf.cell(
+            75,
             8,
-            "Total Memory Assigned to All the MasterNodes : {: .2f} GB  ".format(
-                namenodes_df["Memory"].astype("float64").sum()
-            ),
+            ": {: .2f} GB".format(namenodes_df["Memory"].astype("float64").sum()),
             0,
-            ln=1,
+            1,
         )
         if len(namenodes_df) != 0:
             self.pdf.set_font("Arial", "B", 12)
@@ -620,22 +623,20 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "DataNodes Details : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Total Cores Assigned to All the DataNodes        : {} ".format(
-                datanodes_df["Cores"].sum()
-            ),
-            0,
-            ln=1,
+            150, 8, "Total Cores Assigned to All the DataNode", 0, 0,
         )
         self.pdf.cell(
-            230,
+            75, 8, ": {}".format(datanodes_df["Cores"].sum()), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Total Memory Assigned to All the DataNodes", 0, 0,
+        )
+        self.pdf.cell(
+            75,
             8,
-            "Total Memory Assigned to All the DataNodes : {: .2f} GB  ".format(
-                datanodes_df["Memory"].astype("float64").sum()
-            ),
+            ": {: .2f} GB".format(datanodes_df["Memory"].astype("float64").sum()),
             0,
-            ln=1,
+            1,
         )
         if len(datanodes_df) != 0:
             self.pdf.set_font("Arial", "B", 12)
@@ -674,22 +675,20 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "EdgeNodes Details : ", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Total Cores Assigned to All the EdgeNodes       : {} ".format(
-                edgenodes_df["Cores"].sum()
-            ),
-            0,
-            ln=1,
+            150, 8, "Total Cores Assigned to All the EdgeNode", 0, 0,
         )
         self.pdf.cell(
-            230,
+            75, 8, ": {}".format(edgenodes_df["Cores"].sum()), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Total Memory Assigned to All the EdgeNodes", 0, 0,
+        )
+        self.pdf.cell(
+            75,
             8,
-            "Total Memory Assigned to All the EdgeNodes : {: .2f} GB  ".format(
-                edgenodes_df["Memory"].astype("float64").sum()
-            ),
+            ": {: .2f} GB".format(edgenodes_df["Memory"].astype("float64").sum()),
             0,
-            ln=1,
+            1,
         )
         if len(edgenodes_df) != 0:
             self.pdf.set_font("Arial", "B", 12)
@@ -870,11 +869,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Average Cluster CPU Utilization is {: .2f}%".format(cluster_cpu_usage_avg),
-            0,
-            ln=1,
+            150, 8, "Average Cluster CPU Utilization", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} %".format(cluster_cpu_usage_avg), 0, 1,
         )
 
     def clusterVcorePlot(self, cluster_total_cores_df, cluster_cpu_usage_df):
@@ -924,13 +922,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Average Cluster Memory Utilization is {: .2f}%".format(
-                cluster_memory_usage_avg
-            ),
-            0,
-            ln=1,
+            150, 8, "Average Cluster Memory Utilization", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} GB".format(cluster_memory_usage_avg), 0, 1,
         )
 
     def clusterMemoryPlot(self, cluster_total_memory_df, cluster_memory_usage_df):
@@ -976,13 +971,22 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Hadoop Major Version Is     : {} ".format(hadoop_major), 0, ln=1,
+            150, 8, "Hadoop Major Version", 0, 0,
         )
         self.pdf.cell(
-            230, 8, "Hadoop Minor Version Is     : {} ".format(hadoop_minor), 0, ln=1,
+            75, 8, ": {}".format(hadoop_major), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Hadoop Distribution Is      : {} ".format(distribution), 0, ln=1
+            150, 8, "Hadoop Minor Version", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(hadoop_minor), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Hadoop Distribution", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(distribution), 0, 1,
         )
 
     def serviceInstalled(self, new_ref_df):
@@ -1022,11 +1026,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Total Size Configured in the Cluster: {: .2f} GB ".format(total_storage),
-            0,
-            ln=1,
+            150, 8, "Total Size Configured in the Cluster", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} GB".format(total_storage), 0, 1,
         )
 
     def individualHDFSSize(self, mapped_df):
@@ -1045,7 +1048,7 @@ class PdfFunctions:
         self.pdf.cell(50, 5, "Storage Capacity", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
-        self.pdf.set_font("Arial", "", 11)
+        self.pdf.set_font("Arial", "", 12)
         for pos in range(0, len(mapped_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
@@ -1108,13 +1111,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Replication Factor                           : {} ".format(
-                replication_factor
-            ),
-            0,
-            ln=1,
+            150, 8, "Replication Factor", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(replication_factor), 0, 1,
         )
 
     def trashInterval(self, trash_flag):
@@ -1127,11 +1127,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Trash Interval Setup in the Cluster  : {} ".format(trash_flag),
-            0,
-            ln=1,
+            150, 8, "Trash Interval Setup in the Cluster", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(trash_flag), 0, 1,
         )
 
     def availableHDFSStorage(self, hdfs_storage_config):
@@ -1144,11 +1143,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "HDFS Storage Available : {: .0f} GB".format(hdfs_storage_config),
-            0,
-            ln=1,
+            150, 8, "HDFS Storage Available", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} GB".format(hdfs_storage_config), 0, 1,
         )
 
     def usedHDFSStorage(self, hdfs_storage_used):
@@ -1161,11 +1159,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "HDFS Storage Used       : {: .0f} GB".format(hdfs_storage_used),
-            0,
-            ln=1,
+            150, 8, "HDFS Storage Used", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} GB".format(hdfs_storage_used), 0, 1,
         )
 
     def HDFSStoragePlot(self, hdfs_capacity_df, hdfs_capacity_used_df):
@@ -1209,16 +1206,28 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "Hive Metastore Details:", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Metastore Host                    : {}".format(mt_db_host), 0, ln=1
+            150, 8, "Metastore Host", 0, 0,
         )
         self.pdf.cell(
-            230, 8, "Metastore Database            : {}".format(mt_db_type), 0, ln=1
+            75, 8, ": {}".format(mt_db_host), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Metastore Database Name : {}".format(mt_db_name), 0, ln=1
+            150, 8, "Metastore Database", 0, 0,
         )
         self.pdf.cell(
-            230, 8, "Metastore Database Port    : {}".format(mt_db_port), 0, ln=1
+            75, 8, ": {}".format(mt_db_type), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Metastore Database Name", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(mt_db_name), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Metastore Database Port", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(mt_db_port), 0, 1,
         )
 
     def hiveDetails(
@@ -1246,50 +1255,40 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "Hive Details:", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Number of Databases                     : {}".format(database_count),
-            0,
-            ln=1,
+            150, 8, "Number of Databases", 0, 0,
         )
         self.pdf.cell(
-            230,
-            8,
-            "Number of tables with partition        : {}".format(tables_with_partition),
-            0,
-            ln=1,
+            75, 8, ": {}".format(database_count), 0, 1,
         )
         self.pdf.cell(
-            230,
-            8,
-            "Number of tables without partition   : {}".format(
-                tables_without_partition
-            ),
-            0,
-            ln=1,
+            150, 8, "Number of tables with partition", 0, 0,
         )
         self.pdf.cell(
-            230,
-            8,
-            "Number of Internal Tables               : {}".format(internal_tables),
-            0,
-            ln=1,
+            75, 8, ": {}".format(tables_with_partition), 0, 1,
         )
         self.pdf.cell(
-            230,
-            8,
-            "Number of External Tables              : {}".format(external_tables),
-            0,
-            ln=1,
+            150, 8, "Number of tables without partition", 0, 0,
         )
         self.pdf.cell(
-            230,
-            8,
-            "Hive Execution Engine                    : {}".format(
-                hive_execution_engine
-            ),
-            0,
-            ln=1,
+            75, 8, ": {}".format(tables_without_partition), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Number of Internal Tables", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(internal_tables), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Number of External Tables", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(external_tables), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Hive Execution Engine", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(hive_execution_engine), 0, 1,
         )
 
     def hiveDatabasesSize(self, database_df):
@@ -1303,21 +1302,21 @@ class PdfFunctions:
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Hive Databases:", 0, ln=1)
         self.pdf.set_font("Arial", "B", 12)
-        self.pdf.set_fill_color(r=3, g=62, b=100)
+        self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(60, 8, "Database", 1, 0, "C", True)
-        self.pdf.cell(40, 8, "Size", 1, 0, "C", True)
-        self.pdf.cell(40, 8, "No. of Tables", 1, 1, "C", True)
+        self.pdf.cell(60, 5, "Database", 1, 0, "C", True)
+        self.pdf.cell(40, 5, "Size", 1, 0, "C", True)
+        self.pdf.cell(40, 5, "No. of Tables", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
         for pos in range(0, len(database_df)):
             self.pdf.cell(
-                60, 8, "{}".format(database_df["Database"].iloc[pos]), 1, 0, "C", True
+                60, 5, "{}".format(database_df["Database"].iloc[pos]), 1, 0, "C", True
             )
             self.pdf.cell(
                 40,
-                8,
+                5,
                 "{: .2f} GB".format(float(database_df["File_Size"].iloc[pos])),
                 1,
                 0,
@@ -1325,7 +1324,7 @@ class PdfFunctions:
                 True,
             )
             self.pdf.cell(
-                40, 8, "{}".format(database_df["Count"].iloc[pos]), 1, 1, "C", True
+                40, 5, "{}".format(database_df["Count"].iloc[pos]), 1, 1, "C", True
             )
         self.pdf.cell(230, 10, "", 0, ln=1)
 
@@ -1357,7 +1356,12 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "Kerberos Details : {}".format(kerberos), 0, ln=1)
+        self.pdf.cell(
+            150, 8, "Kerberos Details", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(kerberos), 0, 1,
+        )
 
     def ADServerNameAndPort(self, ADServer):
         """Add AD server details in PDF.
@@ -1368,7 +1372,12 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "LDAP_URL : {} ".format(ADServer), 0, ln=1)
+        self.pdf.cell(
+            150, 8, "AD Server Name and Port", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(ADServer), 0, 1,
+        )
 
     def adServerBasedDN(self, Server_dn):
         """Add AD server details based on domain name details in PDF.
@@ -1379,7 +1388,12 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "TLDAP_BIND_DN  : {} ".format(Server_dn), 0, ln=1)
+        self.pdf.cell(
+            150, 8, "AD Server Based DN", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(Server_dn), 0, 1,
+        )
 
     def keytabFiles(self, keytab_files):
         """Add keytab files information in PDF.
@@ -1390,7 +1404,12 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "Keytab Files Details : {}".format(keytab_files), 0, ln=1)
+        self.pdf.cell(
+            150, 8, "Keytab Files Details", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(keytab_files), 0, 1,
+        )
 
     def yarnVcoreTotal(self, yarn_total_vcores_count):
         """Add yarn total vcore in PDF.
@@ -1402,7 +1421,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Yarn Vcore : {:.0f}".format(yarn_total_vcores_count), 0, ln=1
+            150, 8, "Total Yarn Vcore", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f}".format(yarn_total_vcores_count), 0, 1,
         )
 
     def yarnVcoreAvg(self, yarn_vcore_allocated_avg):
@@ -1415,11 +1437,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Average No. of Vcores Used : {: .2f}".format(yarn_vcore_allocated_avg),
-            0,
-            ln=1,
+            150, 8, "Average No. of Vcores Used", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f}".format(yarn_vcore_allocated_avg), 0, 1,
         )
 
     def yarnVcoreUsage(self, yarn_vcore_available_df, yarn_vcore_allocated_df):
@@ -1475,11 +1496,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Total Yarn Memory : {:.0f} GB".format(yarn_total_memory_count),
-            0,
-            ln=1,
+            150, 8, "Total Yarn Memory", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} GB".format(yarn_total_memory_count), 0, 1,
         )
 
     def yarnMemoryAvg(self, yarn_memory_allocated_avg):
@@ -1492,11 +1512,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Average Yarn Memory Used : {:.0f} MB".format(yarn_memory_allocated_avg),
-            0,
-            ln=1,
+            150, 8, "Average Yarn Memory Used", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} MB".format(yarn_memory_allocated_avg), 0, 1,
         )
 
     def yarnMemoryUsage(self, yarn_memory_available_df, yarn_memory_allocated_df):
@@ -1954,31 +1973,34 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Run time of Failed/Killed Applications = {: .2f} seconds".format(
-                yarn_failed_app["ElapsedTime"].sum()
-            ),
-            0,
-            ln=1,
+            150, 8, "Run time of Failed/Killed Applications", 0, 0,
         )
         self.pdf.cell(
-            230,
+            75,
             8,
-            "Vcores Seconds Used by Failed/Killed Applications = {} seconds".format(
-                yarn_failed_app["MemorySeconds"].sum()
-            ),
+            ": {: .2f} seconds".format(yarn_failed_app["ElapsedTime"].sum()),
             0,
-            ln=1,
+            1,
         )
         self.pdf.cell(
-            230,
+            150, 8, "Vcores Seconds Used by Failed/Killed Applications", 0, 0,
+        )
+        self.pdf.cell(
+            75,
             8,
-            "Memory Seconds Used Failed/Killed Applications = {} seconds".format(
-                yarn_failed_app["VcoreSeconds"].sum()
-            ),
+            ": {: .2f} seconds".format(yarn_failed_app["MemorySeconds"].sum()),
             0,
-            ln=1,
+            1,
+        )
+        self.pdf.cell(
+            150, 8, "Memory Seconds Used Failed/Killed Applications", 0, 0,
+        )
+        self.pdf.cell(
+            75,
+            8,
+            ": {: .2f} seconds".format(yarn_failed_app["VcoreSeconds"].sum()),
+            0,
+            1,
         )
         if yarn_failed_app.size != 0:
             yarn_failed_app = yarn_failed_app.head(10)
@@ -2369,18 +2391,16 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Base Size of Data                         : {}".format(base_size),
-            0,
-            ln=1,
+            150, 8, "Base Size of Data", 0, 0,
         )
         self.pdf.cell(
-            230,
-            8,
-            "Disk Space Consumed            : {}".format(disk_space_consumed),
-            0,
-            ln=1,
+            75, 8, ": {}".format(base_size), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Disk Space Consumed", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(disk_space_consumed), 0, 1,
         )
 
     def hbaseReplication(self, replication):
@@ -2393,11 +2413,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Is Hbase replicated to other datacenter: {}".format(replication),
-            0,
-            ln=1,
+            150, 8, "Is Hbase replicated to other datacenter", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(replication), 0, 1,
         )
 
     def hbaseIndexing(self, indexing):
@@ -2410,11 +2429,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Do you use Secondary Index on Hbase?        : {}".format(indexing),
-            0,
-            ln=1,
+            150, 8, "Do you use Secondary Index on Hbase", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(indexing), 0, 1,
         )
 
     def sparkVersion(self, spark_version):
@@ -2427,11 +2445,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Spark Version                       : {}".format(spark_version),
-            0,
-            ln=1,
+            150, 8, "Spark Version", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(spark_version), 0, 1,
         )
 
     def sparkLanguages(self, languages):
@@ -2444,11 +2461,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Programming Languages Used By Spark Api  : {}".format(languages),
-            0,
-            ln=1,
+            150, 8, "Programming Languages Used By Spark Api", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(languages), 0, 1,
         )
 
     def sparkDynamicAllocationAndResourceManager(
@@ -2464,18 +2480,16 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230,
-            8,
-            "Spark Resource Manager        : {}".format(spark_resource_manager),
-            0,
-            ln=1,
+            150, 8, "Spark Resource Manager", 0, 0,
         )
         self.pdf.cell(
-            230,
-            8,
-            "Dynamic Allocation                   : {}".format(dynamic_allocation),
-            0,
-            ln=1,
+            75, 8, ": {}".format(spark_resource_manager), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Dynamic Allocation", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(dynamic_allocation), 0, 1,
         )
 
     def retentionPeriod(self, retention_period):
@@ -2488,7 +2502,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Kafka Retention Period  :{}".format(retention_period), 0, ln=1
+            150, 8, "Kafka Retention Period", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(retention_period), 0, 1,
         )
 
     def numTopics(self, num_topics):
@@ -2501,7 +2518,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Number Of Topics in Kafka :{}".format(num_topics), 0, ln=1
+            150, 8, "Number Of Topics in Kafka", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(num_topics), 0, 1,
         )
 
     def msgSize(self, sum_size):
@@ -2514,7 +2534,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Size Of Message in Kafka :{}".format(sum_size), 0, ln=1
+            150, 8, "Total Size Of Message in Kafka", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {: .2f} MB".format(sum_size), 0, 1,
         )
 
     def msgCount(self, sum_count):
@@ -2527,7 +2550,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Number Of Message in Kafka :{}".format(sum_count), 0, ln=1
+            150, 8, "Total Number Of Message in Kafka", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(sum_count), 0, 1,
         )
 
     def clusterSizeAndBrokerSize(self, total_size, brokersize):
@@ -2541,14 +2567,16 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, " Total Storage of Kafka Cluster :{}".format(total_size), 0, ln=1
+            150, 8, "Total Storage of Kafka Cluster", 0, 0,
         )
         self.pdf.cell(
-            230,
-            8,
-            " Storage of Kafka Cluster Per Broker :{}".format(brokersize),
-            0,
-            ln=1,
+            75, 8, ": {}".format(total_size), 0, 1,
+        )
+        self.pdf.cell(
+            150, 8, "Storage of Kafka Cluster Per Broker", 0, 0,
+        )
+        self.pdf.cell(
+            75, 8, ": {}".format(brokersize), 0, 1,
         )
 
     def impala(self, impala):
@@ -2583,4 +2611,3 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(230, 8, "{}".format(kudu), 0, ln=1)
-

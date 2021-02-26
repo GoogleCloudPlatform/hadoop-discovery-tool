@@ -48,7 +48,10 @@ class FrameworkDetailsAPI:
         """
 
         try:
-            hversion = os.popen("hadoop version").read()
+            hversion = os.popen(
+                "hadoop version",
+                # stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT,
+            ).read()
             hadoop_major = hversion[0:12]
             os.popen("hadoop version > ./data.csv").read()
             dt = "This command was run using "
@@ -146,7 +149,11 @@ class FrameworkDetailsAPI:
                     list_apache_services, columns=["name"]
                 )
                 version_data = json.loads(
-                    os.popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json").read()
+                    os.popen(
+                        "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                        # stdout=subprocess.DEVNULL,
+                        # stderr=subprocess.STDOUT,
+                    ).read()
                 )
                 data = version_data["components"]
                 df_service_version = pd.DataFrame(data)

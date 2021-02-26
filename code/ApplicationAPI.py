@@ -1466,7 +1466,9 @@ class ApplicationAPI:
         try:
             base_size = 0
             disk_space_consumed = 0
-            out = subprocess.check_output("hdfs dfs -du -h /", shell=True)
+            out = subprocess.check_output(
+                "hdfs dfs -du -h /", shell=True, stderr=subprocess.STDOUT,
+            )
             output = str(out)
             lines = output.split("\\n")
             for i in lines:
@@ -1679,6 +1681,7 @@ class ApplicationAPI:
             out = subprocess.check_output(
                 '(spark-shell --version &> tmp.data ; grep version tmp.data | head -1 | awk "{print $NF}";rm tmp.data)',
                 shell=True,
+                stderr=subprocess.STDOUT,
             )
             spark_version = str(out.strip())
             if spark_version != "b''":
@@ -1701,7 +1704,9 @@ class ApplicationAPI:
         try:
             command = "hdfs dfs -ls /user/spark/applicationHistory"
             command = command + " | awk ' {print $8} '"
-            file_paths = subprocess.check_output(command, shell=True)
+            file_paths = subprocess.check_output(
+                command, shell=True, stderr=subprocess.STDOUT,
+            )
             file_paths = str(file_paths)
             l_list = file_paths.split("\\n")
             language_list = []
@@ -1758,8 +1763,8 @@ class ApplicationAPI:
         try:
             period = os.popen(
                 "grep -m 1 log.retention.hours /etc/kafka/server.properties",
-                stdout=DEVNULL,
-                stderr=STDOUT,
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
             ).read()
             retention_period = int(period.split("=")[1].strip("\n"))
             self.logger.info("retentionPeriodKafka successful")
@@ -1785,8 +1790,8 @@ class ApplicationAPI:
                 + ":"
                 + str(zookeeper_port)
                 + " --list > topics_list.csv",
-                stdout=DEVNULL,
-                stderr=STDOUT,
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
             ).read()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -1816,8 +1821,8 @@ class ApplicationAPI:
                 + ":"
                 + str(zookeeper_port)
                 + " --list > topics_list.csv",
-                stdout=DEVNULL,
-                stderr=STDOUT,
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
             ).read()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -1859,8 +1864,8 @@ class ApplicationAPI:
                 + ":"
                 + str(zookeeper_port)
                 + " --list > topics_list.csv",
-                stdout=DEVNULL,
-                stderr=STDOUT,
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
             ).read()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -1899,8 +1904,8 @@ class ApplicationAPI:
             for k in logs_dir:
                 os.popen(
                     "du -sh /tmp/" + str(k) + "/* > broker_size.csv",
-                    stdout=DEVNULL,
-                    stderr=STDOUT,
+                    # stdout=subprocess.DEVNULL,
+                    # stderr=subprocess.STDOUT,
                 ).read()
                 brokers_df = pd.read_csv("broker_size.csv", header=None)
                 brokers_df.columns = ["logs"]
@@ -1936,8 +1941,8 @@ class ApplicationAPI:
             version_data = json.loads(
                 os.popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    stdout=DEVNULL,
-                    stderr=STDOUT,
+                    # stdout=subprocess.DEVNULL,
+                    # stderr=subprocess.STDOUT,
                 ).read()
             )
             data = version_data["components"]
@@ -1973,8 +1978,8 @@ class ApplicationAPI:
             version_data = json.loads(
                 os.popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    stdout=DEVNULL,
-                    stderr=STDOUT,
+                    # stdout=subprocess.DEVNULL,
+                    # stderr=subprocess.STDOUT,
                 ).read()
             )
             data = version_data["components"]
@@ -2010,8 +2015,8 @@ class ApplicationAPI:
             version_data = json.loads(
                 os.popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    stdout=DEVNULL,
-                    stderr=STDOUT,
+                    # stdout=subprocess.DEVNULL,
+                    # stderr=subprocess.STDOUT,
                 ).read()
             )
             data = version_data["components"]

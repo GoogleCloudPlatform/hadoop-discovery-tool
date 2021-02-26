@@ -47,7 +47,11 @@ class DataAPI:
         """
 
         try:
-            os.popen("hdfs dfsadmin -report > ./data.csv").read()
+            os.popen(
+                "hdfs dfsadmin -report > ./data.csv",
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
+            ).read()
             dt = "Live datanodes "
             list_of_results = []
             flag = 0
@@ -104,7 +108,9 @@ class DataAPI:
 
         try:
             replication_factor = os.popen(
-                "hdfs getconf -confKey dfs.replication"
+                "hdfs getconf -confKey dfs.replication",
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
             ).read()
             self.logger.info("replicationFactor successful")
             return replication_factor
@@ -120,7 +126,11 @@ class DataAPI:
         """
 
         try:
-            xml_data = os.popen("cat /etc/hadoop/conf/core-site.xml").read()
+            xml_data = os.popen(
+                "cat /etc/hadoop/conf/core-site.xml",
+                # stdout=subprocess.DEVNULL,
+                # stderr=subprocess.STDOUT,
+            ).read()
             root = ET.fromstring(xml_data)
             for val in root.findall("property"):
                 name = val.find("name").text
@@ -512,10 +522,10 @@ class DataAPI:
                 )
                 table_df = table_df.append(table_tmp_df)
             table_df["Last_Access_Time"] = pd.to_datetime(table_df["Last_Access_Time"])
-            warm = datetime.strptime(self.end_date, "%Y-%m-%d %H:%M") - timedelta(
+            warm = datetime.strptime(self.end_date, "%Y-%m-%dT%H:%M:%S") - timedelta(
                 days=1
             )
-            cold = datetime.strptime(self.end_date, "%Y-%m-%d %H:%M") - timedelta(
+            cold = datetime.strptime(self.end_date, "%Y-%m-%dT%H:%M:%S") - timedelta(
                 days=3
             )
             table_df.loc[table_df["Last_Access_Time"] > warm, "Data_Type"] = "Hot"
@@ -562,6 +572,7 @@ class DataAPI:
                     and (db.find("database_name") == -1)
                     and (db != "'")
                     and (db.find("WARN") == -1)
+                    and (db != "")
                 ):
                     if db.find("'") != -1:
                         db = db.split("'")[1]
