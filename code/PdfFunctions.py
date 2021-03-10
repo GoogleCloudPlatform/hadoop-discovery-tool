@@ -1381,7 +1381,7 @@ class PdfFunctions:
 
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
-        self.pdf.cell(230, 8, "List of Hadoop and Non-Hadoop Libraries: ", 0, ln=1)
+        self.pdf.cell(230, 8, "List of security softwares: ", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(230, 8, "{}".format(security_software["ranger"]), 0, ln=1)
@@ -1546,13 +1546,13 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Drivers", 1, 1, "C", True)
+        self.pdf.cell(150, 5, "Drivers", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
         for pos in range(0, len(final_df)):
             self.pdf.cell(
-                100, 5, "{}".format(final_df["name"].iloc[pos]), 1, 1, "C", True
+                150, 5, "{}".format(final_df["name"].iloc[pos]), 1, 1, "C", True
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
@@ -1566,13 +1566,13 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Installed Connectors", 1, 1, "C", True)
+        self.pdf.cell(150, 5, "Installed Connectors", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
         for pos in range(0, len(connectors_present)):
             self.pdf.cell(
-                100,
+                150,
                 5,
                 "{}".format(connectors_present["Connector_Name"].iloc[pos]),
                 1,
@@ -1968,13 +1968,13 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Size of a file: {}".format(max_value), 0, 1,
+            230, 8, "Maximum Size of a file: {: .2f} MB".format(max_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Minimum Size of a file: {}".format(min_value), 0, 1,
+            230, 8, "Minimum Size of a file: {: .2f} MB".format(min_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Average Size of a file: {}".format(avg_value), 0, 1,
+            230, 8, "Average Size of a file: {: .2f} MB".format(avg_value), 0, 1,
         )
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
@@ -2275,12 +2275,13 @@ class PdfFunctions:
         """
 
         self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "SSL/TLS Status:", 0, ln=1)
+        self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "ssl/tls enabled for HDFS: {}".format(hdfs_ssl), 0, ln=1)
-        self.pdf.cell(230, 8, "ssl/tls enabled for YARN: {}".format(yarn_ssl), 0, ln=1)
-        self.pdf.cell(
-            230, 8, "ssl/tls enabled for MapReduce: {}".format(Mr_ssl), 0, ln=1
-        )
+        self.pdf.cell(230, 8, "{}".format(hdfs_ssl), 0, ln=1)
+        self.pdf.cell(230, 8, "{}".format(yarn_ssl), 0, ln=1)
+        self.pdf.cell(230, 8, "{}".format(Mr_ssl), 0, ln=1)
 
     def kerberosHttpAuth(
         self, hue_flag, hdfs_flag, yarn_flag_1, yarn_flag_2, mapred_flag
@@ -2295,6 +2296,9 @@ class PdfFunctions:
             yarn_flag_2 (str): Yarn kerberos status
         """
 
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Kerberos Status:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         if hue_flag == 1:
@@ -2324,9 +2328,9 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         if luks_detect["TYPE_LOWER"].str.contains("luks").any():
-            self.pdf.cell(230, 8, "Luks is used", 0, ln=1)
+            self.pdf.cell(230, 8, "LUKS is used", 0, ln=1)
         else:
-            self.pdf.cell(230, 8, "Luks is not used", 0, ln=1)
+            self.pdf.cell(230, 8, "LUKS is not used", 0, ln=1)
 
     def portUsed(self, port_df):
         """Add port number for different services in PDF.
@@ -2393,6 +2397,9 @@ class PdfFunctions:
         """
 
         self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Maximum Bandwidth:", 0, ln=1)
+        self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230, 8, "Maximum Data Transferred: {}".format(max_bandwidth), 0, 1,
@@ -2408,6 +2415,9 @@ class PdfFunctions:
             curr_value (str) : Current ingress value
         """
 
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Ingress Traffic:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
@@ -2434,6 +2444,9 @@ class PdfFunctions:
         """
 
         self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Egress Traffic:", 0, ln=1)
+        self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230, 8, "Maximum Outgoing Throughput: {}".format(max_value), 0, 1,
@@ -2456,6 +2469,9 @@ class PdfFunctions:
             total_disk_write (str) : Disk write speed
         """
 
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Disk Write and Read Speed:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
@@ -2483,6 +2499,9 @@ class PdfFunctions:
             check_mk_server (str): Presence of check_mk_server in cluster
         """
 
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Third Party Monitoring Tools:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         if "nagios" in softwares_installed:
@@ -2512,6 +2531,9 @@ class PdfFunctions:
         """
 
         self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Orchestration Tools:", 0, ln=1)
+        self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
             230, 8, "{}".format(oozie_flag), 0, 1,
@@ -2533,6 +2555,9 @@ class PdfFunctions:
             elastic_search (str): Presence of Elasticsearch in cluster
         """
 
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Logging Tools:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
@@ -2558,11 +2583,15 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(80, 5, "Logs Details", 1, 1, "C", True)
+        self.pdf.cell(80, 5, "Name", 1, 0, "C", True)
+        self.pdf.cell(130, 5, "Logs Path", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
         for i in logs.index:
+            self.pdf.cell(
+                80, 5, "{}".format(logs["name"][i]), 1, 0, "C", True,
+            )
             self.pdf.cell(
                 80, 5, "/var/log/{}".format(logs["name"][i]), 1, 1, "C", True,
             )
@@ -2850,24 +2879,25 @@ class PdfFunctions:
             only_streaming (str): List of streaming application.
         """
 
-        self.pdf.set_font("Arial", "B", 12)
-        self.pdf.set_fill_color(r=66, g=133, b=244)
-        self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(70, 5, "Streaming Applications", 1, 1, "C", True)
-        self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.set_fill_color(r=244, g=244, b=244)
-        self.pdf.set_font("Arial", "", 12)
-        for pos in range(0, len(only_streaming)):
-            self.pdf.cell(
-                70,
-                5,
-                "{}".format(only_streaming["ApplicationType"].iloc[pos]),
-                1,
-                1,
-                "C",
-                True,
-            )
-        self.pdf.cell(230, 5, "", 0, ln=1)
+        if not only_streaming.empty:
+            self.pdf.set_font("Arial", "B", 12)
+            self.pdf.set_fill_color(r=66, g=133, b=244)
+            self.pdf.set_text_color(r=255, g=255, b=255)
+            self.pdf.cell(70, 5, "Streaming Applications", 1, 1, "C", True)
+            self.pdf.set_text_color(r=1, g=1, b=1)
+            self.pdf.set_fill_color(r=244, g=244, b=244)
+            self.pdf.set_font("Arial", "", 12)
+            for pos in range(0, len(only_streaming)):
+                self.pdf.cell(
+                    70,
+                    5,
+                    "{}".format(only_streaming["ApplicationType"].iloc[pos]),
+                    1,
+                    1,
+                    "C",
+                    True,
+                )
+            self.pdf.cell(230, 5, "", 0, ln=1)
 
     def yarnAppVcoreMemory(self, app_vcore_df, app_memory_df):
         """Add yarn vcore and memory by application pie chart in PDF.
@@ -3000,7 +3030,7 @@ class PdfFunctions:
         self.pdf.set_text_color(r=255, g=255, b=255)
         self.pdf.cell(100, 5, "Application Name", 1, 0, "C", True)
         self.pdf.cell(50, 5, "Application Type", 1, 0, "C", True)
-        self.pdf.cell(40, 5, "Frequency", 1, 1, "C", True)
+        self.pdf.cell(50, 5, "Count", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
@@ -3018,13 +3048,7 @@ class PdfFunctions:
                 True,
             )
             self.pdf.cell(
-                40,
-                5,
-                "{}".format(job_launch_df["frequency"].iloc[pos]),
-                1,
-                1,
-                "C",
-                True,
+                50, 5, "{}".format(job_launch_df["Count"].iloc[pos]), 1, 1, "C", True,
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 

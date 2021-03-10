@@ -440,7 +440,7 @@ class ApplicationAPI:
             job_launch_df.loc[job_launch_df["Count"] > 20, "frequency"] = "Daily"
             job_launch_df.loc[job_launch_df["Count"] <= 20, "frequency"] = "Weekly"
             job_launch_df.loc[job_launch_df["Count"] <= 2, "frequency"] = "Monthly"
-            job_launch_df = job_launch_df.drop(["StartedTime", "Count"], axis=1)
+            job_launch_df = job_launch_df.drop(["StartedTime"], axis=1)
             self.logger.info("getJobLaunchFrequency successful")
             return job_launch_df
         except Exception as e:

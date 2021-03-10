@@ -745,14 +745,57 @@ class HardwareOSAPI:
         """
 
         try:
-            database_server = os.popen('find / -iname "hue.ini" | grep SERVER ').read()
-            database_server = " ".join(database_server.split())
-            database_server = "cat " + database_server + " | grep engine="
-            database_server = os.popen(database_server).read()
-            database_server = database_server.split("=")
-            database_server = database_server[1]
-            self.logger.info("dataBaseServer successful")
-            return database_server
+            r = None
+            if self.version == 7:
+                r = requests.get(
+                    "{}://{}:{}/api/v41/cm/scmDbInfo".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 6:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/cm/scmDbInfo".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            elif self.version == 5:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/cm/scmDbInfo".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                )
+            if r.status_code == 200:
+                database_server = r.json()
+                with open(
+                    "Discovery_Report/{}/database_server.json".format(cluster_name),
+                    "w",
+                ) as fp:
+                    json.dump(database_server, fp, indent=4)
+                database_server = database_server["scmDbType"]
+                self.logger.info("dataBaseServer successful")
+                return database_server
+            else:
+                self.logger.error(
+                    "dataBaseServer failed due to invalid API call. HTTP Response: ",
+                    r.status_code,
+                )
         except Exception as e:
             self.logger.error("dataBaseServer failed", exc_info=True)
             return None
@@ -1173,34 +1216,34 @@ class HardwareOSAPI:
             else:
                 security_software["ranger"] = "Ranger is installed"
             if cyberSecurity.find("knox-server") == -1:
-                security_software["knox"] = "Knox-server is installed"
-            else:
                 security_software["knox"] = "Knox-server is not installed"
+            else:
+                security_software["knox"] = "Knox-server is installed"
             if cyberSecurity.find("splunk") == -1:
-                security_software["splunk"] = "Splunk is installed"
-            else:
                 security_software["splunk"] = "Splunk is not installed"
+            else:
+                security_software["splunk"] = "Splunk is installed"
             if cyberSecurity.find("nagios") == -1:
-                security_software["nagios"] = "Nagios is installed"
-            else:
                 security_software["nagios"] = "Nagios is not installed"
+            else:
+                security_software["nagios"] = "Nagios is installed"
             if cyberSecurity.find("GRR") == -1:
-                security_software["grr"] = "GRR Rapid responce is installed"
-            else:
                 security_software["grr"] = "GRR Rapid responce is not installed"
+            else:
+                security_software["grr"] = "GRR Rapid responce is installed"
             if cyberSecurity.find("MISP") == -1:
-                security_software["misp"] = "MISP is installed"
-            else:
                 security_software["misp"] = "MISP is not installed"
-            if cyberSecurity.find("thehive") == -1:
-                security_software["thehive"] = "TheHive is installed"
             else:
+                security_software["misp"] = "MISP is installed"
+            if cyberSecurity.find("thehive") == -1:
                 security_software["thehive"] = "TheHive is not installed"
+            else:
+                security_software["thehive"] = "TheHive is installed"
             osquery = os.popen("yum list installed osquery | grep osquery").read()
             if not osquery:
-                security_software["osquery"] = "OSQuery is installed"
-            else:
                 security_software["osquery"] = "OSQuery is not installed"
+            else:
+                security_software["osquery"] = "OSQuery is installed"
             if not out:
                 security_software[
                     "cloudera_navigator"

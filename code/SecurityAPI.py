@@ -692,7 +692,7 @@ class SecurityAPI:
                 encoding="utf-8",
             )
             out, err = xml_data.communicate()
-            if not out:
+            if not out.strip():
                 enc_zoneList = None
             else:
                 intermediate_out = out.splitlines()

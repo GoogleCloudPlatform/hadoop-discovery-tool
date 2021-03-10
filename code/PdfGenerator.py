@@ -156,7 +156,7 @@ class PdfGenerator:
         temp = obj2.getHiveConfigItems(cluster_name)
         if type(temp) != type(None):
             mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
-            
+
             if mt_db_type == "postgresql":
                 database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
                     self.hive_username,
@@ -350,7 +350,7 @@ class PdfGenerator:
         t4 = obj1.ntpServer()
 
         if type(t1) != type(None):
-            database_server = t2
+            database_server = t1
             obj_pdf.dataBaseServer(database_server)
 
         if type(t2) != type(None):
@@ -440,11 +440,11 @@ class PdfGenerator:
             hadoop_native_df = temp
             obj_pdf.listHadoopNonHadoopLibs(hadoop_native_df)
 
-        # python_flag, java_flag, scala_flag = None, None, None
-        # temp = obj1.checkLibrariesInstalled()
-        # if type(temp) != type(None):
-        #     python_flag, java_flag, scala_flag = temp
-        #     obj_pdf.checkLibrariesInstalled(python_flag, java_flag, scala_flag)
+        python_flag, java_flag, scala_flag = None, None, None
+        temp = obj1.checkLibrariesInstalled()
+        if type(temp) != type(None):
+            python_flag, java_flag, scala_flag = temp
+            obj_pdf.checkLibrariesInstalled(python_flag, java_flag, scala_flag)
 
         security_software = None
         temp = obj1.securitySoftware()
@@ -698,6 +698,15 @@ class PdfGenerator:
                 database_df = temp1
                 obj_pdf.hiveDatabasesSize(database_df)
 
+            if (type(hdfs_storage_used) != type(None)) and (
+                type(database_df) != type(None)
+            ):
+                size_breakdown_df = None
+                temp = obj2.structuredVsUnstructured(hdfs_storage_used, database_df)
+                if type(temp) != type(None):
+                    size_breakdown_df = temp
+                    obj_pdf.structuredVsUnstructured(size_breakdown_df)
+
             table_df = None
             temp1 = obj2.gethiveMetaStore(database_uri, mt_db_type)
             if type(temp1) != type(None):
@@ -709,15 +718,6 @@ class PdfGenerator:
             if type(temp1) != type(None):
                 query_type_count_df = temp1
                 obj_pdf.hiveAdhocEtlQuery(query_type_count_df)
-
-            if (type(hdfs_storage_used) != type(None)) and (
-                type(database_df) != type(None)
-            ):
-                size_breakdown_df = None
-                temp = obj2.structuredVsUnstructured(hdfs_storage_used, database_df)
-                if type(temp) != type(None):
-                    size_breakdown_df = temp
-                    obj_pdf.structuredVsUnstructured(size_breakdown_df)
 
         p_bar.update(1)
         p_bar.set_description(desc="Data Metrics Added in PDF")
@@ -751,6 +751,12 @@ class PdfGenerator:
             keytab_files = temp
             obj_pdf.keytabFiles(keytab_files)
 
+        luks_detect = None
+        temp = obj4.checkLuks()
+        if type(temp) != type(None):
+            luks_detect = temp
+            obj_pdf.checkLuks(luks_detect)
+
         Mr_ssl, hdfs_ssl, yarn_ssl = None, None, None
         temp = obj4.sslStatus()
         if type(temp) != type(None):
@@ -770,12 +776,6 @@ class PdfGenerator:
             obj_pdf.kerberosHttpAuth(
                 hue_flag, hdfs_flag, yarn_flag_1, yarn_flag_2, mapred_flag
             )
-
-        luks_detect = None
-        temp = obj4.checkLuks()
-        if type(temp) != type(None):
-            luks_detect = temp
-            obj_pdf.checkLuks(luks_detect)
 
         port_df = None
         temp = obj4.portUsed()
@@ -846,7 +846,13 @@ class PdfGenerator:
         ) = (None, None, None, None, None)
         temp = obj5.thirdPartyMonitor()
         if type(temp) != type(None):
-            softwares_installed = temp
+            (
+                softwares_installed,
+                prometheus_server,
+                grafana_server,
+                ganglia_server,
+                check_mk_server,
+            ) = temp
             obj_pdf.thirdPartyMonitor(
                 softwares_installed,
                 prometheus_server,
@@ -1005,11 +1011,6 @@ class PdfGenerator:
                 job_launch_df = temp1
                 obj_pdf.yarnJobLaunchFrequency(job_launch_df)
 
-            pdf.add_page()
-            pdf.set_font("Arial", "B", 18)
-            pdf.set_text_color(r=66, g=133, b=244)
-            pdf.cell(230, 10, "Bursty Applications", 0, ln=1)
-
             bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = (
                 None,
                 None,
@@ -1019,6 +1020,10 @@ class PdfGenerator:
             if type(temp1) != type(None):
                 bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = temp1
                 if bursty_app_time_df.size != 0:
+                    pdf.add_page()
+                    pdf.set_font("Arial", "B", 18)
+                    pdf.set_text_color(r=66, g=133, b=244)
+                    pdf.cell(230, 10, "Bursty Applications", 0, ln=1)
                     obj_pdf.yarnBurstyAppTime(bursty_app_time_df)
                     obj_pdf.yarnBurstyAppVcore(bursty_app_vcore_df)
                     pdf.add_page()
