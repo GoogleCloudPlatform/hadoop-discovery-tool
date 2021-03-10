@@ -1,102 +1,58 @@
-# Name of the Project
+# Hadoop Assessment Tool
 
-One/two paragraph summary of the use case and what problem we are trying to solve.
+This tool is developed to enable detailed Assessment and automated assessment of Hadoop clusters. It helps measure the migration efforts from the current Hadoop cluster. It generates a PDF report with information related to the complete cluster according to different categories.
 
-* Industry: `Manufacturing Industry`, `Automobile Industry`, etc.
-* ML Domain: `NLP`, `Computer Vision`, etc.
+Following are the specific categories: 
 
-## Problem Statement
+1. Hardware & OS Footprint
+2. Framework & Software Details
+3. Data & Security
+4. Network & Traffic
+5. Operations & Monitoring
+6. Application
 
-Detailed parargraph on the problem statement - max one paragraph
+## Tool Functionality
 
-## Solution
+The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment based on various factors/metrics. 
+1. This python-based tool will use Cloudera API, Generic - YARN API, and OS based CLI request to retrieve information from the Hadoop cluster
+2. Information from the APIs will come in the form of JSON files
+3. Information from CLI command request will be outputs stored in variables
+4. With the help of Python parsing methods, required insights about the features will be retrieved
+5. As an output of tool execution, a PDF report will be generated which will contain information about all the features
+6. Script will also generate a log file, which will contain execution information & errors (if any)
 
-Detailed description of the solution - max one paragraph
+## Prerequisites
+1. The tool requires **Python3**
+2. The tool needs the below permissions to the run the code and generate the PDF report - **Sudo permission** to master node, user should be part of **hdfs superuser group**, **Cloudera manager admin credentials**, **hive metastore login credentials**
+3. The tool will support the following Linux distributions - **Red Hat/Centos 7.9.x and above**, **SLES 12-SP5 and above**, **Ubuntu 16.04 LTS and above**, **Debian 8.9 and above**
 
-## Technology
+## Installation
 
-High level understanding of the technologies used in the solution
-
-### ML Techniques
-
-* Linear Regression - For predicting temperature
-* RNN - For neural networks
-
-### Programming languages
-
-* Python 2.7 - For Machine Learning
-* Python 2.7 (Flask) - For creating backend API and integration with UI
-* Angular 6 - For UI development and front-end data processing
-* Google Oauth2 - For API authentication
-
-### Infrastructure (training and Deployment)
-
-* Google Compute Engine
-    * 1 VM n1-standard
-    * 1 GPU P80
-* Cloud Pub/Sub
-
-
-## Setup
-Step by step guide to setup the application
+1. Go to the **code** folder
 
 ```bash
-git clone https://gitlab.qdatalabs.com/devops/boilerplate.git
+cd code
 ```
-
-Along with code snippets that needs to be run
+2. Give execute permission to the scripts 
 
 ```bash
-bash ./run.sh
+chmod +x build.sh
+chmod +x build.sh
 ```
 
-And nesessory configurtions to be changed for different environments
-
-```yaml
-ENVIRONMENT
-  - GOOGLE_APPLICATION_CREDENTIALS: <PATH-TO-SERIVCE-ACCOUNT-FILE>
-  - PROJECT_ID: <PROJECT-ID-OF-GCP-PROJECT>
-```
-
-Some Important points or warnings should be highlighted
-
-> Take care that the service account key file is not commited and pushed to git
-
-> Do not explain in-detail architecture and case studies here. Create wiki pages for that.
-
-Also highlighting `some words` can be done in this manner.
-
-## Training
-Details for what kind os dataset is required for traiing
-
-```
-along with the code execution scripts
-```
-
-### Deployment
-Details of what infrastructure is used to deploy the application along with the scripts to deploy the application with config
+3. Run the first script for building the environment, using the command 
 
 ```bash
-gcloud app deploy
+sh build.sh
 ```
 
-## Testing
-Detailed guide on how to run unit test cases 
+4. Run the second script to run the python script, using the command
 
 ```bash
-python run_unit_tests.py
-```
-This should produce results in the following format
-
-```
-Ran 10/10 tests successfully. Test Successful
+sh run.sh
 ```
 
-And end to end test cases
-```bash
-python run_integrity_tests.py
-```
+## Contributing
 
-```
-Ran 3/5 tests successfully. Test Failed
-```
+
+## License
