@@ -2,7 +2,7 @@ import os
 
 print("Os Dependencies Installing...")
 # initialise flags to identify packages
-nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt1, pydevel_dt = "", "", "", "", "", ""
+nload_dt, vnstat_dt,iostat_dt, gcc_dt, odbc_dt, sasl_dt1, pydevel_dt = "", "", "", "", "", "",""
 # list to hold installed and non installed data
 installed, not_installed = [], []
 # This command will fetch os-name for ex. centos,debian,opensuse etc.
@@ -19,12 +19,14 @@ if "centos" in os_name:
     os.popen("yum install cyrus-sasl-devel -y").read()
     os.popen("yum install unixODBC-devel -y").read()
     os.popen("yum install -y python3-devel").read()
+    os.popen("yum install sysstat -y").read()
     nload_dt = os.popen("rpm -qa | grep nload").read()
     vnstat_dt = os.popen("rpm -qa | grep vnstat").read()
     gcc_dt = os.popen("rpm -qa | grep gcc-c++").read()
     sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
     odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
     pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
+    iostat_dt = os.popen("rpm -qa | grep sysstat").read()
 elif "debian" in os_name:
     os.popen("apt install -y nload").read()
     os.popen("apt-get install -y vnstat").read()
@@ -32,12 +34,14 @@ elif "debian" in os_name:
     os.popen("apt-get install sasl2-bin").read()
     os.popen("apt-get install -y unixodbc-dev").read()
     os.popen("apt-get install -y python3-dev").read()
+    os.popen("apt-get install sysstat -y").read()
     nload_dt = os.popen("apt list --installed | grep nload").read()
     vnstat_dt = os.popen("apt list --installed | grep vnstat").read()
     gcc_dt = os.popen("apt list --installed | grep g++-8").read()
     sasl_dt = os.popen("apt list --installed | grep sasl2-bin").read()
     odbc_dt = os.popen("apt list --installed | grep unixodbc-dev").read()
     pydevel_dt = os.popen("apt list --installed | grep python3-dev").read()
+    iostat_dt = os.popen("apt list --installed | grep sysstat").read()
 elif "ubuntu" in os_name:
     os.popen("apt-get install -y nload").read()
     os.popen("apt install -y vnstat").read()
@@ -45,12 +49,14 @@ elif "ubuntu" in os_name:
     os.popen("apt-get install sasl2-bin").read()
     os.popen("apt-get install unixodbc-dev -y").read()
     os.popen("apt-get install -y python3-dev").read()
+    os.popen("apt-get install sysstat -y").read()
     nload_dt = os.popen("apt list --installed | grep nload").read()
     vnstat_dt = os.popen("apt list --installed | grep vnstat").read()
     gcc_dt = os.popen("apt list --installed | grep g++-7").read()
     sasl_dt = os.popen("apt list --installed | grep sasl2-bin").read()
     odbc_dt = os.popen("apt list --installed | grep unixodbc-dev").read()
     pydevel_dt = os.popen("apt list --installed | grep python3-dev").read()
+    iostat_dt = os.popen("apt list --installed | grep sysstat").read()
 elif "red hat" in os_name:
     os.popen("yum install nload -y").read()
     os.popen("yum install vnstat -y").read()
@@ -58,12 +64,14 @@ elif "red hat" in os_name:
     os.popen("yum install cyrus-sasl-devel -y").read()
     os.popen("yum install unixODBC-devel -y").read()
     os.popen("yum install -y python3-devel").read()
+    os.popen("yum install sysstat -y").read()
     nload_dt = os.popen("rpm -qa | grep nload").read()
     vnstat_dt = os.popen("rpm -qa | grep vnstat").read()
     gcc_dt = os.popen("rpm -qa | grep gcc-c++").read()
     sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
     odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
     pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
+    iostat_dt = os.popen("rpm -qa | grep sysstat").read()
 elif "suse" in os_name:
     os.popen("zypper -n install nload").read()
     os.popen("zypper -n install vnstat").read()
@@ -71,12 +79,14 @@ elif "suse" in os_name:
     os.popen("zypper -n install cyrus-sasl-devel").read()
     os.popen("zypper -n install unixODBC-devel").read()
     os.popen("zypper -n install python3-devel").read()
+    os.popen("zypper -n install sysstat").read()
     nload_dt = os.popen("rpm -qa | grep nload").read()
     vnstat_dt = os.popen("rpm -qa | grep vnstat").read()
     gcc_dt = os.popen("rpm -qa | grep gcc-c++").read()
     sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
     odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
     pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
+    iostat_dt = os.popen("rpm -qa | grep sysstat").read()
 # Here Code will check if flags have been set then accordingly lists will be appened with proper data
 if nload_dt != "":
     installed.append(nload_dt)
@@ -102,6 +112,10 @@ if pydevel_dt != "":
     installed.append(pydevel_dt)
 else:
     not_installed.append("Python3-Devel")
+if iostat_dt != "":
+    installed.append(iostat_dt)
+else:
+    not_installed.append("Iostat")    
 installed_string = ",".join(installed)
 not_installed_string = ",".join(not_installed)
 # Here the code will decide based on the size of list which message to show to user about os packages installation
