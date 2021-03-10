@@ -431,6 +431,11 @@ class DataAPI:
                 hdfs_storage_df["other"] = other_str.split("::", 1)[1]
             self.logger.info("hdfsStorage successful")
             return hdfs_storage_df, hdfs_flag
+        except IndexError:
+            hdfs_storage_df = hdfs_temp
+            hdfs_flag = 1
+            self.logger.info("hdfsStorage successful")
+            return hdfs_storage_df, hdfs_flag
         except Exception as e:
             self.logger.error("hdfsStorage failed", exc_info=True)
             return None

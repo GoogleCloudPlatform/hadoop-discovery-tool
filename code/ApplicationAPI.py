@@ -334,16 +334,16 @@ class ApplicationAPI:
             else:
                 yarn_ha = 0
             data_hive = subprocess.Popen(
-                " cat /etc/hive/conf/hive-site.xml | grep hive.metastore.uris",
+                " cat /etc/hive/conf/hive-site.xml",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
             out_3, err = data_hive.communicate()
-            root = ET.fromstring(out)
+            root = ET.fromstring(out_3)
             for val in root.findall("property"):
                 name = val.find("name").text
-                if "hive.zookeeper.quorum" not in name:
+                if "hive.metastore.uri" not in name:
                     root.remove(val)
             value = root[0][1].text
             count_hive = value.count(",") + 1
@@ -352,7 +352,7 @@ class ApplicationAPI:
             else:
                 hive_ha = 0
             xml_data = subprocess.Popen(
-                "cat /etc/hive/conf.cloudera.hive/hive-site.xml",
+                "cat /etc/hive/conf/hive-site.xml",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -1781,7 +1781,10 @@ class ApplicationAPI:
         try:
             statuscomm = os.popen("echo 'status' | hbase shell -n").read()
             statusinfo = statuscomm.split()
-            NumNodesServing = int(statusinfo[statusinfo.index("servers,") - 1])
+            if "servers," in statusinfo:
+                NumNodesServing = int(statusinfo[statusinfo.index("servers,") - 1])
+            else:
+                NumNodesServing = None
             self.logger.info("nodesServingHbase successful")
             return NumNodesServing
         except Exception as e:
@@ -2002,18 +2005,21 @@ class ApplicationAPI:
 
         try:
             os.popen(
-                'find / -path "/hbase/lib/phoenix.jar" 2>/dev/null > phoenixpath.csv'
-            )
+                'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv'
+            ).read()
             phoenix_path_df = pd.read_csv(
                 "phoenixpath.csv", delimiter="\n", header=None
             )
-            phoenix_path_df.columns = ["location"]
-            phoenix_path_df = phoenix_path_df.iloc[[-1]]
-            for i in retention_period_df["location"]:
-                if i != "":
-                    phoenixHbase = "Yes"
-                else:
-                    phoenixHbase = "No"
+            phoenixHbase = "No"
+            if not phoenix_path_df.empty:
+                phoenix_path_df.columns = ["location"]
+                for i in phoenix_path_df["location"]:
+                    if i != "":
+                        phoenixHbase = "Yes"
+            self.logger.info("phoenixinHBase successful")
+            return phoenixHbase
+        except EmptyDataError:
+            phoenixHbase = "No"
             self.logger.info("phoenixinHBase successful")
             return phoenixHbase
         except Exception as e:
@@ -2030,18 +2036,21 @@ class ApplicationAPI:
         try:
             coprocessorHbase = ""
             os.popen(
-                'find / -path "/hbase/lib/*coprocessor.jar" 2>/dev/null > coprocessorpath.csv'
-            )
+                'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv'
+            ).read()
             coprocessor_path_df = pd.read_csv(
                 "coprocessorpath.csv", delimiter="\n", header=None
             )
-            coprocessor_path_df.columns = ["location"]
-            coprocessor_df = coprocessor_df.iloc[[-1]]
-            for i in coprocessor_df["location"]:
-                if i != "":
-                    coprocessorHbase = "Yes"
-                else:
-                    coprocessorHbase = "No"
+            coprocessorHbase = "No"
+            if not coprocessor_path_df.empty:
+                coprocessor_path_df.columns = ["location"]
+                for i in coprocessor_path_df["location"]:
+                    if i != "":
+                        coprocessorHbase = "Yes"
+            self.logger.info("coprocessorinHBase successful")
+            return coprocessorHbase
+        except EmptyDataError:
+            coprocessorHbase = "No"
             self.logger.info("coprocessorinHBase successful")
             return coprocessorHbase
         except Exception as e:
@@ -2421,10 +2430,11 @@ class ApplicationAPI:
             for i in services_df["name"]:
                 if i == "impala":
                     found = 1
+                    name = i
             if found == 1:
                 output = (
                     "Impala found with version: "
-                    + services_df.loc[services_df["name"] == i].sub_version.item()
+                    + services_df.loc[services_df["name"] == name].sub_version.item()
                 )
             else:
                 output = "Impala is not found"
@@ -2458,10 +2468,11 @@ class ApplicationAPI:
             for i in services_df["name"]:
                 if i == "sentry":
                     found = 1
+                    name = i
             if found == 1:
                 output = (
                     "Apache Sentry found with version: "
-                    + services_df.loc[services_df["name"] == i].sub_version.item()
+                    + services_df.loc[services_df["name"] == name].sub_version.item()
                 )
             else:
                 output = "Apache Sentry is not found"
@@ -2495,10 +2506,11 @@ class ApplicationAPI:
             for i in services_df["name"]:
                 if i == "kudu":
                     found = 1
+                    name = i
             if found == 1:
                 output = (
                     "Apache Kudu found with version: "
-                    + services_df.loc[services_df["name"] == i].sub_version.item()
+                    + services_df.loc[services_df["name"] == name].sub_version.item()
                 )
             else:
                 output = "Apache Kudu is not found"

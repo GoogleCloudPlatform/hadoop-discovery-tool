@@ -1241,7 +1241,7 @@ class PdfFunctions:
             self.pdf.cell(70, 5, "Advisory Name", 1, 0, "C", True)
             self.pdf.cell(30, 5, "Severity", 1, 0, "C", True)
             self.pdf.cell(90, 5, "Security Package", 1, 0, "C", True)
-            self.pdf.cell(40, 5, "Patch Deployed Date", 1, 1, "C", True)
+            self.pdf.cell(40, 5, "Deployed Date", 1, 1, "C", True)
             self.pdf.set_text_color(r=1, g=1, b=1)
             self.pdf.set_fill_color(r=244, g=244, b=244)
             self.pdf.set_font("Arial", "", 12)
@@ -1409,9 +1409,9 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         if int(gpu_status) >= 1:
-            self.pdf.cell(230, 8, "GPU is Present", 0, ln=1)
+            self.pdf.cell(230, 8, "GPU is not present", 0, ln=1)
         else:
-            self.pdf.cell(230, 8, "GPU is Not Present", 0, ln=1)
+            self.pdf.cell(230, 8, "GPU is present", 0, ln=1)
 
     def hadoopVersion(self, hadoop_major, hadoop_minor, distribution):
         """Add Hadoop version details in PDF.
@@ -1773,7 +1773,7 @@ class PdfFunctions:
             self.pdf.set_font("Arial", "", 12)
             self.pdf.set_text_color(r=66, g=133, b=244)
             self.pdf.cell(230, 8, "HDFS Folder and File Structure: ", 0, ln=1)
-            if hdfs_flag == 1:
+            if hdfs_flag == 0:
                 self.pdf.set_font("Arial", "B", 12)
                 self.pdf.set_fill_color(r=66, g=133, b=244)
                 self.pdf.set_text_color(r=255, g=255, b=255)
@@ -2593,7 +2593,7 @@ class PdfFunctions:
                 80, 5, "{}".format(logs["name"][i]), 1, 0, "C", True,
             )
             self.pdf.cell(
-                80, 5, "/var/log/{}".format(logs["name"][i]), 1, 1, "C", True,
+                130, 5, "/var/log/{}".format(logs["name"][i]), 1, 1, "C", True,
             )
 
     def dynamicResoucePool(self, resource):

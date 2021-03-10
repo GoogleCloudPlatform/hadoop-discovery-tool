@@ -1197,51 +1197,51 @@ class PdfGenerator:
                 rdd_flag, dataset_flag, sql_flag, df_flag, mllib_flag, stream_flag
             )
 
-        pdf.cell(230, 10, "", 0, ln=1)
-        pdf.set_font("Arial", "B", 18)
-        pdf.set_text_color(r=66, g=133, b=244)
-        pdf.cell(230, 10, "Kafka Metrics", 0, ln=1)
+        # pdf.cell(230, 10, "", 0, ln=1)
+        # pdf.set_font("Arial", "B", 18)
+        # pdf.set_text_color(r=66, g=133, b=244)
+        # pdf.cell(230, 10, "Kafka Metrics", 0, ln=1)
 
-        zookeeper_host, zookeeper_port, broker_host, broker_port = (
-            "localhost",
-            "5181",
-            "localhost",
-            "9092",
-        )
+        # zookeeper_host, zookeeper_port, broker_host, broker_port = (
+        #     "localhost",
+        #     "5181",
+        #     "localhost",
+        #     "9092",
+        # )
 
-        retention_period = None
-        temp = obj_app.retentionPeriodKafka()
-        if type(temp) != type(None):
-            retention_period = temp
-            obj_pdf.retentionPeriod(retention_period)
+        # retention_period = None
+        # temp = obj_app.retentionPeriodKafka()
+        # if type(temp) != type(None):
+        #     retention_period = temp
+        #     obj_pdf.retentionPeriod(retention_period)
 
-        num_topics = None
-        temp = obj_app.numTopicsKafka(zookeeper_host, zookeeper_port)
-        if type(temp) != type(None):
-            num_topics = temp
-            obj_pdf.numTopics(num_topics)
+        # num_topics = None
+        # temp = obj_app.numTopicsKafka(zookeeper_host, zookeeper_port)
+        # if type(temp) != type(None):
+        #     num_topics = temp
+        #     obj_pdf.numTopics(num_topics)
 
-        sum_size = None
-        temp = obj_app.msgSizeKafka(
-            zookeeper_host, zookeeper_port, broker_host, broker_port
-        )
-        if type(temp) != type(None):
-            sum_size = temp
-            obj_pdf.msgSize(sum_size)
+        # sum_size = None
+        # temp = obj_app.msgSizeKafka(
+        #     zookeeper_host, zookeeper_port, broker_host, broker_port
+        # )
+        # if type(temp) != type(None):
+        #     sum_size = temp
+        #     obj_pdf.msgSize(sum_size)
 
-        sum_count = None
-        temp = obj_app.msgCountKafka(
-            zookeeper_host, zookeeper_port, broker_host, broker_port
-        )
-        if type(temp) != type(None):
-            sum_count = temp
-            obj_pdf.msgCount(sum_count)
+        # sum_count = None
+        # temp = obj_app.msgCountKafka(
+        #     zookeeper_host, zookeeper_port, broker_host, broker_port
+        # )
+        # if type(temp) != type(None):
+        #     sum_count = temp
+        #     obj_pdf.msgCount(sum_count)
 
-        total_size, brokersize = None, None
-        temp = obj_app.clusterSizeAndBrokerSizeKafka()
-        if type(temp) != type(None):
-            total_size, brokersize = temp
-            obj_pdf.clusterSizeAndBrokerSize(total_size, brokersize)
+        # total_size, brokersize = None, None
+        # temp = obj_app.clusterSizeAndBrokerSizeKafka()
+        # if type(temp) != type(None):
+        #     total_size, brokersize = temp
+        #     obj_pdf.clusterSizeAndBrokerSize(total_size, brokersize)
 
         pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)

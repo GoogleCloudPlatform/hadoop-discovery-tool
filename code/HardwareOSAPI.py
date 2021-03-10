@@ -763,7 +763,6 @@ class HardwareOSAPI:
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -775,7 +774,6 @@ class HardwareOSAPI:
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
@@ -783,11 +781,6 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 database_server = r.json()
-                with open(
-                    "Discovery_Report/{}/database_server.json".format(cluster_name),
-                    "w",
-                ) as fp:
-                    json.dump(database_server, fp, indent=4)
                 database_server = database_server["scmDbType"]
                 self.logger.info("dataBaseServer successful")
                 return database_server
@@ -1043,11 +1036,13 @@ class HardwareOSAPI:
                 )
                 os.popen("rm security_level.csv")
                 os.popen("rm security_final.csv")
-                os.popen("bash YUM_Get_Patch_Date.sh")
+                subprocess.check_output(
+                    "bash YUM_Get_Patch_Date.sh", shell=True, stderr=subprocess.STDOUT
+                )
                 fin = open("patch_date.csv", "rt")
                 fout = open("security_patch_date.csv", "wt")
                 for iterator in fin:
-                    fout.write(re.sub("[^\S\r\n]{2,}", ",", iterator))
+                    fout.write(re.sub(r"^([^\s]*)\s+", r"\1, ", iterator))
                 fin.close()
                 fout.close()
                 column_names = ["Security_Package", "Patch_Deployed_Date"]
@@ -1179,7 +1174,7 @@ class HardwareOSAPI:
                         java_flag = 1
                         break
             os.popen("rm java_check.csv").read()
-            os.popen("spark-shell > scala.csv").read()
+            os.popen("timeout -k 21 20 spark-shell > scala.csv").read()
             with open("scala.csv") as fp:
                 for scala_line in fp:
                     if "Using Scala version" in scala_line:

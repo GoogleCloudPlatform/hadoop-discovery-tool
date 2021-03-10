@@ -25,6 +25,7 @@ import logging
 import glob
 from pprint import pprint
 from fpdf import FPDF
+from pandas.errors import EmptyDataError
 from os import path
 from requests.auth import HTTPBasicAuth
 from datetime import datetime, timedelta
@@ -136,7 +137,19 @@ def clusterName(
         cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
         print("This cluster is selected : ", cluster_name)
     else:
-        print("Incorrect Input")
+        print("Wrong Input! Try Again")
+        print("Select cluster name from list below : ")
+        for ind in cluster_dt.index:
+            print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
+        var = int(input("Enter serial number for selected cluster name : "))
+        name_list = cluster_dt["Index"].tolist()
+        cluster_name = None
+        if var in name_list:
+            cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
+            print("This cluster is selected : ", cluster_name)
+        else:
+            print("Wrong Input! Try Again")
+            exit()
     return cluster_name
 
 

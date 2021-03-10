@@ -378,7 +378,7 @@ class SecurityAPI:
                     hue_flag = 1
             else:
                 hue_flag = None
-            path_status = path.exists("/etc/hadoop/conf/yarn-site.xmll")
+            path_status = path.exists("/etc/hadoop/conf/yarn-site.xml")
             if path_status == True:
                 xml_data = subprocess.check_output(
                     "cat /etc/hadoop/conf/yarn-site.xml",
