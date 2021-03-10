@@ -23,16 +23,17 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import logging
 import glob
-from pyhive import hive
 from pprint import pprint
 from fpdf import FPDF
+from os import path
 from requests.auth import HTTPBasicAuth
 from datetime import datetime, timedelta
 from getpass import getpass
 from sqlalchemy import create_engine
 from tqdm import tqdm
+from xml.etree.ElementTree import XML, fromstring
 
-# Defining default setting and date range for discovery report
+# Defining default setting and date range for assessment report
 sns.set(rc={"figure.figsize": (15, 5)})
 pd.set_option("display.max_colwidth", 0)
 pd.options.display.float_format = "{:,.2f}".format
@@ -102,7 +103,7 @@ def clusterName(
         )
     elif version == 6:
         initial_run = requests.get(
-            "http://{}:{}/api/v33/clusters".format(
+            "http://{}:{}/api/v19/clusters".format(
                 cloudera_manager_host_ip, cloudera_manager_port
             ),
             auth=HTTPBasicAuth(cloudera_manager_username, cloudera_manager_password),
@@ -157,27 +158,155 @@ def getInput(version):
         print("Enter details accordingly as SSL is enabled.")
     else:
         print("Enter details accordingly as SSL is disabled.")
-    inputs["cloudera_manager_host_ip"] = input("Enter Cloudera Manager Host IP: ")
-    inputs["cloudera_manager_port"] = input("Enter Cloudera Manager Port : ")
-    inputs["cloudera_manager_username"] = input("Enter Cloudera Manager Username: ")
-    inputs["cloudera_manager_password"] = getpass(
-        prompt="Enter Cloudera Manager Password: "
-    )
-    inputs["cluster_name"] = clusterName(
-        inputs["version"],
-        inputs["cloudera_manager_host_ip"],
-        inputs["cloudera_manager_port"],
-        inputs["cloudera_manager_username"],
-        inputs["cloudera_manager_password"],
-    )
-    inputs["hive_username"] = input("Enter Hive Metastore Username: ")
-    inputs["hive_password"] = getpass(prompt="Enter Hive Metastore Password: ")
-    inputs["start_date"] = datetime.strptime(
-        input("Enter Start Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
-    ).strftime("%Y-%m-%dT%H:%M:%S")
-    inputs["end_date"] = datetime.strptime(
-        input("Enter End Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
-    ).strftime("%Y-%m-%dT%H:%M:%S")
+    t = input("Do you want to enter clouder manager credentials? [y/n] ")
+    if t in ["y", "Y"]:
+        inputs["cloudera_manager_host_ip"] = input("Enter Cloudera Manager Host IP: ")
+        t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
+        if t1 in ["y", "Y"]:
+            inputs["cloudera_manager_port"] = "7180"
+        elif t1 in ["n", "N"]:
+            inputs["cloudera_manager_port"] = input("Enter Cloudera Manager Port : ")
+        else:
+            print("Wrong Input! Try Again")
+            t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
+            if t1 in ["y", "Y"]:
+                inputs["cloudera_manager_port"] = "7180"
+            elif t1 in ["n", "N"]:
+                inputs["cloudera_manager_port"] = input(
+                    "Enter Cloudera Manager Port : "
+                )
+            else:
+                print("Wrong Input! Try Again")
+                exit()
+        inputs["cloudera_manager_username"] = input("Enter Cloudera Manager Username: ")
+        inputs["cloudera_manager_password"] = getpass(
+            prompt="Enter Cloudera Manager Password: "
+        )
+        inputs["cluster_name"] = clusterName(
+            inputs["version"],
+            inputs["cloudera_manager_host_ip"],
+            inputs["cloudera_manager_port"],
+            inputs["cloudera_manager_username"],
+            inputs["cloudera_manager_password"],
+        )
+    elif t in ["n", "N"]:
+        inputs["cloudera_manager_host_ip"] = None
+        inputs["cloudera_manager_port"] = None
+        inputs["cloudera_manager_username"] = None
+        inputs["cloudera_manager_password"] = None
+        inputs["cluster_name"] = None
+    else:
+        print("Wrong Input! Try Again")
+        t = input("Do you want to enter clouder manager credentials? [y/n] ")
+        if t in ["y", "Y"]:
+            inputs["cloudera_manager_host_ip"] = input(
+                "Enter Cloudera Manager Host IP: "
+            )
+            t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
+            if t1 in ["y", "Y"]:
+                inputs["cloudera_manager_port"] = "7180"
+            elif t1 in ["n", "N"]:
+                inputs["cloudera_manager_port"] = input(
+                    "Enter Cloudera Manager Port : "
+                )
+            else:
+                print("Wrong Input! Try Again")
+                t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
+                if t1 in ["y", "Y"]:
+                    inputs["cloudera_manager_port"] = "7180"
+                elif t1 in ["n", "N"]:
+                    inputs["cloudera_manager_port"] = input(
+                        "Enter Cloudera Manager Port : "
+                    )
+                else:
+                    print("Wrong Input! Try Again")
+                    exit()
+            inputs["cloudera_manager_username"] = input(
+                "Enter Cloudera Manager Username: "
+            )
+            inputs["cloudera_manager_password"] = getpass(
+                prompt="Enter Cloudera Manager Password: "
+            )
+            inputs["cluster_name"] = clusterName(
+                inputs["version"],
+                inputs["cloudera_manager_host_ip"],
+                inputs["cloudera_manager_port"],
+                inputs["cloudera_manager_username"],
+                inputs["cloudera_manager_password"],
+            )
+        elif t in ["n", "N"]:
+            inputs["cloudera_manager_host_ip"] = None
+            inputs["cloudera_manager_port"] = None
+            inputs["cloudera_manager_username"] = None
+            inputs["cloudera_manager_password"] = None
+            inputs["cluster_name"] = None
+        else:
+            print("Wrong Input! Try Again")
+            exit()
+    t = input("Do you want to enter Hive credentials? [y/n] ")
+    if t in ["y", "Y"]:
+        inputs["hive_username"] = input("Enter Hive Metastore Username: ")
+        inputs["hive_password"] = getpass(prompt="Enter Hive Metastore Password: ")
+    elif t in ["n", "N"]:
+        inputs["hive_username"] = None
+        inputs["hive_password"] = None
+    else:
+        print("Wrong Input! Try Again")
+        t = input("Do you want to enter Hive credentials? [y/n] ")
+        if t in ["y", "Y"]:
+            inputs["hive_username"] = input("Enter Hive Metastore Username: ")
+            inputs["hive_password"] = getpass(prompt="Enter Hive Metastore Password: ")
+        elif t in ["n", "N"]:
+            inputs["hive_username"] = None
+            inputs["hive_password"] = None
+        else:
+            print("Wrong Input! Try Again")
+            exit()
+    print("Select date range from list below : ")
+    print("1. Week\n2. Month\n3. Custom")
+    t = int(input("Enter serial number for selected date range: "))
+    if t == 1:
+        inputs["start_date"] = (datetime.now() - timedelta(days=7)).strftime(
+            "%Y-%m-%dT%H:%M:%S"
+        )
+        inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    elif t == 2:
+        inputs["start_date"] = (datetime.now() - timedelta(days=30)).strftime(
+            "%Y-%m-%dT%H:%M:%S"
+        )
+        inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+    elif t == 3:
+        inputs["start_date"] = datetime.strptime(
+            input("Enter Start Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
+        ).strftime("%Y-%m-%dT%H:%M:%S")
+        inputs["end_date"] = datetime.strptime(
+            input("Enter End Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
+        ).strftime("%Y-%m-%dT%H:%M:%S")
+    else:
+        print("Wrong Input! Try Again")
+        print("Select date range from list below : ")
+        print("1. Week\n2. Month\n3. Custom")
+        t = int(input("Enter serial number for selected date range: "))
+        if t == 1:
+            inputs["start_date"] = (datetime.now() - timedelta(days=7)).strftime(
+                "%Y-%m-%dT%H:%M:%S"
+            )
+            inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        elif t == 2:
+            inputs["start_date"] = (datetime.now() - timedelta(days=30)).strftime(
+                "%Y-%m-%dT%H:%M:%S"
+            )
+            inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        elif t == 3:
+            inputs["start_date"] = datetime.strptime(
+                input("Enter Start Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
+            ).strftime("%Y-%m-%dT%H:%M:%S")
+            inputs["end_date"] = datetime.strptime(
+                input("Enter End Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
+            ).strftime("%Y-%m-%dT%H:%M:%S")
+        else:
+            print("Wrong Input! Try Again")
+            exit()
     # if inputs["ssl"]:
     #     inputs["cloudera_manager_port"] = 7183
     # else:
@@ -211,8 +340,10 @@ def getLogger():
         logger (obj): Custom logger object
     """
 
-    logger = logging.getLogger("hadoop_discovery_tool")
-    handler = logging.FileHandler("hadoop_discovery_tool_{}.log".format(datetime.now()))
+    logger = logging.getLogger("hadoop_assessment_tool")
+    handler = logging.FileHandler(
+        "hadoop_assessment_tool_{}.log".format(datetime.now())
+    )
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
     logger.addHandler(handler)

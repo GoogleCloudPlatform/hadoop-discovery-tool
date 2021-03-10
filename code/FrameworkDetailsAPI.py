@@ -113,7 +113,7 @@ class FrameworkDetailsAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v33/clusters/{}/services".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -188,4 +188,199 @@ class FrameworkDetailsAPI:
                 return None
         except Exception as e:
             self.logger.error("versionMapping failed", exc_info=True)
+            return None
+
+    def thirdPartySoftware(self):
+        """Get list of 3rd party software installed in cluster.
+
+        Returns:
+            third_party_package (DataFrame): List of rd party software.
+        """
+
+        try:
+            os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
+            os_name = os_name.lower()
+            third_party_package = None
+            if "centos" in os_name:
+                os.popen(
+                    "yum list installed | grep @epel > centos_third_party.csv"
+                ).read()
+                col_names = ["name", "version", "package_level"]
+                third_party_package = pd.read_csv(
+                    "centos_third_party.csv", names=col_names, delimiter=r"\s+"
+                )
+                os.popen("rm centos_third_party.csv").read()
+            elif "red hat" in os_name:
+                os.popen(
+                    "yum list installed | grep @epel > centos_third_party.csv"
+                ).read()
+                col_names = ["name", "version", "package_level"]
+                third_party_package = pd.read_csv(
+                    "centos_third_party.csv", names=col_names, delimiter=r"\s+"
+                )
+                os.popen("rm centos_third_party.csv").read()
+            self.logger.info("thirdPartySoftware successful")
+            return third_party_package
+        except Exception as e:
+            self.logger.error("thirdPartySoftware failed", exc_info=True)
+            return None
+
+    def versionPackage(self):
+        """Get list of software installed in cluster with their versions.
+
+        Returns:
+            package_version (DataFrame): List of software installed.
+        """
+
+        try:
+            os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
+            os_name = os_name.lower()
+            package_version = None
+            if "centos" in os_name:
+                os.popen(
+                    "yum list installed | awk '{print $1,$2}' > centos_package_version.csv"
+                ).read()
+                col_names = ["name", "version"]
+                package_version = pd.read_csv(
+                    "centos_package_version.csv",
+                    names=col_names,
+                    delimiter=r"\s+",
+                    skiprows=5,
+                )
+                package_version.to_csv(
+                    "Discovery_Report/{}/centos_package_version.csv".format(
+                        self.cluster_name
+                    ),
+                    index=False,
+                )
+                os.popen("rm centos_package_version.csv").read()
+                package_version = package_version[1:10]
+            elif "debian" in os_name:
+                os.popen(
+                    "dpkg-query -l  | awk '{print $2,$3}' > debian_package_version.csv"
+                ).read()
+                col_names = ["name", "version"]
+                package_version = pd.read_csv(
+                    "debian_package_version.csv",
+                    names=col_names,
+                    delimiter=r"\s+",
+                    skiprows=5,
+                )
+                package_version.to_csv(
+                    "Discovery_Report/{}/debian_package_version.csv".format(
+                        self.cluster_name
+                    ),
+                    index=False,
+                )
+                os.popen("rm debian_package_version.csv").read()
+                package_version = package_version[1:10]
+            elif "ubuntu" in os_name:
+                os.popen(
+                    "dpkg-query -l  | awk '{print $2,$3}' > ubuntu_package_version.csv"
+                ).read()
+                col_names = ["name", "version"]
+                package_version = pd.read_csv(
+                    "ubuntu_package_version.csv",
+                    names=col_names,
+                    delimiter=r"\s+",
+                    skiprows=5,
+                )
+                package_version.to_csv(
+                    "Discovery_Report/{}/ubuntu_package_version.csv".format(
+                        self.cluster_name
+                    ),
+                    index=False,
+                )
+                os.popen("rm ubuntu_package_version.csv").read()
+                package_version = package_version[1:10]
+            elif "red hat" in os_name:
+                os.popen(
+                    "yum list installed | awk '{print $1,$2}' > redhat_package_version.csv"
+                ).read()
+                col_names = ["name", "version"]
+                package_version = pd.read_csv(
+                    "redhat_package_version.csv",
+                    names=col_names,
+                    delimiter=r"\s+",
+                    skiprows=5,
+                )
+                package_version.to_csv(
+                    "Discovery_Report/{}/redhat_package_version.csv".format(
+                        self.cluster_name
+                    ),
+                    index=False,
+                )
+                os.popen("rm redhat_package_version.csv").read()
+                package_version = package_version[1:10]
+            elif "suse" in os_name:
+                pass
+            self.logger.info("versionPackage successful")
+            return package_version
+        except Exception as e:
+            self.logger.error("versionPackage failed", exc_info=True)
+            return None
+
+    def jdbcOdbcDriver(self):
+        """Get list of JDBC and ODBC driver in cluster.
+
+        Returns:
+            final_df (DataFrame): List of JDBC and ODBC driver.
+        """
+
+        try:
+            os.popen(
+                'find / -iname "*.jar" | grep -E "jdbc|odbc" > jdbc_odbc.csv'
+            ).read()
+            df11 = pd.read_csv("jdbc_odbc.csv", delimiter=r"\s+", names=["name"])
+            os.popen("rm jdbc_odbc.csv").read()
+            BetweenTwoSymbols1 = df11["name"].str.split("/").str[-1]
+            result1 = BetweenTwoSymbols1.drop_duplicates()
+            final_df = result1.to_frame()
+            self.logger.info("jdbcOdbcDriver successful")
+            return final_df
+        except Exception as e:
+            self.logger.error("jdbcOdbcDriver failed", exc_info=True)
+            return None
+
+    def salesFroceSapDriver(self):
+        """Get SalesForce and SAP driver in cluster.
+
+        Returns:
+            df_ngdbc (DataFrame): SAP driver.
+            df_salesforce (DataFrame): SalesForce driver.
+        """
+
+        try:
+            os.popen('find / -iname "Salesforce" > salesforce.csv').read()
+            df_salesforce = pd.read_csv(
+                "salesforce.csv", delimiter=r"\s+", names=["name"]
+            )
+            os.popen("rm salesforce.csv").read()
+            os.popen('find / -iname "ngdbc.jar" > ngdbc.csv').read()
+            df_ngdbc = pd.read_csv("ngdbc.csv", delimiter=r"\s+", names=["name"])
+            os.popen("rm ngdbc.csv").read()
+            self.logger.info("salesFroceSapDriver successful")
+            return df_ngdbc, df_salesforce
+        except Exception as e:
+            self.logger.error("salesFroceSapDriver failed", exc_info=True)
+            return None
+
+    def installedConnectors(self):
+        """Get list of connectors present in cluster.
+
+        Returns:
+            connectors_present (DataFrame): List of connectors.
+        """
+
+        try:
+            os.popen('find / -type f -name "*connector*.jar" > connector.csv').read()
+            connector_df = pd.read_csv("connector.csv", names=["Connector_Name"])
+            os.popen("rm connector.csv").read()
+            connector_details = connector_df["Connector_Name"].str.split("/").str[-1]
+            connectors_present = connector_details.drop_duplicates()
+            connectors_present = connectors_present.to_frame()
+            self.logger.info("installedConnectors successful")
+            return connectors_present
+        except Exception as e:
+            self.logger.error("installedConnectors failed", exc_info=True)
             return None

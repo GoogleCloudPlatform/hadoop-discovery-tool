@@ -200,7 +200,7 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -304,7 +304,7 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v33/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -387,6 +387,156 @@ class DataAPI:
             self.logger.error("getHdfsCapacityUsed failed", exc_info=True)
             return None
 
+    def hdfsStorage(self):
+        """Get HDFS folders and files details in cluster.
+
+        Returns:
+            hdfs_storage_df (DataFrame): HDFS folders and files details
+            hdfs_flag (bool): Check whether acl is enabled or not
+        """
+
+        try:
+            hdfs_flag = 0
+            raw = os.popen("hdfs dfs -ls / > direc_list.csv").read()
+            hdfs_storage_df = pd.read_csv("direc_list.csv")
+            hdfs_storage_df.columns = ["output"]
+            hdfs_storage_df[
+                [
+                    "permissions",
+                    "num_replicas",
+                    "owner",
+                    "group",
+                    "size",
+                    "modified_date",
+                    "time",
+                    "path",
+                ]
+            ] = hdfs_storage_df.output.str.split(expand=True)
+            for i in hdfs_storage_df["path"]:
+                comm = "hdfs storagepolicies -getStoragePolicy -path " + i
+                sam_text = os.popen(comm).read()
+                sam_text = sam_text.split("is ", 1)[1]
+                hdfs_storage_df["storage_policy"] = sam_text.split("\n", 1)[0]
+            hdfs_temp = hdfs_storage_df
+            for i in hdfs_storage_df["path"]:
+                comm = "hdfs dfs -getfacl " + i + " > acl_list.csv"
+                sam_text = os.popen(comm).read()
+            hdfs_storage_df_temp = pd.read_csv("acl_list.csv")
+            for i in hdfs_storage_df_temp:
+                user_str = str(hdfs_storage_df_temp.iloc[[2]])
+                group_str = str(hdfs_storage_df_temp.iloc[[3]])
+                other_str = str(hdfs_storage_df_temp.iloc[[4]])
+                hdfs_storage_df["user"] = user_str.split("::", 1)[1]
+                hdfs_storage_df["user_group"] = group_str.split("::", 1)[1]
+                hdfs_storage_df["other"] = other_str.split("::", 1)[1]
+            self.logger.info("hdfsStorage successful")
+            return hdfs_storage_df, hdfs_flag
+        except Exception as e:
+            self.logger.error("hdfsStorage failed", exc_info=True)
+            return None
+
+    def structuredVsUnstructured(self, total_used_size, hadoop_db_names):
+        """Get structure v/s unstructure data details.
+
+        Args:
+            total_used_size (float): Total storage size.
+            hadoop_db_names (DataFrame): Hive database size.
+        Returns:
+            size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown
+        """
+
+        try:
+            total_used_size = float(total_used_size)
+            structured_size = float(hadoop_db_names["File_Size"].sum())
+            structured_size = structured_size / 1024.0
+            unstructured_size = total_used_size - structured_size
+            percent_structured = (structured_size / total_used_size) * 100
+            percent_structured = str("{0:.3f}".format(percent_structured) + " %")
+            percent_unstructured = (unstructured_size / total_used_size) * 100
+            percent_unstructured = str("{0:.3f}".format(percent_unstructured) + " %")
+            column_names = ["Storage_Type", "Percentage"]
+            size_breakdown_df = pd.DataFrame(
+                {
+                    "Structured Size": percent_structured,
+                    "Unstructured Size": percent_unstructured,
+                },
+                index=[0],
+            )
+            self.logger.info("structuredVsUnstructured successful")
+            return size_breakdown_df
+        except Exception as e:
+            self.logger.error("structuredVsUnstructured failed", exc_info=True)
+            return None
+
+    def checkCompression(self):
+        """Get HDFS file compression details in cluster.
+
+        Returns:
+            value (str): HDFS file compression details.
+        """
+
+        try:
+            path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
+            if path_status == True:
+                xml_data = os.popen("cat /etc/hadoop/conf/mapred-site.xml").read()
+                root = ET.fromstring(xml_data)
+                for val in root.findall("property"):
+                    name = val.find("name").text
+                    if "mapreduce.map.output.compress.codec" not in name:
+                        root.remove(val)
+                value = root[0][1].text
+                value = " ".join(value.split(".", 5)[5:6])
+            else:
+                value = None
+            self.logger.info("checkCompression successful")
+            return value
+        except Exception as e:
+            self.logger.error("checkCompression failed", exc_info=True)
+            return None
+
+    def clusterFileSize(self):
+        """Get HDFS files distribution in cluster.
+
+        Returns:
+            grpby_data (DataFrame): File type distribution with its size.
+            max_value (float): Maximum size of file.
+            min_value (float): Minimum size of file.
+            avg_value (float): Average size of file.
+        """
+
+        try:
+            os.popen("hdfs dfs -ls -R / | sort -r -n -k 5 > hadoop_storage.csv").read()
+            col_names = [
+                "permission",
+                "links",
+                "owner",
+                "group",
+                "size",
+                "creation_date",
+                "creation_time",
+                "name",
+            ]
+            big_data = pd.read_csv(
+                "hadoop_storage.csv", names=col_names, delimiter=r"\s+", skiprows=1,
+            )
+            big_data = big_data.assign(size_mb=lambda x: (x["size"] / (1024 * 1024)))
+            big_data.drop(big_data[big_data["size_mb"] <= 0.1].index, inplace=True)
+            os.popen("rm data.csv").read()
+            big_data["FileType"] = big_data.name.apply(lambda x: x.split(".")[-1])
+            big_data = big_data[big_data["FileType"].apply(lambda x: len(x) < 8)]
+            grpby_data = big_data.groupby("FileType")["size_mb"].sum()
+            grpby_data = grpby_data.sort_values(ascending=False)
+            column = big_data["size_mb"]
+            max_value = column.max()
+            min_value = column.min()
+            avg_value = column.mean()
+            grpby_data = grpby_data.to_frame().reset_index()
+            self.logger.info("clusterFileSize successful")
+            return grpby_data, max_value, min_value, avg_value
+        except Exception as e:
+            self.logger.error("clusterFileSize failed", exc_info=True)
+            return None
+
     def getHiveConfigItems(self, cluster_name):
         """Get Hive metastore config details from cluster.
 
@@ -415,7 +565,7 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v33/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -560,96 +710,100 @@ class DataAPI:
             engine = create_engine(database_uri)
             table_count = 0
             database_df = pd.DataFrame(columns=["Database", "File_Size", "Count"])
-            out = subprocess.check_output(
-                'hive -e "show databases"', shell=True, stderr=subprocess.STDOUT
-            )
-            out = str(out)
-            out = out.split("\\n")
-            for db in out:
-                database_location = ""
-                if (
-                    (db.find("+--") == -1)
-                    and (db.find("database_name") == -1)
-                    and (db != "'")
-                    and (db.find("WARN") == -1)
-                    and (db != "")
-                ):
-                    if db.find("'") != -1:
-                        db = db.split("'")[1]
-                    if db.find("|") != -1:
-                        db = db.split("|")[1]
-                    db = db.strip()
-                    if (db != "information_schema") and (db != "sys"):
-                        if database_type == "postgresql":
-                            result = engine.execute(
-                                """
-                            SELECT count(t."TBL_ID")
-                            FROM
-                            "DBS" as d join "TBLS" as t
-                            on
-                            d."DB_ID"=t."DB_ID"
-                            where
-                            d."NAME" = '{}'
-                            GROUP BY d."DB_ID";
-                            """.format(
-                                    db
-                                )
-                            )
-                        elif database_type == "mysql":
-                            result = engine.execute(
-                                """
-                            SELECT count(t.TBL_ID)
-                            FROM
-                            DBS as d join TBLS as t
-                            on
-                            d.DB_ID=t.DB_ID
-                            where
-                            d.NAME = '{}'
-                            GROUP BY d.DB_ID;
-                            """.format(
-                                    db
-                                )
-                            )
-                        for row in result:
-                            table_count = row[0]
-                        database = subprocess.check_output(
-                            'hive -e "describe schema {}"'.format(db),
-                            shell=True,
-                            stderr=subprocess.STDOUT,
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                select "NAME"
+                from
+                "DBS"
+                where
+                "NAME" not in ('information_schema','sys');
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select NAME
+                from
+                DBS
+                where
+                NAME not in ('information_schema','sys');
+                """
+                )
+            for row in result:
+                db = row[0]
+                if database_type == "postgresql":
+                    result = engine.execute(
+                        """
+                    SELECT count(t."TBL_ID")
+                    FROM
+                    "DBS" as d join "TBLS" as t
+                    on
+                    d."DB_ID"=t."DB_ID"
+                    where
+                    d."NAME" = '{}'
+                    GROUP BY d."DB_ID";
+                    """.format(
+                            db
                         )
-                        database = str(database)
-                        if (database.find("\\t")) and (database.find("+--") == -1):
-                            database = database.split("\\t")
-                            database_location = database[2].strip()
-                        elif database.find("\\n"):
-                            database = database.split("\\n")
-                            for row in database:
-                                if (
-                                    (row.find("+--") == -1)
-                                    and (row.find("db_name") == -1)
-                                    and (row != "'")
-                                    and (row.find("WARN") == -1)
-                                ):
-                                    row = row.split("|")
-                                    database_location = row[3].strip()
-                        database_location = database_location.split(":")[2]
-                        database_location = database_location[4:]
-                        command = "hdfs dfs -du -s -h {}".format(database_location)
-                        command = command + " | awk ' {print $2} '"
-                        database_size = subprocess.check_output(
-                            command, shell=True, stderr=subprocess.STDOUT
+                    )
+                elif database_type == "mysql":
+                    result = engine.execute(
+                        """
+                    SELECT count(t.TBL_ID)
+                    FROM
+                    DBS as d join TBLS as t
+                    on
+                    d.DB_ID=t.DB_ID
+                    where
+                    d.NAME = '{}'
+                    GROUP BY d.DB_ID;
+                    """.format(
+                            db
                         )
-                        database_size = str(database_size.strip())
-                        database_size = database_size.split("'")[1]
-                        database_tmp_df = pd.DataFrame(
-                            {
-                                "Database": db,
-                                "File_Size": database_size,
-                                "Count": table_count,
-                            },
-                            index=[table_count],
+                    )
+                for row in result:
+                    table_count = row[0]
+                if database_type == "postgresql":
+                    result = engine.execute(
+                        """
+                    SELECT "DB_LOCATION_URI"
+                    FROM
+                    "DBS"
+                    where
+                    "NAME" = '{}';
+                    """.format(
+                            db
                         )
-                        database_df = database_df.append(database_tmp_df)
+                    )
+                elif database_type == "mysql":
+                    result = engine.execute(
+                        """
+                    SELECT DB_LOCATION_URI
+                    FROM
+                    DBS
+                    where
+                    NAME = '{}';
+                    """.format(
+                            db
+                        )
+                    )
+                for row in result:
+                    database_location = row[0]
+                    command = "hdfs dfs -du -s -h {}".format(database_location)
+                    command = command + " | awk ' {print $2} '"
+                    database_size = subprocess.check_output(command, shell=True)
+                    database_size = str(database_size.strip())
+                    database_size = database_size.split("'")[1]
+                    database_tmp_df = pd.DataFrame(
+                        {
+                            "Database": db,
+                            "File_Size": database_size,
+                            "Count": table_count,
+                        },
+                        index=[table_count],
+                    )
+                    database_df = database_df.append(database_tmp_df)
             database_df["File_Size"] = database_df["File_Size"].astype(str).astype(int)
             database_df["Count"] = 1
             database_df = database_df.groupby(["Database"]).sum()
@@ -863,3 +1017,226 @@ class DataAPI:
             self.logger.error("getHiveExecutionEngine failed", exc_info=True)
             return None
 
+    def getHiveFileFormats(self, database_uri, database_type):
+        """Get Hive file formats.
+
+        Args:
+            database_uri (str): Metastore database connection URI.
+            database_type (str): Metastore database type.
+        Returns:
+            formats (str): List of formats used by Hive.
+        """
+
+        try:
+            engine = create_engine(database_uri)
+            file_formats = []
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
+                select "NAME", "DB_ID" 
+                from 
+                "DBS" 
+                where 
+                "NAME" not in ('information_schema','sys');
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select NAME, DB_ID
+                from 
+                DBS 
+                where 
+                NAME not in ('information_schema','sys');
+                """
+                )
+            for row in result:
+                db = row[0]
+                db_id = row[1]
+                if database_type == "postgresql":
+                    result = engine.execute(
+                        """
+                    select "TBL_NAME"
+                    from 
+                    "TBLS" 
+                    where 
+                    "DB_ID" = {};
+                    """.format(
+                            db_id
+                        )
+                    )
+                elif database_type == "mysql":
+                    result = engine.execute(
+                        """
+                    select TBL_NAME
+                    from 
+                    TBLS
+                    where 
+                    DB_ID = {};
+                    """.format(
+                            db_id
+                        )
+                    )
+                table_name = ""
+                for row in result:
+                    table_name = row[0]
+                    break
+                if table_name != "":
+                    file_format = subprocess.check_output(
+                        'hive -e "use {}; show create table {}" | grep "Input"'.format(
+                            db, table_name
+                        ),
+                        shell=True,
+                    )
+                    file_format = str(file_format.strip())
+                    file_format = file_format.split("'")[1]
+                    file_format = file_format.split(".")[-1]
+                    if file_format not in file_formats:
+                        file_formats.append(file_format)
+            formats = ", ".join(file_formats)
+            self.logger.info("getHiveFileFormats successful")
+            return formats
+        except Exception as e:
+            self.logger.error("getHiveFileFormats failed", exc_info=True)
+            return None
+
+    def getTransactionLockingConcurrency(self):
+        """Get Hive concurrency and locking config.
+
+        Returns:
+            transaction_locking_concurrency (str): Concurrency and locking config value.
+        """
+
+        try:
+            transaction_locking_concurrency = None
+            concurrency = subprocess.check_output(
+                'hive -e "set hive.support.concurrency"', shell=True
+            )
+            concurrency = str(concurrency)
+            concurrency = concurrency.split("\\n")
+            for line in concurrency:
+                if line.find("hive.support.concurrency") != -1:
+                    concurrency = line.split("=")[1]
+                    if concurrency.find("|") != -1:
+                        concurrency = concurrency.split("|")[0]
+                        concurrency = concurrency.strip()
+            txn_manager = subprocess.check_output(
+                'hive -e "set hive.txn.manager"', shell=True
+            )
+            txn_manager = str(txn_manager)
+            txn_manager = txn_manager.split("\\n")
+            for line in txn_manager:
+                if line.find("hive.txn.manager") != -1:
+                    txn_manager = line.split("=")[1]
+                    if txn_manager.find("|") != -1:
+                        txn_manager = txn_manager.split("|")[0]
+                        txn_manager = txn_manager.strip()
+            if (
+                concurrency == "true"
+                and txn_manager == "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
+            ):
+                transaction_locking_concurrency = "Yes"
+            else:
+                transaction_locking_concurrency = "No"
+            self.logger.info("getTransactionLockingConcurrency successful")
+            return transaction_locking_concurrency
+        except Exception as e:
+            self.logger.error("getTransactionLockingConcurrency failed", exc_info=True)
+            return None
+
+    def getHiveAdhocEtlQuery(self, yarn_rm, yarn_port):
+        """Get Hive adhoc and etl query count over a date range.
+
+        Args:
+            yarn_rm (str): Yarn resource manager IP.
+        Returns:
+            query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
+        """
+
+        try:
+            r = requests.get(
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port)
+            )
+            if r.status_code == 200:
+                yarn_application = r.json()
+                yarn_application_list = yarn_application["apps"]["app"]
+                yarn_application_df = pd.DataFrame(yarn_application_list)
+                yarn_application_df = pd.DataFrame(
+                    {
+                        "ApplicationType": yarn_application_df["applicationType"],
+                        "StartedTime": pd.to_datetime(
+                            (yarn_application_df["startedTime"] + 500) / 1000, unit="s",
+                        ),
+                        "FinishedTime": pd.to_datetime(
+                            (yarn_application_df["finishedTime"] + 500) / 1000,
+                            unit="s",
+                        ),
+                        "User": yarn_application_df["user"],
+                        "Name": yarn_application_df["name"],
+                    }
+                )
+                yarn_application_df = yarn_application_df[
+                    (yarn_application_df["StartedTime"] < (self.end_date))
+                    & (yarn_application_df["StartedTime"] >= (self.start_date))
+                    & (yarn_application_df["FinishedTime"] >= (self.start_date))
+                ]
+                yarn_application_df[yarn_application_df["Name"].str.contains("HIVE")]
+                yarn_application_df = yarn_application_df.drop_duplicates(
+                    subset="Name", keep="first"
+                ).reset_index(drop=True)
+                yarn_application_df["QueryType"] = "adhoc"
+                yarn_application_df.loc[
+                    yarn_application_df["User"].str.contains("service"), "QueryType"
+                ] = "etl"
+                yarn_application_df.loc[
+                    yarn_application_df["User"].str.contains("_svc"), "QueryType"
+                ] = "etl"
+                yarn_application_df.loc[
+                    yarn_application_df["User"].str.contains("svc_"), "QueryType"
+                ] = "etl"
+                yarn_application_df["Count"] = 1
+                query_type_count_df = pd.DataFrame(
+                    {
+                        "Query_Type": yarn_application_df["QueryType"],
+                        "Query Count": yarn_application_df["Count"],
+                    }
+                )
+                query_type_count_df = query_type_count_df.groupby(["Query_Type"]).sum()
+                self.logger.info("getHiveAdhocEtlQuery successful")
+                return query_type_count_df
+            else:
+                self.logger.error(
+                    "getHiveAdhocEtlQuery failed due to invalid API call. HTTP Response: ",
+                    r.status_code,
+                )
+                return None
+        except Exception as e:
+            self.logger.error("getHiveAdhocEtlQuery failed", exc_info=True)
+            return None
+
+    def interactiveQueriesStatus(self):
+        """Get Hive interactive queries status in cluster.
+
+        Returns:
+            hive_interactive_status (str): Hive interactive queries status.
+        """
+
+        try:
+            path_status = path.exists("/etc/hive/conf/hive-site.xml")
+            if path_status == True:
+                hive_interactive_status = "NO"
+                xml_data = os.popen("cat /etc/hive/conf/hive-site.xml").read()
+                root = ET.fromstring(xml_data)
+                for key in root.findall("property"):
+                    name = key.find("name").text
+                    value = key.find("value").text
+                    if name == "hive.execution.mode":
+                        if value == "llap":
+                            hive_interactive_status = "YES"
+            else:
+                hive_interactive_status = None
+            self.logger.info("interactiveQueriesStatus successful")
+            return hive_interactive_status
+        except Exception as e:
+            self.logger.error("interactiveQueriesStatus failed", exc_info=True)
+            return None
