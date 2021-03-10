@@ -14,6 +14,10 @@ Following are the specific categories:
 ## Tool Functionality
 
 The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment based on various factors/metrics. 
+
+![Alt text](architectural_diagram.png?raw=true)
+
+
 1. This python-based tool will use Cloudera API, Generic - YARN API, and OS based CLI request to retrieve information from the Hadoop cluster
 2. Information from the APIs will come in the form of JSON files
 3. Information from CLI command request will be outputs stored in variables
