@@ -41,7 +41,7 @@ cd code
 
 ```bash
 chmod +x build.sh
-chmod +x build.sh
+chmod +x run.sh
 ```
 
 3. Run the first script for building the environment, using the command 
