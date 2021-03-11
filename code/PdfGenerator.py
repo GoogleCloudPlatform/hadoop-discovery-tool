@@ -599,24 +599,29 @@ class PdfGenerator:
                     ln=1,
                 )
                 hdfs_inner_dir = obj2.getCliresult(hdfs_dir[2])
-                for j in hdfs_inner_dir.splitlines():
-                    hdfs_inner_dir = j.split()
-                    if len(hdfs_inner_dir) == 5:
-                        hdfs_inner_dir[0] = hdfs_inner_dir[0] + b" " + hdfs_inner_dir[1]
-                        hdfs_inner_dir[1] = hdfs_inner_dir[2] + b" " + hdfs_inner_dir[3]
-                        hdfs_inner_dir[2] = hdfs_inner_dir[4]
-                    pdf.cell(
-                        230,
-                        8,
-                        "    |-- {} - (Size = {} , Disk Space = {})".format(
-                            str(hdfs_inner_dir[2], "utf-8"),
-                            str(hdfs_inner_dir[0], "utf-8"),
-                            str(hdfs_inner_dir[1], "utf-8"),
-                        ),
-                        0,
-                        ln=1,
-                    )
-                pdf.cell(230, 3, "", 0, ln=1)
+                if type(hdfs_inner_dir) == type(None):
+                    for j in hdfs_inner_dir.splitlines():
+                        hdfs_inner_dir = j.split()
+                        if len(hdfs_inner_dir) == 5:
+                            hdfs_inner_dir[0] = (
+                                hdfs_inner_dir[0] + b" " + hdfs_inner_dir[1]
+                            )
+                            hdfs_inner_dir[1] = (
+                                hdfs_inner_dir[2] + b" " + hdfs_inner_dir[3]
+                            )
+                            hdfs_inner_dir[2] = hdfs_inner_dir[4]
+                        pdf.cell(
+                            230,
+                            8,
+                            "    |-- {} - (Size = {} , Disk Space = {})".format(
+                                str(hdfs_inner_dir[2], "utf-8"),
+                                str(hdfs_inner_dir[0], "utf-8"),
+                                str(hdfs_inner_dir[1], "utf-8"),
+                            ),
+                            0,
+                            ln=1,
+                        )
+                    pdf.cell(230, 3, "", 0, ln=1)
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -745,12 +750,6 @@ class PdfGenerator:
             Server_dn = temp
             obj_pdf.adServerBasedDN(Server_dn)
 
-        keytab_files = None
-        temp = obj4.keytabFilesInfo()
-        if type(temp) != type(None):
-            keytab_files = temp
-            obj_pdf.keytabFiles(keytab_files)
-
         luks_detect = None
         temp = obj4.checkLuks()
         if type(temp) != type(None):
@@ -763,7 +762,7 @@ class PdfGenerator:
             Mr_ssl, hdfs_ssl, yarn_ssl = temp
             obj_pdf.sslStatus(Mr_ssl, hdfs_ssl, yarn_ssl)
 
-        hue_flag, hdfs_flag, yarn_flag_1, yarn_flag_2, mapred_flag = (
+        hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab = (
             None,
             None,
             None,
@@ -772,9 +771,9 @@ class PdfGenerator:
         )
         temp = obj4.kerberosHttpAuth()
         if type(temp) != type(None):
-            hue_flag, hdfs_flag, yarn_flag_1, yarn_flag_2, mapred_flag = temp
+            hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab = temp
             obj_pdf.kerberosHttpAuth(
-                hue_flag, hdfs_flag, yarn_flag_1, yarn_flag_2, mapred_flag
+                hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab
             )
 
         port_df = None

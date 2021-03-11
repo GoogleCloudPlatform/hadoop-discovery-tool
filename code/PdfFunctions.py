@@ -2252,19 +2252,6 @@ class PdfFunctions:
             230, 8, "AD Server Based DN: {}".format(Server_dn), 0, 1,
         )
 
-    def keytabFiles(self, keytab_files):
-        """Add keytab files information in PDF.
-
-        Args:
-            keytab_files (str): Keytab files information.
-        """
-
-        self.pdf.set_font("Arial", "", 12)
-        self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(
-            230, 8, "Keytab Files Details: {}".format(keytab_files), 0, 1,
-        )
-
     def sslStatus(self, Mr_ssl, hdfs_ssl, yarn_ssl):
         """Add SSL staus of various services in PDF.
 
@@ -2283,17 +2270,15 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "{}".format(yarn_ssl), 0, ln=1)
         self.pdf.cell(230, 8, "{}".format(Mr_ssl), 0, ln=1)
 
-    def kerberosHttpAuth(
-        self, hue_flag, hdfs_flag, yarn_flag_1, yarn_flag_2, mapred_flag
-    ):
+    def kerberosHttpAuth(self, hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab):
         """Add kerberos status of various services in PDF.
 
         Args:
             hue_flag (str): Hue kerberos status
             mapred_flag (str): MapReduce kerberos status
             hdfs_flag (str): HDFS kerberos status
-            yarn_flag_1 (str): Yarn kerberos status
-            yarn_flag_2 (str): Yarn kerberos status
+            yarn_flag (str): Yarn kerberos status
+            keytab (str): Presence of keytab files
         """
 
         self.pdf.set_font("Arial", "", 12)
@@ -2301,22 +2286,21 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "Kerberos Status:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        if hue_flag == 1:
-            self.pdf.cell(230, 8, "Hue : Enabled", 0, ln=1)
-        else:
-            self.pdf.cell(230, 8, "Hue : Disabled", 0, ln=1)
-        if (yarn_flag_1 == 1) and (yarn_flag_2 == 1):
-            self.pdf.cell(230, 8, "Yarn : Enabled", 0, ln=1)
-        else:
-            self.pdf.cell(230, 8, "Yarn : Disabled", 0, ln=1)
-        if mapred_flag == 1:
-            self.pdf.cell(230, 8, "Mapreduce : Enabled", 0, ln=1)
-        else:
-            self.pdf.cell(230, 8, "Mapreduce : Disabled", 0, ln=1)
-        if hdfs_flag == 1:
-            self.pdf.cell(230, 8, "HDFS : Enabled", 0, ln=1)
-        else:
-            self.pdf.cell(230, 8, "HDFS : Disabled", 0, ln=1)
+        self.pdf.cell(
+            230, 8, "{}".format(keytab), 0, 1,
+        )
+        self.pdf.cell(
+            230, 8, "{}".format(hue_flag), 0, 1,
+        )
+        self.pdf.cell(
+            230, 8, "{}".format(mapred_flag), 0, 1,
+        )
+        self.pdf.cell(
+            230, 8, "{}".format(hdfs_flag), 0, 1,
+        )
+        self.pdf.cell(
+            230, 8, "{}".format(yarn_flag), 0, 1,
+        )
 
     def checkLuks(self, luks_detect):
         """Add LUKS information in PDF.

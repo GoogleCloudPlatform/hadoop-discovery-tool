@@ -151,7 +151,7 @@ class SecurityAPI:
                 )
             if r.status_code == 200:
                 ad_server = r.json()
-                ADServer = None
+                ADServer = "LDAP server not present"
                 with open(
                     "Discovery_Report/{}/AD_server_port.json".format(cluster_name), "w"
                 ) as fp:
@@ -242,35 +242,6 @@ class SecurityAPI:
             self.logger.error("adServerBasedDN failed", exc_info=True)
             return None
 
-    def keytabFilesInfo(self):
-        """Get AD server details based on domain name.
-
-        Returns:
-            keytab (str): Keytab files information.
-        """
-
-        try:
-            keytab = None
-            os.popen(
-                'find / -iname "*.keytab" > ./keytab.txt 2>/dev/null',
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
-            ).read()
-            with open("./keytab.txt", "r") as read_obj:
-                for line in read_obj:
-                    if "keytab" in line:
-                        keytab = "Keytab exist"
-                        break
-                    else:
-                        keytab = "Keytab not exist"
-                        break
-            os.popen("rm ./keytab.txt")
-            self.logger.info("keytabFilesInfo successful")
-            return keytab
-        except Exception as e:
-            self.logger.error("keytabFilesInfo failed", exc_info=True)
-            return None
-
     def sslStatus(self):
         """Get SSL staus of various services.
 
@@ -339,116 +310,87 @@ class SecurityAPI:
             hue_flag (str): Hue kerberos status
             mapred_flag (str): MapReduce kerberos status
             hdfs_flag (str): HDFS kerberos status
-            yarn_flag_1 (str): Yarn kerberos status
-            yarn_flag_2 (str): Yarn kerberos status
+            yarn_flag (str): Yarn kerberos status
+            keytab (str): Presence of keytab files
         """
 
         try:
-            hue_flag = 0
-            yarn_flag_1 = 0
-            yarn_flag_2 = 0
-            mapred_flag = 0
-            hdfs_flag = 0
-            path_status = path.exists("/etc/hue/conf/hue.ini")
-            if path_status == True:
-                dt1 = subprocess.Popen(
-                    "cat /etc/hue/conf/hue.ini",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    encoding="utf-8",
+            r = None
+            if self.version == 7:
+                r = requests.get(
+                    "{}://{}:{}/api/v40/cm/kerberosPrincipals".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
                 )
-                out, err = dt1.communicate()
-                var_dt = []
-                out1 = out.splitlines()
-                get_dt = 0
-                var_dt = []
-                res_dt = ["## kinit_path="]
-                for i in out1:
-                    if "[[kerberos]]" in i:
-                        get_dt = 1
-                    if (get_dt == 1) and " Configuration options for" not in i:
-                        var_dt.append(i)
-                    if "Configuration options for" in i:
-                        get_dt = 0
-                var_dt = [x.lstrip() for x in var_dt]
-                var_dt = "".join(map(str, var_dt))
-                if var_dt.find("## kinit_path=") != -1:
-                    hue_flag = 0
-                else:
-                    hue_flag = 1
-            else:
-                hue_flag = None
-            path_status = path.exists("/etc/hadoop/conf/yarn-site.xml")
-            if path_status == True:
-                xml_data = subprocess.check_output(
-                    "cat /etc/hadoop/conf/yarn-site.xml",
-                    shell=True,
-                    stderr=subprocess.STDOUT,
+            elif self.version == 6:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/cm/kerberosPrincipals".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
                 )
-                root = ET.fromstring(xml_data)
-                for val in root.findall("property"):
-                    name = val.find("name").text
-                    if "yarn.resourcemanager.keytab" not in name:
-                        root.remove(val)
-                if len(list(root)) == 0:
-                    yarn_flag_1 = 0
-                else:
-                    yarn_flag_1 = 1
-            else:
-                yarn_flag1 = None
-            path_status = path.exists("/etc/hadoop/conf/yarn-site.xml")
-            if path_status == True:
-                xml_data2 = subprocess.check_output(
-                    "cat /etc/hadoop/conf/yarn-site.xml",
-                    shell=True,
-                    stderr=subprocess.STDOUT,
+            elif self.version == 5:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/cm/kerberosPrincipals".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        cluster_name,
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
                 )
-                root2 = ET.fromstring(xml_data2)
-                for val2 in root2.findall("property"):
-                    name2 = val2.find("name").text
-                    if "yarn.nodemanager.keytab" not in name2:
-                        root2.remove(val2)
-                if len(list(root2)) == 0:
-                    yarn_flag_2 = 0
+            if r.status_code == 200:
+                keytab = r.json()
+                if len(keytab["items"]) > 0:
+                    keytab = "keytab exist"
                 else:
-                    yarn_flag_2 = 1
+                    keytab = "keytab not exist"
+                keytab = keytab["items"]
+                new_list = []
+                for i in range(0, len(keytab)):
+                    dt = keytab[i].split("/", 1)
+                    neww_list = new_list.append(dt[0])
+                new_list = [x.lower() for x in new_list]
+
+                if "hue" in new_list:
+                    hue_flag = "Kerberos on hue is enabled"
+                else:
+                    hue_flag = "Kerberos on hue is not enabled"
+
+                if "yarn" in new_list:
+                    yarn_flag = "Kerberos on yarn is enabled"
+                else:
+                    yarn_flag = "Kerberos on yarn is not enabled"
+
+                if "mapred" in new_list:
+                    mapred_flag = "Kerberos on mapreduce is enabled"
+                else:
+                    mapred_flag = "Kerberos on mapreduce is not enabled"
+
+                if "hdfs" in new_list:
+                    hdfs_flag = "Kerberos on HDFS is enabled"
+                else:
+                    hdfs_flag = "Kerberos on HDFS is not enabled"
+
+                self.logger.info("kerberosHttpAuth successful")
+                return hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab
             else:
-                yarn_flag2 = None
-            path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
-            if path_status == True:
-                xml_data3 = subprocess.check_output(
-                    "cat /etc/hadoop/conf/mapred-site.xml",
-                    shell=True,
-                    stderr=subprocess.STDOUT,
+                self.logger.error(
+                    "kerberosHttpAuth failed due to invalid API call. HTTP Response: ",
+                    r.status_code,
                 )
-                root3 = ET.fromstring(xml_data3)
-                for val3 in root3.findall("property"):
-                    name3 = val3.find("name").text
-                    if "mapreduce.jobhistory.keytab" not in name3:
-                        root3.remove(val3)
-                if len(list(root3)) == 0:
-                    mapred_flag = 0
-                else:
-                    mapred_flag = 1
-            else:
-                mapred_flag = None
-            path_status = path.exists("/etc/hadoop/conf/hdfs-site.xml")
-            if path_status == True:
-                xml_data = subprocess.Popen(
-                    "cat /etc/hadoop/conf/hdfs-site.xml | grep kerberos.principal",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    encoding="utf-8",
-                )
-                out, err = xml_data.communicate()
-                if not out:
-                    hdfs_flag = 1
-                else:
-                    hdfs_flag = 0
-            else:
-                hdfs_flag = None
-            self.logger.info("kerberosHttpAuth successful")
-            return hue_flag, hdfs_flag, yarn_flag_1, yarn_flag_2, mapred_flag
         except Exception as e:
             self.logger.error("kerberosHttpAuth failed", exc_info=True)
             return None

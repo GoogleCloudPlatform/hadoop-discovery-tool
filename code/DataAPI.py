@@ -158,14 +158,57 @@ class DataAPI:
         """
 
         try:
-            path = clipath
-            out = subprocess.Popen(
-                ["hadoop", "fs", "-du", "-h", path],
+            keyword = ["dfs.permissions"]
+            data = subprocess.Popen(
+                "ls -at /run/cloudera-scm-agent/process/*-hdfs-NAMENODE/hdfs-site.xml | head -n 1",
+                shell=True,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
+                encoding="utf-8",
             )
-            stdout, stderr = out.communicate()
-            hdfs_root_dir = stdout
+            data_out, data_err = data.communicate()
+            final_val = "false"
+            if len(data_out) > 0:
+                lst = []
+                res = []
+                xml_data = subprocess.Popen(
+                    "cat " + data_out,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
+                out, err = xml_data.communicate()
+                root = ET.fromstring(out)
+                for val in root.findall("property"):
+                    name = val.find("name").text
+                    if "dfs.permissions" not in name:
+                        root.remove(val)
+                if len(list(root)) == 0:
+                    pass
+                else:
+                    for elem in root.iter():
+                        intermediate_text = elem.text
+                        intermediate_text = intermediate_text.replace("\n", "").strip(
+                            " "
+                        )
+                        if len(intermediate_text) > 2:
+                            lst.append(intermediate_text)
+                i = 0
+                while i < len(lst):
+                    if keyword.count(lst[i]) > 0:
+                        res.append(i)
+                    i += 1
+                index = int(" ".join([str(elem) for elem in res]))
+                final_val = lst[index + 1]
+            hdfs_root_dir = None
+            if final_val == "false":
+                path = clipath
+                out = subprocess.Popen(
+                    ["hadoop", "fs", "-du", "-h", path],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                )
+                stdout, stderr = out.communicate()
+                hdfs_root_dir = stdout
             self.logger.info("getCliresult successful")
             return hdfs_root_dir
         except Exception as e:
