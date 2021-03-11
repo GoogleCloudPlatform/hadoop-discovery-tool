@@ -75,7 +75,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -86,7 +86,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -97,7 +97,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster = r.json()
@@ -137,7 +137,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -149,7 +149,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -161,7 +161,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster_host = r.json()
@@ -203,7 +203,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -215,7 +215,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -227,7 +227,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster_services = r.json()
@@ -270,7 +270,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -282,7 +282,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -294,7 +294,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 host_data = r.json()
@@ -332,7 +332,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -346,7 +346,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -360,7 +360,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster_total_cores = r.json()
@@ -435,7 +435,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -449,7 +449,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -463,7 +463,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster_cpu_usage = r.json()
@@ -547,7 +547,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -561,7 +561,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -575,7 +575,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster_total_memory = r.json()
@@ -652,7 +652,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -666,7 +666,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -680,7 +680,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster_memory_usage = r.json()
@@ -755,7 +755,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -766,7 +766,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -777,7 +777,7 @@ class HardwareOSAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 database_server = r.json()

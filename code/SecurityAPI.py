@@ -58,8 +58,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
@@ -70,8 +70,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
@@ -82,8 +82,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             if r.status_code == 200:
                 cluster_kerberos_info = r.json()
                 kerberized_status = str(cluster_kerberos_info["kerberized"])
@@ -123,8 +123,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -135,8 +135,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -147,8 +147,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             if r.status_code == 200:
                 ad_server = r.json()
                 ADServer = "LDAP server not present"
@@ -193,8 +193,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -205,8 +205,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -217,8 +217,8 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             if r.status_code == 200:
                 ad_server = r.json()
                 Server_dn = None
@@ -325,38 +325,37 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/kerberosPrincipals".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/kerberosPrincipals".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
-                        cluster_name,
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
-                )
+                    ), verify = False
+                 )
             if r.status_code == 200:
                 keytab = r.json()
                 if len(keytab["items"]) > 0:
                     keytab = "keytab exist"
                 else:
                     keytab = "keytab not exist"
+                # for detecting kerberos in each services    
                 keytab = keytab["items"]
                 new_list = []
                 for i in range(0, len(keytab)):

@@ -109,7 +109,7 @@ class FrameworkDetailsAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -121,7 +121,7 @@ class FrameworkDetailsAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -133,7 +133,7 @@ class FrameworkDetailsAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 version_related = r.json()

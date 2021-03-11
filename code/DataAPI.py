@@ -239,7 +239,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -253,7 +253,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -267,7 +267,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 hdfs_capacity = r.json()
@@ -343,7 +343,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -357,7 +357,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -371,7 +371,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 hdfs_capacity_used = r.json()
@@ -609,7 +609,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -621,7 +621,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -633,7 +633,7 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 hive_config = r.json()

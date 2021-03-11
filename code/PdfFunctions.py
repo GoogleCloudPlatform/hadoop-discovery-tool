@@ -72,7 +72,7 @@ class PdfFunctions:
                     pd.DataFrame({"Hostname": [host["hostname"]],}), ignore_index=True,
                 )
                 for role in host["roleRefs"]:
-                    if re.search(r"\bNAMENODE\b", role["roleName"]):
+                    if (re.search(r'\bNAMENODE\b', role['roleName']) or re.search(r'\bSECONDARYNAMENODE\b', role['roleName']) and "hdfs" in role['serviceName']):
                         namenodes_df = namenodes_df.append(
                             pd.DataFrame({"HostName": [host["hostname"]],}),
                             ignore_index=True,
@@ -1368,9 +1368,9 @@ class PdfFunctions:
         else:
             self.pdf.cell(230, 8, "Java not installed", 0, ln=1)
         if scala_flag == 1:
-            self.pdf.cell(230, 8, "Scala installed", 0, ln=1)
-        else:
             self.pdf.cell(230, 8, "Scala not installed", 0, ln=1)
+        else:
+            self.pdf.cell(230, 8, "Scala installed", 0, ln=1)
 
     def securitySoftware(self, security_software):
         """Add list of security software present in cluster in PDF.
@@ -1846,7 +1846,7 @@ class PdfFunctions:
                         True,
                     )
                     self.pdf.cell(
-                        30,
+                        25,
                         5,
                         "{}".format(hdfs_storage_df["permissions"].iloc[pos]),
                         1,
@@ -1891,7 +1891,7 @@ class PdfFunctions:
                 self.pdf.cell(15, 5, "Size", 1, 0, "C", True)
                 self.pdf.cell(30, 5, "Modified Date", 1, 0, "C", True)
                 self.pdf.cell(30, 5, "Modified Time", 1, 0, "C", True)
-                self.pdf.cell(25, 5, "Permissions", 1, 0, "C", True)
+                self.pdf.cell(25, 5, "Permissions", 1, 1, "C", True)
                 self.pdf.set_text_color(r=1, g=1, b=1)
                 self.pdf.set_fill_color(r=244, g=244, b=244)
                 self.pdf.set_font("Arial", "", 12)
@@ -1942,11 +1942,11 @@ class PdfFunctions:
                         True,
                     )
                     self.pdf.cell(
-                        30,
+                        25,
                         5,
                         "{}".format(hdfs_storage_df["permissions"].iloc[pos]),
                         1,
-                        0,
+                        1,
                         "C",
                         True,
                     )
@@ -2153,6 +2153,9 @@ class PdfFunctions:
             autopct="%.1f%%",
             title="Table Count By Access Frequency",
         )
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=1, g=1, b=1)
+        self.pdf.cell(230, 8, "Hot(within 1 day, Warm(from 1 to 3 days), Cold(more than 3 days))", 0, ln=1)
         plt.savefig("table_type_count_plot.png")
         self.pdf.image(
             "table_type_count_plot.png", x=15, y=None, w=95, h=95, type="", link=""
@@ -3889,11 +3892,11 @@ class PdfFunctions:
             language_list (str): List of languages separated by comma.
         """
 
-        self.pdf.set_font("Arial", "", 12)
-        self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(
-            230, 8, "Programming Languages Used By Spark: {}".format(languages), 0, 1,
-        )
+        # self.pdf.set_font("Arial", "", 12)
+        # self.pdf.set_text_color(r=1, g=1, b=1)
+        # self.pdf.cell(
+        #     230, 8, "Programming Languages Used By Spark: {}".format(languages), 0, 1,
+        # )
 
     def sparkDynamicAllocationAndResourceManager(
         self, dynamic_allocation, spark_resource_manager

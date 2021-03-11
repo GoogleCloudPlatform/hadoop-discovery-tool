@@ -48,7 +48,7 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),verify = False
             )
             if r.status_code == 200:
                 yarn_application = r.json()
@@ -558,7 +558,7 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port),verify = False
             )
             if r.status_code == 200:
                 yarn_total_vcores = r.json()
@@ -599,7 +599,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -613,7 +613,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -627,7 +627,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_vcore_available = r.json()
@@ -705,7 +705,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -719,7 +719,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -733,7 +733,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_vcore_allocated = r.json()
@@ -827,7 +827,7 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port),verify = False
             )
             if r.status_code == 200:
                 yarn_total_memory = r.json()
@@ -869,7 +869,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -883,7 +883,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -897,7 +897,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_memory_available = r.json()
@@ -975,7 +975,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -989,7 +989,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1003,7 +1003,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_memory_allocated = r.json()
@@ -1190,7 +1190,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1204,7 +1204,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1218,7 +1218,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_pending_apps = r.json()
@@ -1294,7 +1294,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1308,7 +1308,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1322,7 +1322,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_pending_memory = r.json()
@@ -1398,7 +1398,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1412,7 +1412,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1426,7 +1426,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_pending_vcore = r.json()
@@ -1502,7 +1502,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1516,7 +1516,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1530,7 +1530,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 yarn_running_apps = r.json()
@@ -1779,7 +1779,8 @@ class ApplicationAPI:
         """
 
         try:
-            statuscomm = os.popen("echo 'status' | hbase shell -n").read()
+            statuscomm = subprocess.Popen("echo 'status' | hbase shell -n",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            statuscomm,err = statuscomm.communicate()    
             statusinfo = statuscomm.split()
             if "servers," in statusinfo:
                 NumNodesServing = int(statusinfo[statusinfo.index("servers,") - 1])
@@ -1855,7 +1856,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1867,7 +1868,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1879,7 +1880,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 hbase = r.json()
@@ -1924,7 +1925,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1936,7 +1937,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1948,7 +1949,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 hbase = r.json()
@@ -1983,9 +1984,10 @@ class ApplicationAPI:
         """
 
         try:
-            hive_aux = os.popen(
-                "awk '/HIVE_AUX_JARS_PATH/ {print}' /etc/hive/conf/hive-env.sh"
-            ).read()
+            hive_aux = subprocess.Popen(
+                "awk '/HIVE_AUX_JARS_PATH/ {print}' /etc/hive/conf/hive-env.sh",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+            )
+            hive_aux, err = hive_aux.communicate()
             if "hive-hbase-handler" in hive_aux:
                 hbasehive_var = "Yes"
             else:
@@ -2004,9 +2006,9 @@ class ApplicationAPI:
         """
 
         try:
-            os.popen(
-                'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv'
-            ).read()
+            subprocess.Popen(
+                'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+            )
             phoenix_path_df = pd.read_csv(
                 "phoenixpath.csv", delimiter="\n", header=None
             )
@@ -2035,9 +2037,9 @@ class ApplicationAPI:
 
         try:
             coprocessorHbase = ""
-            os.popen(
-                'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv'
-            ).read()
+            subprocess.Popen(
+                'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+            )
             coprocessor_path_df = pd.read_csv(
                 "coprocessorpath.csv", delimiter="\n", header=None
             )
@@ -2260,7 +2262,7 @@ class ApplicationAPI:
         """
 
         try:
-            os.popen("awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv"  )
+            subprocess.Popen("awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv" ,shell=True,stdout=subprocess.PIPE,encoding="utf-8" )
             zookeeper_conn_df = pd.read_csv("zookeeper_conn.csv", delimiter = "\n",header=None)
             zookeeper_conn_df.columns= ['parameters']
             zookeeper_conn_df = zookeeper_conn_df.iloc[[-1]]
@@ -2287,13 +2289,12 @@ class ApplicationAPI:
         """
 
         try:
-            os.popen(
+            subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list > topics_list.csv",
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
-            ).read()
+                shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+            )
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             num_topics = len(topics_df.index)
@@ -2319,27 +2320,28 @@ class ApplicationAPI:
         try:
             broker_connection =''
             for i in self.broker_list:
-            conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
-            broker_connection =  broker_connection + conn_temp
-            broker_connection = broker_connection.strip(",")
-            os.popen(
+                conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
+                broker_connection =  broker_connection + conn_temp
+                broker_connection = broker_connection.strip(",")
+                subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list > topics_list.csv",
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
-            ).read()
+                shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+            )
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             sum_size = 0
             for i in topics_df["topics"]:
-                msg_size = os.popen(
+                msg_size = subprocess.Popen(
                     "timeout 20 kafka-log-dirs     --bootstrap-server "
                     + str(broker_connection)
                     + "  --topic-list "
                     + str(i)
-                    + "     --describe   | grep '^{'   | jq '[ ..|.size? | numbers ] | add'"
-                ).read()
+                    + "     --describe   | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                )
+                msg_size,err = msg_size.communicate()
+
                 msg_size = msg_size.strip("\n")
                 if msg_size != '':
                     sum_size = sum_size + (int(msg_size) if msg_size != 'null' else 0)
@@ -2370,24 +2372,25 @@ class ApplicationAPI:
                 conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
                 broker_connection =  broker_connection + conn_temp
             broker_connection = broker_connection.strip(",")
-            os.popen(
+            subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list > topics_list.csv",
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
-            ).read()
+                shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+            )
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             sum_count = 0
             for i in topics_df["topics"]:
-                msg_count = os.popen(
+                msg_count = subprocess.Popen(
                     "timeout 20 kafka-run-class kafka.tools.GetOffsetShell --broker-list "
                     + str(broker_connection)
                     + " --topic "
                     + str(i)
-                    + " --time -1 --offsets 1 | awk -F  \":\" '{sum += $3} END {print sum}'"
-                ).read()
+                    + " --time -1 --offsets 1 | awk -F  \":\" '{sum += $3} END {print sum}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                )
+                msg_count,err = msg_count.communicate()
+
                 msg_count = msg_count.strip("\n")
                 if msg_count != '':
                     sum_count = sum_count + int(msg_count)
@@ -2395,7 +2398,7 @@ class ApplicationAPI:
                     sum_count = 0  
             self.logger.info("msgCountKafka successful")
             return sum_count
-         except EmptyDataError:
+        except EmptyDataError:
             sum_size = 0
             self.logger.info("msgCountKafka successful")
             return sum_count
@@ -2422,7 +2425,8 @@ class ApplicationAPI:
             if len(set(list_com)) == 1:
                 for val in set(list_com):
                     log_dir = val
-                os.popen("du -sh " +str(log_dir)+"/* > broker_size.csv").read()
+                subprocess.Popen("du -sh " +str(log_dir)+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+
                 try:
                     brokers_df = pd.read_csv("broker_size.csv",header=None)
                     brokers_df.columns = ["logs"]
@@ -2443,7 +2447,8 @@ class ApplicationAPI:
             else :
                 try : 
                     for k in self.broker_list:
-                        os.popen("du -sh " +str(k['log_dir'])+"/* > broker_size.csv").read()
+                        subprocess.Popen("du -sh " +str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+        
                         brokers_df = pd.read_csv("broker_size.csv",header=None)
                         brokers_df.columns = ["logs"]
                         size_sum = 0
@@ -2481,7 +2486,8 @@ class ApplicationAPI:
             brokersize = pd.DataFrame(columns = ["broker_size"])  
             j = 0
             for k in self.broker_list:
-                os.popen("du -sh "+str(k['log_dir'])+"/* > broker_size.csv").read()
+                subprocess.Popen("du -sh "+str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+
                 brokers_df = pd.read_csv("broker_size.csv",header=None)
                 brokers_df.columns = ["logs"]
                 size_sum = 0
@@ -2512,7 +2518,7 @@ class ApplicationAPI:
         try:
             brokers = ''
             Num_brokers = 0
-            os.popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids >broker_id.csv")
+            subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids >broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             broker_id_df = pd.read_csv("broker_id.csv", delimiter = "\n",header=None)
             broker_id_df.columns= ['parameters']
             broker_id_df = broker_id_df.iloc[[-1]]
@@ -2554,11 +2560,10 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                os.popen(
+                subprocess.Popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    # stdout=subprocess.DEVNULL,
-                    # stderr=subprocess.STDOUT,
-                ).read()
+                     shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                )
             )
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -2592,11 +2597,11 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                os.popen(
+                subprocess.Popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    # stdout=subprocess.DEVNULL,
-                    # stderr=subprocess.STDOUT,
-                ).read()
+                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                )
+
             )
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -2630,11 +2635,11 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                os.popen(
+                subprocess.Popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    # stdout=subprocess.DEVNULL,
-                    # stderr=subprocess.STDOUT,
-                ).read()
+                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                )
+
             )
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -2679,7 +2684,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -2691,7 +2696,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -2703,7 +2708,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 cluster_services = r.json()
@@ -2752,7 +2757,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -2763,7 +2768,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -2774,7 +2779,7 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ),
+                    ), verify = False
                 )
             if r.status_code == 200:
                 Backup = r.json()
