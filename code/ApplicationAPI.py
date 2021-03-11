@@ -2238,34 +2238,58 @@ class ApplicationAPI:
         """
 
         try:
-            period = os.popen(
-                "grep -m 1 log.retention.hours /etc/kafka/server.properties",
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
-            ).read()
-            retention_period = int(period.split("=")[1].strip("\n"))
+            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_port))
+            version_related = rversion_api.json()
+            for i in version_related["items"]:
+                try:
+                    if i['name'] == 'log.cleaner.delete.retention.ms':
+                        retention_period = int(i['value'])/(60*60*1000)
+                except KeyError:
+                        retention_period = int(i['default'])/(60*60*1000)
             self.logger.info("retentionPeriodKafka successful")
             return retention_period
         except Exception as e:
             self.logger.error("retentionPeriodKafka failed", exc_info=True)
             return None
 
-    def numTopicsKafka(self, zookeeper_host, zookeeper_port):
+    def ZookeeperConn():
+        """Get zookeeper connection string in kafka.
+        
+        Returns:
+            zookeeper_conn (str): Returns the zookeeper connection string for kafka
+        """
+
+        try:
+            os.popen("awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv"  )
+            zookeeper_conn_df = pd.read_csv("zookeeper_conn.csv", delimiter = "\n",header=None)
+            zookeeper_conn_df.columns= ['parameters']
+            zookeeper_conn_df = zookeeper_conn_df.iloc[[-1]]
+            for i in zookeeper_conn_df['parameters']:
+                if i != '':
+                    zookeeper_conn = i.split('=')[-1]
+                else :
+                    zookeeper_conn = None
+        except EmptyDataError:
+            zookeeper_conn = None
+            self.logger.info("ZookeeperConn successful")
+            return zookeeper_conn
+        except Exception as e:
+            self.logger.error("ZookeeperConn failed", exc_info=True)
+            return None
+
+    def numTopicsKafka(self, zookeeper_conn):
         """Get num of topics in kafka.
         
         Args:
-            zookeeper_host (str) Zookeeper host IP
-            zookeeper_port (str): Zookeeper port number
+            zookeeper_conn (str) : Zookeeper Connection string for kafka
         Returns:
             num_topics (int): Number of topics in kafka.
         """
 
         try:
             os.popen(
-                "kafka-topics --zookeeper "
-                + str(zookeeper_host)
-                + ":"
-                + str(zookeeper_port)
+                "timeout 20 kafka-topics --zookeeper "
+                + str(zookeeper_conn)
                 + " --list > topics_list.csv",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
@@ -2275,28 +2299,32 @@ class ApplicationAPI:
             num_topics = len(topics_df.index)
             self.logger.info("numTopicsKafka successful")
             return num_topics
+        except EmptyDataError:
+            num_topics = 0
+            self.logger.info("numTopicsKafka successful")
+            return num_topics
         except Exception as e:
             self.logger.error("numTopicsKafka failed", exc_info=True)
             return None
 
-    def msgSizeKafka(self, zookeeper_host, zookeeper_port, broker_host, broker_port):
+    def msgSizeKafka(self, zookeeper_conn):
         """Get volume of message in kafka in bytes.
         
         Args:
-            zookeeper_host (str) Zookeeper host IP
-            zookeeper_port (str): Zookeeper port number
-            broker_host (str): Broker host IP
-            broker_port (str): Broker port number
+            zookeeper_conn (str) Zookeeper Connection string for kafka
         Returns:
             sum_size (int): Message size of Kafka
         """
 
         try:
+            broker_connection =''
+            for i in self.broker_list:
+            conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
+            broker_connection =  broker_connection + conn_temp
+            broker_connection = broker_connection.strip(",")
             os.popen(
-                "kafka-topics --zookeeper "
-                + str(zookeeper_host)
-                + ":"
-                + str(zookeeper_port)
+                "timeout 20 kafka-topics --zookeeper "
+                + str(zookeeper_conn)
                 + " --list > topics_list.csv",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
@@ -2306,40 +2334,45 @@ class ApplicationAPI:
             sum_size = 0
             for i in topics_df["topics"]:
                 msg_size = os.popen(
-                    " kafka-log-dirs     --bootstrap-server "
-                    + str(broker_host)
-                    + ":"
-                    + str(broker_port)
+                    "timeout 20 kafka-log-dirs     --bootstrap-server "
+                    + str(broker_connection)
                     + "  --topic-list "
                     + str(i)
                     + "     --describe   | grep '^{'   | jq '[ ..|.size? | numbers ] | add'"
                 ).read()
                 msg_size = msg_size.strip("\n")
-                sum_size = sum_size + int(msg_size)
+                if msg_size != '':
+                    sum_size = sum_size + (int(msg_size) if msg_size != 'null' else 0)
+                else :
+                    sum_size = 0
+            self.logger.info("msgSizeKafka successful")
+            return sum_size
+        except EmptyDataError:
+            sum_size = 0
             self.logger.info("msgSizeKafka successful")
             return sum_size
         except Exception as e:
             self.logger.error("msgSizeKafka failed", exc_info=True)
             return None
 
-    def msgCountKafka(self, zookeeper_host, zookeeper_port, broker_host, broker_port):
+    def msgCountKafka(self, zookeeper_conn):
         """Get count of messages in kafka topics.
 
         Args:
-            zookeeper_host (str) Zookeeper host IP
-            zookeeper_port (str): Zookeeper port number
-            broker_host (str): Broker host IP
-            broker_port (str): Broker port number
+            zookeeper_conn (str) Zookeeper Connection string for kafka
         Returns:
             sum_count (int): Number of messages in Kafka
         """
 
         try:
+            broker_connection =''
+            for i in self.broker_list:
+                conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
+                broker_connection =  broker_connection + conn_temp
+            broker_connection = broker_connection.strip(",")
             os.popen(
-                "kafka-topics --zookeeper "
-                + str(zookeeper_host)
-                + ":"
-                + str(zookeeper_port)
+                "timeout 20 kafka-topics --zookeeper "
+                + str(zookeeper_conn)
                 + " --list > topics_list.csv",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
@@ -2349,62 +2382,167 @@ class ApplicationAPI:
             sum_count = 0
             for i in topics_df["topics"]:
                 msg_count = os.popen(
-                    "kafka-run-class kafka.tools.GetOffsetShell --broker-list "
-                    + str(broker_host)
-                    + str(":")
-                    + str(broker_port)
+                    "timeout 20 kafka-run-class kafka.tools.GetOffsetShell --broker-list "
+                    + str(broker_connection)
                     + " --topic "
                     + str(i)
                     + " --time -1 --offsets 1 | awk -F  \":\" '{sum += $3} END {print sum}'"
                 ).read()
                 msg_count = msg_count.strip("\n")
-                sum_count = sum_count + int(msg_count)
+                if msg_count != '':
+                    sum_count = sum_count + int(msg_count)
+                else :
+                    sum_count = 0  
+            self.logger.info("msgCountKafka successful")
+            return sum_count
+         except EmptyDataError:
+            sum_size = 0
             self.logger.info("msgCountKafka successful")
             return sum_count
         except Exception as e:
             self.logger.error("msgCountKafka failed", exc_info=True)
             return None
 
-    def clusterSizeAndBrokerSizeKafka(self):
-        """Get per cluster storage and kafka cluster storage in kafka.
+    def KafkaClusterSize(self):
+        """Get Total size of Kafka Cluster.
 
         Returns:
-            total_size (float): Total size of kafka cluster
-            brokersize (DataFrame): Size for each broker.
+            total_size (int): Total size of Kafka Cluster in KB
         """
-
+        
         try:
-            logs_dir = ["kafka-logs", "kafka-logs1"]
             broker_id = 0
-            brokersize = pd.DataFrame(columns=["broker_size"])
+            brokersize = pd.DataFrame(columns = ["broker_size"])  
             j = 0
-            for k in logs_dir:
-                os.popen(
-                    "du -sh /tmp/" + str(k) + "/* > broker_size.csv",
-                    # stdout=subprocess.DEVNULL,
-                    # stderr=subprocess.STDOUT,
-                ).read()
-                brokers_df = pd.read_csv("broker_size.csv", header=None)
+            list_com = []
+            list_temp = []
+            for i in self.broker_list:
+                list_temp = i['log_dir'].split("?")
+                list_com = list_com + list_temp
+            if len(set(list_com)) == 1:
+                for val in set(list_com):
+                    log_dir = val
+                os.popen("du -sh " +str(log_dir)+"/* > broker_size.csv").read()
+                try:
+                    brokers_df = pd.read_csv("broker_size.csv",header=None)
+                    brokers_df.columns = ["logs"]
+                    size_sum = 0
+                    for i in brokers_df['logs']:
+                        size = i.split("\t",1)[0]
+                        size= float(size.strip("K"))
+                        size_sum = size_sum + size
+                    brokersize.loc[j] = size_sum
+                    broker_list_len = (len(broker_list)-1)
+                    for i in range(broker_list_len):
+                        brokersize.loc[j+i+1] = 0
+                    total_size = size_sum
+                except EmptyDataError:
+                    total_size = 0
+            elif len(set(list_com)) == 0 :
+                total_size = 0
+            else :
+                try : 
+                    for k in self.broker_list:
+                        os.popen("du -sh " +str(k['log_dir'])+"/* > broker_size.csv").read()
+                        brokers_df = pd.read_csv("broker_size.csv",header=None)
+                        brokers_df.columns = ["logs"]
+                        size_sum = 0
+                        for i in brokers_df['logs']:
+                            size = i.split("\t",1)[0]
+                            size= float(size.strip("K"))
+                            size_sum = size_sum + size
+                        brokersize.loc[j] = size_sum
+                        j=j+1
+                    total_size = 0
+                    for i in brokersize['broker_size']:
+                        total_size = total_size + float(i)
+                except EmptyDataError:
+                    total_size = 0
+            self.logger.info("KafkaClusterSize successful")
+            return total_size
+        except EmptyDataError:
+            total_size = 0
+            self.logger.info("KafkaClusterSize successful")
+            return total_size
+        except Exception as e :
+            self.logger.error("KafkaClusterSize failed", exc_info=True)
+            return None
+    
+    def BrokerSizeKafka(self):
+
+        """Get individual broker size in the Kafka Cluster.
+
+        Returns:
+            brokersize (DataFrame): Returns a df with the sizes of all the brokers in the Kafka Cluster
+        """
+        
+        try:
+            broker_id = 0
+            brokersize = pd.DataFrame(columns = ["broker_size"])  
+            j = 0
+            for k in self.broker_list:
+                os.popen("du -sh "+str(k['log_dir'])+"/* > broker_size.csv").read()
+                brokers_df = pd.read_csv("broker_size.csv",header=None)
                 brokers_df.columns = ["logs"]
                 size_sum = 0
-                for i in brokers_df["logs"]:
-                    size = i.split("\t", 1)[0]
-                    size = float(size.strip("K"))
+                for i in brokers_df['logs']:
+                    size = i.split("\t",1)[0]
+                    size= float(size.strip("K"))
                     size_sum = size_sum + size
                 brokersize.loc[j] = size_sum
-                j = j + 1
-            total_size = 0
-            for i in brokersize["broker_size"]:
-                total_size = total_size + float(i)
-            broker_list = []
-            for index, row in brokersize.iterrows():
-                broker_list.append(str(row["broker_size"]) + " KB")
-            broker_list = ", ".join(broker_list)
-            self.logger.info("clusterSizeAndBrokerSizeKafka successful")
-            return total_size, broker_list
-        except Exception as e:
-            self.logger.error("clusterSizeAndBrokerSizeKafka failed", exc_info=True)
+                j=j+1
+            self.logger.info("BrokerSizeKafka successful")
+            return brokersize
+        except EmptyDataError:
+            brokersize = None
+            self.logger.info("BrokerSizeKafka successful")
+            return brokersize
+        except Exception as e :
+            self.logger.error("BrokerSizeKafka failed", exc_info=True)
             return None
+
+    def HAStrategyKafka(zookeeper_conn):
+        """Check High Availability of Kafka Cluster
+        
+        Args:
+            zookeeper_conn (str) Zookeeper Connection string for kafka
+        Returns:
+            HA_Strategy (str): returns whether High availability in kafka is enabled or not
+        """
+        try:
+            brokers = ''
+            Num_brokers = 0
+            os.popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids >broker_id.csv")
+            broker_id_df = pd.read_csv("broker_id.csv", delimiter = "\n",header=None)
+            broker_id_df.columns= ['parameters']
+            broker_id_df = broker_id_df.iloc[[-1]]
+            for i in broker_id_df['parameters']:
+                if i != '':
+                    brokers = i.strip('][').split(', ') 
+                    Num_brokers = len(brokers)
+            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_port))
+            version_related = rversion_api.json()
+            for i in version_related["items"]:
+                try:
+                    if i['name'] == 'offsets.topic.replication.factor':
+                        replication = int(i['value'])
+                except KeyError:
+                    replication = int(i['default']) 
+            if replication > 1 and Num_brokers > 1:
+                HA_Strategy = "Yes"
+            else :
+                HA_Strategy = "No"
+            self.logger.info("HAStrategyKafka successful")
+            return HA_Strategy
+        except EmptyDataError:
+            HA_Strategy = "No"
+            self.logger.info("HAStrategyKafka successful")
+            return HA_Strategy
+        except Exception as e:
+            self.logger.error("HAStrategyKafka failed", exc_info=True)
+            return None
+        
+
 
     def useOfImpala(self):
         """Get impala service in cluster.

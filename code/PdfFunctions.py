@@ -2602,7 +2602,9 @@ class PdfFunctions:
             yarn_ha (str): Yarn HA config
             hdfs_ha (str): HDFS HA config
         """
-
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "HA Status:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         if hdfs_ha == 1:
@@ -4016,7 +4018,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Size Of Message in Kafka: {: .2f} MB".format(sum_size), 0, 1,
+            230, 8, "Total Size Of Message in Kafka: {: .2f} KB".format(sum_size), 0, 1,
         )
 
     def msgCount(self, sum_count):
@@ -4045,9 +4047,25 @@ class PdfFunctions:
         self.pdf.cell(
             230, 8, "Total Storage of Kafka Cluster: {}".format(total_size), 0, 1,
         )
+        j = 0
+        for i in brokersize:
+            pdf.cell(230, 5,"Size of broker {}  is  : {} KB".format(j,i),0,ln=1)
+            j = j + 1
+        pdf.cell(230, 5, "",0,ln=1)
+    
+    def HAStrategy(self, HA_Strategy):
+        """Check High Availability of Kafka Cluster.
+
+        Args:
+           HA_Strategy (str): returns whether High availability in kafka is enabled or not
+        """
+
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Storage of Kafka Cluster Per Broker: {}".format(brokersize), 0, 1,
+            230, 8, "Does High Availabiity enabled in Kafka Cluster: {}".format(HA_Strategy), 0, 1,
         )
+
 
     def servicesUsedForIngestion(self, services):
         """Add services used for ingestion in PDF.
