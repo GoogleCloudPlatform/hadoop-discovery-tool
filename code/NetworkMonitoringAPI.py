@@ -128,7 +128,7 @@ class NetworkMonitoringAPI:
 
         try:
             subprocess.Popen(
-                "iostat -d | awk 'BEGIN{OFS= \",\" ;}NR>2{print $3, $4;} ' > disk.csv"
+                "iostat -d | awk 'BEGIN{OFS= \",\" ;}NR>2{print $3, $4;} ' > ./disk.csv"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             disk_df = pd.read_csv("disk.csv", delimiter=",")
             disk_df = disk_df.fillna(0)
@@ -253,7 +253,7 @@ class NetworkMonitoringAPI:
                 "name",
             ]
             df11 = pd.read_csv(
-                "./data.csv", names=col_names, delimiter=r"\s+", skiprows=1
+                "data.csv", names=col_names, delimiter=r"\s+", skiprows=1
             )
             subprocess.Popen("rm ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             remove_list = ["root", "chrony", "ntp"]

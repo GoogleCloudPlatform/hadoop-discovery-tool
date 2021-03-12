@@ -1002,8 +1002,8 @@ class HardwareOSAPI:
 
         try:
             subprocess.getoutput('ip -o -4 a show | cut -d " " -f 2,7 > nic_ip.txt')
-            fin = open("nic_ip.txt", "rt")
-            fout = open("./nic_ip.csv", "wt")
+            fin = open("nic_ip.txt", "r")
+            fout = open("nic_ip.csv", "w")
             for iterator in fin:
                 fout.write(re.sub("[^\S\r\n]{1,}", ",", iterator))
             fin.close()
@@ -1036,8 +1036,8 @@ class HardwareOSAPI:
                 subprocess.getoutput(
                     "sudo yum updateinfo list security installed | grep /Sec > security_level.csv"
                 )
-                fin = open("./ecurity_level.csv", "rt")
-                fout = open("./security_final.csv", "wt")
+                fin = open("security_level.csv", "r")
+                fout = open("security_final.csv", "w")
                 for iterator in fin:
                     fout.write(re.sub("[^\S\r\n]{1,}", ",", iterator))
                 fin.close()
@@ -1051,8 +1051,8 @@ class HardwareOSAPI:
                 subprocess.check_output(
                     "bash YUM_Get_Patch_Date.sh", shell=True, stderr=subprocess.STDOUT
                 )
-                fin = open("./patch_date.csv", "rt")
-                fout = open("./security_patch_date.csv", "wt")
+                fin = open("patch_date.csv", "r")
+                fout = open("security_patch_date.csv", "w")
                 for iterator in fin:
                     fout.write(re.sub(r"^([^\s]*)\s+", r"\1, ", iterator))
                 fin.close()
@@ -1076,8 +1076,8 @@ class HardwareOSAPI:
                 subprocess.Popen(
                     "sudo apt-show-versions | grep security | grep all | sort -u | head -10 > ./output.csv"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                fin = open("./output.csv", "rt")
-                fout = open("./ubuntu_patches.csv", "wt")
+                fin = open("output.csv", "r")
+                fout = open("ubuntu_patches.csv", "w")
                 for iterator in fin:
                     fout.write(re.sub("[^\S\r\n]{1,}", ",", iterator))
                 fin.close()
@@ -1111,8 +1111,8 @@ class HardwareOSAPI:
             subprocess.Popen(
                 "hadoop checknative -a | grep true | head -10 > ./hadoop_native.csv"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            fin = open("./hadoop_native.csv", "rt")
-            fout = open("./hadoop_native_library.csv", "wt")
+            fin = open("hadoop_native.csv", "r")
+            fout = open("hadoop_native_library.csv", "w")
             for iterator in fin:
                 fout.write(re.sub("[^\S\r\n]{1,}", ",", iterator))
             fin.close()
@@ -1182,14 +1182,14 @@ class HardwareOSAPI:
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             if "Python 3." in python_check:
                 python_flag = 1
-            with open("./java_check.csv") as fp:
+            with open("java_check.csv", "r") as fp:
                 for jdk_line in fp:
                     if "openjdk" in jdk_line:
                         java_flag = 1
                         break
             subprocess.Popen("rm ./java_check.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             subprocess.Popen("timeout -k 21 20 spark-shell > ./scala.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            with open("./scala.csv") as fp:
+            with open("scala.csv") as fp:
                 for scala_line in fp:
                     if "Using Scala version" in scala_line:
                         scala_flag = 1
@@ -1277,7 +1277,7 @@ class HardwareOSAPI:
         """
 
         try:
-            gpu_status = subprocess.getoutput('lshw | egrep -i -c "non-vga"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            gpu_status = subprocess.Popen('lshw | egrep -i -c "non-vga"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             gpu_status,err = gpu_status.communicate()
             self.logger.info("specialityHardware successful")
             return gpu_status

@@ -56,8 +56,8 @@ class FrameworkDetailsAPI:
             subprocess.Popen("hadoop version > ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             dt = "This command was run using "
             a = ""
-            with open("./data.csv") as fp:
-                with open("./out2.csv", "w") as f1:
+            with open("data.csv","r") as fp:
+                with open("out2.csv", "w") as f1:
                     for line in fp:
                         if dt in line:
                             a = line
@@ -207,7 +207,7 @@ class FrameworkDetailsAPI:
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 col_names = ["name", "version", "package_level"]
                 third_party_package = pd.read_csv(
-                    "./centos_third_party.csv", names=col_names, delimiter=r"\s+"
+                    "centos_third_party.csv", names=col_names, delimiter=r"\s+"
                 )
                 subprocess.Popen("rm ./centos_third_party.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             elif "red hat" in os_name:
@@ -216,7 +216,7 @@ class FrameworkDetailsAPI:
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 col_names = ["name", "version", "package_level"]
                 third_party_package = pd.read_csv(
-                    "./centos_third_party.csv", names=col_names, delimiter=r"\s+"
+                    "centos_third_party.csv", names=col_names, delimiter=r"\s+"
                 )
                 subprocess.Popen("rm ./centos_third_party.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             self.logger.info("thirdPartySoftware successful")
@@ -243,7 +243,7 @@ class FrameworkDetailsAPI:
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
-                    "./centos_package_version.csv",
+                    "centos_package_version.csv",
                     names=col_names,
                     delimiter=r"\s+",
                     skiprows=5,
@@ -262,7 +262,7 @@ class FrameworkDetailsAPI:
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
-                    "./debian_package_version.csv",
+                    "debian_package_version.csv",
                     names=col_names,
                     delimiter=r"\s+",
                     skiprows=5,
@@ -280,7 +280,7 @@ class FrameworkDetailsAPI:
                     "dpkg-query -l  | awk '{print $2,$3}' > ./ubuntu_package_version.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
-                    "./ubuntu_package_version.csv",
+                    "ubuntu_package_version.csv",
                     names=col_names,
                     delimiter=r"\s+",
                     skiprows=5,
@@ -299,7 +299,7 @@ class FrameworkDetailsAPI:
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
-                    "./redhat_package_version.csv",
+                    "redhat_package_version.csv",
                     names=col_names,
                     delimiter=r"\s+",
                     skiprows=5,
@@ -331,7 +331,7 @@ class FrameworkDetailsAPI:
             subprocess.Popen(
                 'find / -iname "*.jar" 2>/dev/null | grep -E "jdbc|odbc" > ./jdbc_odbc.csv'
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            df11 = pd.read_csv("./jdbc_odbc.csv", delimiter=r"\s+", names=["name"])
+            df11 = pd.read_csv("jdbc_odbc.csv", delimiter=r"\s+", names=["name"])
             subprocess.Popen("rm ./jdbc_odbc.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             BetweenTwoSymbols1 = df11["name"].str.split("/").str[-1]
             result1 = BetweenTwoSymbols1.drop_duplicates()
@@ -353,11 +353,11 @@ class FrameworkDetailsAPI:
         try:
             subprocess.Popen('find / -iname "Salesforce" 2>/dev/null > ./salesforce.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             df_salesforce = pd.read_csv(
-                "./salesforce.csv", delimiter=r"\s+", names=["name"]
+                "salesforce.csv", delimiter=r"\s+", names=["name"]
             )
             subprocess.Popen("rm ./salesforce.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             subprocess.Popen('find / -iname "ngdbc.jar" 2>/dev/null> ./ngdbc.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            df_ngdbc = pd.read_csv("./ngdbc.csv", delimiter=r"\s+", names=["name"])
+            df_ngdbc = pd.read_csv("ngdbc.csv", delimiter=r"\s+", names=["name"])
             subprocess.Popen("rm ./ngdbc.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             self.logger.info("salesFroceSapDriver successful")
             return df_ngdbc, df_salesforce
@@ -374,7 +374,7 @@ class FrameworkDetailsAPI:
 
         try:
             subprocess.Popen('find / -type f -name "*connector*.jar" 2>/dev/null > ./connector.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            connector_df = pd.read_csv("./connector.csv", names=["Connector_Name"])
+            connector_df = pd.read_csv("connector.csv", names=["Connector_Name"])
             subprocess.Popen("rm ./connector.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             connector_details = connector_df["Connector_Name"].str.split("/").str[-1]
             connectors_present = connector_details.drop_duplicates()

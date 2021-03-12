@@ -55,15 +55,15 @@ class DataAPI:
             dt = "Live datanodes "
             list_of_results = []
             flag = 0
-            with open("./data.csv") as fp:
-                with open("./out2.csv", "w") as f1:
+            with open("data.csv","r") as fp:
+                with open("out2.csv", "w") as f1:
                     for line in fp:
                         if dt in line:
                             flag = 1
                         if dt not in line and flag == 1:
                             line = line.replace(": ", "  ")
                             f1.write(re.sub("[^\S\r\n]{2,}", ",", line))
-            dataframe = pd.read_csv("./out2.csv")
+            dataframe = pd.read_csv("out2.csv")
             dataframe.dropna(axis=0, how="all", inplace=True)
             dataframe.to_csv("sizeConfigured.csv", index=False)
             dataframe = pd.read_csv("sizeConfigured.csv", names=["key", "value"])
@@ -444,7 +444,7 @@ class DataAPI:
             hdfs_flag = 0
             raw = subprocess.Popen("hdfs dfs -ls / > ./direc_list.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             raw,err = raw.communicate()
-            hdfs_storage_df = pd.read_csv("./direc_list.csv")
+            hdfs_storage_df = pd.read_csv("direc_list.csv")
             hdfs_storage_df.columns = ["output"]
             hdfs_storage_df[
                 [
@@ -469,7 +469,7 @@ class DataAPI:
                 comm = "hdfs dfs -getfacl " + i + " > ./acl_list.csv"
                 sam_text = subprocess.Popen(comm,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 sam_text,err = sam_text.communicate()
-            hdfs_storage_df_temp = pd.read_csv("./acl_list.csv")
+            hdfs_storage_df_temp = pd.read_csv("acl_list.csv")
             for i in hdfs_storage_df_temp:
                 user_str = str(hdfs_storage_df_temp.iloc[[2]])
                 group_str = str(hdfs_storage_df_temp.iloc[[3]])
@@ -571,7 +571,7 @@ class DataAPI:
                 "name",
             ]
             big_data = pd.read_csv(
-                "./hadoop_storage.csv", names=col_names, delimiter=r"\s+", skiprows=1,
+                "hadoop_storage.csv", names=col_names, delimiter=r"\s+", skiprows=1,
             )
             big_data = big_data.assign(size_mb=lambda x: (x["size"] / (1024 * 1024)))
             big_data.drop(big_data[big_data["size_mb"] <= 0.1].index, inplace=True)
@@ -1055,7 +1055,7 @@ class DataAPI:
             hive_execution_engine = subprocess.check_output(
                 'hive -e "set hive.execution.engine"',
                 shell=True,
-                stderr=subprocess.STDOUT,
+                stderr=subprocess.STDOUT
             )
             hive_execution_engine = str(hive_execution_engine)
             hive_execution_engine = hive_execution_engine.split("\\n")

@@ -414,7 +414,7 @@ class SecurityAPI:
                 "part4",
             ]
             luks_detect = pd.read_csv(
-                "./block.csv", names=columns, delimiter=r"\s+", header=None
+                "block.csv", names=columns, delimiter=r"\s+", header=None
             )
             subprocess.Popen("rm ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             luks_detect.drop(
@@ -437,7 +437,7 @@ class SecurityAPI:
         try:
             port_df = pd.DataFrame(columns=["service", "port"])
             subprocess.Popen("find / -name oozie-site.xml 2>/dev/null> oozie_port.csv ",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            with open("./oozie_port.csv") as fp:
+            with open("oozie_port.csv","r") as fp:
                 for line in fp:
                     if "-oozie-OOZIE_SERVER/oozie-site.xml" in line:
                         xml_oozie = line
@@ -520,7 +520,7 @@ class SecurityAPI:
             path_status = path.exists("/etc/kafka/server.properties")
             if path_status == True:
                 subprocess.Popen("cat /etc/kafka/server.properties > kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                with open("./kafka_port.csv") as fp:
+                with open("kafka_port.csv") as fp:
                     for kafka_line in fp:
                         if "listeners=PLAINTEXT://" in kafka_line:
                             break
@@ -539,7 +539,7 @@ class SecurityAPI:
                 subprocess.Popen(
                     "cat /etc/spark/conf/spark-defaults.conf > spark_data.csv"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                with open("./spark_data.csv") as fp:
+                with open("spark_data.csv") as fp:
                     for spark_line in fp:
                         if "spark.shuffle.service.port" in spark_line:
                             break
@@ -556,7 +556,7 @@ class SecurityAPI:
             path_status = path.exists("/var/kerberos/krb5kdc/kdc.conf")
             if path_status == True:
                 subprocess.Popen("cat /var/kerberos/krb5kdc/kdc.conf > ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                with open("./spark_data.csv") as fp:
+                with open("spark_data.csv") as fp:
                     for kerberos_line in fp:
                         if "kdc_tcp_ports" in kerberos_line:
                             break

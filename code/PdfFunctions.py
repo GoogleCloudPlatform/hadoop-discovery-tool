@@ -425,7 +425,7 @@ class PdfFunctions:
                     ignore_index=True,
                 )
             for role in host["roleRefs"]:
-                if re.search(r"\bNAMENODE\b", role["roleName"]):
+                if (re.search(r'\bNAMENODE\b', role['roleName']) or re.search(r'\bSECONDARYNAMENODE\b', role['roleName']) and "hdfs" in role['serviceName']):
                     namenodes_df = namenodes_df.append(
                         pd.DataFrame(
                             {
@@ -534,6 +534,10 @@ class PdfFunctions:
         for pos in range(0, len(host_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
+            if(y > 300):
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             line_width = 0
             line_width = max(
                 line_width, self.pdf.get_string_width(host_df["Hostname"].iloc[pos]),

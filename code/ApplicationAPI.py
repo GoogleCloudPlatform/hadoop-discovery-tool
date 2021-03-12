@@ -1804,7 +1804,7 @@ class ApplicationAPI:
         try:
             base_size = 0
             disk_space_consumed = 0
-            out = subprocess.popen(
+            out = subprocess.Popen(
                 "hdfs dfs -du -h /",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
             out,err = out.communicate()
