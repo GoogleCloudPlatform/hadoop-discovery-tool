@@ -281,7 +281,8 @@ class PdfGenerator:
             if (len(all_host_data) != 0) and (os_version != None):
                 obj_pdf.clusterHostInfo(cluster_host_items, all_host_data, os_version)
 
-        xml_data = os.popen("cat /etc/hadoop/conf/yarn-site.xml").read()
+        xml_data = subprocess.Popen("cat /etc/hadoop/conf/yarn-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+        xml_data,err = xml_data.communicate()
         root = ET.fromstring(xml_data)
         for val in root.findall("property"):
             name = val.find("name").text

@@ -350,16 +350,16 @@ class SecurityAPI:
                     ), verify = False
                  )
             if r.status_code == 200:
-                keytab = r.json()
-                if len(keytab["items"]) > 0:
+                keytab1 = r.json()
+                if len(keytab1["items"]) > 0:
                     keytab = "keytab exist"
                 else:
                     keytab = "keytab not exist"
                 # for detecting kerberos in each services    
-                keytab = keytab["items"]
+                keytab1 = keytab1["items"]
                 new_list = []
-                for i in range(0, len(keytab)):
-                    dt = keytab[i].split("/", 1)
+                for i in range(0, len(keytab1)):
+                    dt = keytab1[i].split("/", 1)
                     neww_list = new_list.append(dt[0])
                 new_list = [x.lower() for x in new_list]
 
@@ -402,7 +402,7 @@ class SecurityAPI:
         """
 
         try:
-            os.popen("blkid > block.csv").read()
+            subprocess.Popen("blkid > ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             columns = [
                 "block",
                 "section",
@@ -414,9 +414,9 @@ class SecurityAPI:
                 "part4",
             ]
             luks_detect = pd.read_csv(
-                "block.csv", names=columns, delimiter=r"\s+", header=None
+                "./block.csv", names=columns, delimiter=r"\s+", header=None
             )
-            os.popen("rm block.csv").read()
+            subprocess.Popen("rm ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             luks_detect.drop(
                 columns=["UUID", "part1", "part2", "part3", "part4"], inplace=True
             )
@@ -436,13 +436,14 @@ class SecurityAPI:
 
         try:
             port_df = pd.DataFrame(columns=["service", "port"])
-            os.popen("find / -name oozie-site.xml > oozie_port.csv").read()
-            with open("oozie_port.csv") as fp:
+            subprocess.Popen("find / -name oozie-site.xml 2>/dev/null> oozie_port.csv ",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            with open("./oozie_port.csv") as fp:
                 for line in fp:
                     if "-oozie-OOZIE_SERVER/oozie-site.xml" in line:
                         xml_oozie = line
-            os.popen("rm oozie_port.csv").read()
-            dt_xml = os.popen("cat " + xml_oozie).read()
+            subprocess.Popen("rm ./oozie_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dt_xml = subprocess.Popen("cat " + xml_oozie,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dt_xml,err = dt_xml.communicate()
             myxml = fromstring(dt_xml)
             for val in myxml.findall("property"):
                 name = val.find("name").text
@@ -461,7 +462,8 @@ class SecurityAPI:
             hdfs_line = ""
             path_status = path.exists("/etc/hadoop/conf/core-site.xml")
             if path_status == True:
-                xml_data = os.popen("cat /etc/hadoop/conf/core-site.xml").read()
+                xml_data = subprocess.Popen("cat /etc/hadoop/conf/core-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -479,7 +481,8 @@ class SecurityAPI:
             yarn_line = ""
             path_status = path.exists("/etc/hadoop/conf/yarn-site.xml")
             if path_status == True:
-                xml_data = os.popen("cat /etc/hadoop/conf/yarn-site.xml").read()
+                xml_data = subprocess.Popen("cat /etc/hadoop/conf/yarn-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -497,7 +500,8 @@ class SecurityAPI:
             mapred_line = ""
             path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
             if path_status == True:
-                xml_data = os.popen("cat /etc/hadoop/conf/mapred-site.xml").read()
+                xml_data = subprocess.Popen("cat /etc/hadoop/conf/mapred-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -515,12 +519,12 @@ class SecurityAPI:
             kafka_line = ""
             path_status = path.exists("/etc/kafka/server.properties")
             if path_status == True:
-                os.popen("cat /etc/kafka/server.properties > kafka_port.csv").read()
-                with open("kafka_port.csv") as fp:
+                subprocess.Popen("cat /etc/kafka/server.properties > kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                with open("./kafka_port.csv") as fp:
                     for kafka_line in fp:
                         if "listeners=PLAINTEXT://" in kafka_line:
                             break
-                os.popen("rm kafka_port.csv").read()
+                subprocess.Popen("rm ./kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 kafka_line = " ".join(kafka_line.split(":", 2)[2:])
                 if kafka_line == "":
                     line = pd.NaT
@@ -532,14 +536,14 @@ class SecurityAPI:
             spark_line = ""
             path_status = path.exists("/etc/spark/conf/spark-defaults.conf")
             if path_status == True:
-                os.popen(
+                subprocess.Popen(
                     "cat /etc/spark/conf/spark-defaults.conf > spark_data.csv"
-                ).read()
-                with open("spark_data.csv") as fp:
+                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                with open("./spark_data.csv") as fp:
                     for spark_line in fp:
                         if "spark.shuffle.service.port" in spark_line:
                             break
-                os.popen("rm spark_data.csv").read()
+                subprocess.Popen("rm ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 spark_line = " ".join(spark_line.split("=", 1)[1:])
                 if spark_line == "":
                     line = pd.NaT
@@ -551,12 +555,12 @@ class SecurityAPI:
             kerberos_line = ""
             path_status = path.exists("/var/kerberos/krb5kdc/kdc.conf")
             if path_status == True:
-                os.popen("cat /var/kerberos/krb5kdc/kdc.conf > spark_data.csv").read()
-                with open("spark_data.csv") as fp:
+                subprocess.Popen("cat /var/kerberos/krb5kdc/kdc.conf > ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                with open("./spark_data.csv") as fp:
                     for kerberos_line in fp:
                         if "kdc_tcp_ports" in kerberos_line:
                             break
-                os.popen("rm spark_data.csv").read()
+                subprocess.Popen("rm ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 kerberos_line = " ".join(kerberos_line.split("=", 1)[1:])
                 if kerberos_line == "":
                     line = pd.NaT
@@ -566,11 +570,13 @@ class SecurityAPI:
                     df_port = {"service": "Kerberos Port", "port": line.rstrip()}
                 port_df = port_df.append(df_port, ignore_index=True)
             zookeeper_line = ""
-            dt = os.popen('find / -name "zoo.cfg"').read()
+            dt = subprocess.Popen('find / -name "zoo.cfg" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dt,err = dt.communicate()
             res_list = dt.splitlines()
             for i in res_list:
                 if "/etc/zookeeper/conf.dist/zoo.cfg" in i:
-                    intermediate_list = os.popen("cat " + i).read()
+                    intermediate_list = subprocess.Popen("cat " + i,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    intermediate_list,err = intermediate_list.communicate()
                     new_res_list = intermediate_list.splitlines()
                     res = [string for string in new_res_list if "clientPort=" in string]
                     listToStr = " ".join([str(elem) for elem in res])

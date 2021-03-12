@@ -47,9 +47,8 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            os.popen(
-                "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf > MaxBandwidth.csv"
-            ).read()
+            subprocess.Popen(
+                "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf > MaxBandwidth.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             maxbandwidth_df = pd.read_csv("MaxBandwidth.csv", delimiter="\n")
             max_bandwidth = str(maxbandwidth_df["MaxBandwidth"][0])
             self.logger.info("maxBandwidth successful")
@@ -69,9 +68,9 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            traffic = os.popen(
-                ' cd /sys/class/net/eth0/statistics/; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done'
-            ).read()
+            traffic = subprocess.Popen(
+                ' cd /sys/class/net/eth0/statistics/; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            traffic,err = traffic.communicate()
             traffic_list = traffic.split("\n", 10)
             traffic_list.remove("0")
             traffic_list.remove("")
@@ -99,9 +98,10 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            traffic = os.popen(
+            traffic = subprocess.Popen(
                 ' cd /sys/class/net/eth0/statistics/; old="$(<tx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done'
-            ).read()
+            ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            traffic,err = traffic.communicate()
             traffic_list = traffic.split("\n", 10)
             traffic_list.remove("0")
             traffic_list.remove("")
@@ -127,9 +127,9 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            os.popen(
+            subprocess.Popen(
                 "iostat -d | awk 'BEGIN{OFS= \",\" ;}NR>2{print $3, $4;} ' > disk.csv"
-            ).read()
+            ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             disk_df = pd.read_csv("disk.csv", delimiter=",")
             disk_df = disk_df.fillna(0)
             disk_df.columns = ["disk_read", "disk_write"]
@@ -157,19 +157,25 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
+            os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_name,err = os_name.communicate()
             os_name = os_name.lower()
             softwares_installed = ""
             if "centos" in os_name:
-                softwares_installed = os.popen("rpm -qa").read()
+                softwares_installed = subprocess.Popen("rpm -qa",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed,err = softwares_installed.communicate()
             elif "debian" in os_name:
-                softwares_installed = os.popen("dpkg -l").read()
+                softwares_installed = subprocess.Popen("dpkg -l",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed,err = softwares_installed.communicate()
             elif "ubuntu" in os_name:
-                softwares_installed = os.popen("apt list --installed").read()
+                softwares_installed = subprocess.Popen("apt list --installed",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed,err = softwares_installed.communicate()
             elif "red hat" in os_name:
-                softwares_installed = os.popen("rpm -qa").read()
+                softwares_installed = subprocess.Popen("rpm -qa",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed,err = softwares_installed.communicate()
             elif "suse" in os_name:
-                softwares_installed = os.popen("rpm -qa").read()
+                softwares_installed = subprocess.Popen("rpm -qa",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed,err = softwares_installed.communicate()
             prometheus_server = subprocess.Popen(
                 "systemctl status prometheus | grep active",
                 shell=True,
@@ -193,7 +199,7 @@ class NetworkMonitoringAPI:
             else:
                 grafana_server = "grafana server is present"
             ganglia_server = subprocess.Popen(
-                'find / -iname "ganglia.conf"',
+                'find / -iname "ganglia.conf" 2>/dev/null',
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -234,7 +240,7 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            os.popen("ls -l /var/log > /root/data.csv").read()
+            subprocess.Popen("ls -l /var/log > /root/data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             col_names = [
                 "permission",
                 "links",
@@ -249,7 +255,7 @@ class NetworkMonitoringAPI:
             df11 = pd.read_csv(
                 "/root/data.csv", names=col_names, delimiter=r"\s+", skiprows=1
             )
-            os.popen("rm data.csv").read()
+            subprocess.Popen("rm data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             remove_list = ["root", "chrony", "ntp"]
             logs = df11[~df11["owner"].isin(remove_list)]
             logs.reset_index(inplace=True)
@@ -269,19 +275,22 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            orchestrate = os.popen("oozie admin -status | grep mode").read()
+            orchestrate = subprocess.Popen("oozie admin -status | grep mode",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            orchestrate,err = orchestrate.communicate()
             if "NORMAL" in orchestrate:
                 oozie_flag = "oozie is enabled"
             else:
                 oozie_flag = "oozie is not enabled"
-            crontab = os.popen(
+            crontab = subprocess.Popen(
                 "whereis -b crontab | cut -d' ' -f2 | xargs rpm -qf"
-            ).read()
+                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            crontab,err = crontab.communicate()
             if crontab.find("cronie") == -1:
                 crontab_flag = "crontab not installed"
             else:
                 crontab_flag = "crontab is installed"
-            airflow = os.popen("airflow version").read()
+            airflow = subprocess.Popen("airflow version",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            airflow,err = airflow.communicate()
             if not airflow:
                 airflow_flag = "airflow is not enabled"
             else:
@@ -314,9 +323,10 @@ class NetworkMonitoringAPI:
                 ddog = "Datadog is not deployed"
             else:
                 ddog = "Datadog is deployed"
-            logging = os.popen(
-                'find / -type f \( -iname "splunk" -o -iname "newrelic-infra.yml" -o -iname "elasticsearch.yml"\)'
-            ).read()
+            logging = subprocess.Popen(
+                'find / -type f \( -iname "splunk" -o -iname "newrelic-infra.yml" -o -iname "elasticsearch.yml"\) 2>/dev/null'
+                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            logging, err = logging.communicate()
             if logging.find("splunk") == -1:
                 splunk = "Splunk not installed"
             else:

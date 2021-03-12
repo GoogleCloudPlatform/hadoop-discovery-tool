@@ -1803,9 +1803,10 @@ class ApplicationAPI:
         try:
             base_size = 0
             disk_space_consumed = 0
-            out = subprocess.check_output(
-                "hdfs dfs -du -h /", shell=True, stderr=subprocess.STDOUT,
+            out = subprocess.popen(
+                "hdfs dfs -du -h /",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
+            out,err = out.communicate()
             output = str(out)
             lines = output.split("\\n")
             for i in lines:
@@ -2559,12 +2560,12 @@ class ApplicationAPI:
 
         try:
             output = ""
-            version_data = json.loads(
-                subprocess.Popen(
+            inter = subprocess.Popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
                      shell=True,stdout=subprocess.PIPE,encoding="utf-8"
                 )
-            )
+            inter,err = inter.communicate()
+            version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
             services_df = df
@@ -2596,13 +2597,11 @@ class ApplicationAPI:
 
         try:
             output = ""
-            version_data = json.loads(
-                subprocess.Popen(
+            inter = subprocess.Popen(
                     "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
-                )
-
-            )
+                    shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            inter,err = inter.communicate()
+            version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
             services_df = df
@@ -2634,13 +2633,9 @@ class ApplicationAPI:
 
         try:
             output = ""
-            version_data = json.loads(
-                subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
-                )
-
-            )
+            inter = subprocess.Popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            inter,err = inter.communicate()
+            version_data = json.loads(inter)                
             data = version_data["components"]
             df = pd.DataFrame(data)
             services_df = df

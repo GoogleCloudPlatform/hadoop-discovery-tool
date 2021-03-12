@@ -47,23 +47,23 @@ class DataAPI:
         """
 
         try:
-            os.popen(
+            subprocess.Popen(
                 "hdfs dfsadmin -report > ./data.csv",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
-            ).read()
+                shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             dt = "Live datanodes "
             list_of_results = []
             flag = 0
-            with open("data.csv") as fp:
-                with open("out2.csv", "w") as f1:
+            with open("./data.csv") as fp:
+                with open("./out2.csv", "w") as f1:
                     for line in fp:
                         if dt in line:
                             flag = 1
                         if dt not in line and flag == 1:
                             line = line.replace(": ", "  ")
                             f1.write(re.sub("[^\S\r\n]{2,}", ",", line))
-            dataframe = pd.read_csv("out2.csv")
+            dataframe = pd.read_csv("./out2.csv")
             dataframe.dropna(axis=0, how="all", inplace=True)
             dataframe.to_csv("sizeConfigured.csv", index=False)
             dataframe = pd.read_csv("sizeConfigured.csv", names=["key", "value"])
@@ -80,8 +80,8 @@ class DataAPI:
                 "Configured_Capacity": list_Configured_Capacity,
             }
             mapped_df = pd.DataFrame(dictionary)
-            os.popen("rm data.csv").read()
-            os.popen("rm out2.csv").read()
+            subprocess.Popen("rm ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm ./out2.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             mapped_df[
                 ["Configured_Capacity_bytes", "Configured_Capacity"]
             ] = mapped_df.Configured_Capacity.str.split("\(|\)", expand=True).iloc[
@@ -107,11 +107,12 @@ class DataAPI:
         """
 
         try:
-            replication_factor = os.popen(
+            replication_factor = subprocess.Popen(
                 "hdfs getconf -confKey dfs.replication",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
-            ).read()
+                shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            replication_factor,err = replication_factor.communicate()
             self.logger.info("replicationFactor successful")
             return replication_factor
         except Exception as e:
@@ -126,11 +127,12 @@ class DataAPI:
         """
 
         try:
-            xml_data = os.popen(
+            xml_data = subprocess.Popen(
                 "cat /etc/hadoop/conf/core-site.xml",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
-            ).read()
+                shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            xml_data,err = xml_data.communicate()
             root = ET.fromstring(xml_data)
             for val in root.findall("property"):
                 name = val.find("name").text
@@ -440,8 +442,9 @@ class DataAPI:
 
         try:
             hdfs_flag = 0
-            raw = os.popen("hdfs dfs -ls / > direc_list.csv").read()
-            hdfs_storage_df = pd.read_csv("direc_list.csv")
+            raw = subprocess.Popen("hdfs dfs -ls / > ./direc_list.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            raw,err = raw.communicate()
+            hdfs_storage_df = pd.read_csv("./direc_list.csv")
             hdfs_storage_df.columns = ["output"]
             hdfs_storage_df[
                 [
@@ -457,14 +460,16 @@ class DataAPI:
             ] = hdfs_storage_df.output.str.split(expand=True)
             for i in hdfs_storage_df["path"]:
                 comm = "hdfs storagepolicies -getStoragePolicy -path " + i
-                sam_text = os.popen(comm).read()
+                sam_text = subprocess.Popen(comm,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                sam_text,err = sam_text.communicate()
                 sam_text = sam_text.split("is ", 1)[1]
                 hdfs_storage_df["storage_policy"] = sam_text.split("\n", 1)[0]
             hdfs_temp = hdfs_storage_df
             for i in hdfs_storage_df["path"]:
-                comm = "hdfs dfs -getfacl " + i + " > acl_list.csv"
-                sam_text = os.popen(comm).read()
-            hdfs_storage_df_temp = pd.read_csv("acl_list.csv")
+                comm = "hdfs dfs -getfacl " + i + " > ./acl_list.csv"
+                sam_text = subprocess.Popen(comm,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                sam_text,err = sam_text.communicate()
+            hdfs_storage_df_temp = pd.read_csv("./acl_list.csv")
             for i in hdfs_storage_df_temp:
                 user_str = str(hdfs_storage_df_temp.iloc[[2]])
                 group_str = str(hdfs_storage_df_temp.iloc[[3]])
@@ -526,7 +531,8 @@ class DataAPI:
         try:
             path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
             if path_status == True:
-                xml_data = os.popen("cat /etc/hadoop/conf/mapred-site.xml").read()
+                xml_data = subprocess.Popen("cat /etc/hadoop/conf/mapred-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -553,7 +559,7 @@ class DataAPI:
         """
 
         try:
-            os.popen("hdfs dfs -ls -R / | sort -r -n -k 5 > hadoop_storage.csv").read()
+            subprocess.Popen("hdfs dfs -ls -R / | sort -r -n -k 5 > ./hadoop_storage.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             col_names = [
                 "permission",
                 "links",
@@ -565,11 +571,11 @@ class DataAPI:
                 "name",
             ]
             big_data = pd.read_csv(
-                "hadoop_storage.csv", names=col_names, delimiter=r"\s+", skiprows=1,
+                "./hadoop_storage.csv", names=col_names, delimiter=r"\s+", skiprows=1,
             )
             big_data = big_data.assign(size_mb=lambda x: (x["size"] / (1024 * 1024)))
             big_data.drop(big_data[big_data["size_mb"] <= 0.1].index, inplace=True)
-            os.popen("rm data.csv").read()
+            subprocess.Popen("rm data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             big_data["FileType"] = big_data.name.apply(lambda x: x.split(".")[-1])
             big_data = big_data[big_data["FileType"].apply(lambda x: len(x) < 8)]
             grpby_data = big_data.groupby("FileType")["size_mb"].sum()
@@ -1273,7 +1279,8 @@ class DataAPI:
             path_status = path.exists("/etc/hive/conf/hive-site.xml")
             if path_status == True:
                 hive_interactive_status = "NO"
-                xml_data = os.popen("cat /etc/hive/conf/hive-site.xml").read()
+                xml_data = subprocess.Popen("cat /etc/hive/conf/hive-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for key in root.findall("property"):
                     name = key.find("name").text
