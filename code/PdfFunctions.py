@@ -2155,7 +2155,7 @@ class PdfFunctions:
         )
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "Hot(within 1 day, Warm(from 1 to 3 days), Cold(more than 3 days))", 0, ln=1)
+        self.pdf.cell(230, 8, "Hot(within 1 day), Warm(from 1 to 3 days), Cold(more than 3 days)", 0, ln=1)
         plt.savefig("table_type_count_plot.png")
         self.pdf.image(
             "table_type_count_plot.png", x=15, y=None, w=95, h=95, type="", link=""
