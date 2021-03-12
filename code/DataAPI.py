@@ -575,7 +575,7 @@ class DataAPI:
             )
             big_data = big_data.assign(size_mb=lambda x: (x["size"] / (1024 * 1024)))
             big_data.drop(big_data[big_data["size_mb"] <= 0.1].index, inplace=True)
-            subprocess.Popen("rm data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             big_data["FileType"] = big_data.name.apply(lambda x: x.split(".")[-1])
             big_data = big_data[big_data["FileType"].apply(lambda x: len(x) < 8)]
             grpby_data = big_data.groupby("FileType")["size_mb"].sum()

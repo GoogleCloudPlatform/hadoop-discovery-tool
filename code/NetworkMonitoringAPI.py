@@ -240,7 +240,7 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            subprocess.Popen("ls -l /var/log > /root/data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("ls -l /var/log > ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             col_names = [
                 "permission",
                 "links",
@@ -253,9 +253,9 @@ class NetworkMonitoringAPI:
                 "name",
             ]
             df11 = pd.read_csv(
-                "/root/data.csv", names=col_names, delimiter=r"\s+", skiprows=1
+                "./data.csv", names=col_names, delimiter=r"\s+", skiprows=1
             )
-            subprocess.Popen("rm data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             remove_list = ["root", "chrony", "ntp"]
             logs = df11[~df11["owner"].isin(remove_list)]
             logs.reset_index(inplace=True)
