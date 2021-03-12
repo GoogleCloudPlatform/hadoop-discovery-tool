@@ -3995,7 +3995,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Kafka Retention Period: {}".format(retention_period), 0, 1,
+            230, 8, "Kafka Retention Period: {} hours".format(retention_period), 0, 1,
         )
 
     def numTopics(self, num_topics):
@@ -4008,7 +4008,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Number Of Topics in Kafka: {}".format(num_topics), 0, 1,
+            230, 8, "Number of Topics in Kafka: {}".format(num_topics), 0, 1,
         )
 
     def msgSize(self, sum_size):
@@ -4021,7 +4021,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Size Of Message in Kafka: {: .2f} KB".format(sum_size), 0, 1,
+            230, 8, "Total Size of Messages in Kafka: {: .2f} KB".format(sum_size), 0, 1,
         )
 
     def msgCount(self, sum_count):
@@ -4034,7 +4034,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Number Of Message in Kafka: {}".format(sum_count), 0, 1,
+            230, 8, "Total Number of Messages in Kafka: {}".format(sum_count), 0, 1,
         )
 
     def clusterSizeAndBrokerSize(self, total_size, brokersize):
@@ -4048,14 +4048,13 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Storage of Kafka Cluster: {}".format(total_size), 0, 1,
+            230, 8, "Total Storage of Kafka Cluster: {} KB".format(total_size), 0, 1,
         )
         j = 0
-        for i in brokersize:
-            pdf.cell(230, 5,"Size of broker {}  is  : {} KB".format(j,i),0,ln=1)
+        for i in brokersize['size']:
+            self.pdf.cell(230, 5,"Size of broker {}  is  : {} KB".format(j,i),0,ln=1)
             j = j + 1
-        pdf.cell(230, 5, "",0,ln=1)
-    
+
     def HAStrategy(self, HA_Strategy):
         """Check High Availability of Kafka Cluster.
 

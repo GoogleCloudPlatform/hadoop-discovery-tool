@@ -33,6 +33,7 @@ from getpass import getpass
 from sqlalchemy import create_engine
 from tqdm import tqdm
 from xml.etree.ElementTree import XML, fromstring
+from time import sleep
 
 # Defining default setting and date range for assessment report
 sns.set(rc={"figure.figsize": (15, 5)})
@@ -167,6 +168,19 @@ def getInput(version):
     inputs = {}
     inputs["version"] = version
     inputs["ssl"] = checkSSL()
+    inputs["broker_list"] =  [{'host' : 'gcp-dn1.c.qp-hadoop-discover-2021-01.internal',
+                            'port' : '9092',
+                            'log_dir' : '/var/local/kafka/data/'
+                            }, 
+                            {'host' : 'gcp-m1.c.qp-hadoop-discover-2021-01.internal',
+                            'port' : '9092',
+                            'log_dir' : '/var/local/kafka/data/'
+                            }, 
+                            {'host' : 'gcp-m2.c.qp-hadoop-discover-2021-01.internal',
+                            'port' : '9092',
+                            'log_dir' : '/var/local/kafka/data/'
+                            }]
+
     if inputs["ssl"]:
         print("Enter details accordingly as SSL is enabled.")
     else:

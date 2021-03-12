@@ -28,6 +28,7 @@ class ApplicationAPI:
         self.cloudera_manager_username = inputs["cloudera_manager_username"]
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
+        self.broker_list = inputs["broker_list"]
         self.logger = inputs["logger"]
         self.ssl = inputs["ssl"]
         if self.ssl:
@@ -2009,6 +2010,7 @@ class ApplicationAPI:
             subprocess.Popen(
                 'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
+            sleep(1)
             phoenix_path_df = pd.read_csv(
                 "phoenixpath.csv", delimiter="\n", header=None
             )
@@ -2040,6 +2042,7 @@ class ApplicationAPI:
             subprocess.Popen(
                 'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
+            sleep(1)
             coprocessor_path_df = pd.read_csv(
                 "coprocessorpath.csv", delimiter="\n", header=None
             )
@@ -2240,7 +2243,7 @@ class ApplicationAPI:
         """
 
         try:
-            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_port))
+            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_password))
             version_related = rversion_api.json()
             for i in version_related["items"]:
                 try:
@@ -2254,7 +2257,7 @@ class ApplicationAPI:
             self.logger.error("retentionPeriodKafka failed", exc_info=True)
             return None
 
-    def ZookeeperConn():
+    def ZookeeperConn(self):
         """Get zookeeper connection string in kafka.
         
         Returns:
@@ -2263,6 +2266,7 @@ class ApplicationAPI:
 
         try:
             subprocess.Popen("awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv" ,shell=True,stdout=subprocess.PIPE,encoding="utf-8" )
+            sleep(1)
             zookeeper_conn_df = pd.read_csv("zookeeper_conn.csv", delimiter = "\n",header=None)
             zookeeper_conn_df.columns= ['parameters']
             zookeeper_conn_df = zookeeper_conn_df.iloc[[-1]]
@@ -2271,6 +2275,8 @@ class ApplicationAPI:
                     zookeeper_conn = i.split('=')[-1]
                 else :
                     zookeeper_conn = None
+            self.logger.info("ZookeeperConn successful")
+            return zookeeper_conn
         except EmptyDataError:
             zookeeper_conn = None
             self.logger.info("ZookeeperConn successful")
@@ -2295,6 +2301,7 @@ class ApplicationAPI:
                 + " --list > topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
+            sleep(1)
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             num_topics = len(topics_df.index)
@@ -2322,13 +2329,14 @@ class ApplicationAPI:
             for i in self.broker_list:
                 conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
                 broker_connection =  broker_connection + conn_temp
-                broker_connection = broker_connection.strip(",")
-                subprocess.Popen(
+            broker_connection = broker_connection.strip(",")
+            subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list > topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
+            sleep(1)
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             sum_size = 0
@@ -2367,6 +2375,7 @@ class ApplicationAPI:
         """
 
         try:
+            sum_count = 0   
             broker_connection =''
             for i in self.broker_list:
                 conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
@@ -2378,6 +2387,7 @@ class ApplicationAPI:
                 + " --list > topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
+            sleep(1)
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             sum_count = 0
@@ -2389,6 +2399,7 @@ class ApplicationAPI:
                     + str(i)
                     + " --time -1 --offsets 1 | awk -F  \":\" '{sum += $3} END {print sum}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
                 )
+                sleep(1)
                 msg_count,err = msg_count.communicate()
 
                 msg_count = msg_count.strip("\n")
@@ -2426,7 +2437,7 @@ class ApplicationAPI:
                 for val in set(list_com):
                     log_dir = val
                 subprocess.Popen("du -sh " +str(log_dir)+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-
+                sleep(1)
                 try:
                     brokers_df = pd.read_csv("broker_size.csv",header=None)
                     brokers_df.columns = ["logs"]
@@ -2436,7 +2447,7 @@ class ApplicationAPI:
                         size= float(size.strip("K"))
                         size_sum = size_sum + size
                     brokersize.loc[j] = size_sum
-                    broker_list_len = (len(broker_list)-1)
+                    broker_list_len = (len(self.broker_list)-1)
                     for i in range(broker_list_len):
                         brokersize.loc[j+i+1] = 0
                     total_size = size_sum
@@ -2448,7 +2459,7 @@ class ApplicationAPI:
                 try : 
                     for k in self.broker_list:
                         subprocess.Popen("du -sh " +str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-        
+                        sleep(1)
                         brokers_df = pd.read_csv("broker_size.csv",header=None)
                         brokers_df.columns = ["logs"]
                         size_sum = 0
@@ -2487,7 +2498,7 @@ class ApplicationAPI:
             j = 0
             for k in self.broker_list:
                 subprocess.Popen("du -sh "+str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-
+                sleep(1)
                 brokers_df = pd.read_csv("broker_size.csv",header=None)
                 brokers_df.columns = ["logs"]
                 size_sum = 0
@@ -2497,6 +2508,7 @@ class ApplicationAPI:
                     size_sum = size_sum + size
                 brokersize.loc[j] = size_sum
                 j=j+1
+            brokersize.columns = ["size"]
             self.logger.info("BrokerSizeKafka successful")
             return brokersize
         except EmptyDataError:
@@ -2507,7 +2519,7 @@ class ApplicationAPI:
             self.logger.error("BrokerSizeKafka failed", exc_info=True)
             return None
 
-    def HAStrategyKafka(zookeeper_conn):
+    def HAStrategyKafka(self, zookeeper_conn):
         """Check High Availability of Kafka Cluster
         
         Args:
@@ -2519,6 +2531,7 @@ class ApplicationAPI:
             brokers = ''
             Num_brokers = 0
             subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids >broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            sleep(1)
             broker_id_df = pd.read_csv("broker_id.csv", delimiter = "\n",header=None)
             broker_id_df.columns= ['parameters']
             broker_id_df = broker_id_df.iloc[[-1]]
@@ -2526,7 +2539,7 @@ class ApplicationAPI:
                 if i != '':
                     brokers = i.strip('][').split(', ') 
                     Num_brokers = len(brokers)
-            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_port))
+            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_password))
             version_related = rversion_api.json()
             for i in version_related["items"]:
                 try:
@@ -2560,9 +2573,8 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                     shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                os.popen(
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json"
                 )
             )
             data = version_data["components"]
@@ -2597,9 +2609,9 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                os.popen(
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json"
+                   
                 )
 
             )
@@ -2635,9 +2647,8 @@ class ApplicationAPI:
         try:
             output = ""
             version_data = json.loads(
-                subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                os.popen(
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json"
                 )
 
             )
