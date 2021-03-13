@@ -876,6 +876,12 @@ class PdfGenerator:
         if type(temp) != type(None):
             ddog, splunk, new_relic, elastic_search = temp
             obj_pdf.loggingTool(ddog, splunk, new_relic, elastic_search)
+        
+        max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2 = None, None, None, None, None, None
+        temp = obj5.monitorNetworkSpeed()
+        if type(temp) != type(None):
+            max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2 = temp
+            obj_pdf.pdfMonitorNetworkSpeed(max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2)
 
         logs = None
         temp = obj5.getLogs()
@@ -1173,7 +1179,7 @@ class PdfGenerator:
             obj_pdf.sparkVersion(spark_version)
 
         languages = None
-        temp = obj_app.sparkLanguages()
+        temp = obj_app.getSparkApiProgrammingLanguages()
         if type(temp) != type(None):
             languages = temp
             obj_pdf.sparkLanguages(languages)

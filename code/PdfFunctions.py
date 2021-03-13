@@ -2574,6 +2574,22 @@ class PdfFunctions:
             230, 8, "{}".format(elastic_search), 0, 1,
         )
 
+    def pdfMonitorNetworkSpeed(self,max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2):
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=66, g=133, b=244)
+        self.pdf.cell(230, 8, "Third Party Network Monitoring:", 0, ln=1)
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=1, g=1, b=1)
+        self.pdf.cell(230, 8, "Receiver Speed:",0,ln=1)
+        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_1),0,ln=1)
+        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_1),0,ln=1)
+        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_1),0,ln=1)
+        self.pdf.cell(230, 8, "Transfer Speed:",0,ln=1)
+        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_2),0,ln=1)
+        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_2),0,ln=1)
+        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_2),0,ln=1)
+    
+
     def getLogs(self, logs):
         """Add logs paths in PDF.
 
@@ -3906,11 +3922,11 @@ class PdfFunctions:
             language_list (str): List of languages separated by comma.
         """
 
-        # self.pdf.set_font("Arial", "", 12)
-        # self.pdf.set_text_color(r=1, g=1, b=1)
-        # self.pdf.cell(
-        #     230, 8, "Programming Languages Used By Spark: {}".format(languages), 0, 1,
-        # )
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=1, g=1, b=1)
+        self.pdf.cell(
+            230, 8, "Programming Languages Used By Spark: {}".format(languages), 0, 1,
+        )
 
     def sparkDynamicAllocationAndResourceManager(
         self, dynamic_allocation, spark_resource_manager

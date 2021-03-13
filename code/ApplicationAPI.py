@@ -2653,7 +2653,7 @@ class ApplicationAPI:
             df = pd.DataFrame(data)
             services_df = df
             found = 0
-            services_df["sub_version"] = services_df.version.str[:5]
+            services_df["sub_version"] = services_df.version.str[:6]
             for i in services_df["name"]:
                 if i == "kudu":
                     found = 1

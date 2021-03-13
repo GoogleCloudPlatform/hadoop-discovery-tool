@@ -357,3 +357,30 @@ class NetworkMonitoringAPI:
         except Exception as e:
             self.logger.error("loggingTool failed", exc_info=True)
             return None
+
+    def monitorNetworkSpeed(self):
+        """Get orchestration tool details present in cluster.
+
+        Returns:
+            oozie_flag (str): Presence of oozie in cluster
+            crontab_flag (str): Presence of crontab in cluster
+            airflow_flag (str): Presence of airflow in cluster
+        """
+
+        try:
+            subprocess.Popen('sh ./getload.sh > parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            df = pd.read_csv("./parse.csv",names=['Index','Received','Transfer'],header=None) 
+            subprocess.Popen('rm -rf ./parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"    ).wait()
+            column1 = df["Received"]
+            max_value_1 = ((column1.max())/1024)
+            min_value_1 = ((column1.min())/1024)
+            avg_value_1 = ((column1.mean())/1024)
+            column2 = df["Transfer"]
+            max_value_2 = ((column2.max())/1024)
+            min_value_2 = ((column2.min())/1024)
+            avg_value_2 = ((column2.mean())/1024)
+            self.logger.info("monitorNetworkSpeed successful")
+            return max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2
+        except Exception as e:
+            self.logger.error("monitorNetworkSpeed failed", exc_info=True)
+            return None
