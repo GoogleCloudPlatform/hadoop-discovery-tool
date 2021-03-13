@@ -1244,7 +1244,7 @@ class PdfGenerator:
         total_size, brokersize = None, None
         temp1 = obj_app.KafkaClusterSize()
         temp2 = obj_app.BrokerSizeKafka()
-        if type(temp) != type(None):
+        if (type(temp1) and type(temp2)) != type(None):
             total_size = temp1
             brokersize = temp2
             obj_pdf.clusterSizeAndBrokerSize(total_size,brokersize)

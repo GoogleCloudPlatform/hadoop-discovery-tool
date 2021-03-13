@@ -1905,6 +1905,7 @@ class PdfFunctions:
                 self.pdf.cell(15, 5, "Size", 1, 0, "C", True)
                 self.pdf.cell(30, 5, "Modified Date", 1, 0, "C", True)
                 self.pdf.cell(30, 5, "Modified Time", 1, 0, "C", True)
+                self.pdf.cell(30, 5, "Storage Policy", 1, 0, "C", True)
                 self.pdf.cell(25, 5, "Permissions", 1, 1, "C", True)
                 self.pdf.set_text_color(r=1, g=1, b=1)
                 self.pdf.set_fill_color(r=244, g=244, b=244)
@@ -1950,6 +1951,15 @@ class PdfFunctions:
                         30,
                         5,
                         "{}".format(hdfs_storage_df["time"].iloc[pos]),
+                        1,
+                        0,
+                        "C",
+                        True,
+                    )
+                    self.pdf.cell(
+                        30,
+                        5,
+                        "{}".format(hdfs_storage_df["storage_policy"].iloc[pos]),
                         1,
                         0,
                         "C",
@@ -2403,7 +2413,7 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Data Transferred: {}".format(max_bandwidth), 0, 1,
+            230, 8, "Maximum Data Transferred: {} Mbps".format(max_bandwidth), 0, 1,
         )
 
     def ingress(self, max_value, min_value, avg_value, curr_value):
@@ -2422,16 +2432,16 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Incoming Throughput: {}".format(max_value), 0, 1,
+            230, 8, "Maximum Incoming Throughput: {: .2f} Kbps".format(max_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Minimum Incoming Throughput: {}".format(min_value), 0, 1,
+            230, 8, "Minimum Incoming Throughput: {: .2f} Kbps".format(min_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Average Incoming Throughput: {}".format(avg_value), 0, 1,
+            230, 8, "Average Incoming Throughput: {: .2f} Kbps".format(avg_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Current Incoming Throughput: {}".format(curr_value), 0, 1,
+            230, 8, "Current Incoming Throughput: {: .2f} Kbps".format(curr_value), 0, 1,
         )
 
     def egress(self, max_value, min_value, avg_value, curr_value):
@@ -2450,16 +2460,16 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Outgoing Throughput: {}".format(max_value), 0, 1,
+            230, 8, "Maximum Outgoing Throughput: {: .2f} Kbps".format(max_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Minimum Outgoing Throughput: {}".format(min_value), 0, 1,
+            230, 8, "Minimum Outgoing Throughput: {: .2f} Kbps".format(min_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Average Outgoing Throughput: {}".format(avg_value), 0, 1,
+            230, 8, "Average Outgoing Throughput: {: .2f} Kbps".format(avg_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Current Outgoing Throughput: {}".format(curr_value), 0, 1,
+            230, 8, "Current Outgoing Throughput: {: .2f} Kbps".format(curr_value), 0, 1,
         )
 
     def diskReadWrite(self, total_disk_read, total_disk_write):

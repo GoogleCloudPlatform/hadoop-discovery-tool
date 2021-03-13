@@ -2296,20 +2296,17 @@ class ApplicationAPI:
         """
 
         try:
-            subprocess.Popen(
+            topics = subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list > topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
-            sleep(1)
+            topics.wait()
+            topics, err = topics.communicate() 
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             num_topics = len(topics_df.index)
-            self.logger.info("numTopicsKafka successful")
-            return num_topics
-        except EmptyDataError:
-            num_topics = 0
             self.logger.info("numTopicsKafka successful")
             return num_topics
         except Exception as e:
@@ -2331,13 +2328,14 @@ class ApplicationAPI:
                 conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
                 broker_connection =  broker_connection + conn_temp
             broker_connection = broker_connection.strip(",")
-            subprocess.Popen(
+            topics = subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list > topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
-            sleep(1)
+            topics.wait()
+            topics, err = topics.communicate()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             sum_size = 0
@@ -2349,6 +2347,7 @@ class ApplicationAPI:
                     + str(i)
                     + "     --describe   | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
                 )
+                msg_size.wait()
                 msg_size,err = msg_size.communicate()
 
                 msg_size = msg_size.strip("\n")
@@ -2356,10 +2355,6 @@ class ApplicationAPI:
                     sum_size = sum_size + (int(msg_size) if msg_size != 'null' else 0)
                 else :
                     sum_size = 0
-            self.logger.info("msgSizeKafka successful")
-            return sum_size
-        except EmptyDataError:
-            sum_size = 0
             self.logger.info("msgSizeKafka successful")
             return sum_size
         except Exception as e:
@@ -2382,12 +2377,14 @@ class ApplicationAPI:
                 conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
                 broker_connection =  broker_connection + conn_temp
             broker_connection = broker_connection.strip(",")
-            subprocess.Popen(
+            topics = subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list > topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
+            topics.wait()
+            topics, err = topics.communicate()
             sleep(1)
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -2400,7 +2397,7 @@ class ApplicationAPI:
                     + str(i)
                     + " --time -1 --offsets 1 | awk -F  \":\" '{sum += $3} END {print sum}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
                 )
-                sleep(1)
+                msg_count.wait()
                 msg_count,err = msg_count.communicate()
 
                 msg_count = msg_count.strip("\n")
@@ -2408,10 +2405,6 @@ class ApplicationAPI:
                     sum_count = sum_count + int(msg_count)
                 else :
                     sum_count = 0  
-            self.logger.info("msgCountKafka successful")
-            return sum_count
-        except EmptyDataError:
-            sum_size = 0
             self.logger.info("msgCountKafka successful")
             return sum_count
         except Exception as e:
@@ -2437,8 +2430,9 @@ class ApplicationAPI:
             if len(set(list_com)) == 1:
                 for val in set(list_com):
                     log_dir = val
-                subprocess.Popen("du -sh " +str(log_dir)+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                sleep(1)
+                broker_dir = subprocess.Popen("du -sh " +str(log_dir)+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                broker_dir.wait()
+                broker_dir, err = broker_dir.communicate()
                 try:
                     brokers_df = pd.read_csv("broker_size.csv",header=None)
                     brokers_df.columns = ["logs"]
@@ -2459,8 +2453,9 @@ class ApplicationAPI:
             else :
                 try : 
                     for k in self.broker_list:
-                        subprocess.Popen("du -sh " +str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                        sleep(1)
+                        broker_dir = subprocess.Popen("du -sh " +str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        broker_dir.wait()
+                        broker_dir, err = broker_dir.communicate()
                         brokers_df = pd.read_csv("broker_size.csv",header=None)
                         brokers_df.columns = ["logs"]
                         size_sum = 0
@@ -2475,10 +2470,6 @@ class ApplicationAPI:
                         total_size = total_size + float(i)
                 except EmptyDataError:
                     total_size = 0
-            self.logger.info("KafkaClusterSize successful")
-            return total_size
-        except EmptyDataError:
-            total_size = 0
             self.logger.info("KafkaClusterSize successful")
             return total_size
         except Exception as e :
@@ -2498,8 +2489,9 @@ class ApplicationAPI:
             brokersize = pd.DataFrame(columns = ["broker_size"])  
             j = 0
             for k in self.broker_list:
-                subprocess.Popen("du -sh "+str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                sleep(1)
+                broker_dir = subprocess.Popen("du -sh "+str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                broker_dir.wait()
+                broker_dir, err = broker_dir.communicate()
                 brokers_df = pd.read_csv("broker_size.csv",header=None)
                 brokers_df.columns = ["logs"]
                 size_sum = 0
@@ -2510,10 +2502,6 @@ class ApplicationAPI:
                 brokersize.loc[j] = size_sum
                 j=j+1
             brokersize.columns = ["size"]
-            self.logger.info("BrokerSizeKafka successful")
-            return brokersize
-        except EmptyDataError:
-            brokersize = None
             self.logger.info("BrokerSizeKafka successful")
             return brokersize
         except Exception as e :
@@ -2531,8 +2519,9 @@ class ApplicationAPI:
         try:
             brokers = ''
             Num_brokers = 0
-            subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids >broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            sleep(1)
+            broker_zk = subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids > broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            broker_zk.wait()
+            broker_zk, err = broker_zk.communicate()
             broker_id_df = pd.read_csv("broker_id.csv", delimiter = "\n",header=None)
             broker_id_df.columns= ['parameters']
             broker_id_df = broker_id_df.iloc[[-1]]
@@ -2552,10 +2541,6 @@ class ApplicationAPI:
                 HA_Strategy = "Yes"
             else :
                 HA_Strategy = "No"
-            self.logger.info("HAStrategyKafka successful")
-            return HA_Strategy
-        except EmptyDataError:
-            HA_Strategy = "No"
             self.logger.info("HAStrategyKafka successful")
             return HA_Strategy
         except Exception as e:
