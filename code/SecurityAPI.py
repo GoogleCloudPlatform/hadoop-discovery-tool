@@ -260,6 +260,7 @@ class SecurityAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
+                xml_data.wait()
                 out, err = xml_data.communicate()
                 if out.find("HTTPS_ONLY") == -1:
                     hdfs_ssl = "SSL on HDFS is not enabled"
@@ -275,6 +276,7 @@ class SecurityAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
+                xml_data.wait()
                 out, err = xml_data.communicate()
                 if out.find("HTTPS_ONLY") == -1:
                     yarn_ssl = "SSL on Yarn is not enabled"
@@ -290,6 +292,7 @@ class SecurityAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
+                xml_data.wait()
                 out, err = xml_data.communicate()
                 if out.find("HTTPS_ONLY") == -1:
                     Mr_ssl = "SSL on Mapreduce is not enabled"
@@ -402,7 +405,7 @@ class SecurityAPI:
         """
 
         try:
-            subprocess.Popen("blkid > ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("blkid > ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             columns = [
                 "block",
                 "section",
@@ -413,10 +416,8 @@ class SecurityAPI:
                 "part3",
                 "part4",
             ]
-            luks_detect = pd.read_csv(
-                "block.csv", names=columns, delimiter=r"\s+", header=None
-            )
-            subprocess.Popen("rm ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            luks_detect = pd.read_csv("block.csv", names=columns, delimiter=r"\s+", header=None)
+            subprocess.Popen("rm ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             luks_detect.drop(
                 columns=["UUID", "part1", "part2", "part3", "part4"], inplace=True
             )
@@ -436,13 +437,14 @@ class SecurityAPI:
 
         try:
             port_df = pd.DataFrame(columns=["service", "port"])
-            subprocess.Popen("find / -name oozie-site.xml 2>/dev/null> oozie_port.csv ",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("find / -name oozie-site.xml 2>/dev/null> oozie_port.csv ",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             with open("oozie_port.csv","r") as fp:
                 for line in fp:
                     if "-oozie-OOZIE_SERVER/oozie-site.xml" in line:
                         xml_oozie = line
-            subprocess.Popen("rm ./oozie_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm ./oozie_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             dt_xml = subprocess.Popen("cat " + xml_oozie,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dt_xml.wait()
             dt_xml,err = dt_xml.communicate()
             myxml = fromstring(dt_xml)
             for val in myxml.findall("property"):
@@ -463,6 +465,7 @@ class SecurityAPI:
             path_status = path.exists("/etc/hadoop/conf/core-site.xml")
             if path_status == True:
                 xml_data = subprocess.Popen("cat /etc/hadoop/conf/core-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data.wait()
                 xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
@@ -482,6 +485,7 @@ class SecurityAPI:
             path_status = path.exists("/etc/hadoop/conf/yarn-site.xml")
             if path_status == True:
                 xml_data = subprocess.Popen("cat /etc/hadoop/conf/yarn-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data.wait()
                 xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
@@ -501,6 +505,7 @@ class SecurityAPI:
             path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
             if path_status == True:
                 xml_data = subprocess.Popen("cat /etc/hadoop/conf/mapred-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data.wait()
                 xml_data,err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
@@ -519,12 +524,12 @@ class SecurityAPI:
             kafka_line = ""
             path_status = path.exists("/etc/kafka/server.properties")
             if path_status == True:
-                subprocess.Popen("cat /etc/kafka/server.properties > kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("cat /etc/kafka/server.properties > kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 with open("kafka_port.csv") as fp:
                     for kafka_line in fp:
                         if "listeners=PLAINTEXT://" in kafka_line:
                             break
-                subprocess.Popen("rm ./kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("rm ./kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 kafka_line = " ".join(kafka_line.split(":", 2)[2:])
                 if kafka_line == "":
                     line = pd.NaT
@@ -538,12 +543,12 @@ class SecurityAPI:
             if path_status == True:
                 subprocess.Popen(
                     "cat /etc/spark/conf/spark-defaults.conf > spark_data.csv"
-                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 with open("spark_data.csv") as fp:
                     for spark_line in fp:
                         if "spark.shuffle.service.port" in spark_line:
                             break
-                subprocess.Popen("rm ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("rm -rf ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 spark_line = " ".join(spark_line.split("=", 1)[1:])
                 if spark_line == "":
                     line = pd.NaT
@@ -555,12 +560,12 @@ class SecurityAPI:
             kerberos_line = ""
             path_status = path.exists("/var/kerberos/krb5kdc/kdc.conf")
             if path_status == True:
-                subprocess.Popen("cat /var/kerberos/krb5kdc/kdc.conf > ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("cat /var/kerberos/krb5kdc/kdc.conf > ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 with open("spark_data.csv") as fp:
                     for kerberos_line in fp:
                         if "kdc_tcp_ports" in kerberos_line:
                             break
-                subprocess.Popen("rm ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("rm ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 kerberos_line = " ".join(kerberos_line.split("=", 1)[1:])
                 if kerberos_line == "":
                     line = pd.NaT
@@ -571,6 +576,7 @@ class SecurityAPI:
                 port_df = port_df.append(df_port, ignore_index=True)
             zookeeper_line = ""
             dt = subprocess.Popen('find / -name "zoo.cfg" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dt.wait()
             dt,err = dt.communicate()
             res_list = dt.splitlines()
             for i in res_list:
@@ -606,6 +612,7 @@ class SecurityAPI:
             key_list = subprocess.Popen(
                 "hadoop key list", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
+            key_list.wait()
             out, err = key_list.communicate()
             out = out.splitlines()
             out1 = str(out)
@@ -638,6 +645,7 @@ class SecurityAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
+            xml_data.wait()
             out, err = xml_data.communicate()
             if not out.strip():
                 enc_zoneList = None

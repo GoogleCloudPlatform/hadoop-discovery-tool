@@ -1475,7 +1475,8 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Softwares", 1, 1, "C", True)
+        self.pdf.cell(100, 5, "Softwares", 1, 0, "C", True)
+        self.pdf.cell(100, 5, "Version", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
@@ -1484,6 +1485,15 @@ class PdfFunctions:
                 100,
                 5,
                 "{}".format(third_party_package["name"].iloc[pos]),
+                1,
+                0,
+                "C",
+                True,
+            )
+            self.pdf.cell(
+                100,
+                5,
+                "{}".format(third_party_package["version"].iloc[pos]),
                 1,
                 1,
                 "C",

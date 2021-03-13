@@ -5,6 +5,7 @@
 # -------------------------------------------------------------------------------
 
 # Importing required libraries
+import os
 from imports import *
 
 
@@ -47,6 +48,7 @@ class HardwareOSAPI:
 
         try:
             os_version = subprocess.Popen("cat /etc/*-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_version.wait()
             os_version,err = os_version.communicate()
             os_version = os_version.replace("\n", ",")
             os_version = os_version.split(",")
@@ -803,6 +805,7 @@ class HardwareOSAPI:
 
         try:
             dns_server = subprocess.Popen("systemctl status named | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dns_server.wait()
             dns_server,err = dns_server.communicate()
             if not dns_server:
                 dns_server = "DNS server does not enabled within machine"
@@ -823,6 +826,7 @@ class HardwareOSAPI:
 
         try:
             web_server = subprocess.Popen("systemctl status httpd | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            web_server.wait()
             web_server,err = web_server.communicate()
             web_server = web_server.split(":")
             if "inactive" in web_server[1]:
@@ -844,6 +848,7 @@ class HardwareOSAPI:
 
         try:
             ntp_server = subprocess.Popen("timedatectl status | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            ntp_server.wait()
             ntp_server,err = ntp_server.communicate()
             ntp_server = ntp_server.split(":")
             ntp_server = ntp_server[1]
@@ -864,6 +869,7 @@ class HardwareOSAPI:
             manufacturer_name = subprocess.Popen(
                 "dmidecode --type processor | grep Manufacturer | awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            manufacturer_name.wait()
             manufacturer_name,err = manufacturer_name.communicate()
             manufacturer_name = manufacturer_name.split(":")
             manufacturer_name = manufacturer_name[1]
@@ -884,6 +890,7 @@ class HardwareOSAPI:
             serial_no = subprocess.Popen(
                 "dmidecode --type processor | grep ID | awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            serial_no.wait()
             serial_no,err = serial_no.communicate()
             serial_no = serial_no.split(":")
             serial_no = serial_no[1]
@@ -904,6 +911,7 @@ class HardwareOSAPI:
             family = subprocess.Popen(
                 "cat /proc/cpuinfo | grep cpu | grep family | awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            family.wait()
             family,err = family.communicate()
             family = family.split(":")
             family = family[1]
@@ -924,6 +932,7 @@ class HardwareOSAPI:
             model_name = subprocess.Popen(
                 "cat /proc/cpuinfo | grep model | grep name | awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            model_name.wait()
             model_name,err = model_name.communicate()
             model_name = model_name.split(":")
             model_name = model_name[1]
@@ -944,6 +953,7 @@ class HardwareOSAPI:
             microcode = subprocess.Popen(
                 "cat /proc/cpuinfo | grep microcode | awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            microcode.wait()
             microcode,err = microcode.communicate()
             microcode = microcode.split(":")
             microcode = microcode[1]
@@ -964,6 +974,7 @@ class HardwareOSAPI:
             cpu_mhz = subprocess.Popen(
                 "cat /proc/cpuinfo | grep cpu |grep MHz| awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            cpu_mhz.wait()
             cpu_mhz,err = cpu_mhz.communicate()
             cpu_mhz = cpu_mhz.split(":")
             cpu_mhz = cpu_mhz[1]
@@ -984,6 +995,7 @@ class HardwareOSAPI:
             cpu_family = subprocess.Popen(
                 "cat /proc/cpuinfo | grep cpu | grep family | awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            cpu_family.wait()
             cpu_family,err = cpu_family.communicate()
             cpu_family = cpu_family.split(":")
             cpu_family = cpu_family[1]
@@ -1010,8 +1022,8 @@ class HardwareOSAPI:
             fout.close()
             column_names = ["nic", "ipv4"]
             nic_details = pd.read_csv("./nic_ip.csv", names=column_names, header=None)
-            subprocess.Popen("rm ./nic_ip.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            subprocess.Popen("rm ./nic_ip.txt",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm -rf ./nic_ip.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen("rm -rf ./nic_ip.txt",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             delete_row = nic_details[nic_details["nic"] == "lo"].index
             nic_details = nic_details.drop(delete_row)
             self.logger.info("networkInterfaceDetails successful")
@@ -1030,6 +1042,7 @@ class HardwareOSAPI:
 
         try:
             os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_name.wait()
             os_name,err = os_name.communicate()
             os_name = os_name.lower()
             if "centos" or "red hat" in os_name:
@@ -1046,8 +1059,8 @@ class HardwareOSAPI:
                 security_df = pd.read_csv(
                     "./security_final.csv", names=column_names, header=None
                 )
-                subprocess.Popen("rm ./security_level.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                subprocess.Popen("rm ./security_final.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("rm -rf ./security_level.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen("rm -rf ./security_final.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 subprocess.check_output(
                     "bash YUM_Get_Patch_Date.sh", shell=True, stderr=subprocess.STDOUT
                 )
@@ -1067,15 +1080,15 @@ class HardwareOSAPI:
                 patch_date_df["Patch_Deployed_Date"] = patch_date_df[
                     "Patch_Deployed_Date"
                 ].dt.strftime("%d-%b-%Y")
-                subprocess.Popen("rm ./patch_date.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                subprocess.Popen("rm ./security_patch_date.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("rm -rf ./patch_date.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen("rm -rf ./security_patch_date.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 patch_dataframe = pd.merge(
                     security_df, patch_date_df, on="Security_Package", how="inner"
                 )
             elif "debian" or "ubuntu" in os_name:
                 subprocess.Popen(
                     "sudo apt-show-versions | grep security | grep all | sort -u | head -10 > ./output.csv"
-                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
                 fin = open("output.csv", "r")
                 fout = open("ubuntu_patches.csv", "w")
                 for iterator in fin:
@@ -1088,8 +1101,8 @@ class HardwareOSAPI:
                 )
                 patch_data = patch_data["Security_Package"].str.split(":").str[0]
                 patch_dataframe = patch_data.to_frame()
-                subprocess.Popen("rm ./output.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                subprocess.Popen("rm ./ubuntu_patches.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                subprocess.Popen("rm -rf ./output.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen("rm -rf ./ubuntu_patches.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             else:
                 patch_dataframe = pd.DataFrame(
                     ["Operating System is Not Supported"], columns=["Supported_Status"]
@@ -1110,7 +1123,7 @@ class HardwareOSAPI:
         try:
             subprocess.Popen(
                 "hadoop checknative -a | grep true | head -10 > ./hadoop_native.csv"
-            ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             fin = open("hadoop_native.csv", "r")
             fout = open("hadoop_native_library.csv", "w")
             for iterator in fin:
@@ -1121,16 +1134,16 @@ class HardwareOSAPI:
             hadoop_native_df = pd.read_csv(
                 "./hadoop_native_library.csv", names=column_names, header=None
             )
-            subprocess.Popen("rm ./hadoop_native_library.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            subprocess.Popen("rm ./hadoop_native.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm -rf ./hadoop_native_library.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen("rm -rf ./hadoop_native.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             hadoop_native_df["Hadoop_Libraries"] = hadoop_native_df[
                 "Hadoop_Libraries"
             ].str.rstrip(":")
             hadoop_native_df.drop(["Status", "Library_Path"], axis=1, inplace=True)
-            subprocess.Popen("ls /usr/local/lib/ | tr -d ' ' | head -10 > ./user_libs.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("ls /usr/local/lib/ | tr -d ' ' | head -10 > ./user_libs.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             column_names = ["Non_Hadoop_Libraries"]
             custom_lib = pd.read_csv("./user_libs.csv", names=column_names, header=None)
-            subprocess.Popen("rm ./user_libs.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm -rf ./user_libs.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             hadoop_native_df["Non_Hadoop_Libraries"] = custom_lib[
                 "Non_Hadoop_Libraries"
             ]
@@ -1156,30 +1169,37 @@ class HardwareOSAPI:
             python_flag, java_flag, scala_flag = 0, 0, 0
             jdk_line, scala_line = "", ""
             python_check = subprocess.Popen("python3 --version",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            python_check.wait()
             python_check,err = python_check.communicate()
             os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_name.wait()
             os_name,err = os_name.communicate()
             os_name = os_name.lower()
             if "centos" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa | grep java > ./java_check.csv"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
             elif "debian" in os_name:
                 softwares_installed = subprocess.Popen(
                     "dpkg -l | grep java > ./java_check.csv"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
             elif "ubuntu" in os_name:
                 softwares_installed = subprocess.Popen(
                     "apt list --installed | grep java > ./java_check.csv"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
             elif "red hat" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa | grep java > ./java_check.csv"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
             elif "suse" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa | grep java > ./java_check.csv"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
             if "Python 3." in python_check:
                 python_flag = 1
             with open("java_check.csv", "r") as fp:
@@ -1187,14 +1207,14 @@ class HardwareOSAPI:
                     if "openjdk" in jdk_line:
                         java_flag = 1
                         break
-            subprocess.Popen("rm ./java_check.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            subprocess.Popen("timeout -k 21 20 spark-shell > ./scala.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            with open("scala.csv") as fp:
-                for scala_line in fp:
-                    if "Using Scala version" in scala_line:
-                        scala_flag = 1
-                        break
-            subprocess.Popen("rm ./scala.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm -rf ./java_check.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            os.popen('timeout -k 30 29 spark-shell > ./scala.csv 2>/dev/null').read()
+            spark_scala=subprocess.Popen("cat ./scala.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            spark_scala.wait()
+            out, err = spark_scala.communicate()
+            if "Spark context available as" in out:
+                scala_flag=1    
+            subprocess.Popen("rm -rf ./scala.csv 2>/dev/null",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             self.logger.info("checkLibrariesInstalled successful")
             return python_flag, java_flag, scala_flag
         except Exception as e:
@@ -1212,6 +1232,7 @@ class HardwareOSAPI:
             cyberSecurity = subprocess.Popen(
                 'find / -type f \( -iname "knox-server" -o -iname "ranger-admin" -o -iname "grr" -o -iname "splunk" -o -iname "MISP" -o -iname "TheHive-Project" -o -iname "nagios.cfg" \) 2>/dev/null'
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            cyberSecurity.wait()
             cyberSecurity,err = cyberSecurity.communicate()
             Cloudera_navigator = subprocess.Popen(
                 "ls /*/*/*/webapp/static/release/js/cloudera/navigator",
@@ -1219,6 +1240,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
+            Cloudera_navigator.wait()
             out, err = Cloudera_navigator.communicate()
             security_software = {}
             if cyberSecurity.find("ranger-admin") == -1:
@@ -1250,6 +1272,7 @@ class HardwareOSAPI:
             else:
                 security_software["thehive"] = "TheHive is installed"
             osquery = subprocess.Popen("yum list installed osquery | grep osquery",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            osquery.wait()
             osquery,err = osquery.communicate()
             if not osquery:
                 security_software["osquery"] = "OSQuery is not installed"
@@ -1278,6 +1301,7 @@ class HardwareOSAPI:
 
         try:
             gpu_status = subprocess.Popen('lshw | egrep -i -c "non-vga"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            gpu_status.wait()
             gpu_status,err = gpu_status.communicate()
             self.logger.info("specialityHardware successful")
             return gpu_status

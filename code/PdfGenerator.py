@@ -489,6 +489,10 @@ class PdfGenerator:
             third_party_package = temp
             obj_pdf.thirdPartySoftware(third_party_package)
 
+        pdf.set_font("Arial", "", 12)
+        pdf.set_text_color(r=66, g=133, b=244)
+        pdf.cell(230, 8, "Details of Services/Software and Their Version:", 0, ln=1)
+        
         package_version = None
         temp = obj3.versionPackage()
         if type(temp) != type(None):
@@ -1169,7 +1173,7 @@ class PdfGenerator:
             obj_pdf.sparkVersion(spark_version)
 
         languages = None
-        temp = obj_app.sparkComponentsUsed()
+        temp = obj_app.sparkLanguages()
         if type(temp) != type(None):
             languages = temp
             obj_pdf.sparkLanguages(languages)

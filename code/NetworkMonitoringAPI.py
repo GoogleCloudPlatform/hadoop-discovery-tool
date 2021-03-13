@@ -48,7 +48,7 @@ class NetworkMonitoringAPI:
 
         try:
             subprocess.Popen(
-                "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf > MaxBandwidth.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf > MaxBandwidth.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             maxbandwidth_df = pd.read_csv("MaxBandwidth.csv", delimiter="\n")
             max_bandwidth = str(maxbandwidth_df["MaxBandwidth"][0])
             self.logger.info("maxBandwidth successful")
@@ -70,6 +70,7 @@ class NetworkMonitoringAPI:
         try:
             traffic = subprocess.Popen(
                 ' cd /sys/class/net/eth0/statistics/; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            traffic.wait()
             traffic,err = traffic.communicate()
             traffic_list = traffic.split("\n", 10)
             traffic_list.remove("0")
@@ -127,9 +128,7 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            subprocess.Popen(
-                "iostat -d | awk 'BEGIN{OFS= \",\" ;}NR>2{print $3, $4;} ' > ./disk.csv"
-            ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("iostat -d | awk 'BEGIN{OFS= \",\" ;}NR>2{print $3, $4;} ' > ./disk.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             disk_df = pd.read_csv("disk.csv", delimiter=",")
             disk_df = disk_df.fillna(0)
             disk_df.columns = ["disk_read", "disk_write"]
@@ -158,23 +157,29 @@ class NetworkMonitoringAPI:
 
         try:
             os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_name.wait()
             os_name,err = os_name.communicate()
             os_name = os_name.lower()
             softwares_installed = ""
             if "centos" in os_name:
                 softwares_installed = subprocess.Popen("rpm -qa",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
                 softwares_installed,err = softwares_installed.communicate()
             elif "debian" in os_name:
                 softwares_installed = subprocess.Popen("dpkg -l",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
                 softwares_installed,err = softwares_installed.communicate()
             elif "ubuntu" in os_name:
                 softwares_installed = subprocess.Popen("apt list --installed",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
                 softwares_installed,err = softwares_installed.communicate()
             elif "red hat" in os_name:
                 softwares_installed = subprocess.Popen("rpm -qa",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
                 softwares_installed,err = softwares_installed.communicate()
             elif "suse" in os_name:
                 softwares_installed = subprocess.Popen("rpm -qa",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                softwares_installed.wait()
                 softwares_installed,err = softwares_installed.communicate()
             prometheus_server = subprocess.Popen(
                 "systemctl status prometheus | grep active",
@@ -182,6 +187,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
+            prometheus_server.wait()
             out, err = prometheus_server.communicate()
             if not out:
                 prometheus_server = "Prometheus server is not present"
@@ -198,12 +204,14 @@ class NetworkMonitoringAPI:
                 grafana_server = "grafana server is not present"
             else:
                 grafana_server = "grafana server is present"
+
             ganglia_server = subprocess.Popen(
                 'find / -iname "ganglia.conf" 2>/dev/null',
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
+            ganglia_server.wait()
             out, err = ganglia_server.communicate()
             if not out:
                 ganglia_server = "ganglia server is not present"
@@ -215,6 +223,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
+            check_mk_server.wait()
             out, err = check_mk_server.communicate()
             if not out:
                 check_mk_server = "check mk server is not present"
@@ -240,7 +249,7 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            subprocess.Popen("ls -l /var/log > ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("ls -l /var/log > ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             col_names = [
                 "permission",
                 "links",
@@ -255,7 +264,7 @@ class NetworkMonitoringAPI:
             df11 = pd.read_csv(
                 "data.csv", names=col_names, delimiter=r"\s+", skiprows=1
             )
-            subprocess.Popen("rm ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen("rm -rf ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             remove_list = ["root", "chrony", "ntp"]
             logs = df11[~df11["owner"].isin(remove_list)]
             logs.reset_index(inplace=True)
@@ -284,12 +293,14 @@ class NetworkMonitoringAPI:
             crontab = subprocess.Popen(
                 "whereis -b crontab | cut -d' ' -f2 | xargs rpm -qf"
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            crontab.wait()
             crontab,err = crontab.communicate()
             if crontab.find("cronie") == -1:
                 crontab_flag = "crontab not installed"
             else:
                 crontab_flag = "crontab is installed"
             airflow = subprocess.Popen("airflow version",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            airflow.wait()
             airflow,err = airflow.communicate()
             if not airflow:
                 airflow_flag = "airflow is not enabled"
@@ -318,14 +329,16 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
+            ddog.wait()
             out, err = ddog.communicate()
             if not out:
-                ddog = "Datadog is not deployed"
+                ddog = "Datadog is not installed"
             else:
-                ddog = "Datadog is deployed"
+                ddog = "Datadog is installed"
             logging = subprocess.Popen(
                 'find / -type f \( -iname "splunk" -o -iname "newrelic-infra.yml" -o -iname "elasticsearch.yml"\) 2>/dev/null'
                 ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            logging.wait()
             logging, err = logging.communicate()
             if logging.find("splunk") == -1:
                 splunk = "Splunk not installed"
