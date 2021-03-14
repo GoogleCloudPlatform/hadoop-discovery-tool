@@ -808,9 +808,9 @@ class HardwareOSAPI:
             dns_server.wait()
             dns_server,err = dns_server.communicate()
             if not dns_server:
-                dns_server = "DNS server does not enabled within machine"
+                dns_server = "DNS server is not enabled within machine"
             else:
-                dns_server = "DNS server not enabled within machine"
+                dns_server = "DNS server is enabled within machine"
             self.logger.info("dnsServer successful")
             return dns_server
         except Exception as e:
