@@ -1060,20 +1060,31 @@ class DataAPI:
 
         try:
             hive_execution_engine = ""
-            hive_execution_engine = subprocess.check_output(
-                'hive -e "set hive.execution.engine" 2>/dev/null',
-                shell=True,
-                stderr=subprocess.STDOUT
-            )
-            hive_execution_engine = str(hive_execution_engine)
+            xml_data = subprocess.Popen('beeline --help',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            #xml_data = subprocess.Popen('echo $?',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            xml_data.wait()
+            out, err = xml_data.communicate()    
+            out = out.splitlines()
+            out1 = str(out)
+            substring = "which should be present in beeline-site.xml"
+            substring_in_list = any(substring in out1 for string in out)
+            if substring_in_list == True:
+                xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml.wait()
+                xml,err = xml.communicate()
+            else:
+                xml = subprocess.Popen('hive -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml.wait()
+                xml,err = xml.communicate()
+            #hive_execution_engine = subprocess.check_output('hive -e "set hive.execution.engine"', shell=True)
+            hive_execution_engine = str(xml)
             hive_execution_engine = hive_execution_engine.split("\\n")
             for line in hive_execution_engine:
-                if line.find("hive.execution.engine") != -1:
+                if (line.find("hive.execution.engine")!=-1):
                     hive_execution_engine = line.split("=")[1]
-                    if hive_execution_engine.find("|") != -1:
-                        hive_execution_engine = hive_execution_engine.split("|")[0]
+                    if (hive_execution_engine.find("|")!=-1):
+                        hive_execution_engine = hive_execution_engine.split('|')[0]
                         hive_execution_engine = hive_execution_engine.strip()
-            self.logger.info("getHiveExecutionEngine successful")
             return hive_execution_engine
         except Exception as e:
             self.logger.error("getHiveExecutionEngine failed", exc_info=True)
@@ -1152,7 +1163,7 @@ class DataAPI:
                     substring = "which should be present in beeline-site.xml"
                     substring_in_list = any(substring in out1 for string in out)
                     if substring_in_list == True:
-                        xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "use {}; show create table {}" 2>/d ev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                         xml.wait()
                         xml,err = xml.communicate()
                     else:
@@ -1179,37 +1190,53 @@ class DataAPI:
         """
 
         try:
-            transaction_locking_concurrency = None
-            concurrency = subprocess.check_output(
-                'hive -e "set hive.support.concurrency" 2>/dev/null', shell=True
-            )
+            transaction_locking_concurrency = ""
+            xml_data = subprocess.Popen('beeline --help',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            xml_data.wait()
+            out, err = xml_data.communicate()    
+            out = out.splitlines()
+            out1 = str(out)
+            substring = "which should be present in beeline-site.xml"
+            substring_in_list = any(substring in out1 for string in out)
+            if substring_in_list == True:
+                concurrency = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.support.concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency.wait()
+                concurrency,err = concurrency.communicate()
+                txn_manager = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                txn_manager.wait()
+                txn_manager,err = txn_manager.communicate()
+                
+            else:
+                concurrency = subprocess.Popen('hive -e "set hive.support.concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency.wait()
+                concurrency,err = concurrency.communicate()
+                txn_manager = subprocess.Popen('hive -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                txn_manager.wait()
+                txn_manager,err = txn_manager.communicate()
+            
             concurrency = str(concurrency)
             concurrency = concurrency.split("\\n")
             for line in concurrency:
-                if line.find("hive.support.concurrency") != -1:
+                if (line.find("hive.support.concurrency")!=-1):
                     concurrency = line.split("=")[1]
-                    if concurrency.find("|") != -1:
+                    if (concurrency.find("|")!=-1):
                         concurrency = concurrency.split("|")[0]
                         concurrency = concurrency.strip()
-            txn_manager = subprocess.check_output(
-                'hive -e "set hive.txn.manager" 2>/dev/null', shell=True
-            )
+
             txn_manager = str(txn_manager)
             txn_manager = txn_manager.split("\\n")
             for line in txn_manager:
-                if line.find("hive.txn.manager") != -1:
+                if (line.find("hive.txn.manager")!=-1):
                     txn_manager = line.split("=")[1]
-                    if txn_manager.find("|") != -1:
+                    if (txn_manager.find("|")!=-1):
                         txn_manager = txn_manager.split("|")[0]
                         txn_manager = txn_manager.strip()
-            if (
-                concurrency == "true"
-                and txn_manager == "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
-            ):
+                
+            if (concurrency=='true' and txn_manager=='org.apache.hadoop.hive.ql.lockmgr.DbTxnManager'):
                 transaction_locking_concurrency = "Yes"
             else:
                 transaction_locking_concurrency = "No"
-            self.logger.info("getTransactionLockingConcurrency successful")
+            
             return transaction_locking_concurrency
         except Exception as e:
             self.logger.error("getTransactionLockingConcurrency failed", exc_info=True)
