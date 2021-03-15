@@ -246,7 +246,6 @@ class PdfGenerator:
             new_ref_df,
             base_size,
         )
-
         p_bar.update(1)
         p_bar.set_description(desc="Key Metrics Added in PDF")
 

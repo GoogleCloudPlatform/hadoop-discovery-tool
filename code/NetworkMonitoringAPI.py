@@ -226,9 +226,9 @@ class NetworkMonitoringAPI:
             check_mk_server.wait()
             out, err = check_mk_server.communicate()
             if not out:
-                check_mk_server = "check mk server is not present"
+                check_mk_server = "check-mk server is not present"
             else:
-                check_mk_server = "check mk server is present"
+                check_mk_server = "check-mk server is present"
             self.logger.info("thirdPartyMonitor successful")
             return (
                 softwares_installed,

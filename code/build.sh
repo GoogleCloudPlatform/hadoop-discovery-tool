@@ -1,6 +1,6 @@
 #!bin/bash
 var=0
-python3 package_test.py
+sudo python3 package_test.py
 var=$?
 if [ $var == 1 ]
 then
@@ -55,7 +55,7 @@ then
     break
 fi
 # Install all the offline packages into the virtual environment
-sudo pip3 install -r $PWD/HDT_ENV/packages/requirements.txt --no-index --find-links $PWD/HDT_ENV/packages
+pip3 install -r $PWD/HDT_ENV/packages/requirements.txt --no-index --find-links $PWD/HDT_ENV/packages
 var=$?
 if [ $var == 1 ]
 then
