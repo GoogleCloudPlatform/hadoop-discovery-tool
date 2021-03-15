@@ -90,7 +90,6 @@ class PdfFunctions:
                             pd.DataFrame({"HostName": [host["hostname"]],}),
                             ignore_index=True,
                         )
-            namenodes_df = namenodes_df.drop_duplicates(subset='HostName', keep="first")
             self.pdf.cell(175, 5, "Number of Host", 1, 0, "L", True)
             self.pdf.cell(50, 5, str(len(host_df)), 1, 1, "C", True)
             self.pdf.cell(175, 5, "Number of NameNodes", 1, 0, "L", True)
@@ -141,7 +140,7 @@ class PdfFunctions:
             self.pdf.cell(50, 5, "{}".format(replication_factor), 1, 1, "C", True)
 
         if type(size_breakdown_df) != type(None):
-            self.pdf.cell(175, 5, "Hive Data", 1, 0, "L", True)
+            self.pdf.cell(175, 5, "Structured Data", 1, 0, "L", True)
             self.pdf.cell(
                 50,
                 5,
@@ -151,7 +150,7 @@ class PdfFunctions:
                 "C",
                 True,
             )
-            self.pdf.cell(175, 5, "Non-Hive Data", 1, 0, "L", True)
+            self.pdf.cell(175, 5, "Unstructured Data", 1, 0, "L", True)
             self.pdf.cell(
                 50,
                 5,
@@ -488,7 +487,6 @@ class PdfFunctions:
                         pd.DataFrame({"service": [role["serviceName"]]}),
                         ignore_index=True,
                     )
-        namenodes_df = namenodes_df.drop_duplicates(subset='HostName', keep="first")
         client_gateway_df.drop_duplicates(inplace=True)
         self.pdf.cell(
             230, 8, "Number of Host: {}".format(len(all_host_data)), 0, 1,
@@ -2216,8 +2214,8 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(80, 5, "Hive Size", 1, 0, "C", True)
-        self.pdf.cell(80, 5, "Non-Hive Size", 1, 1, "C", True)
+        self.pdf.cell(80, 5, "Structured Size", 1, 0, "C", True)
+        self.pdf.cell(80, 5, "Unstructured Size", 1, 1, "C", True)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.set_fill_color(r=244, g=244, b=244)
         self.pdf.set_font("Arial", "", 12)
@@ -2593,13 +2591,13 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(230, 8, "Receiver Speed:",0,ln=1)
-        self.pdf.cell(230, 8, "Peak Speed: {} kbps ".format(max_value_1),0,ln=1)
-        self.pdf.cell(230, 8, "Minimum Speed: {} kbps ".format(min_value_1),0,ln=1)
-        self.pdf.cell(230, 8, "Average Speed: {} kbps ".format(avg_value_1),0,ln=1)
+        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_1),0,ln=1)
+        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_1),0,ln=1)
+        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_1),0,ln=1)
         self.pdf.cell(230, 8, "Transfer Speed:",0,ln=1)
-        self.pdf.cell(230, 8, "Peak Speed: {} kbps".format(max_value_2),0,ln=1)
-        self.pdf.cell(230, 8, "Minimum Speed: {} kbps".format(min_value_2),0,ln=1)
-        self.pdf.cell(230, 8, "Average Speed: {} kbps   ".format(avg_value_2),0,ln=1)
+        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_2),0,ln=1)
+        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_2),0,ln=1)
+        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_2),0,ln=1)
     
 
     def getLogs(self, logs):

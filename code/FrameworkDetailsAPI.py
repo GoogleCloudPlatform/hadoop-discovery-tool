@@ -49,12 +49,12 @@ class FrameworkDetailsAPI:
 
         try:
             hversion = subprocess.Popen(
-                "hadoop version",
+                "hadoop version 2>/dev/null",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             hversion.wait()
             hversion, err = hversion.communicate()
             hadoop_major = hversion[0:12]
-            subprocess.Popen("hadoop version > ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen("hadoop version 2>/dev/null  1>./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             dt = "This command was run using "
             a = ""
             with open("data.csv","r") as fp:

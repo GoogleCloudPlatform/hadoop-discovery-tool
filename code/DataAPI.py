@@ -508,6 +508,7 @@ class DataAPI:
         try:
             total_used_size = float(total_used_size)
             structured_size = float(hadoop_db_names["File_Size"].sum())
+            structured_size = structured_size / 1024.0
             unstructured_size = total_used_size - structured_size
             percent_structured = (structured_size / total_used_size) * 100
             percent_structured = str("{0:.3f}".format(percent_structured) + " %")
@@ -866,10 +867,9 @@ class DataAPI:
                     )
                     database_df = database_df.append(database_tmp_df)
             database_df["File_Size"] = database_df["File_Size"].astype(str).astype(int)
-            database_df['File_Size'] = database_df['File_Size']/1024**3
-            # database_df["Count"] = 1
-            # database_df = database_df.groupby(["Database"]).sum()
-            # database_df.reset_index(inplace=True)
+            database_df["Count"] = 1
+            database_df = database_df.groupby(["Database"]).sum()
+            database_df.reset_index(inplace=True)
             self.logger.info("getHiveDatabaseInfo successful")
             return database_df
         except Exception as e:
@@ -1060,30 +1060,20 @@ class DataAPI:
 
         try:
             hive_execution_engine = ""
-            xml_data = subprocess.Popen('beeline --help',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            xml_data.wait()
-            out, err = xml_data.communicate()    
-            out = out.splitlines()
-            out1 = str(out)
-            substring = "which should be present in beeline-site.xml"
-            substring_in_list = any(substring in out1 for string in out)
-            if substring_in_list == True:
-                xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                xml.wait()
-                xml,err = xml.communicate()
-            else:
-                xml = subprocess.Popen('hive -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                xml.wait()
-                xml,err = xml.communicate()
-
-            hive_execution_engine = str(xml)
+            hive_execution_engine = subprocess.check_output(
+                'hive -e "set hive.execution.engine" 2>/dev/null',
+                shell=True,
+                stderr=subprocess.STDOUT
+            )
+            hive_execution_engine = str(hive_execution_engine)
             hive_execution_engine = hive_execution_engine.split("\\n")
             for line in hive_execution_engine:
-                if (line.find("hive.execution.engine")!=-1):
+                if line.find("hive.execution.engine") != -1:
                     hive_execution_engine = line.split("=")[1]
-                    if (hive_execution_engine.find("|")!=-1):
-                        hive_execution_engine = hive_execution_engine.split('|')[0]
+                    if hive_execution_engine.find("|") != -1:
+                        hive_execution_engine = hive_execution_engine.split("|")[0]
                         hive_execution_engine = hive_execution_engine.strip()
+            self.logger.info("getHiveExecutionEngine successful")
             return hive_execution_engine
         except Exception as e:
             self.logger.error("getHiveExecutionEngine failed", exc_info=True)
@@ -1102,42 +1092,53 @@ class DataAPI:
         try:
             engine = create_engine(database_uri)
             file_formats = []
-            if (database_type=="postgresql"):
-                result = engine.execute('''
+            if database_type == "postgresql":
+                result = engine.execute(
+                    """
                 select "NAME", "DB_ID" 
                 from 
                 "DBS" 
                 where 
                 "NAME" not in ('information_schema','sys');
-                ''')
-            elif (database_type=="mysql"):
-                result = engine.execute('''
+                """
+                )
+            elif database_type == "mysql":
+                result = engine.execute(
+                    """
                 select NAME, DB_ID
                 from 
                 DBS 
                 where 
                 NAME not in ('information_schema','sys');
-                ''')
+                """
+                )
             for row in result:
                 db = row[0]
                 db_id = row[1]
-                if (database_type=="postgresql"):
-                    result = engine.execute('''
+                if database_type == "postgresql":
+                    result = engine.execute(
+                        """
                     select "TBL_NAME"
                     from 
                     "TBLS" 
                     where 
                     "DB_ID" = {};
-                    '''.format(db_id))
-                elif (database_type=="mysql"):
-                    result = engine.execute('''
+                    """.format(
+                            db_id
+                        )
+                    )
+                elif database_type == "mysql":
+                    result = engine.execute(
+                        """
                     select TBL_NAME
                     from 
                     TBLS
                     where 
                     DB_ID = {};
-                    '''.format(db_id))
-            
+                    """.format(
+                            db_id
+                        )
+                    )
                 table_name = ""
                 for row in result:
                     table_name = row[0]
@@ -1161,9 +1162,10 @@ class DataAPI:
                     file_format = str(xml.strip())
                     file_format = file_format.split("'")[1]
                     file_format = file_format.split(".")[-1]
-                    if (file_format not in file_formats):
-                        file_formats.append(file_format)                
-            formats = (', '.join(file_formats))
+                    if file_format not in file_formats:
+                        file_formats.append(file_format)
+            formats = ", ".join(file_formats)
+            self.logger.info("getHiveFileFormats successful")
             return formats
         except Exception as e:
             self.logger.error("getHiveFileFormats failed", exc_info=True)
@@ -1177,49 +1179,37 @@ class DataAPI:
         """
 
         try:
-            transaction_locking_concurrency = ""
-            xml_data = subprocess.Popen('beeline --help',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            xml_data.wait()
-            out, err = xml_data.communicate()    
-            out = out.splitlines()
-            out1 = str(out)
-            substring = "which should be present in beeline-site.xml"
-            substring_in_list = any(substring in out1 for string in out)
-            if substring_in_list == True:
-                concurrency = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.support   .concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                concurrency.wait()
-                concurrency,err = concurrency.communicate()
-                txn_manager = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                txn_manager.wait()
-                txn_manager,err = txn_manager.communicate()    
-            else:
-                concurrency = subprocess.Popen('hive -e "set hive.support.concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                concurrency.wait()
-                concurrency,err = concurrency.communicate()
-                txn_manager = subprocess.Popen('hive -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                txn_manager.wait()
-                txn_manager,err = txn_manager.communicate()
-            
+            transaction_locking_concurrency = None
+            concurrency = subprocess.check_output(
+                'hive -e "set hive.support.concurrency" 2>/dev/null', shell=True
+            )
             concurrency = str(concurrency)
             concurrency = concurrency.split("\\n")
             for line in concurrency:
-                if (line.find("hive.support.concurrency")!=-1):
+                if line.find("hive.support.concurrency") != -1:
                     concurrency = line.split("=")[1]
-                    if (concurrency.find("|")!=-1):
+                    if concurrency.find("|") != -1:
                         concurrency = concurrency.split("|")[0]
                         concurrency = concurrency.strip()
+            txn_manager = subprocess.check_output(
+                'hive -e "set hive.txn.manager" 2>/dev/null', shell=True
+            )
             txn_manager = str(txn_manager)
             txn_manager = txn_manager.split("\\n")
             for line in txn_manager:
-                if (line.find("hive.txn.manager")!=-1):
+                if line.find("hive.txn.manager") != -1:
                     txn_manager = line.split("=")[1]
-                    if (txn_manager.find("|")!=-1):
+                    if txn_manager.find("|") != -1:
                         txn_manager = txn_manager.split("|")[0]
-                        txn_manager = txn_manager.strip()                
-            if (concurrency=='true' and txn_manager=='org.apache.hadoop.hive.ql.lockmgr.DbTxnManager'):
+                        txn_manager = txn_manager.strip()
+            if (
+                concurrency == "true"
+                and txn_manager == "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
+            ):
                 transaction_locking_concurrency = "Yes"
             else:
-                transaction_locking_concurrency = "No"            
+                transaction_locking_concurrency = "No"
+            self.logger.info("getTransactionLockingConcurrency successful")
             return transaction_locking_concurrency
         except Exception as e:
             self.logger.error("getTransactionLockingConcurrency failed", exc_info=True)

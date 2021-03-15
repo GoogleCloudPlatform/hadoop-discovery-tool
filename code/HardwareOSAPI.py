@@ -808,9 +808,9 @@ class HardwareOSAPI:
             dns_server.wait()
             dns_server,err = dns_server.communicate()
             if not dns_server:
-                dns_server = "DNS server is not enabled within machine"
+                dns_server = "DNS server does not enabled within machine"
             else:
-                dns_server = "DNS server is enabled within machine"
+                dns_server = "DNS server not enabled within machine"
             self.logger.info("dnsServer successful")
             return dns_server
         except Exception as e:
@@ -847,7 +847,7 @@ class HardwareOSAPI:
         """
 
         try:
-            ntp_server = subprocess.Popen("timedatectl status | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             ntp_server.wait()
             ntp_server,err = ntp_server.communicate()
             ntp_server = ntp_server.split(":")
@@ -867,7 +867,7 @@ class HardwareOSAPI:
 
         try:
             manufacturer_name = subprocess.Popen(
-                "dmidecode --type processor | grep Manufacturer | awk 'FNR <= 1'"
+                "dmidecode --type processor 2>/dev/null | grep Manufacturer | awk 'FNR <= 1'"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             manufacturer_name.wait()
             manufacturer_name,err = manufacturer_name.communicate()

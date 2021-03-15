@@ -69,7 +69,7 @@ class NetworkMonitoringAPI:
 
         try:
             traffic = subprocess.Popen(
-                ' cd /sys/class/net/eth0/statistics/; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ' cd /sys/class/net/eth0/statistics/ 2>/dev/null ; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             traffic.wait()
             traffic,err = traffic.communicate()
             traffic_list = traffic.split("\n", 10)
@@ -100,7 +100,7 @@ class NetworkMonitoringAPI:
 
         try:
             traffic = subprocess.Popen(
-                ' cd /sys/class/net/eth0/statistics/; old="$(<tx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done'
+                ' cd /sys/class/net/eth0/statistics/ 2>/dev/null ; old="$(<tx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done'
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             traffic,err = traffic.communicate()
             traffic_list = traffic.split("\n", 10)
@@ -226,9 +226,9 @@ class NetworkMonitoringAPI:
             check_mk_server.wait()
             out, err = check_mk_server.communicate()
             if not out:
-                check_mk_server = "check-mk server is not present"
+                check_mk_server = "check mk server is not present"
             else:
-                check_mk_server = "check-mk server is present"
+                check_mk_server = "check mk server is present"
             self.logger.info("thirdPartyMonitor successful")
             return (
                 softwares_installed,
@@ -368,9 +368,9 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            subprocess.Popen('sh ./getload.sh > parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen('sh ./getload.sh 2>/dev/null 1>parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             df = pd.read_csv("./parse.csv",names=['Index','Received','Transfer'],header=None) 
-            subprocess.Popen('rm -rf ./parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"    ).wait()
+            subprocess.Popen('rm -rf ./parse.csv 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8"    ).wait()
             column1 = df["Received"]
             max_value_1 = ((column1.max())/1024)
             min_value_1 = ((column1.min())/1024)
