@@ -1061,7 +1061,7 @@ class DataAPI:
         try:
             hive_execution_engine = ""
             hive_execution_engine = subprocess.check_output(
-                'hive -e "set hive.execution.engine"',
+                'hive -e "set hive.execution.engine" 2>/dev/null',
                 shell=True,
                 stderr=subprocess.STDOUT
             )
@@ -1145,7 +1145,7 @@ class DataAPI:
                     break
                 if table_name != "":
                     file_format = subprocess.check_output(
-                        'hive -e "use {}; show create table {}" | grep "Input"'.format(
+                        'hive -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(
                             db, table_name
                         ),
                         shell=True,
@@ -1172,7 +1172,7 @@ class DataAPI:
         try:
             transaction_locking_concurrency = None
             concurrency = subprocess.check_output(
-                'hive -e "set hive.support.concurrency"', shell=True
+                'hive -e "set hive.support.concurrency" 2>/dev/null', shell=True
             )
             concurrency = str(concurrency)
             concurrency = concurrency.split("\\n")
@@ -1183,7 +1183,7 @@ class DataAPI:
                         concurrency = concurrency.split("|")[0]
                         concurrency = concurrency.strip()
             txn_manager = subprocess.check_output(
-                'hive -e "set hive.txn.manager"', shell=True
+                'hive -e "set hive.txn.manager" 2>/dev/null', shell=True
             )
             txn_manager = str(txn_manager)
             txn_manager = txn_manager.split("\\n")

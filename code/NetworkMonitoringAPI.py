@@ -69,7 +69,7 @@ class NetworkMonitoringAPI:
 
         try:
             traffic = subprocess.Popen(
-                ' cd /sys/class/net/eth0/statistics/; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ' cd /sys/class/net/eth0/statistics/ 2>/dev/null ; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             traffic.wait()
             traffic,err = traffic.communicate()
             traffic_list = traffic.split("\n", 10)
@@ -100,7 +100,7 @@ class NetworkMonitoringAPI:
 
         try:
             traffic = subprocess.Popen(
-                ' cd /sys/class/net/eth0/statistics/; old="$(<tx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done'
+                ' cd /sys/class/net/eth0/statistics/ 2>/dev/null ; old="$(<tx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done'
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             traffic,err = traffic.communicate()
             traffic_list = traffic.split("\n", 10)
@@ -182,7 +182,7 @@ class NetworkMonitoringAPI:
                 softwares_installed.wait()
                 softwares_installed,err = softwares_installed.communicate()
             prometheus_server = subprocess.Popen(
-                "systemctl status prometheus | grep active",
+                "systemctl status prometheus 2>/dev/null | grep active",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -194,7 +194,7 @@ class NetworkMonitoringAPI:
             else:
                 prometheus_server = "Prometheus server is present"
             grafana_server = subprocess.Popen(
-                "grafana-server -v | grep Version",
+                "grafana-server -v 2>/dev/null | grep Version",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -218,7 +218,7 @@ class NetworkMonitoringAPI:
             else:
                 ganglia_server = "ganglia server is present"
             check_mk_server = subprocess.Popen(
-                "omd version | grep Version",
+                "omd version 2>/dev/null | grep Version",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -299,7 +299,7 @@ class NetworkMonitoringAPI:
                 crontab_flag = "crontab not installed"
             else:
                 crontab_flag = "crontab is installed"
-            airflow = subprocess.Popen("airflow version",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            airflow = subprocess.Popen("airflow version 2>/dev/null",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             airflow.wait()
             airflow,err = airflow.communicate()
             if not airflow:
@@ -324,7 +324,7 @@ class NetworkMonitoringAPI:
 
         try:
             ddog = subprocess.Popen(
-                "systemctl status datadog-agent | grep active",
+                "systemctl status datadog-agent 2>/dev/null | grep active",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -368,9 +368,9 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            subprocess.Popen('sh ./getload.sh > parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen('sh ./getload.sh 2>/dev/null 1>parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             df = pd.read_csv("./parse.csv",names=['Index','Received','Transfer'],header=None) 
-            subprocess.Popen('rm -rf ./parse.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"    ).wait()
+            subprocess.Popen('rm -rf ./parse.csv 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8"    ).wait()
             column1 = df["Received"]
             max_value_1 = ((column1.max())/1024)
             min_value_1 = ((column1.min())/1024)
