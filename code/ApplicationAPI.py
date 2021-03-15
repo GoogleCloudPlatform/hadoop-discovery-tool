@@ -832,7 +832,9 @@ class ApplicationAPI:
             )
             if r.status_code == 200:
                 yarn_total_memory = r.json()
-                yarn_total_memory_count = yarn_total_memory["clusterMetrics"]["totalMB"] / 1024
+                yarn_total_memory_count = math.ceil(
+                    yarn_total_memory["clusterMetrics"]["totalMB"] / 1024
+                )
                 self.logger.info("getYarnTotalMemory successful")
                 return yarn_total_memory_count
             else:
@@ -2156,13 +2158,13 @@ class ApplicationAPI:
                     if output != "b''":
                         language = (output).split('"sun.java.command":')[1]
                         language = language.split(",")[0]
-                        if (language.find('.py')!= -1 or language.find('--name PySparkShell pyspark-shell')!= -1):
+                        if language.find(".py") != -1:
                             if "Python" not in language_list:
                                 language_list.append("Python")
                         elif language.find(".java") != -1:
                             if "Java" not in language_list:
                                 language_list.append("Java")
-                        elif (language.find('.scala')!= -1 or language.find('--name Spark shell spark-shell')!= -1):                            
+                        elif language.find(".scala") != -1:
                             if "Scala" not in language_list:
                                 language_list.append("Scala")
                         elif language.find(".R") != -1:
@@ -2566,7 +2568,7 @@ class ApplicationAPI:
             df = pd.DataFrame(data)
             services_df = df
             found = 0
-            services_df["sub_version"] = services_df.version.str[:6]
+            services_df["sub_version"] = services_df.version.str[:5]
             for i in services_df["name"]:
                 if i == "impala":
                     found = 1
@@ -2602,7 +2604,7 @@ class ApplicationAPI:
             df = pd.DataFrame(data)
             services_df = df
             found = 0
-            services_df["sub_version"] = services_df.version.str[:50]
+            services_df["sub_version"] = services_df.version.str[:5]
             for i in services_df["name"]:
                 if i == "sentry":
                     found = 1
