@@ -804,7 +804,7 @@ class HardwareOSAPI:
         """
 
         try:
-            dns_server = subprocess.Popen("systemctl status named | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dns_server = subprocess.Popen("systemctl status named 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             dns_server.wait()
             dns_server,err = dns_server.communicate()
             if not dns_server:
@@ -825,7 +825,7 @@ class HardwareOSAPI:
         """
 
         try:
-            web_server = subprocess.Popen("systemctl status httpd | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            web_server = subprocess.Popen("systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             web_server.wait()
             web_server,err = web_server.communicate()
             web_server = web_server.split(":")
@@ -1122,7 +1122,7 @@ class HardwareOSAPI:
 
         try:
             subprocess.Popen(
-                "hadoop checknative -a | grep true | head -10 > ./hadoop_native.csv"
+                "hadoop checknative -a 2>/dev/null | grep true | head -10 > ./hadoop_native.csv"
             ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             fin = open("hadoop_native.csv", "r")
             fout = open("hadoop_native_library.csv", "w")
@@ -1271,7 +1271,7 @@ class HardwareOSAPI:
                 security_software["thehive"] = "TheHive is not installed"
             else:
                 security_software["thehive"] = "TheHive is installed"
-            osquery = subprocess.Popen("yum list installed osquery | grep osquery",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            osquery = subprocess.Popen("yum list installed osquery 2>/dev/null | grep osquery",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             osquery.wait()
             osquery,err = osquery.communicate()
             if not osquery:

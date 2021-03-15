@@ -2297,7 +2297,7 @@ class ApplicationAPI:
             topics = subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
-                + " --list > topics_list.csv",
+                + " --list 2>/dev/null 1>topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
             topics.wait()
@@ -2329,7 +2329,7 @@ class ApplicationAPI:
             topics = subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
-                + " --list > topics_list.csv",
+                + " --list 2>/dev/null 1>topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
             topics.wait()
@@ -2343,7 +2343,7 @@ class ApplicationAPI:
                     + str(broker_connection)
                     + "  --topic-list "
                     + str(i)
-                    + "     --describe   | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                    + "2>/dev/null  --describe   | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
                 )
                 msg_size.wait()
                 msg_size,err = msg_size.communicate()
@@ -2378,7 +2378,7 @@ class ApplicationAPI:
             topics = subprocess.Popen(
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
-                + " --list > topics_list.csv",
+                + " --list 2>/dev/null 1>topics_list.csv",
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8"
             )
             topics.wait()
@@ -2393,7 +2393,7 @@ class ApplicationAPI:
                     + str(broker_connection)
                     + " --topic "
                     + str(i)
-                    + " --time -1 --offsets 1 | awk -F  \":\" '{sum += $3} END {print sum}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                    + " --time -1 --offsets 1 2>/dev/null | awk -F  \":\" '{sum += $3} END {print sum}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
                 )
                 msg_count.wait()
                 msg_count,err = msg_count.communicate()
@@ -2428,7 +2428,7 @@ class ApplicationAPI:
             if len(set(list_com)) == 1:
                 for val in set(list_com):
                     log_dir = val
-                broker_dir = subprocess.Popen("du -sh " +str(log_dir)+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                broker_dir = subprocess.Popen("du -sh " +str(log_dir)+"/*  2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 broker_dir.wait()
                 broker_dir, err = broker_dir.communicate()
                 try:
@@ -2451,7 +2451,7 @@ class ApplicationAPI:
             else :
                 try : 
                     for k in self.broker_list:
-                        broker_dir = subprocess.Popen("du -sh " +str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        broker_dir = subprocess.Popen("du -sh " +str(k['log_dir'])+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                         broker_dir.wait()
                         broker_dir, err = broker_dir.communicate()
                         brokers_df = pd.read_csv("broker_size.csv",header=None)
@@ -2487,7 +2487,7 @@ class ApplicationAPI:
             brokersize = pd.DataFrame(columns = ["broker_size"])  
             j = 0
             for k in self.broker_list:
-                broker_dir = subprocess.Popen("du -sh "+str(k['log_dir'])+"/* > broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                broker_dir = subprocess.Popen("du -sh "+str(k['log_dir'])+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 broker_dir.wait()
                 broker_dir, err = broker_dir.communicate()
                 brokers_df = pd.read_csv("broker_size.csv",header=None)
@@ -2517,7 +2517,7 @@ class ApplicationAPI:
         try:
             brokers = ''
             Num_brokers = 0
-            broker_zk = subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids > broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            broker_zk = subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids 2>/dev/null 1>broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             broker_zk.wait()
             broker_zk, err = broker_zk.communicate()
             broker_id_df = pd.read_csv("broker_id.csv", delimiter = "\n",header=None)

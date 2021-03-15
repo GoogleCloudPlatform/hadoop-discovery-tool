@@ -1151,7 +1151,7 @@ class DataAPI:
                     substring = "which should be present in beeline-site.xml"
                     substring_in_list = any(substring in out1 for string in out)
                     if substring_in_list == True:
-                        xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "use {}; show create table {}" 2>/d ev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                         xml.wait()
                         xml,err = xml.communicate()
                     else:

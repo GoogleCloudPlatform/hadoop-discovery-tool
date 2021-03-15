@@ -182,7 +182,7 @@ class NetworkMonitoringAPI:
                 softwares_installed.wait()
                 softwares_installed,err = softwares_installed.communicate()
             prometheus_server = subprocess.Popen(
-                "systemctl status prometheus | grep active",
+                "systemctl status prometheus 2>/dev/null | grep active",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -194,7 +194,7 @@ class NetworkMonitoringAPI:
             else:
                 prometheus_server = "Prometheus server is present"
             grafana_server = subprocess.Popen(
-                "grafana-server -v | grep Version",
+                "grafana-server -v 2>/dev/null | grep Version",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -218,7 +218,7 @@ class NetworkMonitoringAPI:
             else:
                 ganglia_server = "ganglia server is present"
             check_mk_server = subprocess.Popen(
-                "omd version | grep Version",
+                "omd version 2>/dev/null | grep Version",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -299,7 +299,7 @@ class NetworkMonitoringAPI:
                 crontab_flag = "crontab not installed"
             else:
                 crontab_flag = "crontab is installed"
-            airflow = subprocess.Popen("airflow version",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            airflow = subprocess.Popen("airflow version 2>/dev/null",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             airflow.wait()
             airflow,err = airflow.communicate()
             if not airflow:
@@ -324,7 +324,7 @@ class NetworkMonitoringAPI:
 
         try:
             ddog = subprocess.Popen(
-                "systemctl status datadog-agent | grep active",
+                "systemctl status datadog-agent 2>/dev/null | grep active",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
