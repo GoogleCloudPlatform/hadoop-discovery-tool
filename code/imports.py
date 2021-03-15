@@ -154,6 +154,94 @@ def clusterName(
     return cluster_name
 
 
+
+def BrokerListInput():
+    broker_list = []
+    t = input("Do you want to enter Kafka credentials? [y/n] ")
+    if t in ["y", "Y"]:
+        broker_list = []
+        n = int(input("Enter number of brokers: "))
+        for i in range(0, n):
+            broker = {"host":"", "port":"", "log_dir":""}
+            broker["host"] = input("Enter the hostname or IP of broker {}: ".format(i))
+            t1 = input("Is your broker hosted on {} have port number 9092? [y/n] ".format(broker["host"]))
+            if t1 in ["n", "N"]:
+                broker["port"] = input("Enter the port of broker hosted on {}: ".format(broker["host"]))
+            elif t1 in ["y", "Y"]:
+                broker["port"] = "9092"
+            else:
+                print("Wrong Input! Try Again")
+                t2 = input("Is your broker hosted on {} have port number 9092? [y/n] ".format(broker["host"]))
+                if t2 in ["n", "N"]:
+                    broker["port"] = input("Enter the port of broker hosted on {}: ".format(broker["host"]))
+                elif t2 in ["y", "Y"]:
+                    broker["port"] = "9092"
+                else:
+                    print("Wrong Input!")
+                    exit()
+            t1 = input("Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(broker["host"]))
+            if t1 in ["n", "N"]:
+                broker["log_dir"] = input("Enter the log directory path of broker hosted on {}: ".format(broker["host"]))
+            elif t1 in ["y", "Y"]:
+                broker["log_dir"] = "/var/local/kafka/data/"
+            else:
+                print("Wrong Input! Try Again")
+                t2 = input("Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(broker["host"]))
+                if t2 in ["n", "N"]:
+                    broker["log_dir"] = input("Enter the log directory path of broker hosted on {}: ".format(broker["host"]))
+                elif t2 in ["y", "Y"]:
+                    broker["log_dir"] = "/var/local/kafka/data/"
+                else:
+                    print("Wrong Input!")
+                    exit()
+            broker_list.append(broker)
+    elif t in ["n", "N"]:
+        broker_list = []
+    else:
+        if t in ["y", "Y"]:
+            broker_list = []
+            n = int(input("Enter number of brokers: "))
+            for i in range(0, n):
+                broker = {"host":"", "port":"", "log_dir":""}
+                broker["host"] = input("Enter the hostname or IP of broker {}: ".format(i))
+                t1 = input("Is your broker hosted on {} have port number 9092? [y/n] ".format(broker["host"]))
+                if t1 in ["n", "N"]:
+                    broker["port"] = input("Enter the port of broker hosted on {}: ".format(broker["host"]))
+                elif t1 in ["y", "Y"]:
+                    broker["port"] = "9092"
+                else:
+                    print("Wrong Input! Try Again")
+                    t2 = input("Is your broker hosted on {} have port number 9092? [y/n] ".format(broker["host"]))
+                    if t2 in ["n", "N"]:
+                        broker["port"] = input("Enter the port of broker hosted on {}: ".format(broker["host"]))
+                    elif t2 in ["y", "Y"]:
+                        broker["port"] = "9092"
+                    else:
+                        print("Wrong Input!")
+                        exit()
+                t1 = input("Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(broker["host"]))
+                if t1 in ["n", "N"]:
+                    broker["log_dir"] = input("Enter the log directory path of broker hosted on {}: ".format(broker["host"]))
+                elif t1 in ["y", "Y"]:
+                    broker["log_dir"] = "/var/local/kafka/data/"
+                else:
+                    print("Wrong Input! Try Again")
+                    t2 = input("Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(broker["host"]))
+                    if t2 in ["n", "N"]:
+                        broker["log_dir"] = input("Enter the log directory path of broker hosted on {}: ".format(broker["host"]))
+                    elif t2 in ["y", "Y"]:
+                        broker["log_dir"] = "/var/local/kafka/data/"
+                    else:
+                        print("Wrong Input!")
+                        exit()
+                broker_list.append(broker)
+        elif t in ["n", "N"]:
+            broker_list = []
+        else:
+            print("Wrong Input!")
+            exit()
+    return broker_list
+
 def getInput(version):
     """Get input from user related to cloudera manager like Host Ip, Username, 
     Password and Cluster Name.
@@ -168,18 +256,6 @@ def getInput(version):
     inputs = {}
     inputs["version"] = version
     inputs["ssl"] = checkSSL()
-    inputs["broker_list"] =  [{'host' : 'gcp-dn1.c.qp-hadoop-discover-2021-01.internal',
-                            'port' : '9092',
-                            'log_dir' : '/var/local/kafka/data/'
-                            }, 
-                            {'host' : 'gcp-m1.c.qp-hadoop-discover-2021-01.internal',
-                            'port' : '9092',
-                            'log_dir' : '/var/local/kafka/data/'
-                            }, 
-                            {'host' : 'gcp-m2.c.qp-hadoop-discover-2021-01.internal',
-                            'port' : '9092',
-                            'log_dir' : '/var/local/kafka/data/'
-                            }]
 
     if inputs["ssl"]:
         print("Enter details accordingly as SSL is enabled.")
@@ -289,6 +365,7 @@ def getInput(version):
         else:
             print("Wrong Input! Try Again")
             exit()
+    inputs["broker_list"] = BrokerListInput()
     print("Select date range from list below : ")
     print("1. Week\n2. Month\n3. Custom")
     t = int(input("Enter serial number for selected date range: "))
