@@ -1068,12 +1068,11 @@ class DataAPI:
             substring = "which should be present in beeline-site.xml"
             substring_in_list = any(substring in out1 for string in out)
             if substring_in_list == True:
-                print("beeline exist")
-                xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.execution.engine"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 xml.wait()
                 xml,err = xml.communicate()
             else:
-                xml = subprocess.Popen('hive -e "set hive.execution.engine"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml = subprocess.Popen('hive -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 xml.wait()
                 xml,err = xml.communicate()
 
@@ -1152,11 +1151,11 @@ class DataAPI:
                     substring = "which should be present in beeline-site.xml"
                     substring_in_list = any(substring in out1 for string in out)
                     if substring_in_list == True:
-                        xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "use {}; show create table {}" | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                         xml.wait()
                         xml,err = xml.communicate()
                     else:
-                        xml = subprocess.Popen('hive -e "use {}; show create table {}" | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        xml = subprocess.Popen('hive -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                         xml.wait()
                         xml,err = xml.communicate()
                     file_format = str(xml.strip())
@@ -1187,17 +1186,17 @@ class DataAPI:
             substring = "which should be present in beeline-site.xml"
             substring_in_list = any(substring in out1 for string in out)
             if substring_in_list == True:
-                concurrency = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.support.concurrency"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.support   .concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 concurrency.wait()
                 concurrency,err = concurrency.communicate()
-                txn_manager = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.txn.manager"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                txn_manager = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 txn_manager.wait()
                 txn_manager,err = txn_manager.communicate()    
             else:
-                concurrency = subprocess.Popen('hive -e "set hive.support.concurrency"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency = subprocess.Popen('hive -e "set hive.support.concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 concurrency.wait()
                 concurrency,err = concurrency.communicate()
-                txn_manager = subprocess.Popen('hive -e "set hive.txn.manager"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                txn_manager = subprocess.Popen('hive -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 txn_manager.wait()
                 txn_manager,err = txn_manager.communicate()
             
