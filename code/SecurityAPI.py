@@ -37,7 +37,7 @@ class SecurityAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def clusterKerberosInfo(self, cluster_name):
+    def cluster_kerberos_info(self, cluster_name):
         """Get Kerberos details in a cluster.
         
         Args:
@@ -102,7 +102,7 @@ class SecurityAPI:
             self.logger.error("clusterKerberosInfo failed", exc_info=True)
             return None
 
-    def ADServerNameAndPort(self, cluster_name):
+    def ad_server_name_and_port(self, cluster_name):
         """Get AD server details for a cluster.
         
         Args:
@@ -172,7 +172,7 @@ class SecurityAPI:
             self.logger.error("ADServerNameAndPort failed", exc_info=True)
             return None
 
-    def adServerBasedDN(self, cluster_name):
+    def ad_server_based_dn(self, cluster_name):
         """Get AD server details based on domain name.
 
         Args:
@@ -242,7 +242,7 @@ class SecurityAPI:
             self.logger.error("adServerBasedDN failed", exc_info=True)
             return None
 
-    def sslStatus(self):
+    def ssl_status(self):
         """Get SSL staus of various services.
 
         Returns:
@@ -306,7 +306,7 @@ class SecurityAPI:
             self.logger.error("sslStatus failed", exc_info=True)
             return None
 
-    def kerberosHttpAuth(self):
+    def kerberos_http_auth(self):
         """Get kerberos status of various services.
 
         Returns:
@@ -397,7 +397,7 @@ class SecurityAPI:
             self.logger.error("kerberosHttpAuth failed", exc_info=True)
             return None
 
-    def checkLuks(self):
+    def check_luks(self):
         """Get LUKS information in cluster.
 
         Returns:
@@ -428,7 +428,7 @@ class SecurityAPI:
             self.logger.error("checkLuks failed", exc_info=True)
             return None
 
-    def portUsed(self):
+    def port_used(self):
         """Get port number for different services.
 
         Returns:
@@ -601,7 +601,7 @@ class SecurityAPI:
             self.logger.error("portUsed failed", exc_info=True)
             return None
 
-    def keyList(self):
+    def key_list(self):
         """Get list of keys in cluster.
 
         Returns:
@@ -630,7 +630,7 @@ class SecurityAPI:
             self.logger.error("keyList failed", exc_info=True)
             return None
 
-    def encryptionZone(self):
+    def encryption_zone(self):
         """Get list of encryption zone in cluster.
 
         Returns:

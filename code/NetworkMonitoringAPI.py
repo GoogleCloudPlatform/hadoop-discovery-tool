@@ -39,7 +39,7 @@ class NetworkMonitoringAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def maxBandwidth(self):
+    def max_bandwidth(self):
         """Get maximum bandwidth of cluster.
 
         Returns:
@@ -119,7 +119,7 @@ class NetworkMonitoringAPI:
             self.logger.error("egress failed", exc_info=True)
             return None
 
-    def diskReadWrite(self):
+    def disk_read_write(self):
         """Get disk read and write speed of cluster.
 
         Returns:
@@ -144,7 +144,7 @@ class NetworkMonitoringAPI:
             self.logger.error("diskReadWrite failed", exc_info=True)
             return None
 
-    def thirdPartyMonitor(self):
+    def third_party_monitor(self):
         """Get list of third party monitoring tools in cluster.
 
         Returns:
@@ -241,7 +241,7 @@ class NetworkMonitoringAPI:
             self.logger.error("thirdPartyMonitor failed", exc_info=True)
             return None
 
-    def getLogs(self):
+    def get_logs(self):
         """Get logs paths in cluster.
 
         Returns:
@@ -274,7 +274,7 @@ class NetworkMonitoringAPI:
             self.logger.error("getLogs failed", exc_info=True)
             return None
 
-    def orchestrationTools(self):
+    def orchestration_tools(self):
         """Get orchestration tool details present in cluster.
 
         Returns:
@@ -312,7 +312,7 @@ class NetworkMonitoringAPI:
             self.logger.error("orchestrationTools failed", exc_info=True)
             return None
 
-    def loggingTool(self):
+    def logging_tool(self):
         """Get logging tool details present in cluster.
 
         Returns:
@@ -358,7 +358,7 @@ class NetworkMonitoringAPI:
             self.logger.error("loggingTool failed", exc_info=True)
             return None
 
-    def monitorNetworkSpeed(self):
+    def monitor_network_speed(self):
         """Get orchestration tool details present in cluster.
 
         Returns:
