@@ -28,7 +28,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 ## Prerequisites
 1. The tool requires **Python3**
 2. The tool needs the below permissions to the run the code and generate the PDF report - **Sudo permission** to master node, user should be part of **hdfs superuser group**, **Cloudera manager admin credentials**, **hive metastore login credentials**
-3. The tool will support the following Linux distributions - **Red Hat/Centos 7.9.x and above**, **SLES 12-SP5 and above**, **Ubuntu 16.04 LTS and above**, **Debian 8.9, 8.4, 8.2**
+3. The tool will support the following Linux distributions - **Red Hat/Centos 7.9.x and above**, **SLES 12-SP5 and above**, **Ubuntu 18.04 LTS**, **Debian 8.9, 8.4, 8.2**
 
 ## Installation
 
