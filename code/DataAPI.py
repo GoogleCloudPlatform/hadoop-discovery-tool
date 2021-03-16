@@ -38,7 +38,7 @@ class DataAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def totalSizeConfigured(self):
+    def total_size_configured(self):
         """Get total storage size and storage at each node for HDFS.
 
         Returns:
@@ -93,13 +93,13 @@ class DataAPI:
             total_storage = (mapped_df["Configured_Capacity_bytes"].sum()) / (
                 1024 * 1024 * 1024
             )
-            self.logger.info("totalSizeConfigured successful")
+            self.logger.info("total_size_configured successful")
             return mapped_df, total_storage
         except Exception as e:
-            self.logger.error("totalSizeConfigured failed", exc_info=True)
+            self.logger.error("total_size_configured failed", exc_info=True)
             return None
 
-    def replicationFactor(self):
+    def replication_factor(self):
         """Get HDFS replication factor.
 
         Returns:
@@ -114,13 +114,13 @@ class DataAPI:
                 shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             replication_factor.wait()
             replication_factor,err = replication_factor.communicate()
-            self.logger.info("replicationFactor successful")
+            self.logger.info("replication_factor successful")
             return replication_factor
         except Exception as e:
-            self.logger.error("replicationFactor failed", exc_info=True)
+            self.logger.error("replication_factor failed", exc_info=True)
             return None
 
-    def getTrashStatus(self):
+    def get_trash_status(self):
         """Get config value for HDFS trash interval.
 
         Returns:
@@ -146,13 +146,13 @@ class DataAPI:
                 trash_flag = "Enabled"
             else:
                 trash_flag = "Disabled"
-            self.logger.info("getTrashStatus successful")
+            self.logger.info("get_trash_status successful")
             return trash_flag
         except Exception as e:
-            self.logger.error("getTrashStatus failed", exc_info=True)
+            self.logger.error("get_trash_status failed", exc_info=True)
             return None
 
-    def getCliresult(self, clipath):
+    def get_cliresult(self, clipath):
         """Get HDFS size breakdown based on HDFS directory system.
 
         Args:
@@ -215,13 +215,13 @@ class DataAPI:
                 out.wait()
                 stdout, stderr = out.communicate()
                 hdfs_root_dir = stdout
-            self.logger.info("getCliresult successful")
+            self.logger.info("get_cliresult successful")
             return hdfs_root_dir
         except Exception as e:
-            self.logger.error("getCliresult failed", exc_info=True)
+            self.logger.error("get_cliresult failed", exc_info=True)
             return None
 
-    def getHdfsCapacity(self, cluster_name):
+    def get_hdfs_capacity(self, cluster_name):
         """Get HDFS storage available data over a date range.
 
         Args:
@@ -313,19 +313,19 @@ class DataAPI:
                 hdfs_storage_config = hdfs_capacity_df.sort_values(
                     by="DateTime", ascending=False
                 ).iloc[0]["Mean"]
-                self.logger.info("getHdfsCapacity successful")
+                self.logger.info("get_hdfs_capacity successful")
                 return hdfs_capacity_df, hdfs_storage_config
             else:
                 self.logger.error(
-                    "getHdfsCapacity failed due to invalid API call. HTTP Response: ",
+                    "get_hdfs_capacity failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHdfsCapacity failed", exc_info=True)
+            self.logger.error("get_hdfs_capacity failed", exc_info=True)
             return None
 
-    def getHdfsCapacityUsed(self, cluster_name):
+    def get_hdfs_capacity_used(self, cluster_name):
         """Get HDFS storage used data over a date range.
 
         Args:
@@ -424,19 +424,19 @@ class DataAPI:
                 hdfs_storage_used = hdfs_capacity_used_df.sort_values(
                     by="DateTime", ascending=False
                 ).iloc[0]["Mean"]
-                self.logger.info("getHdfsCapacityUsed successful")
+                self.logger.info("get_hdfs_capacity_used successful")
                 return hdfs_capacity_used_df, hdfs_storage_used
             else:
                 self.logger.error(
-                    "getHdfsCapacityUsed failed due to invalid API call. HTTP Response: ",
+                    "get_hdfs_capacity_used failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHdfsCapacityUsed failed", exc_info=True)
+            self.logger.error("get_hdfs_capacity_used failed", exc_info=True)
             return None
 
-    def hdfsStorage(self):
+    def hdfs_storage(self):
         """Get HDFS folders and files details in cluster.
 
         Returns:
@@ -489,13 +489,13 @@ class DataAPI:
         except IndexError:
             hdfs_storage_df = hdfs_temp
             hdfs_flag = 1
-            self.logger.info("hdfsStorage successful")
+            self.logger.info("hdfs_storage successful")
             return hdfs_storage_df, hdfs_flag
         except Exception as e:
-            self.logger.error("hdfsStorage failed", exc_info=True)
+            self.logger.error("hdfs_storage failed", exc_info=True)
             return None
 
-    def structuredVsUnstructured(self, total_used_size, hadoop_db_names):
+    def structured_vs_unstructured(self, total_used_size, hadoop_db_names):
         """Get structure v/s unstructure data details.
 
         Args:
@@ -522,13 +522,13 @@ class DataAPI:
                 },
                 index=[0],
             )
-            self.logger.info("structuredVsUnstructured successful")
+            self.logger.info("structured_vs_unstructured successful")
             return size_breakdown_df
         except Exception as e:
-            self.logger.error("structuredVsUnstructured failed", exc_info=True)
+            self.logger.error("structured_vs_unstructured failed", exc_info=True)
             return None
 
-    def checkCompression(self):
+    def check_compression(self):
         """Get HDFS file compression details in cluster.
 
         Returns:
@@ -550,13 +550,13 @@ class DataAPI:
                 value = " ".join(value.split(".", 5)[5:6])
             else:
                 value = None
-            self.logger.info("checkCompression successful")
+            self.logger.info("check_compression successful")
             return value
         except Exception as e:
-            self.logger.error("checkCompression failed", exc_info=True)
+            self.logger.error("check_compression failed", exc_info=True)
             return None
 
-    def clusterFileSize(self):
+    def cluster_filesize(self):
         """Get HDFS files distribution in cluster.
 
         Returns:
@@ -593,13 +593,13 @@ class DataAPI:
             min_value = column.min()
             avg_value = column.mean()
             grpby_data = grpby_data.to_frame().reset_index()
-            self.logger.info("clusterFileSize successful")
+            self.logger.info("cluster_filesize successful")
             return grpby_data, max_value, min_value, avg_value
         except Exception as e:
-            self.logger.error("clusterFileSize failed", exc_info=True)
+            self.logger.error("cluster_filesize failed", exc_info=True)
             return None
 
-    def getHiveConfigItems(self, cluster_name):
+    def get_hive_config_items(self, cluster_name):
         """Get Hive metastore config details from cluster.
 
         Args:
@@ -665,19 +665,19 @@ class DataAPI:
                         mt_db_port = i["value"]
                     elif i["name"] == "hive_metastore_database_type":
                         mt_db_type = i["value"]
-                self.logger.info("getHiveConfigItems successful")
+                self.logger.info("get_hive_config_items successful")
                 return mt_db_host, mt_db_name, mt_db_type, mt_db_port
             else:
                 self.logger.error(
-                    "getHiveConfigItems failed due to invalid API call. HTTP Response: ",
+                    "get_hive_config_items failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHiveConfigItems failed", exc_info=True)
+            self.logger.error("get_hive_config_items failed", exc_info=True)
             return None
 
-    def gethiveMetaStore(self, database_uri, database_type):
+    def get_hive_metaStore(self, database_uri, database_type):
         """Get Hive tables and databases details.
 
         Args:
@@ -752,13 +752,13 @@ class DataAPI:
                 {"Data_Type": table_df["Data_Type"], "Table Count": table_df["Count"]}
             )
             table_df = table_df.groupby(["Data_Type"]).sum()
-            self.logger.info("gethiveMetaStore successful")
+            self.logger.info("get_hive_metaStore successful")
             return table_df
         except Exception as e:
-            self.logger.error("gethiveMetaStore failed", exc_info=True)
+            self.logger.error("get_hive_metaStore failed", exc_info=True)
             return None
 
-    def getHiveDatabaseInfo(self, database_uri, database_type):
+    def get_hive_database_info(self, database_uri, database_type):
         """Get Hive databases details.
 
         Args:
@@ -870,13 +870,13 @@ class DataAPI:
             database_df["Count"] = 1
             database_df = database_df.groupby(["Database"]).sum()
             database_df.reset_index(inplace=True)
-            self.logger.info("getHiveDatabaseInfo successful")
+            self.logger.info("get_hive_database_info successful")
             return database_df
         except Exception as e:
-            self.logger.error("getHiveDatabaseInfo failed", exc_info=True)
+            self.logger.error("get_hive_database_info failed", exc_info=True)
             return None
 
-    def getHiveDatabaseCount(self, database_uri, database_type):
+    def get_hive_database_count(self, database_uri, database_type):
         """Get Hive databases count.
 
         Args:
@@ -903,13 +903,13 @@ class DataAPI:
                 )
             for row in result:
                 database_count = row[0]
-            self.logger.info("getHiveDatabaseCount successful")
+            self.logger.info("get_hive_database_count successful")
             return database_count
         except Exception as e:
-            self.logger.error("getHiveDatabaseCount failed", exc_info=True)
+            self.logger.error("get_hive_database_count failed", exc_info=True)
             return None
 
-    def getHivePartitionedTableCount(self, database_uri, database_type):
+    def get_hive_partitioned_table_count(self, database_uri, database_type):
         """Get Hive partitioned and non-partitioned tables details.
 
         Args:
@@ -968,13 +968,13 @@ class DataAPI:
             number_of_tables_without_partition = (
                 total_tables - number_of_tables_with_partition
             )
-            self.logger.info("getHivePartitionedTableCount successful")
+            self.logger.info("get_hive_partitioned_table_count successful")
             return number_of_tables_with_partition, number_of_tables_without_partition
         except Exception as e:
-            self.logger.error("getHivePartitionedTableCount failed", exc_info=True)
+            self.logger.error("get_hive_partitioned_table_count failed", exc_info=True)
             return None
 
-    def getHiveInternalExternalTables(self, database_uri, database_type):
+    def get_hive_internal_external_tables(self, database_uri, database_type):
         """Get Hive internal and external tables count.
 
         Args:
@@ -1045,13 +1045,13 @@ class DataAPI:
                 )
             for row in result:
                 external_tables = row[0]
-            self.logger.info("getHiveInternalExternalTables successful")
+            self.logger.info("get_hive_internal_external_tables successful")
             return internal_tables, external_tables
         except Exception as e:
-            self.logger.error("getHiveInternalExternalTables failed", exc_info=True)
+            self.logger.error("get_hive_internal_external_tables failed", exc_info=True)
             return None
 
-    def getHiveExecutionEngine(self):
+    def get_hive_execution_engine(self):
         """Get Hive execution engine details.
 
         Returns:
@@ -1085,12 +1085,13 @@ class DataAPI:
                     if (hive_execution_engine.find("|")!=-1):
                         hive_execution_engine = hive_execution_engine.split('|')[0]
                         hive_execution_engine = hive_execution_engine.strip()
+            self.logger.info("get_hive_execution_engine successful")
             return hive_execution_engine
         except Exception as e:
-            self.logger.error("getHiveExecutionEngine failed", exc_info=True)
+            self.logger.error("get_hive_execution_engine failed", exc_info=True)
             return None
 
-    def getHiveFileFormats(self, database_uri, database_type):
+    def get_hive_file_formats(self, database_uri, database_type):
         """Get Hive file formats.
 
         Args:
@@ -1176,13 +1177,13 @@ class DataAPI:
                     if file_format not in file_formats:
                         file_formats.append(file_format)
             formats = ", ".join(file_formats)
-            self.logger.info("getHiveFileFormats successful")
+            self.logger.info("get_hive_file_formats successful")
             return formats
         except Exception as e:
-            self.logger.error("getHiveFileFormats failed", exc_info=True)
+            self.logger.error("get_hive_file_formats failed", exc_info=True)
             return None
 
-    def getTransactionLockingConcurrency(self):
+    def get_transaction_locking_concurrency(self):
         """Get Hive concurrency and locking config.
 
         Returns:
@@ -1236,13 +1237,13 @@ class DataAPI:
                 transaction_locking_concurrency = "Yes"
             else:
                 transaction_locking_concurrency = "No"
-            
+            self.logger.info("get_transaction_locking_concurrency successful")
             return transaction_locking_concurrency
         except Exception as e:
-            self.logger.error("getTransactionLockingConcurrency failed", exc_info=True)
+            self.logger.error("get_transaction_locking_concurrency failed", exc_info=True)
             return None
 
-    def getHiveAdhocEtlQuery(self, yarn_rm, yarn_port):
+    def get_hive_adhoc_etl_query(self, yarn_rm, yarn_port):
         """Get Hive adhoc and etl query count over a date range.
 
         Args:
@@ -1304,15 +1305,15 @@ class DataAPI:
                 return query_type_count_df
             else:
                 self.logger.error(
-                    "getHiveAdhocEtlQuery failed due to invalid API call. HTTP Response: ",
+                    "get_hive_adhoc_etl_query failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHiveAdhocEtlQuery failed", exc_info=True)
+            self.logger.error("get_hive_adhoc_etl_query failed", exc_info=True)
             return None
 
-    def interactiveQueriesStatus(self):
+    def interactive_queries_status(self):
         """Get Hive interactive queries status in cluster.
 
         Returns:
@@ -1335,8 +1336,8 @@ class DataAPI:
                             hive_interactive_status = "YES"
             else:
                 hive_interactive_status = None
-            self.logger.info("interactiveQueriesStatus successful")
+            self.logger.info("interactive_queries_status successful")
             return hive_interactive_status
         except Exception as e:
-            self.logger.error("interactiveQueriesStatus failed", exc_info=True)
+            self.logger.error("interactive_queries_status failed", exc_info=True)
             return None

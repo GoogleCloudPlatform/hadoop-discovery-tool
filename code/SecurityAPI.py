@@ -37,7 +37,7 @@ class SecurityAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def clusterKerberosInfo(self, cluster_name):
+    def cluster_kerberos_info(self, cluster_name):
         """Get Kerberos details in a cluster.
         
         Args:
@@ -91,18 +91,18 @@ class SecurityAPI:
                     cluster_kerberos_info = "Cluster is kerberized"
                 else:
                     cluster_kerberos_info = "Cluster is not kerberized"
-                self.logger.info("clusterKerberosInfo successful")
+                self.logger.info("cluster_kerberos_info successful")
                 return cluster_kerberos_info
             else:
                 self.logger.error(
-                    "clusterKerberosInfo failed due to invalid API call. HTTP Response: ",
+                    "cluster_kerberos_info failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterKerberosInfo failed", exc_info=True)
+            self.logger.error("cluster_kerberos_info failed", exc_info=True)
             return None
 
-    def ADServerNameAndPort(self, cluster_name):
+    def ad_server_name_and_port(self, cluster_name):
         """Get AD server details for a cluster.
         
         Args:
@@ -160,19 +160,19 @@ class SecurityAPI:
                 for i in ad_server["items"]:
                     if i["name"] == "LDAP_URL":
                         ADServer = i["value"]
-                self.logger.info("ADServerNameAndPort successful")
+                self.logger.info("ad_server_name_and_port successful")
                 return ADServer
             else:
                 self.logger.error(
-                    "ADServerNameAndPort failed due to invalid API call. HTTP Response: ",
+                    "ad_server_name_and_port failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("ADServerNameAndPort failed", exc_info=True)
+            self.logger.error("ad_server_name_and_port failed", exc_info=True)
             return None
 
-    def adServerBasedDN(self, cluster_name):
+    def ad_server_based_dn(self, cluster_name):
         """Get AD server details based on domain name.
 
         Args:
@@ -230,19 +230,19 @@ class SecurityAPI:
                 for i in ad_server["items"]:
                     if i["name"] == "LDAP_BIND_DN":
                         Server_dn = i["value"]
-                self.logger.info("adServerBasedDN successful")
+                self.logger.info("ad_server_based_dn successful")
                 return Server_dn
             else:
                 self.logger.error(
-                    "adServerBasedDN failed due to invalid API call. HTTP Response: ",
+                    "ad_server_based_dn failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("adServerBasedDN failed", exc_info=True)
+            self.logger.error("ad_server_based_dn failed", exc_info=True)
             return None
 
-    def sslStatus(self):
+    def ssl_status(self):
         """Get SSL staus of various services.
 
         Returns:
@@ -300,13 +300,13 @@ class SecurityAPI:
                     Mr_ssl = "SSL on Mapreduce is enabled"
             else:
                 Mr_ssl = None
-            self.logger.info("sslStatus successful")
+            self.logger.info("ssl_status successful")
             return Mr_ssl, hdfs_ssl, yarn_ssl
         except Exception as e:
-            self.logger.error("sslStatus failed", exc_info=True)
+            self.logger.error("ssl_status failed", exc_info=True)
             return None
 
-    def kerberosHttpAuth(self):
+    def kerberos_http_auth(self):
         """Get kerberos status of various services.
 
         Returns:
@@ -386,18 +386,18 @@ class SecurityAPI:
                 else:
                     hdfs_flag = "Kerberos on HDFS is not enabled"
 
-                self.logger.info("kerberosHttpAuth successful")
+                self.logger.info("kerberos_http_auth successful")
                 return hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab
             else:
                 self.logger.error(
-                    "kerberosHttpAuth failed due to invalid API call. HTTP Response: ",
+                    "kerberos_http_auth failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("kerberosHttpAuth failed", exc_info=True)
+            self.logger.error("kerberos_http_auth failed", exc_info=True)
             return None
 
-    def checkLuks(self):
+    def check_luks(self):
         """Get LUKS information in cluster.
 
         Returns:
@@ -422,13 +422,13 @@ class SecurityAPI:
                 columns=["UUID", "part1", "part2", "part3", "part4"], inplace=True
             )
             luks_detect["TYPE_LOWER"] = luks_detect["TYPE"].str.lower()
-            self.logger.info("checkLuks successful")
+            self.logger.info("check_luks successful")
             return luks_detect
         except Exception as e:
-            self.logger.error("checkLuks failed", exc_info=True)
+            self.logger.error("check_luks failed", exc_info=True)
             return None
 
-    def portUsed(self):
+    def port_used(self):
         """Get port number for different services.
 
         Returns:
@@ -595,13 +595,13 @@ class SecurityAPI:
                 df_port = {"service": "Zookeeper Port", "port": line.rstrip()}
             port_df = port_df.append(df_port, ignore_index=True)
             port_df = port_df.dropna()
-            self.logger.info("portUsed successful")
+            self.logger.info("port_used successful")
             return port_df
         except Exception as e:
-            self.logger.error("portUsed failed", exc_info=True)
+            self.logger.error("port_used failed", exc_info=True)
             return None
 
-    def keyList(self):
+    def key_list(self):
         """Get list of keys in cluster.
 
         Returns:
@@ -624,13 +624,13 @@ class SecurityAPI:
                 out = out[1:]
                 key_list = out
                 key_list = ", ".join(key_list)
-            self.logger.info("keyList successful")
+            self.logger.info("key_list successful")
             return key_list
         except Exception as e:
-            self.logger.error("keyList failed", exc_info=True)
+            self.logger.error("key_list failed", exc_info=True)
             return None
 
-    def encryptionZone(self):
+    def encryption_zone(self):
         """Get list of encryption zone in cluster.
 
         Returns:
@@ -657,8 +657,8 @@ class SecurityAPI:
                 enc_zoneList["data"] = enc_zoneList["data"].str.split(
                     " ", n=1, expand=True
                 )
-            self.logger.info("encryptionZone successful")
+            self.logger.info("encryption_zone successful")
             return enc_zoneList
         except Exception as e:
-            self.logger.error("encryptionZone failed", exc_info=True)
+            self.logger.error("encryption_zone failed", exc_info=True)
             return None

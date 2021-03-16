@@ -2753,10 +2753,10 @@ class ApplicationAPI:
                 )
             else:
                 output = "Apache Sentry is not found"
-            self.logger.info("useOfSentry successful")
+            self.logger.info("use_of_sentry successful")
             return output
         except Exception as e:
-            self.logger.error("useOfSentry failed", exc_info=True)
+            self.logger.error("use_of_sentry failed", exc_info=True)
             return None
 
     def use_of_kudu(self):

@@ -38,7 +38,7 @@ class FrameworkDetailsAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def hadoopVersion(self):
+    def hadoop_version(self):
         """Get Hadoop major and minor versions and Hadoop Distribution.
 
         Returns:
@@ -82,13 +82,13 @@ class FrameworkDetailsAPI:
                 distribution = "CDH6"
             elif re.search(r"\bcdh5\b", a):
                 distribution = "CDH5"
-            self.logger.info("hadoopVersion successful")
+            self.logger.info("hadoop_version successful")
             return hadoop_major, hadoop_minor, distribution
         except Exception as e:
-            self.logger.error("hadoopVersion failed", exc_info=True)
+            self.logger.error("hadoop_version failed", exc_info=True)
             return None
 
-    def versionMapping(self, cluster_name):
+    def version_mapping(self, cluster_name):
         """Get list of services installed in cluster with their versions.
 
         Args:
@@ -178,19 +178,19 @@ class FrameworkDetailsAPI:
                 new_ref_df["sub_version"] = new_ref_df.version.str[:5]
                 new_ref_df = new_ref_df.drop(["version"], axis=1)
                 new_ref_df = new_ref_df.reset_index(drop=True)
-                self.logger.info("versionMapping successful")
+                self.logger.info("version_mapping successful")
                 return list_services_installed_df, new_ref_df
             else:
                 self.logger.error(
-                    "versionMapping failed due to invalid API call. HTTP Response: ",
+                    "version_mapping failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("versionMapping failed", exc_info=True)
+            self.logger.error("version_mapping failed", exc_info=True)
             return None
 
-    def thirdPartySoftware(self):
+    def third_party_software(self):
         """Get list of 3rd party software installed in cluster.
 
         Returns:
@@ -218,13 +218,13 @@ class FrameworkDetailsAPI:
                     "centos_third_party.csv", names=col_names, delimiter=r"\s+"
                 )
                 subprocess.Popen("rm ./centos_third_party.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            self.logger.info("thirdPartySoftware successful")
+            self.logger.info("third_party_software successful")
             return third_party_package
         except Exception as e:
-            self.logger.error("thirdPartySoftware failed", exc_info=True)
+            self.logger.error("third_party_software failed", exc_info=True)
             return None
 
-    def versionPackage(self):
+    def version_package(self):
         """Get list of software installed in cluster with their versions.
 
         Returns:
@@ -314,13 +314,13 @@ class FrameworkDetailsAPI:
                 package_version = package_version[1:10]
             elif "suse" in os_name:
                 pass
-            self.logger.info("versionPackage successful")
+            self.logger.info("version_package successful")
             return package_version
         except Exception as e:
-            self.logger.error("versionPackage failed", exc_info=True)
+            self.logger.error("version_package failed", exc_info=True)
             return None
 
-    def jdbcOdbcDriver(self):
+    def jdbcodbc_driver(self):
         """Get list of JDBC and ODBC driver in cluster.
 
         Returns:
@@ -336,13 +336,13 @@ class FrameworkDetailsAPI:
             BetweenTwoSymbols1 = df11["name"].str.split("/").str[-1]
             result1 = BetweenTwoSymbols1.drop_duplicates()
             final_df = result1.to_frame()
-            self.logger.info("jdbcOdbcDriver successful")
+            self.logger.info("jdbcodbc_driver successful")
             return final_df
         except Exception as e:
-            self.logger.error("jdbcOdbcDriver failed", exc_info=True)
+            self.logger.error("jdbcodbc_driver failed", exc_info=True)
             return None
 
-    def salesFroceSapDriver(self):
+    def salesfroce_sapDriver(self):
         """Get SalesForce and SAP driver in cluster.
 
         Returns:
@@ -357,13 +357,13 @@ class FrameworkDetailsAPI:
             subprocess.Popen('find / -iname "ngdbc.jar" 2>/dev/null> ./ngdbc.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             df_ngdbc = pd.read_csv("ngdbc.csv", delimiter=r"\s+", names=["name"])
             subprocess.Popen("rm ./ngdbc.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            self.logger.info("salesFroceSapDriver successful")
+            self.logger.info("salesfroce_sapDriver successful")
             return df_ngdbc, df_salesforce
         except Exception as e:
-            self.logger.error("salesFroceSapDriver failed", exc_info=True)
+            self.logger.error("salesfroce_sapDriver failed", exc_info=True)
             return None
 
-    def installedConnectors(self):
+    def installed_connectors(self):
         """Get list of connectors present in cluster.
 
         Returns:
@@ -377,8 +377,8 @@ class FrameworkDetailsAPI:
             connector_details = connector_df["Connector_Name"].str.split("/").str[-1]
             connectors_present = connector_details.drop_duplicates()
             connectors_present = connectors_present.to_frame()
-            self.logger.info("installedConnectors successful")
+            self.logger.info("installed_connectors successful")
             return connectors_present
         except Exception as e:
-            self.logger.error("installedConnectors failed", exc_info=True)
+            self.logger.error("installed_connectors failed", exc_info=True)
             return None
