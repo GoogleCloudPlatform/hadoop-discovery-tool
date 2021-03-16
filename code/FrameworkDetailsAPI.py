@@ -342,7 +342,7 @@ class FrameworkDetailsAPI:
             self.logger.error("jdbcodbc_driver failed", exc_info=True)
             return None
 
-    def salesfroce_sapDriver(self):
+    def salesforce_sapDriver(self):
         """Get SalesForce and SAP driver in cluster.
 
         Returns:

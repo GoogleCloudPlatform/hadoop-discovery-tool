@@ -29,7 +29,7 @@ class PdfFunctions:
         self.end_date = inputs["end_date"]
         self.pdf = pdf
 
-    def summaryTable(
+    def summary_table(
         self,
         all_host_data,
         cluster_cpu_usage_avg,
@@ -248,7 +248,7 @@ class PdfFunctions:
                     True,
                 )
 
-    def clusterInfo(self, cluster_items):
+    def cluster_info(self, cluster_items):
         """Add cluster information in PDF
 
         Args:
@@ -352,7 +352,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def clusterHostInfo(self, cluster_host_items, all_host_data, os_version):
+    def cluster_host_info(self, cluster_host_items, all_host_data, os_version):
         """Add detailed information of all host in cluster in PDF.
 
         Args:
@@ -839,7 +839,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def clusterServiceInfo(self, cluster_service_item):
+    def cluster_service_info(self, cluster_service_item):
         """Add service installed data in PDF.
 
         Args:
@@ -953,7 +953,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def clusterVcoreAvg(self, cluster_cpu_usage_avg):
+    def cluster_vcore_avg(self, cluster_cpu_usage_avg):
         """Add average vcore utilization of cluster in PDF.
 
         Args:
@@ -970,7 +970,7 @@ class PdfFunctions:
             1,
         )
 
-    def clusterVcorePlot(self, cluster_total_cores_df, cluster_cpu_usage_df):
+    def cluster_vcore_plot(self, cluster_total_cores_df, cluster_cpu_usage_df):
         """Add cluster vcore data graph in PDF.
 
         Args:
@@ -1007,7 +1007,7 @@ class PdfFunctions:
             "cluster_cpu_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def clusterMemoryAvg(self, cluster_memory_usage_avg):
+    def cluster_memory_avg(self, cluster_memory_usage_avg):
         """Add average memory utilization of cluster in PDF.
 
         Args:
@@ -1026,7 +1026,7 @@ class PdfFunctions:
             1,
         )
 
-    def clusterMemoryPlot(self, cluster_total_memory_df, cluster_memory_usage_df):
+    def cluster_memory_plot(self, cluster_total_memory_df, cluster_memory_usage_df):
         """Add cluster memory data graph in PDF.
 
         Args:
@@ -1057,7 +1057,7 @@ class PdfFunctions:
             "cluster_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def dataBaseServer(self, database_server):
+    def database_server(self, database_server):
         """Add database server like mysql for metadata in PDF.
 
         Args:
@@ -1070,7 +1070,7 @@ class PdfFunctions:
             230, 8, "Database Server: {}".format(database_server), 0, 1,
         )
 
-    def dnsServer(self, dns_server):
+    def dns_server(self, dns_server):
         """Add DNS server details in PDF.
 
         Args:
@@ -1083,7 +1083,7 @@ class PdfFunctions:
             230, 8, "DNS Server: {}".format(dns_server), 0, 1,
         )
 
-    def webServer(self, web_server):
+    def web_server(self, web_server):
         """Add web server details in PDF.
 
         Args:
@@ -1096,7 +1096,7 @@ class PdfFunctions:
             230, 8, "Web Server: {}".format(web_server), 0, 1,
         )
 
-    def ntpServer(self, ntp_server):
+    def ntp_server(self, ntp_server):
         """Add NTP server details in PDF.
 
         Args:
@@ -1109,7 +1109,7 @@ class PdfFunctions:
             230, 8, "NTP Server: {}".format(ntp_server), 0, 1,
         )
 
-    def manufacturerName(self, manufacturer_name):
+    def manufacturer_name(self, manufacturer_name):
         """Add manufacturer name of processor in PDF.
 
         Args:
@@ -1122,7 +1122,7 @@ class PdfFunctions:
             230, 8, "Manufacturer name: {}".format(manufacturer_name), 0, 1,
         )
 
-    def serialNo(self, serial_no):
+    def serial_no(self, serial_no):
         """Add serial number of processor in PDF.
 
         Args:
@@ -1148,7 +1148,7 @@ class PdfFunctions:
             230, 8, "Family: {}".format(family), 0, 1,
         )
 
-    def modelName(self, model_name):
+    def model_name(self, model_name):
         """Add model name of processor in PDF.
 
         Args:
@@ -1174,7 +1174,7 @@ class PdfFunctions:
             230, 8, "Microcode: {}".format(microcode), 0, 1,
         )
 
-    def cpuMHz(self, cpu_mhz):
+    def cpu_mhz(self, cpu_mhz):
         """Add CPU MHz of processor in PDF.
 
         Args:
@@ -1187,7 +1187,7 @@ class PdfFunctions:
             230, 8, "CPU MHz: {}".format(cpu_mhz), 0, 1,
         )
 
-    def cpuFamily(self, cpu_family):
+    def cpu_family(self, cpu_family):
         """Add CPU family of processor in PDF.
 
         Args:
@@ -1200,7 +1200,7 @@ class PdfFunctions:
             230, 8, "CPU Family: {}".format(cpu_family), 0, 1,
         )
 
-    def networkInterfaceDetails(self, nic_details):
+    def network_interface_details(self, nic_details):
         """Add NIC details for cluster hardware in PDF.
 
         Args:
@@ -1227,7 +1227,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def appliedPatches(self, patch_dataframe, os_name):
+    def applied_patches(self, patch_dataframe, os_name):
         """Add List of security patches present in clusterr in PDF.
 
         Args:
@@ -1310,7 +1310,7 @@ class PdfFunctions:
                 )
             self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def listHadoopNonHadoopLibs(self, hadoop_native_df):
+    def list_hadoop_nonHadoop_libs(self, hadoop_native_df):
         """Add List of hadoop and non-hadoop libraries present in cluster in PDF.
 
         Args:
@@ -1349,7 +1349,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def checkLibrariesInstalled(self, python_flag, java_flag, scala_flag):
+    def check_libraries_installed(self, python_flag, java_flag, scala_flag):
         """Add check whether python, java and scala are installed in cluster in PDF.
 
         Args:
@@ -1376,7 +1376,7 @@ class PdfFunctions:
         else:
             self.pdf.cell(230, 8, "Scala installed", 0, ln=1)
 
-    def securitySoftware(self, security_software):
+    def security_software(self, security_software):
         """Add list of security software present in cluster in PDF.
 
         Args:
@@ -1400,7 +1400,7 @@ class PdfFunctions:
             230, 8, "{}".format(security_software["cloudera_navigator"]), 0, ln=1
         )
 
-    def specialityHardware(self, gpu_status):
+    def speciality_hardware(self, gpu_status):
         """Add heck whether GPU is present in cluster in PDF.
 
         Args:
@@ -1417,7 +1417,7 @@ class PdfFunctions:
         else:
             self.pdf.cell(230, 8, "GPU is present", 0, ln=1)
 
-    def hadoopVersion(self, hadoop_major, hadoop_minor, distribution):
+    def hadoop_version(self, hadoop_major, hadoop_minor, distribution):
         """Add Hadoop version details in PDF.
 
         Args:
@@ -1438,7 +1438,7 @@ class PdfFunctions:
             230, 8, "Hadoop Distribution: {}".format(distribution), 0, 1,
         )
 
-    def serviceInstalled(self, new_ref_df):
+    def service_installed(self, new_ref_df):
         """Add list of service installed with their versions in PDF.
 
         Args:
@@ -1465,7 +1465,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def thirdPartySoftware(self, third_party_package):
+    def third_party_software(self, third_party_package):
         """Add list of 3rd party software installed in cluster in PDF.
 
         Args:
@@ -1501,7 +1501,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def versionPackage(self, package_version):
+    def version_package(self, package_version):
         """Add list of software installed in cluster with their versions in PDF.
 
         Args:
@@ -1531,7 +1531,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def salesFroceSapDriver(self, df_ngdbc, df_salesforce):
+    def salesforce_sapDriver(self, df_ngdbc, df_salesforce):
         """Add SalesForce and SAP driver in cluster in PDF.
 
         Args:
@@ -1550,7 +1550,7 @@ class PdfFunctions:
         else:
             self.pdf.cell(230, 8, "Sap driver found", 0, ln=1)
 
-    def jdbcOdbcDriver(self, final_df):
+    def jdbcodbc_driver(self, final_df):
         """Add list of JDBC and ODBC driver in cluster in PDF.
 
         Args:
@@ -1570,7 +1570,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def installedConnectors(self, connectors_present):
+    def installed_connectors(self, connectors_present):
         """Add list of connectors present in cluster in PDF.
 
         Args:
@@ -1596,7 +1596,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def totalHDFSSize(self, total_storage):
+    def total_hdfs_size(self, total_storage):
         """Add HDFS configured size in PDF.
 
         Args:
@@ -1613,7 +1613,7 @@ class PdfFunctions:
             1,
         )
 
-    def individualHDFSSize(self, mapped_df):
+    def individual_hdfs_size(self, mapped_df):
         """Add HDFS configured size for each node in PDF.
 
         Args:
@@ -1681,7 +1681,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def repFactor(self, replication_factor):
+    def rep_factor(self, replication_factor):
         """Add HDFS replication faction in PDF.
 
         Args:
@@ -1694,7 +1694,7 @@ class PdfFunctions:
             230, 8, "Replication Factor: {}".format(replication_factor), 0, 1,
         )
 
-    def trashInterval(self, trash_flag):
+    def trash_interval(self, trash_flag):
         """Add HDFS trash interval data in PDF.
 
         Args:
@@ -1707,7 +1707,7 @@ class PdfFunctions:
             230, 8, "Trash Interval Setup in the Cluster: {}".format(trash_flag), 0, 1,
         )
 
-    def checkCompression(self, value):
+    def check_compression(self, value):
         """Add HDFS file compression details in PDF.
 
         Args:
@@ -1720,7 +1720,7 @@ class PdfFunctions:
             230, 8, "Compression Technique used: {}".format(value), 0, 1,
         )
 
-    def availableHDFSStorage(self, hdfs_storage_config):
+    def available_hdfs_storage(self, hdfs_storage_config):
         """Add HDFS available size in PDF.
 
         Args:
@@ -1737,7 +1737,7 @@ class PdfFunctions:
             1,
         )
 
-    def usedHDFSStorage(self, hdfs_storage_used):
+    def used_hdfs_storage(self, hdfs_storage_used):
         """Add HDFS used size in PDF.
 
         Args:
@@ -1750,7 +1750,7 @@ class PdfFunctions:
             230, 8, "HDFS Storage Used: {: .2f} GB".format(hdfs_storage_used), 0, 1,
         )
 
-    def HDFSStoragePlot(self, hdfs_capacity_df, hdfs_capacity_used_df):
+    def hdfs_storage_plot(self, hdfs_capacity_df, hdfs_capacity_used_df):
         """Add HDFS storage size graph in PDF.
 
         Args:
@@ -1776,7 +1776,7 @@ class PdfFunctions:
             "hdfs_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def hdfsStorage(self, hdfs_storage_df, hdfs_flag):
+    def hdfs_storage(self, hdfs_storage_df, hdfs_flag):
         """Add HDFS folders and files details in PDF.
 
         Args:
@@ -1976,7 +1976,7 @@ class PdfFunctions:
                     )
                 self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def clusterFileSize(self, grpby_data, max_value, min_value, avg_value):
+    def cluster_file_size(self, grpby_data, max_value, min_value, avg_value):
         """Add HDFS files distribution in PDF.
 
         Args:
@@ -2023,7 +2023,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def hiveMetaStoreDetails(self, mt_db_host, mt_db_name, mt_db_type, mt_db_port):
+    def hive_metastore_details(self, mt_db_host, mt_db_name, mt_db_type, mt_db_port):
         """Add Hive metastore details in PDF.
 
         Args:
@@ -2050,7 +2050,7 @@ class PdfFunctions:
             230, 8, "Metastore Database Port: {}".format(mt_db_port), 0, 1,
         )
 
-    def hiveDetails(
+    def hive_details(
         self,
         database_count,
         tables_with_partition,
@@ -2126,7 +2126,7 @@ class PdfFunctions:
             1,
         )
 
-    def hiveDatabasesSize(self, database_df):
+    def hive_databases_size(self, database_df):
         """Add Hive databases size table in PDF.
 
         Args:
@@ -2163,7 +2163,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def hiveAccessFrequency(self, table_df):
+    def hive_access_frequency(self, table_df):
         """Add Hive access frequency graph in PDF.
 
         Args:
@@ -2185,7 +2185,7 @@ class PdfFunctions:
             "table_type_count_plot.png", x=15, y=None, w=95, h=95, type="", link=""
         )
 
-    def hiveAdhocEtlQuery(self, query_type_count_df):
+    def hive_adhoc_etl_query(self, query_type_count_df):
         """Add structure v/s unstructure data details in PDF.
 
         Args:
@@ -2204,7 +2204,7 @@ class PdfFunctions:
             "hive_query_type_plot.png", x=15, y=None, w=95, h=95, type="", link=""
         )
 
-    def structuredVsUnstructured(self, size_breakdown_df):
+    def structured_vs_unstructured(self, size_breakdown_df):
         """Add Hive adhoc and etl query count graph in PDF.
 
         Args:
@@ -2240,7 +2240,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def kerberosInfo(self, kerberos):
+    def kerberos_info(self, kerberos):
         """Add Kerberos details in PDF.
 
         Args:
@@ -2253,7 +2253,7 @@ class PdfFunctions:
             230, 8, "Kerberos Details: {}".format(kerberos), 0, 1,
         )
 
-    def ADServerNameAndPort(self, ADServer):
+    def ad_server_name_and_port(self, ADServer):
         """Add AD server details in PDF.
 
         Args:
@@ -2266,7 +2266,7 @@ class PdfFunctions:
             230, 8, "AD Server Name and Port: {}".format(ADServer), 0, 1,
         )
 
-    def adServerBasedDN(self, Server_dn):
+    def ad_server_based_dn(self, Server_dn):
         """Add AD server details based on domain name details in PDF.
 
         Args:
@@ -2279,7 +2279,7 @@ class PdfFunctions:
             230, 8, "AD Server Based DN: {}".format(Server_dn), 0, 1,
         )
 
-    def sslStatus(self, Mr_ssl, hdfs_ssl, yarn_ssl):
+    def ssl_status(self, Mr_ssl, hdfs_ssl, yarn_ssl):
         """Add SSL staus of various services in PDF.
 
         Args:
@@ -2297,7 +2297,7 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "{}".format(yarn_ssl), 0, ln=1)
         self.pdf.cell(230, 8, "{}".format(Mr_ssl), 0, ln=1)
 
-    def kerberosHttpAuth(self, hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab):
+    def kerberos_http_auth(self, hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab):
         """Add kerberos status of various services in PDF.
 
         Args:
@@ -2329,7 +2329,7 @@ class PdfFunctions:
             230, 8, "{}".format(yarn_flag), 0, 1,
         )
 
-    def checkLuks(self, luks_detect):
+    def check_luks(self, luks_detect):
         """Add LUKS information in PDF.
 
         Args:
@@ -2343,7 +2343,7 @@ class PdfFunctions:
         else:
             self.pdf.cell(230, 8, "LUKS is not used", 0, ln=1)
 
-    def portUsed(self, port_df):
+    def port_used(self, port_df):
         """Add port number for different services in PDF.
 
         Args:
@@ -2367,7 +2367,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def keyList(self, key_list):
+    def key_list(self, key_list):
         """Add list of keys in PDF.
 
         Args:
@@ -2380,7 +2380,7 @@ class PdfFunctions:
             230, 8, "Key list: {}".format(key_list), 0, 1,
         )
 
-    def encryptionZone(self, enc_zoneList):
+    def encryption_zone(self, enc_zoneList):
         """Add list of encryption zone in PDF.
 
         Args:
@@ -2400,7 +2400,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def maxBandwidth(self, max_bandwidth):
+    def max_bandwidth(self, max_bandwidth):
         """Add maximum bandwidth information in PDF.
 
         Args:
@@ -2472,7 +2472,7 @@ class PdfFunctions:
             230, 8, "Current Outgoing Throughput: {: .2f} Kbps".format(curr_value), 0, 1,
         )
 
-    def diskReadWrite(self, total_disk_read, total_disk_write):
+    def disk_read_write(self, total_disk_read, total_disk_write):
         """Add disk read and write speed information in PDF.
 
         Args:
@@ -2492,7 +2492,7 @@ class PdfFunctions:
             230, 8, "Total disk write in KB/s: {}".format(total_disk_write), 0, 1,
         )
 
-    def thirdPartyMonitor(
+    def third_party_monitor(
         self,
         softwares_installed,
         prometheus_server,
@@ -2532,7 +2532,7 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "{}".format(ganglia_server), 0, ln=1)
         self.pdf.cell(230, 8, "{}".format(check_mk_server), 0, ln=1)
 
-    def orchestrationTools(self, oozie_flag, crontab_flag, airflow_flag):
+    def orchestration_tools(self, oozie_flag, crontab_flag, airflow_flag):
         """Add orchestration tool details in PDF.
 
         Args:
@@ -2556,7 +2556,7 @@ class PdfFunctions:
             230, 8, "{}".format(airflow_flag), 0, 1,
         )
 
-    def loggingTool(self, ddog, splunk, new_relic, elastic_search):
+    def logging_tool(self, ddog, splunk, new_relic, elastic_search):
         """Add logging tool details in PDF.
 
         Args:
@@ -2584,7 +2584,7 @@ class PdfFunctions:
             230, 8, "{}".format(elastic_search), 0, 1,
         )
 
-    def pdfMonitorNetworkSpeed(self,max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2):
+    def pdf_monitor_network_speed(self,max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Third Party Network Monitoring:", 0, ln=1)
@@ -2600,7 +2600,7 @@ class PdfFunctions:
         self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_2),0,ln=1)
     
 
-    def getLogs(self, logs):
+    def get_logs(self, logs):
         """Add logs paths in PDF.
 
         Args:
@@ -2623,7 +2623,7 @@ class PdfFunctions:
                 130, 5, "/var/log/{}".format(logs["name"][i]), 1, 1, "C", True,
             )
 
-    def dynamicResoucePool(self, resource):
+    def dynamic_resouce_pool(self, resource):
         """Add dynamic resource pool information of cluster in PDF.
 
         Args:
@@ -2636,7 +2636,7 @@ class PdfFunctions:
             230, 8, "{}".format(resource), 0, 1,
         )
 
-    def identifyHA(self, zookeeper_ha, hive_ha, yarn_ha, hdfs_ha):
+    def identify_ha(self, zookeeper_ha, hive_ha, yarn_ha, hdfs_ha):
         """Add HA config for various services in PDF.
 
         Args:
@@ -2683,7 +2683,7 @@ class PdfFunctions:
                 230, 8, "Zookeeper: Disabled", 0, 1,
             )
 
-    def yarnVcoreTotal(self, yarn_total_vcores_count):
+    def yarn_vcore_total(self, yarn_total_vcores_count):
         """Add yarn total vcore in PDF.
 
         Args:
@@ -2696,7 +2696,7 @@ class PdfFunctions:
             230, 8, "Total Yarn Vcore: {: .2f}".format(yarn_total_vcores_count), 0, 1,
         )
 
-    def yarnVcoreAvg(self, yarn_vcore_allocated_avg):
+    def yarn_vcore_avg(self, yarn_vcore_allocated_avg):
         """Add yarn average vcore in PDF.
 
         Args:
@@ -2713,7 +2713,7 @@ class PdfFunctions:
             1,
         )
 
-    def yarnVcoreUsage(self, yarn_vcore_available_df, yarn_vcore_allocated_df):
+    def yarn_vcore_usage(self, yarn_vcore_available_df, yarn_vcore_allocated_df):
         """Add yarn vcore usage graph in PDF.
 
         Args:
@@ -2739,7 +2739,7 @@ class PdfFunctions:
             "yarn_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnVcoreSeasonality(self, yarn_vcore_allocated_pivot_df):
+    def yarn_vcore_seasonality(self, yarn_vcore_allocated_pivot_df):
         """Add yarn vcore seasonality graph in PDF.
 
         Args:
@@ -2756,7 +2756,7 @@ class PdfFunctions:
             "yarn_vcore_usage_heatmap.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnMemoryTotal(self, yarn_total_memory_count):
+    def yarn_memory_total(self, yarn_total_memory_count):
         """Add yarn total memory in PDF.
 
         Args:
@@ -2773,7 +2773,7 @@ class PdfFunctions:
             1,
         )
 
-    def yarnMemoryAvg(self, yarn_memory_allocated_avg):
+    def yarn_memory_avg(self, yarn_memory_allocated_avg):
         """Add yarn average memory in PDF.
 
         Args:
@@ -2790,7 +2790,7 @@ class PdfFunctions:
             1,
         )
 
-    def yarnMemoryUsage(self, yarn_memory_available_df, yarn_memory_allocated_df):
+    def yarn_memory_usage(self, yarn_memory_available_df, yarn_memory_allocated_df):
         """Add yarn memory usage graph in PDF
 
         Args:
@@ -2816,7 +2816,7 @@ class PdfFunctions:
             "yarn_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnMemorySeasonality(self, yarn_memory_allocated_pivot_df):
+    def yarn_memory_seasonality(self, yarn_memory_allocated_pivot_df):
         """Add yarn memory seasonality graph in PDF.
 
         Args:
@@ -2833,7 +2833,7 @@ class PdfFunctions:
             "yarn_memory_usage_heatmap.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnAppCount(self, app_count_df):
+    def yarn_app_count(self, app_count_df):
         """Add yarn application count table in PDF.
 
         Args:
@@ -2867,7 +2867,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def yarnAppTypeStatus(self, app_type_count_df, app_status_count_df):
+    def yarn_app_type_status(self, app_type_count_df, app_status_count_df):
         """Add yarn application type and status pie chart in PDF.
 
         Args:
@@ -2901,7 +2901,7 @@ class PdfFunctions:
             "app_status_count_pie_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
 
-    def streamingJobs(self, only_streaming):
+    def streaming_jobs(self, only_streaming):
         """Add list of streaming application in PDF.
 
         Args:
@@ -2928,7 +2928,7 @@ class PdfFunctions:
                 )
             self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def yarnAppVcoreMemory(self, app_vcore_df, app_memory_df):
+    def yarn_app_vcore_memory(self, app_vcore_df, app_memory_df):
         """Add yarn vcore and memory by application pie chart in PDF.
 
         Args:
@@ -2960,7 +2960,7 @@ class PdfFunctions:
             "app_memory_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
 
-    def yarnAppVcoreUsage(self, app_vcore_df, app_vcore_usage_df):
+    def yarn_app_vcore_usage(self, app_vcore_df, app_vcore_usage_df):
         """Add yarn vcore usage graph in PDF.
 
         Args:
@@ -3001,7 +3001,7 @@ class PdfFunctions:
             "app_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnAppMemoryUsage(self, app_memory_df, app_memory_usage_df):
+    def yarn_app_memory_usage(self, app_memory_df, app_memory_usage_df):
         """Add yarn memory usage graph in PDF.
 
         Args:
@@ -3044,7 +3044,7 @@ class PdfFunctions:
             "app_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnJobLaunchFrequency(self, job_launch_df):
+    def yarn_job_launch_frequency(self, job_launch_df):
         """Add details about job launch frequency of yarn application in PDF.
 
         Args:
@@ -3081,7 +3081,7 @@ class PdfFunctions:
             )
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def yarnBurstyAppTime(self, bursty_app_time_df):
+    def yarn_bursty_app_time(self, bursty_app_time_df):
         """Add yarn bursty application details in PDF.
 
         Args:
@@ -3153,7 +3153,7 @@ class PdfFunctions:
             "bursty_app_time_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnBurstyAppVcore(self, bursty_app_vcore_df):
+    def yarn_bursty_app_vcore(self, bursty_app_vcore_df):
         """Add yarn bursty application vcore graph in PDF.
 
         Args:
@@ -3225,7 +3225,7 @@ class PdfFunctions:
             "bursty_app_vcore_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarBurstyAppMemory(self, bursty_app_mem_df):
+    def yar_bursty_app_memory(self, bursty_app_mem_df):
         """Add yarn bursty application memory graph in PDF.
 
         Args:
@@ -3299,7 +3299,7 @@ class PdfFunctions:
             "bursty_app_mem_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnFailedApp(self, yarn_failed_app):
+    def yarn_failed_app(self, yarn_failed_app):
         """Add failed or killed yarn application in PDF.
 
         Args:
@@ -3437,7 +3437,7 @@ class PdfFunctions:
                 self.pdf.multi_cell(130, y_pos, "{}".format(diag), 1, "C", fill=True)
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def yarnQueue(self, yarn_queues_list):
+    def yarn_queue(self, yarn_queues_list):
         """Add yarn queue details in PDF.
 
         Args:
@@ -3561,7 +3561,7 @@ class PdfFunctions:
                 yarn_queue(yarn_queues_list["rootQueue"]["childQueues"]["queue"], 1)
         self.pdf.cell(230, 5, "", 0, ln=1)
 
-    def yarnQueueApp(self, queue_app_count_df, queue_elapsed_time_df):
+    def yarn_queue_app(self, queue_app_count_df, queue_elapsed_time_df):
         """Add yarn queued application count pie chart in PDF.
 
         Args:
@@ -3603,7 +3603,7 @@ class PdfFunctions:
             "queue_elapsed_time_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
 
-    def yarnQueueVcore(self, queue_vcore_df, queue_vcore_usage_df):
+    def yarn_queue_vcore(self, queue_vcore_df, queue_vcore_usage_df):
         """Add yarn queued application vcore graph in PDF.
 
         Args:
@@ -3646,7 +3646,7 @@ class PdfFunctions:
             "queue_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnQueueMemory(self, queue_memory_df, queue_memory_usage_df):
+    def yarn_queue_memory(self, queue_memory_df, queue_memory_usage_df):
         """Add yarn queued application memory graph in PDF.
 
         Args:
@@ -3689,7 +3689,7 @@ class PdfFunctions:
             "queue_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnQueuePendingApp(self, app_queue_df, app_queue_usage_df):
+    def yarn_queue_pending_app(self, app_queue_df, app_queue_usage_df):
         """Add yarn pending queued application graph in PDF.
 
         Args:
@@ -3733,7 +3733,7 @@ class PdfFunctions:
             "app_queue_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnPendingApp(self, yarn_pending_apps_df):
+    def yarn_pending_app(self, yarn_pending_apps_df):
         """Add yarn pending application count graph in PDF.
 
         Args:
@@ -3752,7 +3752,7 @@ class PdfFunctions:
             "yarn_pending_apps_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnPendingVcore(self, yarn_pending_vcore_df):
+    def yarn_pending_vcore(self, yarn_pending_vcore_df):
         """Add yarn pending application vcore graph in PDF.
 
         Args:
@@ -3771,7 +3771,7 @@ class PdfFunctions:
             "yarn_pending_vcore_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnPendingMemory(self, yarn_pending_memory_df):
+    def yarn_pending_memory(self, yarn_pending_memory_df):
         """Add yarn pending application memory graph in PDF.
 
         Args:
@@ -3790,7 +3790,7 @@ class PdfFunctions:
             "yarn_pending_memory_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def yarnRunningApp(self, yarn_running_apps_df):
+    def yarn_running_app(self, yarn_running_apps_df):
         """Add yarn running application count graph in PDF.
 
         Args:
@@ -3809,7 +3809,7 @@ class PdfFunctions:
             "yarn_running_apps_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
 
-    def nodesServingHbase(self, NumNodesServing):
+    def nodes_serving_hbase(self, NumNodesServing):
         """Add number of nodes serving Hbase in PDF.
 
         Args:
@@ -3822,7 +3822,7 @@ class PdfFunctions:
             230, 8, "Number of Nodes Serving HBase: {}".format(NumNodesServing), 0, 1,
         )
 
-    def hbaseStorage(self, base_size, disk_space_consumed):
+    def hbase_storage(self, base_size, disk_space_consumed):
         """Add HBase storage details in PDF.
 
         Args:
@@ -3839,7 +3839,7 @@ class PdfFunctions:
             230, 8, "Disk Space Consumed: {}".format(base_size), 0, 1,
         )
 
-    def hbaseReplication(self, replication):
+    def hbase_replication(self, replication):
         """Add HBase replication factor in PDF.
 
         Args:
@@ -3856,7 +3856,7 @@ class PdfFunctions:
             1,
         )
 
-    def hbaseIndexing(self, indexing):
+    def hbase_indexing(self, indexing):
         """Add HBase secondary indexing details in PDF.
 
         Args:
@@ -3869,7 +3869,7 @@ class PdfFunctions:
             230, 8, "Do you use Secondary Index on Hbase: {}".format(indexing), 0, 1,
         )
 
-    def hBaseOnHive(self, hbasehive_var):
+    def hBase_on_hive(self, hbasehive_var):
         """Add HBase-hive information in PDF.
 
         Args:
@@ -3882,7 +3882,7 @@ class PdfFunctions:
             230, 8, "Does Hbase uses Query Engine: {}".format(hbasehive_var), 0, 1,
         )
 
-    def phoenixinHBase(self, phoenixHbase):
+    def phoenix_in_hbase(self, phoenixHbase):
         """Add HBase phoenix information in PDF.
 
         Args:
@@ -3895,7 +3895,7 @@ class PdfFunctions:
             230, 8, "Does Hbase use Apache Phoenix: {}".format(phoenixHbase), 0, 1,
         )
 
-    def coprocessorinHBase(self, coprocessorHbase):
+    def coprocessor_in_hbase(self, coprocessorHbase):
         """Add HBase coprocessor information in PDF.
 
         Args:
@@ -3912,7 +3912,7 @@ class PdfFunctions:
             1,
         )
 
-    def sparkVersion(self, spark_version):
+    def spark_version(self, spark_version):
         """Add Spark version details in PDF.
 
         Args:
@@ -3925,7 +3925,7 @@ class PdfFunctions:
             230, 8, "Spark Version: {}".format(spark_version), 0, 1,
         )
 
-    def sparkLanguages(self, languages):
+    def spark_languages(self, languages):
         """Add list of languages used by spark programs in PDF.
 
         Args:
@@ -3938,7 +3938,7 @@ class PdfFunctions:
             230, 8, "Programming Languages Used By Spark: {}".format(languages), 0, 1,
         )
 
-    def sparkDynamicAllocationAndResourceManager(
+    def spark_dynamic_allocation_and_resource_manager(
         self, dynamic_allocation, spark_resource_manager
     ):
         """Add spark config details in PDF.
@@ -3957,7 +3957,7 @@ class PdfFunctions:
             230, 8, "Dynamic Allocation: {}".format(dynamic_allocation), 0, 1,
         )
 
-    def sparkComponentsUsed(
+    def spark_components_used(
         self, rdd_flag, dataset_flag, sql_flag, df_flag, mllib_flag, stream_flag
     ):
         """Add components of spark used in programming in PDF.
@@ -4025,7 +4025,7 @@ class PdfFunctions:
                 230, 8, "Spark ML Lib API not found", 0, 1,
             )
 
-    def retentionPeriod(self, retention_period):
+    def retention_period(self, retention_period):
         """Add retention period of kafka in PDF.
 
         Args:
@@ -4038,7 +4038,7 @@ class PdfFunctions:
             230, 8, "Kafka Retention Period: {} hours".format(retention_period), 0, 1,
         )
 
-    def numTopics(self, num_topics):
+    def num_topics(self, num_topics):
         """Add num of topics in kafka in PDF.
 
         Args:
@@ -4051,7 +4051,7 @@ class PdfFunctions:
             230, 8, "Number of Topics in Kafka: {}".format(num_topics), 0, 1,
         )
 
-    def msgSize(self, sum_size):
+    def msg_size(self, sum_size):
         """Add volume of message in kafka in bytes in PDF.
 
         Args:
@@ -4064,7 +4064,7 @@ class PdfFunctions:
             230, 8, "Total Size of Messages in Kafka: {: .2f} KB".format(sum_size), 0, 1,
         )
 
-    def msgCount(self, sum_count):
+    def msg_count(self, sum_count):
         """Add count of messages in kafka topics in PDF.
 
         Args:
@@ -4077,7 +4077,7 @@ class PdfFunctions:
             230, 8, "Total Number of Messages in Kafka: {}".format(sum_count), 0, 1,
         )
 
-    def clusterSizeAndBrokerSize(self, total_size, brokersize):
+    def cluster_size_and_brokerSize(self, total_size, brokersize):
         """Add per cluster storage and kafka cluster storage in kafka in PDF.
 
         Args:
@@ -4095,7 +4095,7 @@ class PdfFunctions:
             self.pdf.cell(230, 5,"Size of broker {}  is  : {} KB".format(j,i),0,ln=1)
             j = j + 1
 
-    def HAStrategy(self, HA_Strategy):
+    def ha_strategy(self, HA_Strategy):
         """Check High Availability of Kafka Cluster.
 
         Args:
@@ -4109,7 +4109,7 @@ class PdfFunctions:
         )
 
 
-    def servicesUsedForIngestion(self, services):
+    def services_used_for_ingestion(self, services):
         """Add services used for ingestion in PDF.
 
         Args:
@@ -4126,7 +4126,7 @@ class PdfFunctions:
             1,
         )
 
-    def backupAndRecovery(self, br):
+    def backup_and_recovery(self, br):
         """Add backup and disaster recovery information in PDF.
 
         Args:

@@ -107,27 +107,27 @@ class PdfGenerator:
 
         cluster_host_items, clusterHostLen = None, None
         all_host_data = None
-        temp = obj1.clusterHostItems(cluster_name)
+        temp = obj1.cluster_host_items(cluster_name)
         if type(temp) != type(None):
             cluster_host_items, clusterHostLen = temp
             all_host_data = []
             for i in cluster_host_items:
-                host_data = obj1.hostData(i["hostId"])
+                host_data = obj1.host_data(i["hostId"])
                 if host_data != None:
                     all_host_data.append(host_data)
 
         cluster_cpu_usage_df, cluster_cpu_usage_avg = None, None
-        temp2 = obj1.clusterCpuUsage(cluster_name)
+        temp2 = obj1.cluster_cpu_usage(cluster_name)
         if type(temp2) != type(None):
             cluster_cpu_usage_df, cluster_cpu_usage_avg = temp2
 
         cluster_memory_usage_df, cluster_memory_usage_avg = None, None
-        temp2 = obj1.clusterMemoryUsage(cluster_name)
+        temp2 = obj1.cluster_memory_usage(cluster_name)
         if type(temp2) != type(None):
             cluster_memory_usage_df, cluster_memory_usage_avg = temp2
 
         hadoopVersionMajor, hadoopVersionMinor, distribution = None, None, None
-        temp = obj3.hadoopVersion()
+        temp = obj3.hadoop_version()
         if type(temp) != type(None):
             hadoopVersionMajor, hadoopVersionMinor, distribution = temp
 
@@ -138,14 +138,14 @@ class PdfGenerator:
 
         hdfs_capacity_df, hdfs_storage_config = None, None
         hdfs_capacity_used_df, hdfs_storage_used = None, None
-        temp1 = obj2.getHdfsCapacity(cluster_name)
-        temp2 = obj2.getHdfsCapacityUsed(cluster_name)
+        temp1 = obj2.get_hdfs_capacity(cluster_name)
+        temp2 = obj2.get_hdfs_capacity_used(cluster_name)
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             hdfs_capacity_df, hdfs_storage_config = temp1
             hdfs_capacity_used_df, hdfs_storage_used = temp2
 
         replication_factor = None
-        temp = obj2.replicationFactor()
+        temp = obj2.replication_factor()
         if type(temp) != type(None):
             replication_factor = temp
 
@@ -153,7 +153,7 @@ class PdfGenerator:
         database_df = None
         size_breakdown_df = None
         table_df = None
-        temp = obj2.getHiveConfigItems(cluster_name)
+        temp = obj2.get_hive_config_items(cluster_name)
         if type(temp) != type(None):
             mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
 
@@ -174,7 +174,7 @@ class PdfGenerator:
                     mt_db_name,
                 )
 
-            temp1 = obj2.getHiveDatabaseInfo(database_uri, mt_db_type)
+            temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
             if type(temp1) != type(None):
                 database_df = temp1
 
@@ -182,12 +182,12 @@ class PdfGenerator:
                 type(database_df) != type(None)
             ):
 
-                temp = obj2.structuredVsUnstructured(hdfs_storage_used, database_df)
+                temp = obj2.structured_vs_unstructured(hdfs_storage_used, database_df)
                 if type(temp) != type(None):
                     size_breakdown_df = temp
 
             table_df = None
-            temp1 = obj2.gethiveMetaStore(database_uri, mt_db_type)
+            temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
             if type(temp1) != type(None):
                 table_df = temp1
 
@@ -196,7 +196,7 @@ class PdfGenerator:
             yarn_vcore_allocated_df,
             yarn_vcore_allocated_pivot_df,
         ) = (None, None, None)
-        temp2 = obj_app.getYarnVcoreAllocated(cluster_name)
+        temp2 = obj_app.get_yarn_vcore_allocated(cluster_name)
         if type(temp2) != type(None):
             (
                 yarn_vcore_allocated_avg,
@@ -209,8 +209,8 @@ class PdfGenerator:
             yarn_memory_allocated_df,
             yarn_memory_allocated_pivot_df,
         ) = (None, None, None)
-        temp1 = obj_app.getYarnMemoryAvailable(cluster_name)
-        temp2 = obj_app.getYarnMemoryAllocated(cluster_name)
+        temp1 = obj_app.get_yarn_memory_available(cluster_name)
+        temp2 = obj_app.get_yarn_memory_allocated(cluster_name)
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             (
                 yarn_memory_allocated_avg,
@@ -219,16 +219,16 @@ class PdfGenerator:
             ) = temp2
 
         list_services_installed_df, new_ref_df = None, None
-        temp = obj3.versionMapping(cluster_name)
+        temp = obj3.version_mapping(cluster_name)
         if type(temp) != type(None):
             list_services_installed_df, new_ref_df = temp
 
         base_size, disk_space_consumed = None, None
-        temp = obj_app.getHbaseDataSize()
+        temp = obj_app.get_hbase_data_size()
         if type(temp) != type(None):
             base_size, disk_space_consumed = temp
 
-        obj_pdf.summaryTable(
+        obj_pdf.summary_table(
             all_host_data,
             cluster_cpu_usage_avg,
             cluster_memory_usage_avg,
@@ -256,10 +256,10 @@ class PdfGenerator:
         pdf.cell(230, 10, "Cluster Information", 0, ln=1)
 
         cluster_items = None
-        temp = obj1.clusterItems()
+        temp = obj1.cluster_items()
         if type(temp) != type(None):
             cluster_items = temp
-            obj_pdf.clusterInfo(cluster_items)
+            obj_pdf.cluster_info(cluster_items)
 
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -269,17 +269,17 @@ class PdfGenerator:
 
         cluster_host_items, clusterHostLen = None, None
         all_host_data = None
-        os_version = obj1.osVersion()
-        temp = obj1.clusterHostItems(cluster_name)
+        os_version = obj1.os_version()
+        temp = obj1.cluster_host_items(cluster_name)
         if type(temp) != type(None):
             cluster_host_items, clusterHostLen = temp
             all_host_data = []
             for i in cluster_host_items:
-                host_data = obj1.hostData(i["hostId"])
+                host_data = obj1.host_data(i["hostId"])
                 if host_data != None:
                     all_host_data.append(host_data)
             if (len(all_host_data) != 0) and (os_version != None):
-                obj_pdf.clusterHostInfo(cluster_host_items, all_host_data, os_version)
+                obj_pdf.cluster_host_info(cluster_host_items, all_host_data, os_version)
 
         xml_data = subprocess.Popen("cat /etc/hadoop/conf/yarn-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
         xml_data,err = xml_data.communicate()
@@ -295,10 +295,10 @@ class PdfGenerator:
                     yarn_rm, yarn_port = value.split(":")
 
         cluster_service_item = None
-        temp = obj1.clusterServiceItem(cluster_name)
+        temp = obj1.cluster_service_item(cluster_name)
         if type(temp) != type(None):
             cluster_service_item = temp
-            obj_pdf.clusterServiceInfo(cluster_service_item)
+            obj_pdf.cluster_service_info(cluster_service_item)
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -311,14 +311,14 @@ class PdfGenerator:
             None,
         )
         temp1, temp2 = (
-            obj1.clusterTotalCores(cluster_name),
-            obj1.clusterCpuUsage(cluster_name),
+            obj1.cluster_total_cores(cluster_name),
+            obj1.cluster_cpu_usage(cluster_name),
         )
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             cluster_total_cores_df = temp1
             cluster_cpu_usage_df, cluster_cpu_usage_avg = temp2
-            obj_pdf.clusterVcoreAvg(cluster_cpu_usage_avg)
-            obj_pdf.clusterVcorePlot(cluster_total_cores_df, cluster_cpu_usage_df)
+            obj_pdf.cluster_vcore_avg(cluster_cpu_usage_avg)
+            obj_pdf.cluster_vcore_plot(cluster_total_cores_df, cluster_cpu_usage_df)
 
         cluster_total_memory_df, cluster_memory_usage_df, cluster_memory_usage_avg = (
             None,
@@ -326,14 +326,14 @@ class PdfGenerator:
             None,
         )
         temp1, temp2 = (
-            obj1.clusterTotalMemory(cluster_name),
-            obj1.clusterMemoryUsage(cluster_name),
+            obj1.cluster_total_memory(cluster_name),
+            obj1.cluster_memory_usage(cluster_name),
         )
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             cluster_total_memory_df = temp1
             cluster_memory_usage_df, cluster_memory_usage_avg = temp2
-            obj_pdf.clusterMemoryAvg(cluster_memory_usage_avg)
-            obj_pdf.clusterMemoryPlot(cluster_total_memory_df, cluster_memory_usage_df)
+            obj_pdf.cluster_memory_avg(cluster_memory_usage_avg)
+            obj_pdf.cluster_memory_plot(cluster_total_memory_df, cluster_memory_usage_df)
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -345,10 +345,10 @@ class PdfGenerator:
         pdf.cell(230, 8, "Types of Servers Details:", 0, ln=1)
 
         database_server, dns_server, web_server, ntp_server = None, None, None, None
-        t1 = obj1.dataBaseServer()
-        t2 = obj1.dnsServer()
-        t3 = obj1.webServer()
-        t4 = obj1.ntpServer()
+        t1 = obj1.database_server()
+        t2 = obj1.dns_server()
+        t3 = obj1.web_server()
+        t4 = obj1.ntp_server()
 
         if type(t1) != type(None):
             database_server = t1
@@ -356,15 +356,15 @@ class PdfGenerator:
 
         if type(t2) != type(None):
             dns_server = t2
-            obj_pdf.dnsServer(dns_server)
+            obj_pdf.dns_server(dns_server)
 
         if type(t3) != type(None):
             web_server = t3
-            obj_pdf.webServer(web_server)
+            obj_pdf.web_server(web_server)
 
         if type(t4) != type(None):
             ntp_server = t4
-            obj_pdf.ntpServer(ntp_server)
+            obj_pdf.ntp_server(ntp_server)
 
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -387,21 +387,21 @@ class PdfGenerator:
             None,
             None,
         )
-        t1 = obj1.manufacturerName()
-        t2 = obj1.serialNo()
+        t1 = obj1.manufacturer_name()
+        t2 = obj1.serial_no()
         t3 = obj1.family()
-        t4 = obj1.modelName()
+        t4 = obj1.model_name()
         t5 = obj1.microcode()
-        t6 = obj1.cpuMHz()
-        t7 = obj1.cpuFamily()
+        t6 = obj1.cpu_mhz()
+        t7 = obj1.cpu_family()
 
         if type(t1) != type(None):
             manufacturer_name = t1
-            obj_pdf.manufacturerName(manufacturer_name)
+            obj_pdf.manufacturer_name(manufacturer_name)
 
         if type(t2) != type(None):
             serial_no = t2
-            obj_pdf.serialNo(serial_no)
+            obj_pdf.serial_no(serial_no)
 
         if type(t3) != type(None):
             family = t3
@@ -409,7 +409,7 @@ class PdfGenerator:
 
         if type(t4) != type(None):
             model_name = t4
-            obj_pdf.modelName(model_name)
+            obj_pdf.model_name(model_name)
 
         if type(t5) != type(None):
             microcode = t5
@@ -417,47 +417,47 @@ class PdfGenerator:
 
         if type(t6) != type(None):
             cpu_mhz = t6
-            obj_pdf.cpuMHz(cpu_mhz)
+            obj_pdf.cpu_mhz(cpu_mhz)
 
         if type(t7) != type(None):
             cpu_family = t7
-            obj_pdf.cpuFamily(cpu_family)
+            obj_pdf.cpu_family(cpu_family)
 
         nic_details = None
-        temp = obj1.networkInterfaceDetails()
+        temp = obj1.network_interface_details()
         if type(temp) != type(None):
             nic_details = temp
-            obj_pdf.networkInterfaceDetails(nic_details)
+            obj_pdf.network_interface_details(nic_details)
 
         patch_dataframe, os_name = None, None
-        temp = obj1.appliedPatches()
+        temp = obj1.applied_patches()
         if type(temp) != type(None):
             patch_dataframe, os_name = temp
-            obj_pdf.appliedPatches(patch_dataframe, os_name)
+            obj_pdf.applied_patches(patch_dataframe, os_name)
 
         hadoop_native_df = None
-        temp = obj1.listHadoopNonHadoopLibs()
+        temp = obj1.list_hadoop_nonhadoop_libs()
         if type(temp) != type(None):
             hadoop_native_df = temp
-            obj_pdf.listHadoopNonHadoopLibs(hadoop_native_df)
+            obj_pdf.list_hadoop_nonhadoop_libs(hadoop_native_df)
 
         python_flag, java_flag, scala_flag = None, None, None
-        temp = obj1.checkLibrariesInstalled()
+        temp = obj1.check_libraries_installed()
         if type(temp) != type(None):
             python_flag, java_flag, scala_flag = temp
-            obj_pdf.checkLibrariesInstalled(python_flag, java_flag, scala_flag)
+            obj_pdf.check_libraries_installed(python_flag, java_flag, scala_flag)
 
         security_software = None
-        temp = obj1.securitySoftware()
+        temp = obj1.security_software()
         if type(temp) != type(None):
             security_software = temp
-            obj_pdf.securitySoftware(security_software)
+            obj_pdf.security_software(security_software)
 
         gpu_status = None
-        temp = obj1.specialityHardware()
+        temp = obj1.speciality_hardware()
         if type(temp) != type(None):
             gpu_status = temp
-            obj_pdf.specialityHardware(gpu_status)
+            obj_pdf.speciality_hardware(gpu_status)
 
         p_bar.update(1)
         p_bar.set_description(desc="Hardware and OS footprint Metrics Added in PDF")
@@ -468,58 +468,58 @@ class PdfGenerator:
         pdf.cell(230, 10, "Frameworks and Software Details", 0, ln=1)
 
         hadoopVersionMajor, hadoopVersionMinor, distribution = None, None, None
-        temp = obj3.hadoopVersion()
+        temp = obj3.hadoop_version()
         if type(temp) != type(None):
             hadoopVersionMajor, hadoopVersionMinor, distribution = temp
-            obj_pdf.hadoopVersion(hadoopVersionMajor, hadoopVersionMinor, distribution)
+            obj_pdf.hadoop_version(hadoopVersionMajor, hadoopVersionMinor, distribution)
 
         list_services_installed_df, new_ref_df = None, None
-        temp = obj3.versionMapping(cluster_name)
+        temp = obj3.version_mapping(cluster_name)
         if type(temp) != type(None):
             list_services_installed_df, new_ref_df = temp
-            obj_pdf.serviceInstalled(new_ref_df)
+            obj_pdf.service_installed(new_ref_df)
 
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 8, "Third Party Software and Their Version:", 0, ln=1)
 
         third_party_package = None
-        temp = obj3.thirdPartySoftware()
+        temp = obj3.third_party_software()
         if type(temp) != type(None):
             third_party_package = temp
-            obj_pdf.thirdPartySoftware(third_party_package)
+            obj_pdf.third_party_software(third_party_package)
 
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 8, "Details of Services/Software and Their Version:", 0, ln=1)
         
         package_version = None
-        temp = obj3.versionPackage()
+        temp = obj3.version_package()
         if type(temp) != type(None):
             package_version = temp
-            obj_pdf.versionPackage(package_version)
+            obj_pdf.version_package(package_version)
 
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 8, "Drivers and Connectors:", 0, ln=1)
 
         df_ngdbc, df_salesforce = None, None
-        temp = obj3.salesFroceSapDriver()
+        temp = obj3.salesforce_sapDriver()
         if type(temp) != type(None):
             df_ngdbc, df_salesforce = temp
-            obj_pdf.salesFroceSapDriver(df_ngdbc, df_salesforce)
+            obj_pdf.salesforce_sapDriver(df_ngdbc, df_salesforce)
 
         final_df = None
-        temp = obj3.jdbcOdbcDriver()
+        temp = obj3.jdbcodbc_driver()
         if type(temp) != type(None):
             final_df = temp
-            obj_pdf.jdbcOdbcDriver(final_df)
+            obj_pdf.jdbcodbc_driver(final_df)
 
         connectors_present = None
-        temp = obj3.installedConnectors()
+        temp = obj3.installed_connectors()
         if type(temp) != type(None):
             connectors_present = temp
-            obj_pdf.installedConnectors(connectors_present)
+            obj_pdf.installed_connectors(connectors_present)
 
         p_bar.update(1)
         p_bar.set_description(desc="Framework and software details Added in PDF")
@@ -530,55 +530,55 @@ class PdfGenerator:
         pdf.cell(230, 10, "HDFS Section", 0, ln=1)
 
         mapped_df, total_storage = None, None
-        temp = obj2.totalSizeConfigured()
+        temp = obj2.total_size_configured()
         if type(temp) != type(None):
             mapped_df, total_storage = temp
-            obj_pdf.totalHDFSSize(total_storage)
-            obj_pdf.individualHDFSSize(mapped_df)
+            obj_pdf.total_hdfs_size(total_storage)
+            obj_pdf.individual_hdfs_size(mapped_df)
 
         replication_factor = None
-        temp = obj2.replicationFactor()
+        temp = obj2.replication_factor()
         if type(temp) != type(None):
             replication_factor = temp
-            obj_pdf.repFactor(replication_factor)
+            obj_pdf.rep_factor(replication_factor)
 
         trash_flag = None
-        temp = obj2.getTrashStatus()
+        temp = obj2.get_trash_status()
         if type(temp) != type(None):
             trash_flag = temp
-            obj_pdf.trashInterval(trash_flag)
+            obj_pdf.trash_interval(trash_flag)
 
         value = None
-        temp = obj2.checkCompression()
+        temp = obj2.check_compression()
         if type(temp) != type(None):
             value = temp
-            obj_pdf.checkCompression(value)
+            obj_pdf.check_compression(value)
 
         hdfs_capacity_df, hdfs_storage_config = None, None
         hdfs_capacity_used_df, hdfs_storage_used = None, None
-        temp1 = obj2.getHdfsCapacity(cluster_name)
-        temp2 = obj2.getHdfsCapacityUsed(cluster_name)
+        temp1 = obj2.get_hdfs_capacity(cluster_name)
+        temp2 = obj2.get_hdfs_capacity_used(cluster_name)
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             hdfs_capacity_df, hdfs_storage_config = temp1
             hdfs_capacity_used_df, hdfs_storage_used = temp2
-            obj_pdf.availableHDFSStorage(hdfs_storage_config)
-            obj_pdf.usedHDFSStorage(hdfs_storage_used)
-            obj_pdf.HDFSStoragePlot(hdfs_capacity_df, hdfs_capacity_used_df)
+            obj_pdf.available_hdfs_storage(hdfs_storage_config)
+            obj_pdf.used_hdfs_storage(hdfs_storage_used)
+            obj_pdf.hdfs_storage_plot(hdfs_capacity_df, hdfs_capacity_used_df)
 
         hdfs_storage_df, hdfs_flag = None, None
-        temp = obj2.hdfsStorage()
+        temp = obj2.hdfs_storage()
         if type(temp) != type(None):
             hdfs_storage_df, hdfs_flag = temp
-            obj_pdf.hdfsStorage(hdfs_storage_df, hdfs_flag)
+            obj_pdf.hdfs_storage(hdfs_storage_df, hdfs_flag)
 
         grpby_data, max_value, min_value, avg_value = None, None, None, None
-        temp = obj2.clusterFileSize()
+        temp = obj2.cluster_filesize()
         if type(temp) != type(None):
             grpby_data, max_value, min_value, avg_value = temp
-            obj_pdf.clusterFileSize(grpby_data, max_value, min_value, avg_value)
+            obj_pdf.cluster_file_size(grpby_data, max_value, min_value, avg_value)
 
         hdfs_root_dir = None
-        temp = obj2.getCliresult("/")
+        temp = obj2.get_cliresult("/")
         if type(temp) != type(None):
             hdfs_root_dir = temp
             pdf.set_font("Arial", "", 12)
@@ -603,7 +603,7 @@ class PdfGenerator:
                     0,
                     ln=1,
                 )
-                hdfs_inner_dir = obj2.getCliresult(hdfs_dir[2])
+                hdfs_inner_dir = obj2.get_cliresult(hdfs_dir[2])
                 if type(hdfs_inner_dir) == type(None):
                     for j in hdfs_inner_dir.splitlines():
                         hdfs_inner_dir = j.split()
@@ -634,10 +634,10 @@ class PdfGenerator:
         pdf.cell(230, 10, "Hive Metrics", 0, ln=1)
 
         mt_db_host, mt_db_name, mt_db_type, mt_db_port = None, None, None, None
-        temp = obj2.getHiveConfigItems(cluster_name)
+        temp = obj2.get_hive_config_items(cluster_name)
         if type(temp) != type(None):
             mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
-            obj_pdf.hiveMetaStoreDetails(mt_db_host, mt_db_name, mt_db_type, mt_db_port)
+            obj_pdf.hive_metastore_details(mt_db_host, mt_db_name, mt_db_type, mt_db_port)
 
             if mt_db_type == "postgresql":
                 database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
@@ -665,13 +665,13 @@ class PdfGenerator:
                 transaction_locking_concurrency,
                 hive_interactive_status,
             ) = (None, [None, None], [None, None], None, None, None, None)
-            t1 = obj2.getHiveDatabaseCount(database_uri, mt_db_type)
-            t2 = obj2.getHivePartitionedTableCount(database_uri, mt_db_type)
-            t3 = obj2.getHiveInternalExternalTables(database_uri, mt_db_type)
-            t4 = obj2.getHiveExecutionEngine()
-            t5 = obj2.getHiveFileFormats(database_uri, mt_db_type)
-            t6 = obj2.getTransactionLockingConcurrency()
-            t7 = obj2.interactiveQueriesStatus()
+            t1 = obj2.get_hive_database_count(database_uri, mt_db_type)
+            t2 = obj2.get_hive_partitioned_table_count(database_uri, mt_db_type)
+            t3 = obj2.get_hive_internal_external_tables(database_uri, mt_db_type)
+            t4 = obj2.get_hive_execution_engine()
+            t5 = obj2.get_hive_file_formats(database_uri, mt_db_type)
+            t6 = obj2.get_transaction_locking_concurrency()
+            t7 = obj2.interactive_queries_status()
             if (
                 (type(t1) != type(None))
                 and (type(t2) != type(None))
@@ -690,7 +690,7 @@ class PdfGenerator:
                     transaction_locking_concurrency,
                     hive_interactive_status,
                 ) = (t1, t2, t3, t4, t5, t6, t7)
-                obj_pdf.hiveDetails(
+                obj_pdf.hive_details(
                     database_count,
                     tables_with_partition,
                     tables_without_partition,
@@ -703,31 +703,31 @@ class PdfGenerator:
                 )
 
             database_df = None
-            temp1 = obj2.getHiveDatabaseInfo(database_uri, mt_db_type)
+            temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
             if type(temp1) != type(None):
                 database_df = temp1
-                obj_pdf.hiveDatabasesSize(database_df)
+                obj_pdf.hive_databases_size(database_df)
 
             if (type(hdfs_storage_used) != type(None)) and (
                 type(database_df) != type(None)
             ):
                 size_breakdown_df = None
-                temp = obj2.structuredVsUnstructured(hdfs_storage_used, database_df)
+                temp = obj2.structured_vs_unstructured(hdfs_storage_used, database_df)
                 if type(temp) != type(None):
                     size_breakdown_df = temp
-                    obj_pdf.structuredVsUnstructured(size_breakdown_df)
+                    obj_pdf.structured_vs_unstructured(size_breakdown_df)
 
             table_df = None
-            temp1 = obj2.gethiveMetaStore(database_uri, mt_db_type)
+            temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
             if type(temp1) != type(None):
                 table_df = temp1
-                obj_pdf.hiveAccessFrequency(table_df)
+                obj_pdf.hive_access_frequency(table_df)
 
             query_type_count_df = None
-            temp1 = obj2.getHiveAdhocEtlQuery(yarn_rm, yarn_port)
+            temp1 = obj2.get_hive_adhoc_etl_query(yarn_rm, yarn_port)
             if type(temp1) != type(None):
                 query_type_count_df = temp1
-                obj_pdf.hiveAdhocEtlQuery(query_type_count_df)
+                obj_pdf.hive_adhoc_etl_query(query_type_count_df)
 
         p_bar.update(1)
         p_bar.set_description(desc="Data Metrics Added in PDF")
@@ -738,34 +738,34 @@ class PdfGenerator:
         pdf.cell(230, 10, "Security", 0, ln=1)
 
         kerberos = None
-        temp = obj4.clusterKerberosInfo(cluster_name)
+        temp = obj4.cluster_kerberos_info(cluster_name)
         if type(temp) != type(None):
             kerberos = temp
-            obj_pdf.kerberosInfo(kerberos)
+            obj_pdf.kerberos_info(kerberos)
 
         ADServer = None
-        temp = obj4.ADServerNameAndPort(cluster_name)
+        temp = obj4.ad_server_name_and_port(cluster_name)
         if type(temp) != type(None):
             ADServer = temp
-            obj_pdf.ADServerNameAndPort(ADServer)
+            obj_pdf.ad_server_name_and_port(ADServer)
 
         Server_dn = None
-        temp = obj4.adServerBasedDN(cluster_name)
+        temp = obj4.ad_server_based_dn(cluster_name)
         if type(temp) != type(None):
             Server_dn = temp
-            obj_pdf.adServerBasedDN(Server_dn)
+            obj_pdf.ad_server_based_dn(Server_dn)
 
         luks_detect = None
-        temp = obj4.checkLuks()
+        temp = obj4.check_luks()
         if type(temp) != type(None):
             luks_detect = temp
-            obj_pdf.checkLuks(luks_detect)
+            obj_pdf.check_luks(luks_detect)
 
         Mr_ssl, hdfs_ssl, yarn_ssl = None, None, None
-        temp = obj4.sslStatus()
+        temp = obj4.ssl_status()
         if type(temp) != type(None):
             Mr_ssl, hdfs_ssl, yarn_ssl = temp
-            obj_pdf.sslStatus(Mr_ssl, hdfs_ssl, yarn_ssl)
+            obj_pdf.ssl_status(Mr_ssl, hdfs_ssl, yarn_ssl)
 
         hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab = (
             None,
@@ -774,30 +774,30 @@ class PdfGenerator:
             None,
             None,
         )
-        temp = obj4.kerberosHttpAuth()
+        temp = obj4.kerberos_http_auth()
         if type(temp) != type(None):
             hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab = temp
-            obj_pdf.kerberosHttpAuth(
+            obj_pdf.kerberos_http_auth(
                 hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab
             )
 
         port_df = None
-        temp = obj4.portUsed()
+        temp = obj4.port_used()
         if type(temp) != type(None):
             port_df = temp
-            obj_pdf.portUsed(port_df)
+            obj_pdf.port_used(port_df)
 
         key_list = None
-        temp = obj4.keyList()
+        temp = obj4.key_list()
         if type(temp) != type(None):
             key_list = temp
-            obj_pdf.keyList(key_list)
+            obj_pdf.key_list(key_list)
 
         enc_zoneList = None
-        temp = obj4.encryptionZone()
+        temp = obj4.encryption_zone()
         if type(temp) != type(None):
             enc_zoneList = temp
-            obj_pdf.encryptionZone(enc_zoneList)
+            obj_pdf.encryption_zone(enc_zoneList)
 
         p_bar.update(1)
         p_bar.set_description(desc="Security Metrics Added in PDF")
@@ -808,10 +808,10 @@ class PdfGenerator:
         pdf.cell(230, 10, "Network, Traffic and Monitoring Metrics", 0, ln=1)
 
         max_bandwidth = None
-        temp = obj5.maxBandwidth()
+        temp = obj5.max_bandwidth()
         if type(temp) != type(None):
             max_bandwidth = temp
-            obj_pdf.maxBandwidth(max_bandwidth)
+            obj_pdf.max_bandwidth(max_bandwidth)
 
         max_value, min_value, avg_value, curr_value = (
             None,
@@ -836,10 +836,10 @@ class PdfGenerator:
             obj_pdf.egress(max_value, min_value, avg_value, curr_value)
 
         total_disk_read, total_disk_write = None, None
-        temp = obj5.diskReadWrite()
+        temp = obj5.disk_read_write()
         if type(temp) != type(None):
             total_disk_read, total_disk_write = temp
-            obj_pdf.diskReadWrite(total_disk_read, total_disk_write)
+            obj_pdf.disk_read_write(total_disk_read, total_disk_write)
 
         (
             softwares_installed,
@@ -848,7 +848,7 @@ class PdfGenerator:
             ganglia_server,
             check_mk_server,
         ) = (None, None, None, None, None)
-        temp = obj5.thirdPartyMonitor()
+        temp = obj5.third_party_monitor()
         if type(temp) != type(None):
             (
                 softwares_installed,
@@ -857,7 +857,7 @@ class PdfGenerator:
                 ganglia_server,
                 check_mk_server,
             ) = temp
-            obj_pdf.thirdPartyMonitor(
+            obj_pdf.third_party_monitor(
                 softwares_installed,
                 prometheus_server,
                 grafana_server,
@@ -866,28 +866,28 @@ class PdfGenerator:
             )
 
         oozie_flag, crontab_flag, airflow_flag = None, None, None
-        temp = obj5.orchestrationTools()
+        temp = obj5.orchestration_tools()
         if type(temp) != type(None):
             oozie_flag, crontab_flag, airflow_flag = temp
-            obj_pdf.orchestrationTools(oozie_flag, crontab_flag, airflow_flag)
+            obj_pdf.orchestration_tools(oozie_flag, crontab_flag, airflow_flag)
 
         ddog, splunk, new_relic, elastic_search = None, None, None, None
-        temp = obj5.loggingTool()
+        temp = obj5.logging_tool()
         if type(temp) != type(None):
             ddog, splunk, new_relic, elastic_search = temp
-            obj_pdf.loggingTool(ddog, splunk, new_relic, elastic_search)
+            obj_pdf.logging_tool(ddog, splunk, new_relic, elastic_search)
         
         max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2 = None, None, None, None, None, None
-        temp = obj5.monitorNetworkSpeed()
+        temp = obj5.monitor_network_speed()
         if type(temp) != type(None):
             max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2 = temp
-            obj_pdf.pdfMonitorNetworkSpeed(max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2)
+            obj_pdf.pdf_monitor_network_speed(max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2)
 
         logs = None
-        temp = obj5.getLogs()
+        temp = obj5.get_logs()
         if type(temp) != type(None):
             logs = temp
-            obj_pdf.getLogs(logs)
+            obj_pdf.get_logs(logs)
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -895,26 +895,26 @@ class PdfGenerator:
         pdf.cell(230, 10, "Yarn Metrics", 0, ln=1)
 
         resource = None
-        temp = obj_app.dynamicResoucePool()
+        temp = obj_app.dynamic_resouce_pool()
         if type(temp) != type(None):
             resource = temp
-            obj_pdf.dynamicResoucePool(resource)
+            obj_pdf.dynamic_resouce_pool(resource)
 
         zookeeper_ha, hive_ha, yarn_ha, hdfs_ha = None, None, None, None
-        temp = obj_app.identifyHA()
+        temp = obj_app.identify_ha()
         if type(temp) != type(None):
             zookeeper_ha, hive_ha, yarn_ha, hdfs_ha = temp
-            obj_pdf.identifyHA(zookeeper_ha, hive_ha, yarn_ha, hdfs_ha)
+            obj_pdf.identify_ha(zookeeper_ha, hive_ha, yarn_ha, hdfs_ha)
 
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "VCore Details:", 0, ln=1)
 
         yarn_total_vcores_count = None
-        temp = obj_app.getYarnTotalVcore(yarn_rm, yarn_port)
+        temp = obj_app.get_yarn_total_vcore(yarn_rm, yarn_port)
         if type(temp) != type(None):
             yarn_total_vcores_count = temp
-            obj_pdf.yarnVcoreTotal(yarn_total_vcores_count)
+            obj_pdf.yarn_vcore_total(yarn_total_vcores_count)
 
         (
             yarn_vcore_available_df,
@@ -922,8 +922,8 @@ class PdfGenerator:
             yarn_vcore_allocated_df,
             yarn_vcore_allocated_pivot_df,
         ) = (None, None, None, None)
-        temp1 = obj_app.getYarnVcoreAvailable(cluster_name)
-        temp2 = obj_app.getYarnVcoreAllocated(cluster_name)
+        temp1 = obj_app.get_yarn_vcore_available(cluster_name)
+        temp2 = obj_app.get_yarn_vcore_allocated(cluster_name)
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             (
                 yarn_vcore_available_df,
@@ -933,9 +933,9 @@ class PdfGenerator:
                     yarn_vcore_allocated_pivot_df,
                 ],
             ) = (temp1, temp2)
-            obj_pdf.yarnVcoreAvg(yarn_vcore_allocated_avg)
-            obj_pdf.yarnVcoreUsage(yarn_vcore_available_df, yarn_vcore_allocated_df)
-            obj_pdf.yarnVcoreSeasonality(yarn_vcore_allocated_pivot_df)
+            obj_pdf.yarn_vcore_avg(yarn_vcore_allocated_avg)
+            obj_pdf.yarn_vcore_usage(yarn_vcore_available_df, yarn_vcore_allocated_df)
+            obj_pdf.yarn_vcore_seasonality(yarn_vcore_allocated_pivot_df)
 
         pdf.add_page()
         pdf.set_font("Arial", "", 12)
@@ -943,10 +943,10 @@ class PdfGenerator:
         pdf.cell(230, 10, "Memory Details:", 0, ln=1)
 
         yarn_total_memory_count = None
-        temp = obj_app.getYarnTotalMemory(yarn_rm, yarn_port)
+        temp = obj_app.get_yarn_total_memory(yarn_rm, yarn_port)
         if type(temp) != type(None):
             yarn_total_memory_count = temp
-            obj_pdf.yarnMemoryTotal(yarn_total_memory_count)
+            obj_pdf.yarn_memory_total(yarn_total_memory_count)
 
         (
             yarn_memory_available_df,
@@ -954,8 +954,8 @@ class PdfGenerator:
             yarn_memory_allocated_df,
             yarn_memory_allocated_pivot_df,
         ) = (None, None, None, None)
-        temp1 = obj_app.getYarnMemoryAvailable(cluster_name)
-        temp2 = obj_app.getYarnMemoryAllocated(cluster_name)
+        temp1 = obj_app.get_yarn_memory_available(cluster_name)
+        temp2 = obj_app.get_yarn_memory_allocated(cluster_name)
         if (type(temp1) != type(None)) and (type(temp2) != type(None)):
             (
                 yarn_memory_available_df,
@@ -965,12 +965,12 @@ class PdfGenerator:
                     yarn_memory_allocated_pivot_df,
                 ],
             ) = (temp1, temp2)
-            obj_pdf.yarnMemoryAvg(yarn_memory_allocated_avg)
-            obj_pdf.yarnMemoryUsage(yarn_memory_available_df, yarn_memory_allocated_df)
-            obj_pdf.yarnMemorySeasonality(yarn_memory_allocated_pivot_df)
+            obj_pdf.yarn_memory_avg(yarn_memory_allocated_avg)
+            obj_pdf.yarn_memory_usage(yarn_memory_available_df, yarn_memory_allocated_df)
+            obj_pdf.yarn_memory_seasonality(yarn_memory_allocated_pivot_df)
 
         yarn_application_df = None
-        temp = obj_app.getApplicationDetails(yarn_rm, yarn_port)
+        temp = obj_app.get_application_details(yarn_rm, yarn_port)
         if type(temp) != type(None):
             yarn_application_df = temp
 
@@ -980,23 +980,23 @@ class PdfGenerator:
             pdf.cell(230, 10, "Yarn Application Metrics", 0, ln=1)
 
             app_count_df, app_type_count_df, app_status_count_df = None, None, None
-            temp1 = obj_app.getApplicationTypeStatusCount(yarn_application_df)
+            temp1 = obj_app.get_application_type_status_count(yarn_application_df)
             if type(temp1) != type(None):
                 app_count_df, app_type_count_df, app_status_count_df = temp1
-                obj_pdf.yarnAppCount(app_count_df)
-                obj_pdf.yarnAppTypeStatus(app_type_count_df, app_status_count_df)
+                obj_pdf.yarn_app_count(app_count_df)
+                obj_pdf.yarn_app_type_status(app_type_count_df, app_status_count_df)
 
             only_streaming = None
-            temp1 = obj_app.streamingJobs(yarn_application_df)
+            temp1 = obj_app.streaming_jobs(yarn_application_df)
             if type(temp1) != type(None):
                 only_streaming = temp1
-                obj_pdf.streamingJobs(only_streaming)
+                obj_pdf.streaming_jobs(only_streaming)
 
             app_vcore_df, app_memory_df = None, None
-            temp1 = obj_app.getApplicationVcoreMemoryUsage(yarn_application_df)
+            temp1 = obj_app.get_application_vcore_memory_usage(yarn_application_df)
             if type(temp1) != type(None):
                 app_vcore_df, app_memory_df = temp1
-                obj_pdf.yarnAppVcoreMemory(app_vcore_df, app_memory_df)
+                obj_pdf.yarn_app_vcore_memory(app_vcore_df, app_memory_df)
 
             app_vcore_df, app_vcore_usage_df, app_memory_df, app_memory_usage_df = (
                 None,
@@ -1004,7 +1004,7 @@ class PdfGenerator:
                 None,
                 None,
             )
-            temp1 = obj_app.getVcoreMemoryByApplication(yarn_application_df)
+            temp1 = obj_app.get_vcore_memory_by_application(yarn_application_df)
             if type(temp1) != type(None):
                 (
                     app_vcore_df,
@@ -1012,21 +1012,21 @@ class PdfGenerator:
                     app_memory_df,
                     app_memory_usage_df,
                 ) = temp1
-                obj_pdf.yarnAppVcoreUsage(app_vcore_df, app_vcore_usage_df)
-                obj_pdf.yarnAppMemoryUsage(app_memory_df, app_memory_usage_df)
+                obj_pdf.yarn_app_vcore_usage(app_vcore_df, app_vcore_usage_df)
+                obj_pdf.yarn_app_memory_usage(app_memory_df, app_memory_usage_df)
 
             job_launch_df = None
-            temp1 = obj_app.getJobLaunchFrequency(yarn_application_df)
+            temp1 = obj_app.get_job_launch_frequency(yarn_application_df)
             if type(temp1) != type(None):
                 job_launch_df = temp1
-                obj_pdf.yarnJobLaunchFrequency(job_launch_df)
+                obj_pdf.yarn_job_launch_frequency(job_launch_df)
 
             bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = (
                 None,
                 None,
                 None,
             )
-            temp1 = obj_app.getBurstyApplicationDetails(yarn_application_df)
+            temp1 = obj_app.get_bursty_application_details(yarn_application_df)
             if type(temp1) != type(None):
                 bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = temp1
                 if bursty_app_time_df.size != 0:
@@ -1034,10 +1034,10 @@ class PdfGenerator:
                     pdf.set_font("Arial", "B", 18)
                     pdf.set_text_color(r=66, g=133, b=244)
                     pdf.cell(230, 10, "Bursty Applications", 0, ln=1)
-                    obj_pdf.yarnBurstyAppTime(bursty_app_time_df)
-                    obj_pdf.yarnBurstyAppVcore(bursty_app_vcore_df)
+                    obj_pdf.yarn_bursty_app_time(bursty_app_time_df)
+                    obj_pdf.yarn_bursty_app_vcore(bursty_app_vcore_df)
                     pdf.add_page()
-                    obj_pdf.yarBurstyAppMemory(bursty_app_mem_df)
+                    obj_pdf.yar_bursty_app_memory(bursty_app_mem_df)
 
             # pdf.add_page()
             # pdf.set_font("Arial", "B", 18)
@@ -1056,16 +1056,16 @@ class PdfGenerator:
             pdf.cell(230, 10, "Yarn Queues", 0, ln=1)
 
             yarn_queues_list = None
-            temp1 = obj_app.getQueueDetails(yarn_rm, yarn_port)
+            temp1 = obj_app.get_queue_details(yarn_rm, yarn_port)
             if type(temp1) != type(None):
                 yarn_queues_list = temp1
-                obj_pdf.yarnQueue(yarn_queues_list)
+                obj_pdf.yarn_queue(yarn_queues_list)
 
             queue_app_count_df, queue_elapsed_time_df = None, None
-            temp1 = obj_app.getQueueApplication(yarn_application_df)
+            temp1 = obj_app.get_queue_application(yarn_application_df)
             if type(temp1) != type(None):
                 queue_app_count_df, queue_elapsed_time_df = temp1
-                obj_pdf.yarnQueueApp(queue_app_count_df, queue_elapsed_time_df)
+                obj_pdf.yarn_queue_app(queue_app_count_df, queue_elapsed_time_df)
 
             (
                 queue_vcore_df,
@@ -1073,7 +1073,7 @@ class PdfGenerator:
                 queue_memory_df,
                 queue_memory_usage_df,
             ) = (None, None, None, None)
-            temp1 = obj_app.getQueueVcoreMemory(yarn_application_df)
+            temp1 = obj_app.get_queue_vcore_memory(yarn_application_df)
             if type(temp1) != type(None):
                 (
                     queue_vcore_df,
@@ -1081,15 +1081,15 @@ class PdfGenerator:
                     queue_memory_df,
                     queue_memory_usage_df,
                 ) = temp1
-                obj_pdf.yarnQueueVcore(queue_vcore_df, queue_vcore_usage_df)
-                obj_pdf.yarnQueueMemory(queue_memory_df, queue_memory_usage_df)
+                obj_pdf.yarn_queue_vcore(queue_vcore_df, queue_vcore_usage_df)
+                obj_pdf.yarn_queue_memory(queue_memory_df, queue_memory_usage_df)
 
             if (self.version == 6) or (self.version == 7):
                 app_queue_df, app_queue_usage_df = None, None
-                temp1 = obj_app.getQueuePendingApplication(yarn_application_df)
+                temp1 = obj_app.get_queue_pending_application(yarn_application_df)
                 if type(temp1) != type(None):
                     app_queue_df, app_queue_usage_df = temp1
-                    obj_pdf.yarnQueuePendingApp(app_queue_df, app_queue_usage_df)
+                    obj_pdf.yarn_queue_pending_app(app_queue_df, app_queue_usage_df)
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -1097,28 +1097,28 @@ class PdfGenerator:
         pdf.cell(230, 10, "Yarn Pending and Running Applications", 0, ln=1)
 
         yarn_pending_apps_df = None
-        temp = obj_app.getPendingApplication(cluster_name)
+        temp = obj_app.get_pending_application(cluster_name)
         if type(temp) != type(None):
             yarn_pending_apps_df = temp
-            obj_pdf.yarnPendingApp(yarn_pending_apps_df)
+            obj_pdf.yarn_pending_app(yarn_pending_apps_df)
 
         yarn_pending_vcore_df = None
-        temp = obj_app.getPendingVcore(cluster_name)
+        temp = obj_app.get_pending_vcore(cluster_name)
         if type(temp) != type(None):
             yarn_pending_vcore_df = temp
-            obj_pdf.yarnPendingVcore(yarn_pending_vcore_df)
+            obj_pdf.yarn_pending_vcore(yarn_pending_vcore_df)
 
         yarn_pending_memory_df = None
-        temp = obj_app.getPendingMemory(cluster_name)
+        temp = obj_app.get_pending_memory(cluster_name)
         if type(temp) != type(None):
             yarn_pending_memory_df = temp
-            obj_pdf.yarnPendingMemory(yarn_pending_memory_df)
+            obj_pdf.yarn_pending_memory(yarn_pending_memory_df)
 
         yarn_running_apps_df = None
-        temp = obj_app.getRunningApplication(cluster_name)
+        temp = obj_app.get_running_application(cluster_name)
         if type(temp) != type(None):
             yarn_running_apps_df = temp
-            obj_pdf.yarnRunningApp(yarn_running_apps_df)
+            obj_pdf.yarn_running_app(yarn_running_apps_df)
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -1126,46 +1126,46 @@ class PdfGenerator:
         pdf.cell(230, 10, "HBase Metrics", 0, ln=1)
 
         NumNodesServing = None
-        temp = obj_app.nodesServingHbase()
+        temp = obj_app.nodes_serving_hbase()
         if type(temp) != type(None):
             NumNodesServing = temp
-            obj_pdf.nodesServingHbase(NumNodesServing)
+            obj_pdf.nodes_serving_hbase(NumNodesServing)
 
         base_size, disk_space_consumed = None, None
-        temp = obj_app.getHbaseDataSize()
+        temp = obj_app.get_hbase_data_size()
         if type(temp) != type(None):
             base_size, disk_space_consumed = temp
-            obj_pdf.hbaseStorage(base_size, disk_space_consumed)
+            obj_pdf.hbase_storage(base_size, disk_space_consumed)
 
         replication = None
-        temp = obj_app.getHbaseReplication(cluster_name)
+        temp = obj_app.get_hbase_replication(cluster_name)
         if type(temp) != type(None):
             replication = temp
-            obj_pdf.hbaseReplication(replication)
+            obj_pdf.hbase_replication(replication)
 
         indexing = None
-        temp = obj_app.getHbaseSecondaryIndex(cluster_name)
+        temp = obj_app.get_hbase_secondary_index(cluster_name)
         if type(temp) != type(None):
             indexing = temp
-            obj_pdf.hbaseIndexing(indexing)
+            obj_pdf.hbase_indexing(indexing)
 
         hbasehive_var = None
-        temp = obj_app.hBaseOnHive()
+        temp = obj_app.hBase_on_hive()
         if type(temp) != type(None):
             hbasehive_var = temp
-            obj_pdf.hBaseOnHive(hbasehive_var)
+            obj_pdf.hBase_on_hive(hbasehive_var)
 
         phoenixHbase = None
-        temp = obj_app.phoenixinHBase()
+        temp = obj_app.phoenix_in_hbase()
         if type(temp) != type(None):
             phoenixHbase = temp
-            obj_pdf.phoenixinHBase(phoenixHbase)
+            obj_pdf.phoenix_in_hbase(phoenixHbase)
 
         coprocessorHbase = None
-        temp = obj_app.coprocessorinHBase()
+        temp = obj_app.coprocessor_in_hbase()
         if type(temp) != type(None):
             coprocessorHbase = temp
-            obj_pdf.coprocessorinHBase(coprocessorHbase)
+            obj_pdf.coprocessor_in_hbase(coprocessorHbase)
 
         pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
@@ -1173,22 +1173,22 @@ class PdfGenerator:
         pdf.cell(230, 10, "Spark Metrics", 0, ln=1)
 
         spark_version = None
-        temp = obj_app.getSparkVersion()
+        temp = obj_app.get_spark_version()
         if type(temp) != type(None):
             spark_version = temp
-            obj_pdf.sparkVersion(spark_version)
+            obj_pdf.spark_version(spark_version)
 
         languages = None
-        temp = obj_app.getSparkApiProgrammingLanguages()
+        temp = obj_app.get_spark_api_programming_languages()
         if type(temp) != type(None):
             languages = temp
-            obj_pdf.sparkLanguages(languages)
+            obj_pdf.spark_languages(languages)
 
         dynamic_allocation, spark_resource_manager = None, None
-        temp = obj_app.getDynamicAllocationAndSparkResourceManager()
+        temp = obj_app.get_dynamic_allocation_and_spark_resource_manager()
         if type(temp) != type(None):
             dynamic_allocation, spark_resource_manager = temp
-            obj_pdf.sparkDynamicAllocationAndResourceManager(
+            obj_pdf.spark_dynamic_allocation_and_resource_manager(
                 dynamic_allocation, spark_resource_manager
             )
 
@@ -1200,10 +1200,10 @@ class PdfGenerator:
             None,
             None,
         )
-        temp = obj_app.sparkComponentsUsed()
+        temp = obj_app.spark_components_used()
         if type(temp) != type(None):
             rdd_flag, dataset_flag, sql_flag, df_flag, mllib_flag, stream_flag = temp
-            obj_pdf.sparkComponentsUsed(
+            obj_pdf.spark_components_used(
                 rdd_flag, dataset_flag, sql_flag, df_flag, mllib_flag, stream_flag
             )
 
@@ -1213,49 +1213,49 @@ class PdfGenerator:
         pdf.cell(230, 10, "Kafka Metrics", 0, ln=1)
 
         retention_period = None
-        temp = obj_app.retentionPeriodKafka()
+        temp = obj_app.retention_period_kafka()
         if type(temp) != type(None):
             retention_period = temp
-            obj_pdf.retentionPeriod(retention_period)
+            obj_pdf.retention_period(retention_period)
 
         num_topics = None
-        zookeeper_conn = obj_app.ZookeeperConn()
-        temp = obj_app.numTopicsKafka(zookeeper_conn)
+        zookeeper_conn = obj_app.zookeeper_conn()
+        temp = obj_app.num_topics_kafka(zookeeper_conn)
         if type(temp) != type(None):
             num_topics = temp
-            obj_pdf.numTopics(num_topics)
+            obj_pdf.num_topics(num_topics)
 
         sum_size = None
-        temp = obj_app.msgSizeKafka(
+        temp = obj_app.msg_size_kafka(
             zookeeper_conn
          )
         if type(temp) != type(None):
             sum_size = temp
-            obj_pdf.msgSize(sum_size)
+            obj_pdf.msg_size(sum_size)
 
         sum_count = None
-        temp = obj_app.msgCountKafka(
+        temp = obj_app.msg_count_kafka(
             zookeeper_conn
          )
         if type(temp) != type(None):
             sum_count = temp
-            obj_pdf.msgCount(sum_count)
+            obj_pdf.msg_count(sum_count)
 
         total_size, brokersize = None, None
-        temp1 = obj_app.KafkaClusterSize()
-        temp2 = obj_app.BrokerSizeKafka()
+        temp1 = obj_app.kafka_cluster_size()
+        temp2 = obj_app.broker_size_kafka()
         if (type(temp1) and type(temp2)) != type(None):
             total_size = temp1
             brokersize = temp2
-            obj_pdf.clusterSizeAndBrokerSize(total_size,brokersize)
+            obj_pdf.cluster_size_and_brokerSize(total_size,brokersize)
         
         HA_Strategy = None
-        temp = obj_app.HAStrategyKafka(
+        temp = obj_app.ha_strategy_kafka(
             zookeeper_conn
         )
         if type(temp) != type(None):
             HA_Strategy = temp
-            obj_pdf.HAStrategy(HA_Strategy)
+            obj_pdf.ha_strategy(HA_Strategy)
 
         
         pdf.cell(230, 10, "", 0, ln=1)
@@ -1264,31 +1264,31 @@ class PdfGenerator:
         pdf.cell(230, 10, "Cloudera Services", 0, ln=1)
 
         br = None
-        temp = obj_app.backupAndRecovery()
+        temp = obj_app.backup_and_recovery()
         if type(temp) != type(None):
             br = temp
-            obj_pdf.backupAndRecovery(br)
+            obj_pdf.backup_and_recovery(br)
 
         services = None
-        temp = obj_app.getClouderaServicesUsedForIngestion(cluster_name)
+        temp = obj_app.get_cloudera_services_used_for_ingestion(cluster_name)
         if type(temp) != type(None):
             services = temp
-            obj_pdf.servicesUsedForIngestion(services)
+            obj_pdf.services_used_for_ingestion(services)
 
         impala = None
-        temp = obj_app.useOfImpala()
+        temp = obj_app.use_of_impala()
         if type(temp) != type(None):
             impala = temp
             obj_pdf.impala(impala)
 
         sentry = None
-        temp = obj_app.useOfSentry()
+        temp = obj_app.use_of_sentry()
         if type(temp) != type(None):
             sentry = temp
             obj_pdf.sentry(sentry)
 
         kudu = None
-        temp = obj_app.useOfKudu()
+        temp = obj_app.use_of_kudu()
         if type(temp) != type(None):
             kudu = temp
             obj_pdf.kudu(kudu)
