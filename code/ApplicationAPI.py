@@ -157,16 +157,16 @@ class ApplicationAPI:
                         & (yarn_application_df["FinishedTime"] >= (self.start_date))
                     ]
                 yarn_application_df = yarn_application_df.reset_index(drop=True)
-                self.logger.info("getApplicationDetails successful")
+                self.logger.info("get_application_details successful")
                 return yarn_application_df
             else:
                 self.logger.error(
-                    "getApplicationDetails failed due to invalid API call. HTTP Response: ",
+                    "get_application_details failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getApplicationDetails failed", exc_info=True)
+            self.logger.error("get_application_details failed", exc_info=True)
             return None
 
     def get_application_type_status_count(self, yarn_application_df):
@@ -197,10 +197,10 @@ class ApplicationAPI:
             app_type_count_df = app_type_count_df.groupby(["Application Type"]).sum()
             app_status_count_df = app_count_df[["Status", "Count"]]
             app_status_count_df = app_status_count_df.groupby(["Status"]).sum()
-            self.logger.info("getApplicationTypeStatusCount successful")
+            self.logger.info("get_application_type_status_count successful")
             return app_count_df, app_type_count_df, app_status_count_df
         except Exception as e:
-            self.logger.error("getApplicationTypeStatusCount failed", exc_info=True)
+            self.logger.error("get_application_type_status_count failed", exc_info=True)
             return None
 
     def streaming_jobs(self, yarn_application_df):
@@ -266,10 +266,10 @@ class ApplicationAPI:
                 only_streaming = only_streaming.append(
                     insert_spark_if_streaming, ignore_index=True
                 )
-            self.logger.info("streamingJobs successful")
+            self.logger.info("streaming_jobs successful")
             return only_streaming
         except Exception as e:
-            self.logger.error("streamingJobs failed", exc_info=True)
+            self.logger.error("streaming_jobs failed", exc_info=True)
             return None
 
     def dynamic_resouce_pool(self):
@@ -291,10 +291,10 @@ class ApplicationAPI:
                 resource = "Dynamic resource pool is not Configured"
             else:
                 resource = "Dynamic resource pool are Configured"
-            self.logger.info("dynamicResoucePool successful")
+            self.logger.info("dynamic_resouce_pool successful")
             return resource
         except Exception as e:
-            self.logger.error("dynamicResoucePool failed", exc_info=True)
+            self.logger.error("dynamic_resouce_pool failed", exc_info=True)
             return None
 
     def identify_ha(self):
@@ -370,10 +370,10 @@ class ApplicationAPI:
                 zookeeper_ha = 1
             else:
                 zookeeper_ha = 0
-            self.logger.info("identifyHA successful")
+            self.logger.info("identify_ha successful")
             return zookeeper_ha, hive_ha, yarn_ha, hdfs_ha
         except Exception as e:
-            self.logger.error("identifyHA failed", exc_info=True)
+            self.logger.error("identify_ha failed", exc_info=True)
             return None
 
     def get_application_vcore_memory_usage(self, yarn_application_df):
@@ -401,10 +401,10 @@ class ApplicationAPI:
                 }
             )
             app_memory_df = app_memory_df.groupby(["Application Type"]).sum()
-            self.logger.info("getApplicationVcoreMemoryUsage successful")
+            self.logger.info("get_application_vcore_memory_usage successful")
             return app_vcore_df, app_memory_df
         except Exception as e:
-            self.logger.error("getApplicationVcoreMemoryUsage failed", exc_info=True)
+            self.logger.error("get_application_vcore_memory_usage failed", exc_info=True)
             return None
 
     def get_job_launch_frequency(self, yarn_application_df):
@@ -442,10 +442,10 @@ class ApplicationAPI:
             job_launch_df.loc[job_launch_df["Count"] <= 20, "frequency"] = "Weekly"
             job_launch_df.loc[job_launch_df["Count"] <= 2, "frequency"] = "Monthly"
             job_launch_df = job_launch_df.drop(["StartedTime"], axis=1)
-            self.logger.info("getJobLaunchFrequency successful")
+            self.logger.info("get_job_launch_frequency successful")
             return job_launch_df
         except Exception as e:
-            self.logger.error("getJobLaunchFrequency failed", exc_info=True)
+            self.logger.error("get_job_launch_frequency failed", exc_info=True)
             return None
 
     def get_bursty_application_details(self, yarn_application_df):
@@ -522,10 +522,10 @@ class ApplicationAPI:
                     bursty_app_vcore_df = bursty_app_vcore_df.append(
                         bursty_app_vcore_tmp_df
                     )
-            self.logger.info("getBurstyApplicationDetails successful")
+            self.logger.info("get_bursty_application_details successful")
             return bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df
         except Exception as e:
-            self.logger.error("getBurstyApplicationDetails failed", exc_info=True)
+            self.logger.error("get_bursty_application_details failed", exc_info=True)
             return None
 
     def get_failed_application_details(self, yarn_application_df):
@@ -566,15 +566,15 @@ class ApplicationAPI:
                 yarn_total_vcores_count = math.ceil(
                     yarn_total_vcores["clusterMetrics"]["totalVirtualCores"]
                 )
-                self.logger.info("getYarnTotalVcore successful")
+                self.logger.info("get_yarn_total_vcore successful")
                 return yarn_total_vcores_count
             else:
                 self.logger.error(
-                    "getYarnTotalVcore failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_total_vcore failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("getYarnTotalVcore failed", exc_info=True)
+            self.logger.error("get_yarn_total_vcore failed", exc_info=True)
             return None
 
     def get_yarn_vcore_available(self, cluster_name):
@@ -669,16 +669,16 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_vcore_available_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_vcore_available_df = yarn_vcore_available_df.set_index("Time")
-                self.logger.info("getYarnVcoreAvailable successful")
+                self.logger.info("get_yarn_vcore_available successful")
                 return yarn_vcore_available_df
             else:
                 self.logger.error(
-                    "getYarnVcoreAvailable failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_vcore_available failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnVcoreAvailable failed", exc_info=True)
+            self.logger.error("get_yarn_vcore_available failed", exc_info=True)
             return None
 
     def get_yarn_vcore_allocated(self, cluster_name):
@@ -801,7 +801,7 @@ class ApplicationAPI:
                     values="Mean",
                 )
                 yarn_vcore_allocated_pivot_df = yarn_vcore_allocated_pivot_df.fillna(0)
-                self.logger.info("getYarnVcoreAllocated successful")
+                self.logger.info("get_yarn_vcore_allocated successful")
                 return (
                     yarn_vcore_allocated_avg,
                     yarn_vcore_allocated_df,
@@ -809,12 +809,12 @@ class ApplicationAPI:
                 )
             else:
                 self.logger.error(
-                    "getYarnVcoreAllocated failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_vcore_allocated failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnVcoreAllocated failed", exc_info=True)
+            self.logger.error("get_yarn_vcore_allocated failed", exc_info=True)
             return None
 
     def get_yarn_total_memory(self, yarn_rm, yarn_port):
@@ -835,16 +835,16 @@ class ApplicationAPI:
                 yarn_total_memory_count = math.ceil(
                     yarn_total_memory["clusterMetrics"]["totalMB"] / 1024
                 )
-                self.logger.info("getYarnTotalMemory successful")
+                self.logger.info("get_yarn_total_memory successful")
                 return yarn_total_memory_count
             else:
                 self.logger.error(
-                    "getYarnTotalMemory failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_total_memory failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnTotalMemory failed", exc_info=True)
+            self.logger.error("get_yarn_total_memory failed", exc_info=True)
             return None
 
     def get_yarn_memory_available(self, cluster_name):
@@ -939,16 +939,16 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_memory_available_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_memory_available_df = yarn_memory_available_df.set_index("Time")
-                self.logger.info("getYarnMemoryAvailable successful")
+                self.logger.info("get_yarn_memory_available successful")
                 return yarn_memory_available_df
             else:
                 self.logger.error(
-                    "getYarnMemoryAvailable failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_memory_available failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnMemoryAvailable failed", exc_info=True)
+            self.logger.error("get_yarn_memory_available failed", exc_info=True)
             return None
 
     def get_yarn_memory_allocated(self, cluster_name):
@@ -1073,7 +1073,7 @@ class ApplicationAPI:
                 yarn_memory_allocated_pivot_df = yarn_memory_allocated_pivot_df.fillna(
                     0
                 )
-                self.logger.info("getYarnMemoryAllocated successful")
+                self.logger.info("get_yarn_memory_allocated successful")
                 return (
                     yarn_memory_allocated_avg,
                     yarn_memory_allocated_df,
@@ -1081,12 +1081,12 @@ class ApplicationAPI:
                 )
             else:
                 self.logger.error(
-                    "getYarnMemoryAllocated failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_memory_allocated failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnMemoryAllocated failed", exc_info=True)
+            self.logger.error("get_yarn_memory_allocated failed", exc_info=True)
             return None
 
     def get_vcore_memory_by_application(self, yarn_application_df):
@@ -1162,10 +1162,10 @@ class ApplicationAPI:
                 ),
                 columns=["Date"],
             )
-            self.logger.info("getVcoreMemoryByApplication successful")
+            self.logger.info("get_vcore_memory_by_application successful")
             return app_vcore_df, app_vcore_usage_df, app_memory_df, app_memory_usage_df
         except Exception as e:
-            self.logger.error("getVcoreMemoryByApplication failed", exc_info=True)
+            self.logger.error("get_vcore_memory_by_application failed", exc_info=True)
             return None
 
     def get_pending_application(self, cluster_name):
@@ -1260,16 +1260,16 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_pending_apps_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_pending_apps_df = yarn_pending_apps_df.set_index("Time")
-                self.logger.info("getPendingApplication successful")
+                self.logger.info("get_pending_application successful")
                 return yarn_pending_apps_df
             else:
                 self.logger.error(
-                    "getPendingApplication failed due to invalid API call. HTTP Response: ",
+                    "get_pending_application failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getPendingApplication failed", exc_info=True)
+            self.logger.error("get_pending_application failed", exc_info=True)
             return None
 
     def get_pending_memory(self, cluster_name):
@@ -1364,16 +1364,16 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_pending_memory_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_pending_memory_df = yarn_pending_memory_df.set_index("Time")
-                self.logger.info("getPendingMemory successful")
+                self.logger.info("get_pending_memory successful")
                 return yarn_pending_memory_df
             else:
                 self.logger.error(
-                    "getPendingMemory failed due to invalid API call. HTTP Response: ",
+                    "get_pending_memory failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getPendingMemory failed", exc_info=True)
+            self.logger.error("get_pending_memory failed", exc_info=True)
             return None
 
     def get_pending_vcore(self, cluster_name):
@@ -1468,16 +1468,16 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_pending_vcore_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_pending_vcore_df = yarn_pending_vcore_df.set_index("Time")
-                self.logger.info("getPendingVcore successful")
+                self.logger.info("get_pending_vcore successful")
                 return yarn_pending_vcore_df
             else:
                 self.logger.error(
-                    "getPendingVcore failed due to invalid API call. HTTP Response: ",
+                    "get_pending_vcore failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getPendingVcore failed", exc_info=True)
+            self.logger.error("get_pending_vcore failed", exc_info=True)
             return None
 
     def get_running_application(self, cluster_name):
@@ -1572,16 +1572,16 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_running_apps_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_running_apps_df = yarn_running_apps_df.set_index("Time")
-                self.logger.info("getRunningApplication successful")
+                self.logger.info("get_running_application successful")
                 return yarn_running_apps_df
             else:
                 self.logger.error(
-                    "getRunningApplication failed due to invalid API call. HTTP Response: ",
+                    "get_running_application failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getRunningApplication failed", exc_info=True)
+            self.logger.error("get_running_application failed", exc_info=True)
             return None
 
     def get_queue_details(self, yarn_rm, yarn_port):
@@ -1602,16 +1602,16 @@ class ApplicationAPI:
             if r.status_code == 200:
                 yarn_queues = r.json()
                 yarn_queues_list = yarn_queues["scheduler"]["schedulerInfo"]
-                self.logger.info("getQueueDetails successful")
+                self.logger.info("get_queue_details successful")
                 return yarn_queues_list
             else:
                 self.logger.error(
-                    "getQueueDetails failed due to invalid API call. HTTP Response: ",
+                    "get_queue_details failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getQueueDetails failed", exc_info=True)
+            self.logger.error("get_queue_details failed", exc_info=True)
             return None
 
     def get_queue_application(self, yarn_application_df):
@@ -1636,10 +1636,10 @@ class ApplicationAPI:
                 }
             )
             queue_elapsed_time_df = queue_elapsed_time_df.groupby(["Queue"]).sum()
-            self.logger.info("getQueueApplication successful")
+            self.logger.info("get_queue_application successful")
             return queue_app_count_df, queue_elapsed_time_df
         except Exception as e:
-            self.logger.error("getQueueApplication failed", exc_info=True)
+            self.logger.error("get_queue_application failed", exc_info=True)
             return None
 
     def get_queue_pending_application(self, yarn_application_df):
@@ -1680,10 +1680,10 @@ class ApplicationAPI:
                 ),
                 columns=["Date"],
             )
-            self.logger.info("getQueuePendingApplication successful")
+            self.logger.info("get_queue_pending_application successful")
             return app_queue_df, app_queue_usage_df
         except Exception as e:
-            self.logger.error("getQueuePendingApplication failed", exc_info=True)
+            self.logger.error("get_queue_pending_application failed", exc_info=True)
             return None
 
     def get_queue_vcore_memory(self, yarn_application_df):
@@ -1761,7 +1761,7 @@ class ApplicationAPI:
                 ),
                 columns=["Date"],
             )
-            self.logger.info("getQueueVcoreMemory successful")
+            self.logger.info("get_queue_vcore_memory successful")
             return (
                 queue_vcore_df,
                 queue_vcore_usage_df,
@@ -1769,7 +1769,7 @@ class ApplicationAPI:
                 queue_memory_usage_df,
             )
         except Exception as e:
-            self.logger.error("getQueueVcoreMemory failed", exc_info=True)
+            self.logger.error("get_queue_vcore_memory failed", exc_info=True)
             return None
 
     def nodes_serving_hbase(self):
@@ -1787,10 +1787,10 @@ class ApplicationAPI:
                 NumNodesServing = int(statusinfo[statusinfo.index("servers,") - 1])
             else:
                 NumNodesServing = None
-            self.logger.info("nodesServingHbase successful")
+            self.logger.info("nodes_serving_hbase successful")
             return NumNodesServing
         except Exception as e:
-            self.logger.error("nodesServingHbase failed", exc_info=True)
+            self.logger.error("nodes_serving_hbase failed", exc_info=True)
             return None
 
     def get_hbase_data_size(self):
@@ -1831,10 +1831,10 @@ class ApplicationAPI:
                         disk_space_consumed = disk_space_consumed + "." + data_list[2]
                     else:
                         disk_space_consumed = 0
-            self.logger.info("getHbaseDataSize successful")
+            self.logger.info("get_hbase_data_size successful")
             return base_size, disk_space_consumed
         except Exception as e:
-            self.logger.error("getHbaseDataSize failed", exc_info=True)
+            self.logger.error("get_hbase_data_size failed", exc_info=True)
             return None
 
     def get_hbase_replication(self, cluster_name):
@@ -1898,12 +1898,12 @@ class ApplicationAPI:
                 return replication
             else:
                 self.logger.error(
-                    "getHbaseReplication failed due to invalid API call. HTTP Response: ",
+                    "get_hbase_replication failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHbaseReplication failed", exc_info=True)
+            self.logger.error("get_hbase_replication failed", exc_info=True)
             return None
 
     def get_hbase_secondary_index(self, cluster_name):
@@ -1970,12 +1970,12 @@ class ApplicationAPI:
                 return indexing
             else:
                 self.logger.error(
-                    "getHbaseSecondaryIndex failed due to invalid API call. HTTP Response: ",
+                    "get_hbase_secondary_index failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHbaseSecondaryIndex failed", exc_info=True)
+            self.logger.error("get_hbase_secondary_index failed", exc_info=True)
             return None
 
     def hBase_on_hive(self):
@@ -1994,10 +1994,10 @@ class ApplicationAPI:
                 hbasehive_var = "Yes"
             else:
                 hbasehive_var = "No"
-            self.logger.info("hBaseOnHive successful")
+            self.logger.info("hBase_on_hive successful")
             return hbasehive_var
         except Exception as e:
-            self.logger.error("hBaseOnHive failed", exc_info=True)
+            self.logger.error("hBase_on_hive failed", exc_info=True)
             return None
 
     def phoenix_in_hbase(self):
@@ -2025,10 +2025,10 @@ class ApplicationAPI:
             return phoenixHbase
         except EmptyDataError:
             phoenixHbase = "No"
-            self.logger.info("phoenixinHBase successful")
+            self.logger.info("phoenix_in_hbase successful")
             return phoenixHbase
         except Exception as e:
-            self.logger.error("phoenixinHBase failed", exc_info=True)
+            self.logger.error("phoenix_in_hbase failed", exc_info=True)
             return None
 
     def coprocessor_in_hbase(self):
@@ -2057,10 +2057,10 @@ class ApplicationAPI:
             return coprocessorHbase
         except EmptyDataError:
             coprocessorHbase = "No"
-            self.logger.info("coprocessorinHBase successful")
+            self.logger.info("coprocessor_in_hbase successful")
             return coprocessorHbase
         except Exception as e:
-            self.logger.error("coprocessorinHBase failed", exc_info=True)
+            self.logger.error("coprocessor_in_hbase failed", exc_info=True)
             return None
 
     def get_dynamic_allocation_and_spark_resource_manager(self):
@@ -2086,11 +2086,11 @@ class ApplicationAPI:
                         spark_resource_manager = line.split("=")[1].strip()
                     else:
                         continue
-            self.logger.info("getDynamicAllocationAndSparkResourceManager successful")
+            self.logger.info("get_dynamic_allocation_and_spark_resource_manager successful")
             return dynamic_allocation, spark_resource_manager
         except Exception as e:
             self.logger.error(
-                "getDynamicAllocationAndSparkResourceManager failed", exc_info=True
+                "get_dynamic_allocation_and_spark_resource_manager failed", exc_info=True
             )
             return None
 
@@ -2112,10 +2112,10 @@ class ApplicationAPI:
                 spark_version = spark_version.split("'")[1]
                 spark_version = spark_version.split("version")[1]
                 spark_version = spark_version.strip()
-            self.logger.info("getSparkVersion successful")
+            self.logger.info("get_spark_version successful")
             return spark_version
         except Exception as e:
-            self.logger.error("getSparkVersion failed", exc_info=True)
+            self.logger.error("get_spark_version failed", exc_info=True)
             return None
 
     def get_spark_api_programming_languages(self):
@@ -2171,10 +2171,10 @@ class ApplicationAPI:
                             if "R" not in language_list:
                                 language_list.append("R")
             language_list = ", ".join(language_list)
-            self.logger.info("getSparkApiProgrammingLanguages successful")
+            self.logger.info("get_spark_api_programming_languages successful")
             return language_list
         except Exception as e:
-            self.logger.error("getSparkApiProgrammingLanguages failed", exc_info=True)
+            self.logger.error("get_spark_api_programming_languages failed", exc_info=True)
             return None
 
     def spark_components_used(self):
@@ -2230,10 +2230,10 @@ class ApplicationAPI:
                     df_flag = 1
                 if re.search(r"\borg.apache.spark.ml\b", parse_str):
                     mllib_flag = 1
-            self.logger.info("sparkComponentsUsed successful")
+            self.logger.info("spark_components_used successful")
             return rdd_flag, dataset_flag, sql_flag, df_flag, mllib_flag, stream_flag
         except Exception as e:
-            self.logger.error("sparkComponentsUsed failed", exc_info=True)
+            self.logger.error("spark_components_used failed", exc_info=True)
             return None
 
     def retention_period_kafka(self):
@@ -2252,10 +2252,10 @@ class ApplicationAPI:
                         retention_period = int(i['value'])/(60*60*1000)
                 except KeyError:
                         retention_period = int(i['default'])/(60*60*1000)
-            self.logger.info("retentionPeriodKafka successful")
+            self.logger.info("retention_period_kafka successful")
             return retention_period
         except Exception as e:
-            self.logger.error("retentionPeriodKafka failed", exc_info=True)
+            self.logger.error("retention_period_kafka failed", exc_info=True)
             return None
 
     def zookeeper_conn(self):
@@ -2280,10 +2280,10 @@ class ApplicationAPI:
             return zookeeper_conn
         except EmptyDataError:
             zookeeper_conn = None
-            self.logger.info("ZookeeperConn successful")
+            self.logger.info("zookeeper_conn successful")
             return zookeeper_conn
         except Exception as e:
-            self.logger.error("ZookeeperConn failed", exc_info=True)
+            self.logger.error("zookeeper_conn failed", exc_info=True)
             return None
 
     def num_topics_kafka(self, zookeeper_conn):
@@ -2358,10 +2358,10 @@ class ApplicationAPI:
                         sum_size = sum_size + (int(msg_size) if msg_size != 'null' else 0)
                     else :
                         sum_size = 0
-                self.logger.info("msgSizeKafka successful")
+                self.logger.info("msg_size_kafka successful")
                 return sum_size
             except Exception as e:
-                self.logger.error("msgSizeKafka failed", exc_info=True)
+                self.logger.error("msg_size_kafka failed", exc_info=True)
                 return None
 
     def msg_count_kafka(self, zookeeper_conn):
@@ -2411,10 +2411,10 @@ class ApplicationAPI:
                         sum_count = sum_count + int(msg_count)
                     else :
                         sum_count = None  
-                self.logger.info("msgCountKafka successful")
+                self.logger.info("msg_count_kafka successful")
                 return sum_count
             except Exception as e:
-                self.logger.error("msgCountKafka failed", exc_info=True)
+                self.logger.error("msg_count_kafka failed", exc_info=True)
                 return None
 
     def kafka_cluster_size(self):
@@ -2479,10 +2479,10 @@ class ApplicationAPI:
                             total_size = total_size + float(i)
                     except EmptyDataError:
                         total_size = None
-                self.logger.info("KafkaClusterSize successful")
+                self.logger.info("kafka_cluster_size successful")
                 return total_size
             except Exception as e :
-                self.logger.error("KafkaClusterSize failed", exc_info=True)
+                self.logger.error("kafka_cluster_size failed", exc_info=True)
                 return None
     
     def broker_size_kafka(self):
@@ -2514,10 +2514,10 @@ class ApplicationAPI:
                     brokersize.loc[j] = size_sum
                     j=j+1
                 brokersize.columns = ["size"]
-                self.logger.info("BrokerSizeKafka successful")
+                self.logger.info("broker_size_kafka successful")
                 return brokersize
             except Exception as e :
-                self.logger.error("BrokerSizeKafka failed", exc_info=True)
+                self.logger.error("broker_size_kafka failed", exc_info=True)
                 return None
 
     def ha_strategy_kafka(self, zookeeper_conn):
@@ -2553,10 +2553,10 @@ class ApplicationAPI:
                 HA_Strategy = "Yes"
             else :
                 HA_Strategy = "No"
-            self.logger.info("HAStrategyKafka successful")
+            self.logger.info("ha_strategy_kafka successful")
             return HA_Strategy
         except Exception as e:
-            self.logger.error("HAStrategyKafka failed", exc_info=True)
+            self.logger.error("ha_strategy_kafka failed", exc_info=True)
             return None
         
 
@@ -2592,10 +2592,10 @@ class ApplicationAPI:
                 )
             else:
                 output = "Impala is not found"
-            self.logger.info("useOfImpala successful")
+            self.logger.info("use_of_impala successful")
             return output
         except Exception as e:
-            self.logger.error("useOfImpala failed", exc_info=True)
+            self.logger.error("use_of_impala failed", exc_info=True)
             return None
 
     def use_of_sentry(self):
@@ -2628,10 +2628,10 @@ class ApplicationAPI:
                 )
             else:
                 output = "Apache Sentry is not found"
-            self.logger.info("useOfSentry successful")
+            self.logger.info("use_of_sentry successful")
             return output
         except Exception as e:
-            self.logger.error("useOfSentry failed", exc_info=True)
+            self.logger.error("use_of_sentry failed", exc_info=True)
             return None
 
     def use_of_kudu(self):
@@ -2662,10 +2662,10 @@ class ApplicationAPI:
                 )
             else:
                 output = "Apache Kudu is not found"
-            self.logger.info("useOfKudu successful")
+            self.logger.info("use_of_kudu successful")
             return output
         except Exception as e:
-            self.logger.error("useOfKudu failed", exc_info=True)
+            self.logger.error("use_of_kudu failed", exc_info=True)
             return None
 
     def get_cloudera_services_used_for_ingestion(self, cluster_name):
@@ -2733,15 +2733,15 @@ class ApplicationAPI:
                     elif i["name"] == "nifi":
                         services_list.append("NiFi")
                 services = ", ".join(services_list)
-                self.logger.info("clusterServiceItem successful")
+                self.logger.info("get_cloudera_services_used_for_ingestion successful")
                 return services
             else:
                 self.logger.error(
-                    "clusterServiceItem failed due to invalid API call. HTTP Response: ",
+                    "get_cloudera_services_used_for_ingestion failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterServiceItem failed", exc_info=True)
+            self.logger.error("get_cloudera_services_used_for_ingestion failed", exc_info=True)
             return None
 
     def backup_and_recovery(self):
@@ -2792,7 +2792,7 @@ class ApplicationAPI:
                     br = "Cloudera Backup & Disaster Recovery are enabled"
                 else:
                     br = "Cloudera Backup & Disaster Recovery are not enabled"
-                self.logger.info("backupAndRecovery successful")
+                self.logger.info("backup_and_recovery successful")
                 return br
             else:
                 self.logger.error(
@@ -2800,5 +2800,5 @@ class ApplicationAPI:
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("backupAndRecovery failed", exc_info=True)
+            self.logger.error("backup_and_recovery failed", exc_info=True)
             return None

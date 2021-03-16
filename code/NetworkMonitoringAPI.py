@@ -51,10 +51,10 @@ class NetworkMonitoringAPI:
                 "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf > MaxBandwidth.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             maxbandwidth_df = pd.read_csv("MaxBandwidth.csv", delimiter="\n")
             max_bandwidth = str(maxbandwidth_df["MaxBandwidth"][0])
-            self.logger.info("maxBandwidth successful")
+            self.logger.info("max_bandwidth successful")
             return max_bandwidth
         except Exception as e:
-            self.logger.error("maxBandwidth failed", exc_info=True)
+            self.logger.error("max_bandwidth failed", exc_info=True)
             return None
 
     def ingress(self):
@@ -138,10 +138,10 @@ class NetworkMonitoringAPI:
             total_disk_write = 0
             for i in disk_df["disk_write"]:
                 total_disk_write = total_disk_write + float(i)
-            self.logger.info("diskReadWrite successful")
+            self.logger.info("disk_read_write successful")
             return total_disk_read, total_disk_write
         except Exception as e:
-            self.logger.error("diskReadWrite failed", exc_info=True)
+            self.logger.error("disk_read_write failed", exc_info=True)
             return None
 
     def third_party_monitor(self):
@@ -229,7 +229,7 @@ class NetworkMonitoringAPI:
                 check_mk_server = "check mk server is not present"
             else:
                 check_mk_server = "check mk server is present"
-            self.logger.info("thirdPartyMonitor successful")
+            self.logger.info("third_party_monitor successful")
             return (
                 softwares_installed,
                 prometheus_server,
@@ -238,7 +238,7 @@ class NetworkMonitoringAPI:
                 check_mk_server,
             )
         except Exception as e:
-            self.logger.error("thirdPartyMonitor failed", exc_info=True)
+            self.logger.error("third_party_monitor failed", exc_info=True)
             return None
 
     def get_logs(self):
@@ -268,10 +268,10 @@ class NetworkMonitoringAPI:
             remove_list = ["root", "chrony", "ntp"]
             logs = df11[~df11["owner"].isin(remove_list)]
             logs.reset_index(inplace=True)
-            self.logger.info("getLogs successful")
+            self.logger.info("get_logs successful")
             return logs
         except Exception as e:
-            self.logger.error("getLogs failed", exc_info=True)
+            self.logger.error("get_logs failed", exc_info=True)
             return None
 
     def orchestration_tools(self):
@@ -306,10 +306,10 @@ class NetworkMonitoringAPI:
                 airflow_flag = "airflow is not enabled"
             else:
                 airflow_flag = "airflow is enabled"
-            self.logger.info("orchestrationTools successful")
+            self.logger.info("orchestration_tools successful")
             return oozie_flag, crontab_flag, airflow_flag
         except Exception as e:
-            self.logger.error("orchestrationTools failed", exc_info=True)
+            self.logger.error("orchestration_tools failed", exc_info=True)
             return None
 
     def logging_tool(self):
@@ -352,10 +352,10 @@ class NetworkMonitoringAPI:
                 elastic_search = "Elasticsearch not installed"
             else:
                 elastic_search = "Elasticsearch is installed"
-            self.logger.info("loggingTool successful")
+            self.logger.info("logging_tool successful")
             return ddog, splunk, new_relic, elastic_search
         except Exception as e:
-            self.logger.error("loggingTool failed", exc_info=True)
+            self.logger.error("logging_tool failed", exc_info=True)
             return None
 
     def monitor_network_speed(self):
@@ -379,8 +379,8 @@ class NetworkMonitoringAPI:
             max_value_2 = ((column2.max())/1024)
             min_value_2 = ((column2.min())/1024)
             avg_value_2 = ((column2.mean())/1024)
-            self.logger.info("monitorNetworkSpeed successful")
+            self.logger.info("monitor_network_speed successful")
             return max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2
         except Exception as e:
-            self.logger.error("monitorNetworkSpeed failed", exc_info=True)
+            self.logger.error("monitor_network_speed failed", exc_info=True)
             return None
