@@ -54,10 +54,10 @@ class HardwareOSAPI:
             os_version = os_version.split(",")
             os_version_series = pd.Series(data=os_version).T
             os_version = os_version_series.iloc[18]
-            self.logger.info("osVersion successful")
+            self.logger.info("os_version successful")
             return os_version
         except Exception as e:
-            self.logger.error("osVersion failed", exc_info=True)
+            self.logger.error("os_version failed", exc_info=True)
             return None
 
     def cluster_items(self):
@@ -107,15 +107,15 @@ class HardwareOSAPI:
                 with open("Discovery_Report/clusters.json", "w") as fp:
                     json.dump(cluster, fp, indent=4)
                 cluster_items = cluster["items"]
-                self.logger.info("clusterItems successful")
+                self.logger.info("cluster_items successful")
                 return cluster_items
             else:
                 self.logger.error(
-                    "clusterItems failed due to invalid API call. HTTP Response: ",
+                    "cluster_items failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterItems failed", exc_info=True)
+            self.logger.error("cluster_items failed", exc_info=True)
             return None
 
     def cluster_host_items(self, cluster_name):
@@ -174,15 +174,15 @@ class HardwareOSAPI:
                 ) as fp:
                     json.dump(cluster_host, fp, indent=4)
                 cluster_host_items = cluster_host["items"]
-                self.logger.info("clusterHostItems successful")
+                self.logger.info("cluster_host_items successful")
                 return cluster_host_items, cluster_host_len
             else:
                 self.logger.error(
-                    "clusterHostItems failed due to invalid API call. HTTP Response: ",
+                    "cluster_host_items failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterHostItems failed", exc_info=True)
+            self.logger.error("cluster_host_items failed", exc_info=True)
             return None
 
     def cluster_service_item(self, cluster_name):
@@ -240,15 +240,15 @@ class HardwareOSAPI:
                 ) as fp:
                     json.dump(cluster_services, fp, indent=4)
                 cluster_service_item = cluster_services["items"]
-                self.logger.info("clusterServiceItem successful")
+                self.logger.info("cluster_service_item successful")
                 return cluster_service_item
             else:
                 self.logger.error(
-                    "clusterServiceItem failed due to invalid API call. HTTP Response: ",
+                    "cluster_service_item failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterServiceItem failed", exc_info=True)
+            self.logger.error("cluster_service_item failed", exc_info=True)
             return None
 
     def host_data(self, hostId):
@@ -301,15 +301,15 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 host_data = r.json()
-                self.logger.info("hostData successful")
+                self.logger.info("host_data successful")
                 return host_data
             else:
                 self.logger.error(
-                    "hostData failed due to invalid API call. HTTP Response: ",
+                    "host_data failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("hostData failed", exc_info=True)
+            self.logger.error("host_data failed", exc_info=True)
             return None
 
     def cluster_total_cores(self, cluster_name):
@@ -403,15 +403,15 @@ class HardwareOSAPI:
                     "Time"
                 ] = cluster_total_cores_df.DateTime.dt.strftime("%d-%b %H:%M")
                 cluster_total_cores_df = cluster_total_cores_df.set_index("Time")
-                self.logger.info("clusterTotalCores successful")
+                self.logger.info("cluster_total_cores successful")
                 return cluster_total_cores_df
             else:
                 self.logger.error(
-                    "clusterTotalCores failed due to invalid API call. HTTP Response: ",
+                    "cluster_total_cores failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterTotalCores failed", exc_info=True)
+            self.logger.error("cluster_total_cores failed", exc_info=True)
             return None
 
     def cluster_cpu_usage(self, cluster_name):
@@ -516,15 +516,15 @@ class HardwareOSAPI:
                     "Time"
                 ] = cluster_cpu_usage_df.DateTime.dt.strftime("%d-%b %H:%M")
                 cluster_cpu_usage_df = cluster_cpu_usage_df.set_index("Time")
-                self.logger.info("clusterCpuUsage successful")
+                self.logger.info("cluster_cpu_usage successful")
                 return cluster_cpu_usage_df, cluster_cpu_usage_avg
             else:
                 self.logger.error(
-                    "clusterCpuUsage failed due to invalid API call. HTTP Response: ",
+                    "cluster_cpu_usage failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterCpuUsage failed", exc_info=True)
+            self.logger.error("cluster_cpu_usage failed", exc_info=True)
             return None
 
     def cluster_total_memory(self, cluster_name):
@@ -620,15 +620,15 @@ class HardwareOSAPI:
                     "Time"
                 ] = cluster_total_memory_df.DateTime.dt.strftime("%d-%b %H:%M")
                 cluster_total_memory_df = cluster_total_memory_df.set_index("Time")
-                self.logger.info("clusterTotalMemor successful")
+                self.logger.info("cluster_total_memory successful")
                 return cluster_total_memory_df
             else:
                 self.logger.error(
-                    "clusterTotalMemor failed due to invalid API call. HTTP Response: ",
+                    "cluster_total_memory failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterTotalMemor failed", exc_info=True)
+            self.logger.error("cluster_total_memory failed", exc_info=True)
             return None
 
     def cluster_memory_usage(self, cluster_name):
@@ -729,15 +729,15 @@ class HardwareOSAPI:
                     "Time"
                 ] = cluster_memory_usage_df.DateTime.dt.strftime("%d-%b %H:%M")
                 cluster_memory_usage_df = cluster_memory_usage_df.set_index("Time")
-                self.logger.info("clusterMemoryUsage successful")
+                self.logger.info("cluster_memory_usage successful")
                 return cluster_memory_usage_df, cluster_memory_usage_avg
             else:
                 self.logger.error(
-                    "clusterMemoryUsage failed due to invalid API call. HTTP Response: ",
+                    "cluster_memory_usage failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterMemoryUsage failed", exc_info=True)
+            self.logger.error("cluster_memory_usage failed", exc_info=True)
             return None
 
     def database_server(self):
@@ -785,15 +785,15 @@ class HardwareOSAPI:
             if r.status_code == 200:
                 database_server = r.json()
                 database_server = database_server["scmDbType"]
-                self.logger.info("dataBaseServer successful")
+                self.logger.info("database_server successful")
                 return database_server
             else:
                 self.logger.error(
-                    "dataBaseServer failed due to invalid API call. HTTP Response: ",
+                    "database_server failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("dataBaseServer failed", exc_info=True)
+            self.logger.error("database_server failed", exc_info=True)
             return None
 
     def dns_server(self):
@@ -811,10 +811,10 @@ class HardwareOSAPI:
                 dns_server = "DNS server does not enabled within machine"
             else:
                 dns_server = "DNS server not enabled within machine"
-            self.logger.info("dnsServer successful")
+            self.logger.info("dns_server successful")
             return dns_server
         except Exception as e:
-            self.logger.error("dnsServer failed", exc_info=True)
+            self.logger.error("dns_server failed", exc_info=True)
             return None
 
     def web_server(self):
@@ -833,10 +833,10 @@ class HardwareOSAPI:
                 web_server = "Web server is not enabled"
             else:
                 web_server = "Web server is enabled"
-            self.logger.info("webServer successful")
+            self.logger.info("web_server successful")
             return web_server
         except Exception as e:
-            self.logger.error("webServer failed", exc_info=True)
+            self.logger.error("web_server failed", exc_info=True)
             return None
 
     def ntp_server(self):
@@ -852,10 +852,10 @@ class HardwareOSAPI:
             ntp_server,err = ntp_server.communicate()
             ntp_server = ntp_server.split(":")
             ntp_server = ntp_server[1]
-            self.logger.info("ntpServer successful")
+            self.logger.info("ntp_server successful")
             return ntp_server
         except Exception as e:
-            self.logger.error("ntpServer failed", exc_info=True)
+            self.logger.error("ntp_server failed", exc_info=True)
             return None
 
     def manufacturer_name(self):
@@ -873,10 +873,10 @@ class HardwareOSAPI:
             manufacturer_name,err = manufacturer_name.communicate()
             manufacturer_name = manufacturer_name.split(":")
             manufacturer_name = manufacturer_name[1]
-            self.logger.info("manufacturerName successful")
+            self.logger.info("manufacturer_name successful")
             return manufacturer_name
         except Exception as e:
-            self.logger.error("manufacturerName failed", exc_info=True)
+            self.logger.error("manufacturer_name failed", exc_info=True)
             return None
 
     def serial_no(self):
@@ -894,10 +894,10 @@ class HardwareOSAPI:
             serial_no,err = serial_no.communicate()
             serial_no = serial_no.split(":")
             serial_no = serial_no[1]
-            self.logger.info("serialNo successful")
+            self.logger.info("serial_no successful")
             return serial_no
         except Exception as e:
-            self.logger.error("serialNo failed", exc_info=True)
+            self.logger.error("serial_no failed", exc_info=True)
             return None
 
     def family(self):
@@ -936,10 +936,10 @@ class HardwareOSAPI:
             model_name,err = model_name.communicate()
             model_name = model_name.split(":")
             model_name = model_name[1]
-            self.logger.info("modelName successful")
+            self.logger.info("model_name successful")
             return model_name
         except Exception as e:
-            self.logger.error("modelName failed", exc_info=True)
+            self.logger.error("model_name failed", exc_info=True)
             return None
 
     def microcode(self):
@@ -978,10 +978,10 @@ class HardwareOSAPI:
             cpu_mhz,err = cpu_mhz.communicate()
             cpu_mhz = cpu_mhz.split(":")
             cpu_mhz = cpu_mhz[1]
-            self.logger.info("cpuMHz successful")
+            self.logger.info("cpu_mhz successful")
             return cpu_mhz
         except Exception as e:
-            self.logger.error("cpuMHz failed", exc_info=True)
+            self.logger.error("cpu_mhz failed", exc_info=True)
             return None
 
     def cpu_family(self):
@@ -999,10 +999,10 @@ class HardwareOSAPI:
             cpu_family,err = cpu_family.communicate()
             cpu_family = cpu_family.split(":")
             cpu_family = cpu_family[1]
-            self.logger.info("cpuFamily successful")
+            self.logger.info("cpu_family successful")
             return cpu_family
         except Exception as e:
-            self.logger.error("cpuFamily failed", exc_info=True)
+            self.logger.error("cpu_family failed", exc_info=True)
             return None
 
     def network_interface_details(self):
@@ -1026,10 +1026,10 @@ class HardwareOSAPI:
             subprocess.Popen("rm -rf ./nic_ip.txt",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
             delete_row = nic_details[nic_details["nic"] == "lo"].index
             nic_details = nic_details.drop(delete_row)
-            self.logger.info("networkInterfaceDetails successful")
+            self.logger.info("network_interface_details successful")
             return nic_details
         except Exception as e:
-            self.logger.error("networkInterfaceDetails failed", exc_info=True)
+            self.logger.error("network_interface_details failed", exc_info=True)
             return None
 
     def applied_patches(self):
@@ -1107,10 +1107,10 @@ class HardwareOSAPI:
                 patch_dataframe = pd.DataFrame(
                     ["Operating System is Not Supported"], columns=["Supported_Status"]
                 )
-            self.logger.info("appliedPatches successful")
+            self.logger.info("applied_patches successful")
             return patch_dataframe, os_name
         except Exception as e:
-            self.logger.error("appliedPatches failed", exc_info=True)
+            self.logger.error("applied_patches failed", exc_info=True)
             return None
 
     def list_hadoop_nonhadoop_libs(self):
@@ -1150,10 +1150,10 @@ class HardwareOSAPI:
             hadoop_native_df["Non_Hadoop_Libraries"] = hadoop_native_df[
                 "Non_Hadoop_Libraries"
             ].fillna("")
-            self.logger.info("listHadoopNonHadoopLibs successful")
+            self.logger.info("list_hadoop_nonhadoop_libs successful")
             return hadoop_native_df
         except Exception as e:
-            self.logger.error("listHadoopNonHadoopLibs failed", exc_info=True)
+            self.logger.error("list_hadoop_nonhadoop_libs failed", exc_info=True)
             return None
 
     def check_libraries_installed(self):
@@ -1215,10 +1215,10 @@ class HardwareOSAPI:
             if "Spark context available as" in out:
                 scala_flag=1    
             subprocess.Popen("rm -rf ./scala.csv 2>/dev/null",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            self.logger.info("checkLibrariesInstalled successful")
+            self.logger.info("check_libraries_installed successful")
             return python_flag, java_flag, scala_flag
         except Exception as e:
-            self.logger.error("checkLibrariesInstalled failed", exc_info=True)
+            self.logger.error("check_libraries_installed failed", exc_info=True)
             return None
 
     def security_software(self):
@@ -1286,10 +1286,10 @@ class HardwareOSAPI:
                 security_software[
                     "cloudera_navigator"
                 ] = "Cloudera Navigator is installed"
-            self.logger.info("securitySoftware successful")
+            self.logger.info("security_software successful")
             return security_software
         except Exception as e:
-            self.logger.error("securitySoftware failed", exc_info=True)
+            self.logger.error("security_software failed", exc_info=True)
             return None
 
     def speciality_hardware(self):
@@ -1303,8 +1303,8 @@ class HardwareOSAPI:
             gpu_status = subprocess.Popen('lshw | egrep -i -c "non-vga"',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             gpu_status.wait()
             gpu_status,err = gpu_status.communicate()
-            self.logger.info("specialityHardware successful")
+            self.logger.info("speciality_hardware successful")
             return gpu_status
         except Exception as e:
-            self.logger.error("specialityHardware failed", exc_info=True)
+            self.logger.error("speciality_hardware failed", exc_info=True)
             return None
