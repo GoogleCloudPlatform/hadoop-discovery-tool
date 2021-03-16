@@ -38,7 +38,7 @@ class DataAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def totalSizeConfigured(self):
+    def total_size_configured(self):
         """Get total storage size and storage at each node for HDFS.
 
         Returns:
@@ -99,7 +99,7 @@ class DataAPI:
             self.logger.error("totalSizeConfigured failed", exc_info=True)
             return None
 
-    def replicationFactor(self):
+    def replication_factor(self):
         """Get HDFS replication factor.
 
         Returns:
@@ -120,7 +120,7 @@ class DataAPI:
             self.logger.error("replicationFactor failed", exc_info=True)
             return None
 
-    def getTrashStatus(self):
+    def get_trash_status(self):
         """Get config value for HDFS trash interval.
 
         Returns:
@@ -152,7 +152,7 @@ class DataAPI:
             self.logger.error("getTrashStatus failed", exc_info=True)
             return None
 
-    def getCliresult(self, clipath):
+    def get_cliresult(self, clipath):
         """Get HDFS size breakdown based on HDFS directory system.
 
         Args:
@@ -221,7 +221,7 @@ class DataAPI:
             self.logger.error("getCliresult failed", exc_info=True)
             return None
 
-    def getHdfsCapacity(self, cluster_name):
+    def get_hdfs_capacity(self, cluster_name):
         """Get HDFS storage available data over a date range.
 
         Args:
@@ -325,7 +325,7 @@ class DataAPI:
             self.logger.error("getHdfsCapacity failed", exc_info=True)
             return None
 
-    def getHdfsCapacityUsed(self, cluster_name):
+    def get_hdfs_capacity_used(self, cluster_name):
         """Get HDFS storage used data over a date range.
 
         Args:
@@ -436,7 +436,7 @@ class DataAPI:
             self.logger.error("getHdfsCapacityUsed failed", exc_info=True)
             return None
 
-    def hdfsStorage(self):
+    def hdfs_storage(self):
         """Get HDFS folders and files details in cluster.
 
         Returns:
@@ -495,7 +495,7 @@ class DataAPI:
             self.logger.error("hdfsStorage failed", exc_info=True)
             return None
 
-    def structuredVsUnstructured(self, total_used_size, hadoop_db_names):
+    def structured_vs_unstructured(self, total_used_size, hadoop_db_names):
         """Get structure v/s unstructure data details.
 
         Args:
@@ -528,7 +528,7 @@ class DataAPI:
             self.logger.error("structuredVsUnstructured failed", exc_info=True)
             return None
 
-    def checkCompression(self):
+    def check_compression(self):
         """Get HDFS file compression details in cluster.
 
         Returns:
@@ -556,7 +556,7 @@ class DataAPI:
             self.logger.error("checkCompression failed", exc_info=True)
             return None
 
-    def clusterFileSize(self):
+    def cluster_filesize(self):
         """Get HDFS files distribution in cluster.
 
         Returns:
@@ -599,7 +599,7 @@ class DataAPI:
             self.logger.error("clusterFileSize failed", exc_info=True)
             return None
 
-    def getHiveConfigItems(self, cluster_name):
+    def get_hive_config_items(self, cluster_name):
         """Get Hive metastore config details from cluster.
 
         Args:
@@ -677,7 +677,7 @@ class DataAPI:
             self.logger.error("getHiveConfigItems failed", exc_info=True)
             return None
 
-    def gethiveMetaStore(self, database_uri, database_type):
+    def get_hive_metaStore(self, database_uri, database_type):
         """Get Hive tables and databases details.
 
         Args:
@@ -758,7 +758,7 @@ class DataAPI:
             self.logger.error("gethiveMetaStore failed", exc_info=True)
             return None
 
-    def getHiveDatabaseInfo(self, database_uri, database_type):
+    def get_hive_database_info(self, database_uri, database_type):
         """Get Hive databases details.
 
         Args:
@@ -876,7 +876,7 @@ class DataAPI:
             self.logger.error("getHiveDatabaseInfo failed", exc_info=True)
             return None
 
-    def getHiveDatabaseCount(self, database_uri, database_type):
+    def get_hive_database_count(self, database_uri, database_type):
         """Get Hive databases count.
 
         Args:
@@ -909,7 +909,7 @@ class DataAPI:
             self.logger.error("getHiveDatabaseCount failed", exc_info=True)
             return None
 
-    def getHivePartitionedTableCount(self, database_uri, database_type):
+    def get_hive_partitioned_table_count(self, database_uri, database_type):
         """Get Hive partitioned and non-partitioned tables details.
 
         Args:
@@ -974,7 +974,7 @@ class DataAPI:
             self.logger.error("getHivePartitionedTableCount failed", exc_info=True)
             return None
 
-    def getHiveInternalExternalTables(self, database_uri, database_type):
+    def get_hive_internal_external_tables(self, database_uri, database_type):
         """Get Hive internal and external tables count.
 
         Args:
@@ -1051,7 +1051,7 @@ class DataAPI:
             self.logger.error("getHiveInternalExternalTables failed", exc_info=True)
             return None
 
-    def getHiveExecutionEngine(self):
+    def get_hive_execution_engine(self):
         """Get Hive execution engine details.
 
         Returns:
@@ -1090,7 +1090,7 @@ class DataAPI:
             self.logger.error("getHiveExecutionEngine failed", exc_info=True)
             return None
 
-    def getHiveFileFormats(self, database_uri, database_type):
+    def get_hive_file_formats(self, database_uri, database_type):
         """Get Hive file formats.
 
         Args:
@@ -1182,7 +1182,7 @@ class DataAPI:
             self.logger.error("getHiveFileFormats failed", exc_info=True)
             return None
 
-    def getTransactionLockingConcurrency(self):
+    def get_transaction_locking_concurrency(self):
         """Get Hive concurrency and locking config.
 
         Returns:
@@ -1242,7 +1242,7 @@ class DataAPI:
             self.logger.error("getTransactionLockingConcurrency failed", exc_info=True)
             return None
 
-    def getHiveAdhocEtlQuery(self, yarn_rm, yarn_port):
+    def get_hive_adhoc_etlquery(self, yarn_rm, yarn_port):
         """Get Hive adhoc and etl query count over a date range.
 
         Args:
@@ -1312,7 +1312,7 @@ class DataAPI:
             self.logger.error("getHiveAdhocEtlQuery failed", exc_info=True)
             return None
 
-    def interactiveQueriesStatus(self):
+    def interactive_queries_status(self):
         """Get Hive interactive queries status in cluster.
 
         Returns:
