@@ -51,11 +51,14 @@ class DataAPI:
                 "hdfs dfsadmin -report > ./data.csv",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
-                shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             dt = "Live datanodes "
             list_of_results = []
             flag = 0
-            with open("data.csv","r") as fp:
+            with open("data.csv", "r") as fp:
                 with open("out2.csv", "w") as f1:
                     for line in fp:
                         if dt in line:
@@ -80,8 +83,18 @@ class DataAPI:
                 "Configured_Capacity": list_Configured_Capacity,
             }
             mapped_df = pd.DataFrame(dictionary)
-            subprocess.Popen("rm -rf ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            subprocess.Popen("rm -rf ./out2.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "rm -rf ./data.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+            subprocess.Popen(
+                "rm -rf ./out2.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             mapped_df[
                 ["Configured_Capacity_bytes", "Configured_Capacity"]
             ] = mapped_df.Configured_Capacity.str.split("\(|\)", expand=True).iloc[
@@ -111,9 +124,12 @@ class DataAPI:
                 "hdfs getconf -confKey dfs.replication",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
-                shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             replication_factor.wait()
-            replication_factor,err = replication_factor.communicate()
+            replication_factor, err = replication_factor.communicate()
             self.logger.info("replication_factor successful")
             return replication_factor
         except Exception as e:
@@ -132,9 +148,12 @@ class DataAPI:
                 "cat /etc/hadoop/conf/core-site.xml",
                 # stdout=subprocess.DEVNULL,
                 # stderr=subprocess.STDOUT,
-                shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             xml_data.wait()
-            xml_data,err = xml_data.communicate()
+            xml_data, err = xml_data.communicate()
             root = ET.fromstring(xml_data)
             for val in root.findall("property"):
                 name = val.find("name").text
@@ -245,7 +264,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -259,7 +279,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -273,7 +294,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 hdfs_capacity = r.json()
@@ -349,7 +371,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -363,7 +386,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -377,7 +401,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 hdfs_capacity_used = r.json()
@@ -446,9 +471,14 @@ class DataAPI:
 
         try:
             hdfs_flag = 0
-            raw = subprocess.Popen("hdfs dfs -ls / > ./direc_list.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            raw = subprocess.Popen(
+                "hdfs dfs -ls / > ./direc_list.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             raw.wait()
-            raw,err = raw.communicate()
+            raw, err = raw.communicate()
             hdfs_storage_df = pd.read_csv("direc_list.csv")
             hdfs_storage_df.columns = ["output"]
             hdfs_storage_df[
@@ -465,17 +495,21 @@ class DataAPI:
             ] = hdfs_storage_df.output.str.split(expand=True)
             for i in hdfs_storage_df["path"]:
                 comm = "hdfs storagepolicies -getStoragePolicy -path " + i
-                sam_text = subprocess.Popen(comm,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                sam_text = subprocess.Popen(
+                    comm, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                )
                 sam_text.wait()
-                sam_text,err = sam_text.communicate()
+                sam_text, err = sam_text.communicate()
                 sam_text = sam_text.split("is ", 1)[1]
                 hdfs_storage_df["storage_policy"] = sam_text.split("\n", 1)[0]
             hdfs_temp = hdfs_storage_df
             for i in hdfs_storage_df["path"]:
                 comm = "hdfs dfs -getfacl " + i + " > ./acl_list.csv"
-                sam_text = subprocess.Popen(comm,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                sam_text = subprocess.Popen(
+                    comm, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                )
                 sam_text.wait()
-                sam_text,err = sam_text.communicate()
+                sam_text, err = sam_text.communicate()
             hdfs_storage_df_temp = pd.read_csv("acl_list.csv")
             for i in hdfs_storage_df_temp:
                 user_str = str(hdfs_storage_df_temp.iloc[[2]])
@@ -538,9 +572,14 @@ class DataAPI:
         try:
             path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
             if path_status == True:
-                xml_data = subprocess.Popen("cat /etc/hadoop/conf/mapred-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data = subprocess.Popen(
+                    "cat /etc/hadoop/conf/mapred-site.xml",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 xml_data.wait()
-                xml_data,err = xml_data.communicate()
+                xml_data, err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -567,7 +606,12 @@ class DataAPI:
         """
 
         try:
-            subprocess.Popen("hdfs dfs -ls -R / | sort -r -n -k 5 > ./hadoop_storage.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "hdfs dfs -ls -R / | sort -r -n -k 5 > ./hadoop_storage.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             col_names = [
                 "permission",
                 "links",
@@ -583,7 +627,12 @@ class DataAPI:
             )
             big_data = big_data.assign(size_mb=lambda x: (x["size"] / (1024 * 1024)))
             big_data.drop(big_data[big_data["size_mb"] <= 0.1].index, inplace=True)
-            subprocess.Popen("rm -rf ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "rm -rf ./data.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             big_data["FileType"] = big_data.name.apply(lambda x: x.split(".")[-1])
             big_data = big_data[big_data["FileType"].apply(lambda x: len(x) < 8)]
             grpby_data = big_data.groupby("FileType")["size_mb"].sum()
@@ -623,7 +672,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -635,7 +685,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -647,7 +698,8 @@ class DataAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 hive_config = r.json()
@@ -1060,30 +1112,42 @@ class DataAPI:
 
         try:
             hive_execution_engine = ""
-            xml_data = subprocess.Popen('beeline --help',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            #xml_data = subprocess.Popen('echo $?',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            xml_data = subprocess.Popen(
+                "beeline --help", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+            )
+            # xml_data = subprocess.Popen('echo $?',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             xml_data.wait()
-            out, err = xml_data.communicate()    
+            out, err = xml_data.communicate()
             out = out.splitlines()
             out1 = str(out)
             substring = "which should be present in beeline-site.xml"
             substring_in_list = any(substring in out1 for string in out)
             if substring_in_list == True:
-                xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml = subprocess.Popen(
+                    'beeline -u jdbc:hive2:// -e "set hive.execution.engine" 2>/dev/null',
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 xml.wait()
-                xml,err = xml.communicate()
+                xml, err = xml.communicate()
             else:
-                xml = subprocess.Popen('hive -e "set hive.execution.engine" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml = subprocess.Popen(
+                    'hive -e "set hive.execution.engine" 2>/dev/null',
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 xml.wait()
-                xml,err = xml.communicate()
-            #hive_execution_engine = subprocess.check_output('hive -e "set hive.execution.engine"', shell=True)
+                xml, err = xml.communicate()
+            # hive_execution_engine = subprocess.check_output('hive -e "set hive.execution.engine"', shell=True)
             hive_execution_engine = str(xml)
             hive_execution_engine = hive_execution_engine.split("\\n")
             for line in hive_execution_engine:
-                if (line.find("hive.execution.engine")!=-1):
+                if line.find("hive.execution.engine") != -1:
                     hive_execution_engine = line.split("=")[1]
-                    if (hive_execution_engine.find("|")!=-1):
-                        hive_execution_engine = hive_execution_engine.split('|')[0]
+                    if hive_execution_engine.find("|") != -1:
+                        hive_execution_engine = hive_execution_engine.split("|")[0]
                         hive_execution_engine = hive_execution_engine.strip()
             self.logger.info("get_hive_execution_engine successful")
             return hive_execution_engine
@@ -1155,22 +1219,41 @@ class DataAPI:
                 for row in result:
                     table_name = row[0]
                     break
-                if (table_name != ""):
-                    xml_data = subprocess.Popen('beeline --help',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                if table_name != "":
+                    xml_data = subprocess.Popen(
+                        "beeline --help",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
+                    )
                     xml_data.wait()
-                    out, err = xml_data.communicate()    
+                    out, err = xml_data.communicate()
                     out = out.splitlines()
                     out1 = str(out)
                     substring = "which should be present in beeline-site.xml"
                     substring_in_list = any(substring in out1 for string in out)
                     if substring_in_list == True:
-                        xml = subprocess.Popen('beeline -u jdbc:hive2:// -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        xml = subprocess.Popen(
+                            'beeline -u jdbc:hive2:// -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(
+                                db, table_name
+                            ),
+                            shell=True,
+                            stdout=subprocess.PIPE,
+                            encoding="utf-8",
+                        )
                         xml.wait()
-                        xml,err = xml.communicate()
+                        xml, err = xml.communicate()
                     else:
-                        xml = subprocess.Popen('hive -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(db,table_name),shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                        xml = subprocess.Popen(
+                            'hive -e "use {}; show create table {}" 2>/dev/null | grep "Input"'.format(
+                                db, table_name
+                            ),
+                            shell=True,
+                            stdout=subprocess.PIPE,
+                            encoding="utf-8",
+                        )
                         xml.wait()
-                        xml,err = xml.communicate()
+                        xml, err = xml.communicate()
                     file_format = str(xml.strip())
                     file_format = file_format.split("'")[1]
                     file_format = file_format.split(".")[-1]
@@ -1192,55 +1275,82 @@ class DataAPI:
 
         try:
             transaction_locking_concurrency = ""
-            xml_data = subprocess.Popen('beeline --help',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            xml_data = subprocess.Popen(
+                "beeline --help", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+            )
             xml_data.wait()
-            out, err = xml_data.communicate()    
+            out, err = xml_data.communicate()
             out = out.splitlines()
             out1 = str(out)
             substring = "which should be present in beeline-site.xml"
             substring_in_list = any(substring in out1 for string in out)
             if substring_in_list == True:
-                concurrency = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.support.concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency = subprocess.Popen(
+                    'beeline -u jdbc:hive2:// -e "set hive.support.concurrency" 2>/dev/null',
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 concurrency.wait()
-                concurrency,err = concurrency.communicate()
-                txn_manager = subprocess.Popen('beeline -u jdbc:hive2:// -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency, err = concurrency.communicate()
+                txn_manager = subprocess.Popen(
+                    'beeline -u jdbc:hive2:// -e "set hive.txn.manager" 2>/dev/null',
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 txn_manager.wait()
-                txn_manager,err = txn_manager.communicate()
-                
+                txn_manager, err = txn_manager.communicate()
+
             else:
-                concurrency = subprocess.Popen('hive -e "set hive.support.concurrency" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency = subprocess.Popen(
+                    'hive -e "set hive.support.concurrency" 2>/dev/null',
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 concurrency.wait()
-                concurrency,err = concurrency.communicate()
-                txn_manager = subprocess.Popen('hive -e "set hive.txn.manager" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                concurrency, err = concurrency.communicate()
+                txn_manager = subprocess.Popen(
+                    'hive -e "set hive.txn.manager" 2>/dev/null',
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 txn_manager.wait()
-                txn_manager,err = txn_manager.communicate()
-            
+                txn_manager, err = txn_manager.communicate()
+
             concurrency = str(concurrency)
             concurrency = concurrency.split("\\n")
             for line in concurrency:
-                if (line.find("hive.support.concurrency")!=-1):
+                if line.find("hive.support.concurrency") != -1:
                     concurrency = line.split("=")[1]
-                    if (concurrency.find("|")!=-1):
+                    if concurrency.find("|") != -1:
                         concurrency = concurrency.split("|")[0]
                         concurrency = concurrency.strip()
 
             txn_manager = str(txn_manager)
             txn_manager = txn_manager.split("\\n")
             for line in txn_manager:
-                if (line.find("hive.txn.manager")!=-1):
+                if line.find("hive.txn.manager") != -1:
                     txn_manager = line.split("=")[1]
-                    if (txn_manager.find("|")!=-1):
+                    if txn_manager.find("|") != -1:
                         txn_manager = txn_manager.split("|")[0]
                         txn_manager = txn_manager.strip()
-                
-            if (concurrency=='true' and txn_manager=='org.apache.hadoop.hive.ql.lockmgr.DbTxnManager'):
+
+            if (
+                concurrency == "true"
+                and txn_manager == "org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
+            ):
                 transaction_locking_concurrency = "Yes"
             else:
                 transaction_locking_concurrency = "No"
             self.logger.info("get_transaction_locking_concurrency successful")
             return transaction_locking_concurrency
         except Exception as e:
-            self.logger.error("get_transaction_locking_concurrency failed", exc_info=True)
+            self.logger.error(
+                "get_transaction_locking_concurrency failed", exc_info=True
+            )
             return None
 
     def get_hive_adhoc_etl_query(self, yarn_rm, yarn_port):
@@ -1324,9 +1434,14 @@ class DataAPI:
             path_status = path.exists("/etc/hive/conf/hive-site.xml")
             if path_status == True:
                 hive_interactive_status = "NO"
-                xml_data = subprocess.Popen("cat /etc/hive/conf/hive-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data = subprocess.Popen(
+                    "cat /etc/hive/conf/hive-site.xml",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 xml_data.wait()
-                xml_data,err = xml_data.communicate()
+                xml_data, err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for key in root.findall("property"):
                     name = key.find("name").text

@@ -50,14 +50,22 @@ class FrameworkDetailsAPI:
         try:
             hversion = subprocess.Popen(
                 "hadoop version 2>/dev/null",
-                shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             hversion.wait()
             hversion, err = hversion.communicate()
             hadoop_major = hversion[0:12]
-            subprocess.Popen("hadoop version 2>/dev/null  1>./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "hadoop version 2>/dev/null  1>./data.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             dt = "This command was run using "
             a = ""
-            with open("data.csv","r") as fp:
+            with open("data.csv", "r") as fp:
                 with open("out2.csv", "w") as f1:
                     for line in fp:
                         if dt in line:
@@ -73,8 +81,15 @@ class FrameworkDetailsAPI:
                                 .replace("", "")
                             )
             hadoop_minor = a[0:9]
-            subprocess.Popen("rm -rf ./data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            subprocess.Popen("rm ./out2.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "rm -rf ./data.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+            subprocess.Popen(
+                "rm ./out2.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+            ).wait()
             distribution = ""
             if re.search(r"\bcdh7\b", a):
                 distribution = "CDH7"
@@ -110,7 +125,8 @@ class FrameworkDetailsAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -122,7 +138,8 @@ class FrameworkDetailsAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -134,7 +151,8 @@ class FrameworkDetailsAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 version_related = r.json()
@@ -150,8 +168,11 @@ class FrameworkDetailsAPI:
                     list_apache_services, columns=["name"]
                 )
                 inter = subprocess.Popen(
-                        "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                        shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
 
                 inter, err = inter.communicate()
                 version_data = json.loads(inter)
@@ -198,26 +219,50 @@ class FrameworkDetailsAPI:
         """
 
         try:
-            os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_name = subprocess.Popen(
+                "grep PRETTY_NAME /etc/os-release",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             os_name.wait()
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             third_party_package = None
             if "centos" in os_name:
                 subprocess.Popen(
-                    "yum list installed | grep @epel > ./centos_third_party.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-                col_names = ["name", "version", "package_level"]
-                third_party_package = pd.read_csv("centos_third_party.csv", names=col_names, delimiter=r"\s+")
-                subprocess.Popen("rm ./centos_third_party.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            elif "red hat" in os_name:
-                subprocess.Popen(
-                    "yum list installed | grep @epel > ./centos_third_party.csv"
-                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                    "yum list installed | grep @epel > ./centos_third_party.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 col_names = ["name", "version", "package_level"]
                 third_party_package = pd.read_csv(
                     "centos_third_party.csv", names=col_names, delimiter=r"\s+"
                 )
-                subprocess.Popen("rm ./centos_third_party.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm ./centos_third_party.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
+            elif "red hat" in os_name:
+                subprocess.Popen(
+                    "yum list installed | grep @epel > ./centos_third_party.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
+                col_names = ["name", "version", "package_level"]
+                third_party_package = pd.read_csv(
+                    "centos_third_party.csv", names=col_names, delimiter=r"\s+"
+                )
+                subprocess.Popen(
+                    "rm ./centos_third_party.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
             self.logger.info("third_party_software successful")
             return third_party_package
         except Exception as e:
@@ -232,15 +277,23 @@ class FrameworkDetailsAPI:
         """
 
         try:
-            os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_name = subprocess.Popen(
+                "grep PRETTY_NAME /etc/os-release",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             os_name.wait()
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             package_version = None
             if "centos" in os_name:
                 subprocess.Popen(
-                    "yum list installed | awk '{print $1,$2}' > ./centos_package_version.csv"
-                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                    "yum list installed | awk '{print $1,$2}' > ./centos_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "centos_package_version.csv",
@@ -254,12 +307,20 @@ class FrameworkDetailsAPI:
                     ),
                     index=False,
                 )
-                subprocess.Popen("rm ./centos_package_version.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm ./centos_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 package_version = package_version[1:10]
             elif "debian" in os_name:
                 subprocess.Popen(
-                    "dpkg-query -l  | awk '{print $2,$3}' > ./debian_package_version.csv"
-                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                    "dpkg-query -l  | awk '{print $2,$3}' > ./debian_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "debian_package_version.csv",
@@ -273,11 +334,20 @@ class FrameworkDetailsAPI:
                     ),
                     index=False,
                 )
-                subprocess.Popen("rm ./debian_package_version.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm ./debian_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 package_version = package_version[1:10]
             elif "ubuntu" in os_name:
                 subprocess.Popen(
-                    "dpkg-query -l  | awk '{print $2,$3}' > ./ubuntu_package_version.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                    "dpkg-query -l  | awk '{print $2,$3}' > ./ubuntu_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "ubuntu_package_version.csv",
@@ -291,12 +361,20 @@ class FrameworkDetailsAPI:
                     ),
                     index=False,
                 )
-                subprocess.Popen("rm ./ubuntu_package_version.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm ./ubuntu_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 package_version = package_version[1:10]
             elif "red hat" in os_name:
                 subprocess.Popen(
-                    "yum list installed | awk '{print $1,$2}' > ./redhat_package_version.csv"
-                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                    "yum list installed | awk '{print $1,$2}' > ./redhat_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "redhat_package_version.csv",
@@ -310,7 +388,12 @@ class FrameworkDetailsAPI:
                     ),
                     index=False,
                 )
-                subprocess.Popen("rm -rf ./redhat_package_version.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm -rf ./redhat_package_version.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 package_version = package_version[1:10]
             elif "suse" in os_name:
                 pass
@@ -329,10 +412,18 @@ class FrameworkDetailsAPI:
 
         try:
             subprocess.Popen(
-                'find / -iname "*.jar" 2>/dev/null | grep -E "jdbc|odbc" > ./jdbc_odbc.csv'
-            ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                'find / -iname "*.jar" 2>/dev/null | grep -E "jdbc|odbc" > ./jdbc_odbc.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             df11 = pd.read_csv("jdbc_odbc.csv", delimiter=r"\s+", names=["name"])
-            subprocess.Popen("rm ./jdbc_odbc.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "rm ./jdbc_odbc.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             BetweenTwoSymbols1 = df11["name"].str.split("/").str[-1]
             result1 = BetweenTwoSymbols1.drop_duplicates()
             final_df = result1.to_frame()
@@ -351,12 +442,31 @@ class FrameworkDetailsAPI:
         """
 
         try:
-            subprocess.Popen('find / -iname "Salesforce" 2>/dev/null > ./salesforce.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            df_salesforce = pd.read_csv("salesforce.csv", delimiter=r"\s+", names=["name"])
-            subprocess.Popen("rm -rf ./salesforce.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            subprocess.Popen('find / -iname "ngdbc.jar" 2>/dev/null> ./ngdbc.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                'find / -iname "Salesforce" 2>/dev/null > ./salesforce.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+            df_salesforce = pd.read_csv(
+                "salesforce.csv", delimiter=r"\s+", names=["name"]
+            )
+            subprocess.Popen(
+                "rm -rf ./salesforce.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+            subprocess.Popen(
+                'find / -iname "ngdbc.jar" 2>/dev/null> ./ngdbc.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             df_ngdbc = pd.read_csv("ngdbc.csv", delimiter=r"\s+", names=["name"])
-            subprocess.Popen("rm ./ngdbc.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "rm ./ngdbc.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+            ).wait()
             self.logger.info("salesfroce_sapDriver successful")
             return df_ngdbc, df_salesforce
         except Exception as e:
@@ -371,9 +481,19 @@ class FrameworkDetailsAPI:
         """
 
         try:
-            subprocess.Popen('find / -type f -name "*connector*.jar" 2>/dev/null > ./connector.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                'find / -type f -name "*connector*.jar" 2>/dev/null > ./connector.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             connector_df = pd.read_csv("./connector.csv", names=["Connector_Name"])
-            subprocess.Popen("rm -rf ./connector.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "rm -rf ./connector.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             connector_details = connector_df["Connector_Name"].str.split("/").str[-1]
             connectors_present = connector_details.drop_duplicates()
             connectors_present = connectors_present.to_frame()
