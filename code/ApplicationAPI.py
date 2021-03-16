@@ -49,7 +49,8 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),verify = False
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_application = r.json()
@@ -404,7 +405,9 @@ class ApplicationAPI:
             self.logger.info("get_application_vcore_memory_usage successful")
             return app_vcore_df, app_memory_df
         except Exception as e:
-            self.logger.error("get_application_vcore_memory_usage failed", exc_info=True)
+            self.logger.error(
+                "get_application_vcore_memory_usage failed", exc_info=True
+            )
             return None
 
     def get_job_launch_frequency(self, yarn_application_df):
@@ -542,10 +545,10 @@ class ApplicationAPI:
                 (yarn_application_df["FinalStatus"] == "KILLED")
                 | (yarn_application_df["FinalStatus"] == "FAILED")
             ].sort_values(by="ElapsedTime", ascending=False)
-            self.logger.info("getFailedApplicationDetails successful")
+            self.logger.info("get_failed_application_details successful")
             return yarn_failed_app
         except Exception as e:
-            self.logger.error("getFailedApplicationDetails failed", exc_info=True)
+            self.logger.error("get_failed_application_details failed", exc_info=True)
             return None
 
     def get_yarn_total_vcore(self, yarn_rm, yarn_port):
@@ -559,7 +562,10 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port),verify = False
+                "{}://{}:{}/ws/v1/cluster/metrics".format(
+                    self.http, yarn_rm, yarn_port
+                ),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_total_vcores = r.json()
@@ -600,7 +606,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -614,7 +621,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -628,7 +636,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_vcore_available = r.json()
@@ -706,7 +715,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -720,7 +730,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -734,7 +745,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_vcore_allocated = r.json()
@@ -828,7 +840,10 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port),verify = False
+                "{}://{}:{}/ws/v1/cluster/metrics".format(
+                    self.http, yarn_rm, yarn_port
+                ),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_total_memory = r.json()
@@ -870,7 +885,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -884,7 +900,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -898,7 +915,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_memory_available = r.json()
@@ -976,7 +994,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -990,7 +1009,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1004,7 +1024,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_memory_allocated = r.json()
@@ -1191,7 +1212,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1205,7 +1227,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1219,7 +1242,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_pending_apps = r.json()
@@ -1295,7 +1319,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1309,7 +1334,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1323,7 +1349,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_pending_memory = r.json()
@@ -1399,7 +1426,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1413,7 +1441,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1427,7 +1456,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_pending_vcore = r.json()
@@ -1503,7 +1533,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1517,7 +1548,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1531,7 +1563,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_running_apps = r.json()
@@ -1780,8 +1813,13 @@ class ApplicationAPI:
         """
 
         try:
-            statuscomm = subprocess.Popen("echo 'status' | hbase shell -n",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            statuscomm,err = statuscomm.communicate()    
+            statuscomm = subprocess.Popen(
+                "echo 'status' | hbase shell -n",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            statuscomm, err = statuscomm.communicate()
             statusinfo = statuscomm.split()
             if "servers," in statusinfo:
                 NumNodesServing = int(statusinfo[statusinfo.index("servers,") - 1])
@@ -1805,9 +1843,12 @@ class ApplicationAPI:
             base_size = 0
             disk_space_consumed = 0
             out = subprocess.Popen(
-                "hdfs dfs -du -h /",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                "hdfs dfs -du -h /",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
-            out,err = out.communicate()
+            out, err = out.communicate()
             output = str(out)
             lines = output.split("\\n")
             for i in lines:
@@ -1858,7 +1899,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1870,7 +1912,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1882,7 +1925,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 hbase = r.json()
@@ -1894,7 +1938,7 @@ class ApplicationAPI:
                         hbase_replication = i["value"]
                         if hbase_replication == "true":
                             replication = "Yes"
-                self.logger.info("getHbaseReplication successful")
+                self.logger.info("get_hbase_replication successful")
                 return replication
             else:
                 self.logger.error(
@@ -1927,7 +1971,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1939,7 +1984,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1951,7 +1997,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 hbase = r.json()
@@ -1966,7 +2013,7 @@ class ApplicationAPI:
                         hbase_replication = i["value"]
                 if hbase_indexing == hbase_replication == "true":
                     indexing = "Yes"
-                self.logger.info("getHbaseSecondaryIndex successful")
+                self.logger.info("get_hbase_secondary_index successful")
                 return indexing
             else:
                 self.logger.error(
@@ -1987,7 +2034,10 @@ class ApplicationAPI:
 
         try:
             hive_aux = subprocess.Popen(
-                "awk '/HIVE_AUX_JARS_PATH/ {print}' /etc/hive/conf/hive-env.sh",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                "awk '/HIVE_AUX_JARS_PATH/ {print}' /etc/hive/conf/hive-env.sh",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             hive_aux, err = hive_aux.communicate()
             if "hive-hbase-handler" in hive_aux:
@@ -2009,7 +2059,10 @@ class ApplicationAPI:
 
         try:
             subprocess.Popen(
-                'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             sleep(1)
             phoenix_path_df = pd.read_csv(
@@ -2021,7 +2074,7 @@ class ApplicationAPI:
                 for i in phoenix_path_df["location"]:
                     if i != "":
                         phoenixHbase = "Yes"
-            self.logger.info("phoenixinHBase successful")
+            self.logger.info("phoenix_in_hbase successful")
             return phoenixHbase
         except EmptyDataError:
             phoenixHbase = "No"
@@ -2041,7 +2094,10 @@ class ApplicationAPI:
         try:
             coprocessorHbase = ""
             subprocess.Popen(
-                'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             sleep(1)
             coprocessor_path_df = pd.read_csv(
@@ -2053,7 +2109,7 @@ class ApplicationAPI:
                 for i in coprocessor_path_df["location"]:
                     if i != "":
                         coprocessorHbase = "Yes"
-            self.logger.info("coprocessorinHBase successful")
+            self.logger.info("coprocessor_in_hbase successful")
             return coprocessorHbase
         except EmptyDataError:
             coprocessorHbase = "No"
@@ -2086,11 +2142,14 @@ class ApplicationAPI:
                         spark_resource_manager = line.split("=")[1].strip()
                     else:
                         continue
-            self.logger.info("get_dynamic_allocation_and_spark_resource_manager successful")
+            self.logger.info(
+                "get_dynamic_allocation_and_spark_resource_manager successful"
+            )
             return dynamic_allocation, spark_resource_manager
         except Exception as e:
             self.logger.error(
-                "get_dynamic_allocation_and_spark_resource_manager failed", exc_info=True
+                "get_dynamic_allocation_and_spark_resource_manager failed",
+                exc_info=True,
             )
             return None
 
@@ -2174,7 +2233,9 @@ class ApplicationAPI:
             self.logger.info("get_spark_api_programming_languages successful")
             return language_list
         except Exception as e:
-            self.logger.error("get_spark_api_programming_languages failed", exc_info=True)
+            self.logger.error(
+                "get_spark_api_programming_languages failed", exc_info=True
+            )
             return None
 
     def spark_components_used(self):
@@ -2244,14 +2305,21 @@ class ApplicationAPI:
         """
 
         try:
-            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_password))
+            rversion_api = requests.get(
+                "http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full".format(
+                    self.cloudera_manager_host_ip, self.cluster_name, "kafka"
+                ),
+                auth=HTTPBasicAuth(
+                    self.cloudera_manager_username, self.cloudera_manager_password
+                ),
+            )
             version_related = rversion_api.json()
             for i in version_related["items"]:
                 try:
-                    if i['name'] == 'log.cleaner.delete.retention.ms':
-                        retention_period = int(i['value'])/(60*60*1000)
+                    if i["name"] == "log.cleaner.delete.retention.ms":
+                        retention_period = int(i["value"]) / (60 * 60 * 1000)
                 except KeyError:
-                        retention_period = int(i['default'])/(60*60*1000)
+                    retention_period = int(i["default"]) / (60 * 60 * 1000)
             self.logger.info("retention_period_kafka successful")
             return retention_period
         except Exception as e:
@@ -2266,17 +2334,24 @@ class ApplicationAPI:
         """
 
         try:
-            subprocess.Popen("awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv" ,shell=True,stdout=subprocess.PIPE,encoding="utf-8" )
+            subprocess.Popen(
+                "awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             sleep(1)
-            zookeeper_conn_df = pd.read_csv("zookeeper_conn.csv", delimiter = "\n",header=None)
-            zookeeper_conn_df.columns= ['parameters']
+            zookeeper_conn_df = pd.read_csv(
+                "zookeeper_conn.csv", delimiter="\n", header=None
+            )
+            zookeeper_conn_df.columns = ["parameters"]
             zookeeper_conn_df = zookeeper_conn_df.iloc[[-1]]
-            for i in zookeeper_conn_df['parameters']:
-                if i != '':
-                    zookeeper_conn = i.split('=')[-1]
-                else :
+            for i in zookeeper_conn_df["parameters"]:
+                if i != "":
+                    zookeeper_conn = i.split("=")[-1]
+                else:
                     zookeeper_conn = None
-            self.logger.info("ZookeeperConn successful")
+            self.logger.info("zookeeper_conn successful")
             return zookeeper_conn
         except EmptyDataError:
             zookeeper_conn = None
@@ -2300,17 +2375,19 @@ class ApplicationAPI:
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list 2>/dev/null 1>topics_list.csv",
-                shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             topics.wait()
-            topics, err = topics.communicate() 
+            topics, err = topics.communicate()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             num_topics = len(topics_df.index)
-            self.logger.info("numTopicsKafka successful")
+            self.logger.info("num_topics_kafka successful")
             return num_topics
         except Exception as e:
-            self.logger.error("numTopicsKafka failed", exc_info=True)
+            self.logger.error("num_topics_kafka failed", exc_info=True)
             return None
 
     def msg_size_kafka(self, zookeeper_conn):
@@ -2321,21 +2398,23 @@ class ApplicationAPI:
         Returns:
             sum_size (int): Message size of Kafka
         """
-        if not self.broker_list :
-            self.logger.error("msgCountKafka failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("msg_count_kafka failed", exc_info=True)
             return None
-        else :        
+        else:
             try:
-                broker_connection =''
+                broker_connection = ""
                 for i in self.broker_list:
-                    conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
-                    broker_connection =  broker_connection + conn_temp
+                    conn_temp = str(i["host"]) + str(":") + str(i["port"]) + str(",")
+                    broker_connection = broker_connection + conn_temp
                 broker_connection = broker_connection.strip(",")
                 topics = subprocess.Popen(
                     "timeout 20 kafka-topics --zookeeper "
                     + str(zookeeper_conn)
                     + " --list 2>/dev/null 1>topics_list.csv",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
                 )
                 topics.wait()
                 topics, err = topics.communicate()
@@ -2348,15 +2427,20 @@ class ApplicationAPI:
                         + str(broker_connection)
                         + "  --topic-list "
                         + str(i)
-                        + " --describe 2>/dev/null | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                        + " --describe 2>/dev/null | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
                     )
                     msg_size.wait()
-                    msg_size,err = msg_size.communicate()
+                    msg_size, err = msg_size.communicate()
 
                     msg_size = msg_size.strip("\n")
-                    if msg_size != '':
-                        sum_size = sum_size + (int(msg_size) if msg_size != 'null' else 0)
-                    else :
+                    if msg_size != "":
+                        sum_size = sum_size + (
+                            int(msg_size) if msg_size != "null" else 0
+                        )
+                    else:
                         sum_size = 0
                 self.logger.info("msg_size_kafka successful")
                 return sum_size
@@ -2372,22 +2456,24 @@ class ApplicationAPI:
         Returns:
             sum_count (int): Number of messages in Kafka
         """
-        if not self.broker_list :
-            self.logger.error("msgCountKafka failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("msg_count_kafka failed", exc_info=True)
             return None
-        else :
+        else:
             try:
-                sum_count = 0   
-                broker_connection =''
+                sum_count = 0
+                broker_connection = ""
                 for i in self.broker_list:
-                    conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
-                    broker_connection =  broker_connection + conn_temp
+                    conn_temp = str(i["host"]) + str(":") + str(i["port"]) + str(",")
+                    broker_connection = broker_connection + conn_temp
                 broker_connection = broker_connection.strip(",")
                 topics = subprocess.Popen(
                     "timeout 20 kafka-topics --zookeeper "
                     + str(zookeeper_conn)
                     + " --list 2>/dev/null 1>topics_list.csv",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
                 )
                 topics.wait()
                 topics, err = topics.communicate()
@@ -2401,16 +2487,19 @@ class ApplicationAPI:
                         + str(broker_connection)
                         + " --topic "
                         + str(i)
-                        + " --time -1 --offsets 1 2>/dev/null | awk -F  \":\" '{sum += $3} END {print sum}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                        + " --time -1 --offsets 1 2>/dev/null | awk -F  \":\" '{sum += $3} END {print sum}'",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
                     )
                     msg_count.wait()
-                    msg_count,err = msg_count.communicate()
+                    msg_count, err = msg_count.communicate()
 
                     msg_count = msg_count.strip("\n")
-                    if msg_count != '':
+                    if msg_count != "":
                         sum_count = sum_count + int(msg_count)
-                    else :
-                        sum_count = None  
+                    else:
+                        sum_count = None
                 self.logger.info("msg_count_kafka successful")
                 return sum_count
             except Exception as e:
@@ -2423,68 +2512,80 @@ class ApplicationAPI:
         Returns:
             total_size (int): Total size of Kafka Cluster in KB
         """
-        if not self.broker_list :
-            self.logger.error("KafkaClusterSize failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("kafka_cluster_size failed", exc_info=True)
             return None
-        else :
+        else:
             try:
                 broker_id = 0
-                brokersize = pd.DataFrame(columns = ["broker_size"])  
+                brokersize = pd.DataFrame(columns=["broker_size"])
                 j = 0
                 list_com = []
                 list_temp = []
                 for i in self.broker_list:
-                    list_temp = i['log_dir'].split("?")
+                    list_temp = i["log_dir"].split("?")
                     list_com = list_com + list_temp
                 if len(set(list_com)) == 1:
                     for val in set(list_com):
                         log_dir = val
-                    broker_dir = subprocess.Popen("du -sh " +str(log_dir)+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    broker_dir = subprocess.Popen(
+                        "du -sh " + str(log_dir) + "/* 2>/dev/null 1>broker_size.csv",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
+                    )
                     broker_dir.wait()
                     broker_dir, err = broker_dir.communicate()
                     try:
-                        brokers_df = pd.read_csv("broker_size.csv",header=None)
+                        brokers_df = pd.read_csv("broker_size.csv", header=None)
                         brokers_df.columns = ["logs"]
                         size_sum = 0
-                        for i in brokers_df['logs']:
-                            size = i.split("\t",1)[0]
-                            size= float(size.strip("K"))
+                        for i in brokers_df["logs"]:
+                            size = i.split("\t", 1)[0]
+                            size = float(size.strip("K"))
                             size_sum = size_sum + size
                         brokersize.loc[j] = size_sum
-                        broker_list_len = (len(self.broker_list)-1)
+                        broker_list_len = len(self.broker_list) - 1
                         for i in range(broker_list_len):
-                            brokersize.loc[j+i+1] = 0
+                            brokersize.loc[j + i + 1] = 0
                         total_size = size_sum
                     except EmptyDataError:
                         total_size = None
-                elif len(set(list_com)) == 0 :
+                elif len(set(list_com)) == 0:
                     total_size = None
-                else :
-                    try : 
+                else:
+                    try:
                         for k in self.broker_list:
-                            broker_dir = subprocess.Popen("du -sh " +str(k['log_dir'])+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                            broker_dir = subprocess.Popen(
+                                "du -sh "
+                                + str(k["log_dir"])
+                                + "/* 2>/dev/null 1>broker_size.csv",
+                                shell=True,
+                                stdout=subprocess.PIPE,
+                                encoding="utf-8",
+                            )
                             broker_dir.wait()
                             broker_dir, err = broker_dir.communicate()
-                            brokers_df = pd.read_csv("broker_size.csv",header=None)
+                            brokers_df = pd.read_csv("broker_size.csv", header=None)
                             brokers_df.columns = ["logs"]
                             size_sum = 0
-                            for i in brokers_df['logs']:
-                                size = i.split("\t",1)[0]
-                                size= float(size.strip("K"))
+                            for i in brokers_df["logs"]:
+                                size = i.split("\t", 1)[0]
+                                size = float(size.strip("K"))
                                 size_sum = size_sum + size
                             brokersize.loc[j] = size_sum
-                            j=j+1
+                            j = j + 1
                         total_size = 0
-                        for i in brokersize['broker_size']:
+                        for i in brokersize["broker_size"]:
                             total_size = total_size + float(i)
                     except EmptyDataError:
                         total_size = None
                 self.logger.info("kafka_cluster_size successful")
                 return total_size
-            except Exception as e :
+            except Exception as e:
                 self.logger.error("kafka_cluster_size failed", exc_info=True)
                 return None
-    
+
     def broker_size_kafka(self):
 
         """Get individual broker size in the Kafka Cluster.
@@ -2492,31 +2593,38 @@ class ApplicationAPI:
         Returns:
             brokersize (DataFrame): Returns a df with the sizes of all the brokers in the Kafka Cluster
         """
-        if not self.broker_list :
-            self.logger.error("BrokerSizeKafka failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("broker_size_kafka failed", exc_info=True)
             return None
-        else :
+        else:
             try:
                 broker_id = 0
-                brokersize = pd.DataFrame(columns = ["broker_size"])  
+                brokersize = pd.DataFrame(columns=["broker_size"])
                 j = 0
                 for k in self.broker_list:
-                    broker_dir = subprocess.Popen("du -sh "+str(k['log_dir'])+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    broker_dir = subprocess.Popen(
+                        "du -sh "
+                        + str(k["log_dir"])
+                        + "/* 2>/dev/null 1>broker_size.csv",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
+                    )
                     broker_dir.wait()
                     broker_dir, err = broker_dir.communicate()
-                    brokers_df = pd.read_csv("broker_size.csv",header=None)
+                    brokers_df = pd.read_csv("broker_size.csv", header=None)
                     brokers_df.columns = ["logs"]
                     size_sum = 0
-                    for i in brokers_df['logs']:
-                        size = i.split("\t",1)[0]
-                        size= float(size.strip("K"))
+                    for i in brokers_df["logs"]:
+                        size = i.split("\t", 1)[0]
+                        size = float(size.strip("K"))
                         size_sum = size_sum + size
                     brokersize.loc[j] = size_sum
-                    j=j+1
+                    j = j + 1
                 brokersize.columns = ["size"]
                 self.logger.info("broker_size_kafka successful")
                 return brokersize
-            except Exception as e :
+            except Exception as e:
                 self.logger.error("broker_size_kafka failed", exc_info=True)
                 return None
 
@@ -2529,37 +2637,49 @@ class ApplicationAPI:
             HA_Strategy (str): returns whether High availability in kafka is enabled or not
         """
         try:
-            brokers = ''
+            brokers = ""
             Num_brokers = 0
-            broker_zk = subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids 2>/dev/null 1>broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            broker_zk = subprocess.Popen(
+                "timeout 20 zkCli.sh -server "
+                + str(zookeeper_conn)
+                + " ls /brokers/ids 2>/dev/null 1>broker_id.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             broker_zk.wait()
             broker_zk, err = broker_zk.communicate()
-            broker_id_df = pd.read_csv("broker_id.csv", delimiter = "\n",header=None)
-            broker_id_df.columns= ['parameters']
+            broker_id_df = pd.read_csv("broker_id.csv", delimiter="\n", header=None)
+            broker_id_df.columns = ["parameters"]
             broker_id_df = broker_id_df.iloc[[-1]]
-            for i in broker_id_df['parameters']:
-                if i != '':
-                    brokers = i.strip('][').split(', ') 
+            for i in broker_id_df["parameters"]:
+                if i != "":
+                    brokers = i.strip("][").split(", ")
                     Num_brokers = len(brokers)
-            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_password))
+            rversion_api = requests.get(
+                "http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full".format(
+                    self.cloudera_manager_host_ip, self.cluster_name, "kafka"
+                ),
+                auth=HTTPBasicAuth(
+                    self.cloudera_manager_username, self.cloudera_manager_password
+                ),
+            )
             version_related = rversion_api.json()
             for i in version_related["items"]:
                 try:
-                    if i['name'] == 'offsets.topic.replication.factor':
-                        replication = int(i['value'])
+                    if i["name"] == "offsets.topic.replication.factor":
+                        replication = int(i["value"])
                 except KeyError:
-                    replication = int(i['default']) 
+                    replication = int(i["default"])
             if replication > 1 and Num_brokers > 1:
                 HA_Strategy = "Yes"
-            else :
+            else:
                 HA_Strategy = "No"
             self.logger.info("ha_strategy_kafka successful")
             return HA_Strategy
         except Exception as e:
             self.logger.error("ha_strategy_kafka failed", exc_info=True)
             return None
-        
-
 
     def use_of_impala(self):
         """Get impala service in cluster.
@@ -2571,10 +2691,12 @@ class ApplicationAPI:
         try:
             output = ""
             inter = subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                     shell=True,stdout=subprocess.PIPE,encoding="utf-8"
-                )
-            inter,err = inter.communicate()
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            inter, err = inter.communicate()
             version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -2608,9 +2730,12 @@ class ApplicationAPI:
         try:
             output = ""
             inter = subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            inter,err = inter.communicate()
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            inter, err = inter.communicate()
             version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -2643,9 +2768,14 @@ class ApplicationAPI:
 
         try:
             output = ""
-            inter = subprocess.Popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            inter,err = inter.communicate()
-            version_data = json.loads(inter)                
+            inter = subprocess.Popen(
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            inter, err = inter.communicate()
+            version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
             services_df = df
@@ -2689,7 +2819,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -2701,7 +2832,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -2713,7 +2845,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 cluster_services = r.json()
@@ -2741,7 +2874,9 @@ class ApplicationAPI:
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("get_cloudera_services_used_for_ingestion failed", exc_info=True)
+            self.logger.error(
+                "get_cloudera_services_used_for_ingestion failed", exc_info=True
+            )
             return None
 
     def backup_and_recovery(self):
@@ -2762,7 +2897,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -2773,7 +2909,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -2784,7 +2921,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 Backup = r.json()
@@ -2796,7 +2934,7 @@ class ApplicationAPI:
                 return br
             else:
                 self.logger.error(
-                    "backupAndRecovery failed due to invalid API call. HTTP Response: ",
+                    "backup_and_recovery failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
