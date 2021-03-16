@@ -39,7 +39,7 @@ class HardwareOSAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def osVersion(self):
+    def os_version(self):
         """Get OS version using system CLI command.
         
         Returns:
@@ -60,7 +60,7 @@ class HardwareOSAPI:
             self.logger.error("osVersion failed", exc_info=True)
             return None
 
-    def clusterItems(self):
+    def cluster_items(self):
         """Get list of all clusters present in Cloudera Manager.
 
         Returns:
@@ -118,7 +118,7 @@ class HardwareOSAPI:
             self.logger.error("clusterItems failed", exc_info=True)
             return None
 
-    def clusterHostItems(self, cluster_name):
+    def cluster_host_items(self, cluster_name):
         """Get List of all hosts present in a cluster.
 
         Args:
@@ -185,7 +185,7 @@ class HardwareOSAPI:
             self.logger.error("clusterHostItems failed", exc_info=True)
             return None
 
-    def clusterServiceItem(self, cluster_name):
+    def cluster_service_item(self, cluster_name):
         """Get a list of services present in a cluster with its details.
 
         Args:
@@ -251,7 +251,7 @@ class HardwareOSAPI:
             self.logger.error("clusterServiceItem failed", exc_info=True)
             return None
 
-    def hostData(self, hostId):
+    def host_data(self, hostId):
         """Get detailed specs of a host.
 
         Args:
@@ -312,7 +312,7 @@ class HardwareOSAPI:
             self.logger.error("hostData failed", exc_info=True)
             return None
 
-    def clusterTotalCores(self, cluster_name):
+    def cluster_total_cores(self, cluster_name):
         """Get cores availability data over a date range.
 
         Args:
@@ -414,7 +414,7 @@ class HardwareOSAPI:
             self.logger.error("clusterTotalCores failed", exc_info=True)
             return None
 
-    def clusterCpuUsage(self, cluster_name):
+    def cluster_cpu_usage(self, cluster_name):
         """Get cores usage data over a date range.
 
         Args:
@@ -527,7 +527,7 @@ class HardwareOSAPI:
             self.logger.error("clusterCpuUsage failed", exc_info=True)
             return None
 
-    def clusterTotalMemory(self, cluster_name):
+    def cluster_total_memory(self, cluster_name):
         """Get memory availability data over a date range.
 
         Args:
@@ -631,7 +631,7 @@ class HardwareOSAPI:
             self.logger.error("clusterTotalMemor failed", exc_info=True)
             return None
 
-    def clusterMemoryUsage(self, cluster_name):
+    def cluster_memory_usage(self, cluster_name):
         """Get memory usage data over a date range.
 
         Args:
@@ -740,7 +740,7 @@ class HardwareOSAPI:
             self.logger.error("clusterMemoryUsage failed", exc_info=True)
             return None
 
-    def dataBaseServer(self):
+    def database_server(self):
         """Get database server like mysql for metadata.
 
         Returns:
@@ -796,7 +796,7 @@ class HardwareOSAPI:
             self.logger.error("dataBaseServer failed", exc_info=True)
             return None
 
-    def dnsServer(self):
+    def dns_server(self):
         """Get DNS server details.
 
         Returns:
@@ -817,7 +817,7 @@ class HardwareOSAPI:
             self.logger.error("dnsServer failed", exc_info=True)
             return None
 
-    def webServer(self):
+    def web_server(self):
         """Get web server details.
 
         Returns:
@@ -839,7 +839,7 @@ class HardwareOSAPI:
             self.logger.error("webServer failed", exc_info=True)
             return None
 
-    def ntpServer(self):
+    def ntp_server(self):
         """Get NTP server details.
 
         Returns:
@@ -858,7 +858,7 @@ class HardwareOSAPI:
             self.logger.error("ntpServer failed", exc_info=True)
             return None
 
-    def manufacturerName(self):
+    def manufacturer_name(self):
         """Get manufacturer name of processor.
 
         Returns:
@@ -879,7 +879,7 @@ class HardwareOSAPI:
             self.logger.error("manufacturerName failed", exc_info=True)
             return None
 
-    def serialNo(self):
+    def serial_no(self):
         """Get serial number of processor.
 
         Returns:
@@ -921,7 +921,7 @@ class HardwareOSAPI:
             self.logger.error("family failed", exc_info=True)
             return None
 
-    def modelName(self):
+    def model_name(self):
         """Get model name of processor.
 
         Returns:
@@ -963,7 +963,7 @@ class HardwareOSAPI:
             self.logger.error("microcode failed", exc_info=True)
             return None
 
-    def cpuMHz(self):
+    def cpu_mhz(self):
         """Get CPU MHz of processor.
 
         Returns:
@@ -984,7 +984,7 @@ class HardwareOSAPI:
             self.logger.error("cpuMHz failed", exc_info=True)
             return None
 
-    def cpuFamily(self):
+    def cpu_family(self):
         """Get CPU family of processor.
 
         Returns:
@@ -1005,7 +1005,7 @@ class HardwareOSAPI:
             self.logger.error("cpuFamily failed", exc_info=True)
             return None
 
-    def networkInterfaceDetails(self):
+    def network_interface_details(self):
         """Get NIC details for cluster hardware.
 
         Returns:
@@ -1032,7 +1032,7 @@ class HardwareOSAPI:
             self.logger.error("networkInterfaceDetails failed", exc_info=True)
             return None
 
-    def appliedPatches(self):
+    def applied_patches(self):
         """Get List of security patches present in cluster.
 
         Returns:
@@ -1113,7 +1113,7 @@ class HardwareOSAPI:
             self.logger.error("appliedPatches failed", exc_info=True)
             return None
 
-    def listHadoopNonHadoopLibs(self):
+    def list_hadoop_nonhadoop_libs(self):
         """Get List of hadoop and non-hadoop libraries present in cluster.
 
         Returns:
@@ -1156,7 +1156,7 @@ class HardwareOSAPI:
             self.logger.error("listHadoopNonHadoopLibs failed", exc_info=True)
             return None
 
-    def checkLibrariesInstalled(self):
+    def check_libraries_installed(self):
         """Get check whether python, java and scala are installed in cluster.
 
         Returns:
@@ -1221,7 +1221,7 @@ class HardwareOSAPI:
             self.logger.error("checkLibrariesInstalled failed", exc_info=True)
             return None
 
-    def securitySoftware(self):
+    def security_software(self):
         """Get list of security software present in cluster.
 
         Returns:
@@ -1292,7 +1292,7 @@ class HardwareOSAPI:
             self.logger.error("securitySoftware failed", exc_info=True)
             return None
 
-    def specialityHardware(self):
+    def speciality_hardware(self):
         """Get check whether GPU is present in cluster.
 
         Returns:

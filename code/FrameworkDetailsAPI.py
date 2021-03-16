@@ -38,7 +38,7 @@ class FrameworkDetailsAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def hadoopVersion(self):
+    def hadoop_version(self):
         """Get Hadoop major and minor versions and Hadoop Distribution.
 
         Returns:
@@ -88,7 +88,7 @@ class FrameworkDetailsAPI:
             self.logger.error("hadoopVersion failed", exc_info=True)
             return None
 
-    def versionMapping(self, cluster_name):
+    def version_mapping(self, cluster_name):
         """Get list of services installed in cluster with their versions.
 
         Args:
@@ -190,7 +190,7 @@ class FrameworkDetailsAPI:
             self.logger.error("versionMapping failed", exc_info=True)
             return None
 
-    def thirdPartySoftware(self):
+    def third_party_software(self):
         """Get list of 3rd party software installed in cluster.
 
         Returns:
@@ -224,7 +224,7 @@ class FrameworkDetailsAPI:
             self.logger.error("thirdPartySoftware failed", exc_info=True)
             return None
 
-    def versionPackage(self):
+    def version_package(self):
         """Get list of software installed in cluster with their versions.
 
         Returns:
@@ -320,7 +320,7 @@ class FrameworkDetailsAPI:
             self.logger.error("versionPackage failed", exc_info=True)
             return None
 
-    def jdbcOdbcDriver(self):
+    def jdbcodbc_driver(self):
         """Get list of JDBC and ODBC driver in cluster.
 
         Returns:
@@ -342,7 +342,7 @@ class FrameworkDetailsAPI:
             self.logger.error("jdbcOdbcDriver failed", exc_info=True)
             return None
 
-    def salesFroceSapDriver(self):
+    def salesfroce_sapDriver(self):
         """Get SalesForce and SAP driver in cluster.
 
         Returns:
@@ -363,7 +363,7 @@ class FrameworkDetailsAPI:
             self.logger.error("salesFroceSapDriver failed", exc_info=True)
             return None
 
-    def installedConnectors(self):
+    def installed_connectors(self):
         """Get list of connectors present in cluster.
 
         Returns:
