@@ -38,7 +38,7 @@ class ApplicationAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def getApplicationDetails(self, yarn_rm, yarn_port):
+    def get_application_details(self, yarn_rm, yarn_port):
         """Get list of all yarn related application over a date range.
 
         Args:
@@ -169,7 +169,7 @@ class ApplicationAPI:
             self.logger.error("getApplicationDetails failed", exc_info=True)
             return None
 
-    def getApplicationTypeStatusCount(self, yarn_application_df):
+    def get_application_type_status_count(self, yarn_application_df):
         """Get yarn related application count based to its type and status.
 
         Args:
@@ -203,7 +203,7 @@ class ApplicationAPI:
             self.logger.error("getApplicationTypeStatusCount failed", exc_info=True)
             return None
 
-    def streamingJobs(self, yarn_application_df):
+    def streaming_jobs(self, yarn_application_df):
         """Get a list of streaming application in cluster.
 
         Args:
@@ -272,7 +272,7 @@ class ApplicationAPI:
             self.logger.error("streamingJobs failed", exc_info=True)
             return None
 
-    def dynamicResoucePool(self):
+    def dynamic_resouce_pool(self):
         """Get dynamic resource pool information of cluster.
 
         Returns:
@@ -297,7 +297,7 @@ class ApplicationAPI:
             self.logger.error("dynamicResoucePool failed", exc_info=True)
             return None
 
-    def identifyHA(self):
+    def identify_ha(self):
         """Get HA config for various services.
 
         Returns:
@@ -376,7 +376,7 @@ class ApplicationAPI:
             self.logger.error("identifyHA failed", exc_info=True)
             return None
 
-    def getApplicationVcoreMemoryUsage(self, yarn_application_df):
+    def get_application_vcore_memory_usage(self, yarn_application_df):
         """Get vcore and memory usage of yarn application.
 
         Args:
@@ -407,7 +407,7 @@ class ApplicationAPI:
             self.logger.error("getApplicationVcoreMemoryUsage failed", exc_info=True)
             return None
 
-    def getJobLaunchFrequency(self, yarn_application_df):
+    def get_job_launch_frequency(self, yarn_application_df):
         """Get details about job launch frequency of yarn application.
 
         Args:
@@ -448,7 +448,7 @@ class ApplicationAPI:
             self.logger.error("getJobLaunchFrequency failed", exc_info=True)
             return None
 
-    def getBurstyApplicationDetails(self, yarn_application_df):
+    def get_bursty_application_details(self, yarn_application_df):
         """Get details about busrty yarn application.
 
         Args:
@@ -528,7 +528,7 @@ class ApplicationAPI:
             self.logger.error("getBurstyApplicationDetails failed", exc_info=True)
             return None
 
-    def getFailedApplicationDetails(self, yarn_application_df):
+    def get_failed_application_details(self, yarn_application_df):
         """Get details about failed or killed yarn application.
 
         Args:
@@ -548,7 +548,7 @@ class ApplicationAPI:
             self.logger.error("getFailedApplicationDetails failed", exc_info=True)
             return None
 
-    def getYarnTotalVcore(self, yarn_rm, yarn_port):
+    def get_yarn_total_vcore(self, yarn_rm, yarn_port):
         """Get total vcores allocated to yarn.
 
         Args:
@@ -577,7 +577,7 @@ class ApplicationAPI:
             self.logger.error("getYarnTotalVcore failed", exc_info=True)
             return None
 
-    def getYarnVcoreAvailable(self, cluster_name):
+    def get_yarn_vcore_available(self, cluster_name):
         """Get yarn vcore availability data over a date range.
 
         Args:
@@ -681,7 +681,7 @@ class ApplicationAPI:
             self.logger.error("getYarnVcoreAvailable failed", exc_info=True)
             return None
 
-    def getYarnVcoreAllocated(self, cluster_name):
+    def get_yarn_vcore_allocated(self, cluster_name):
         """Get yarn vcore allocation data over a date range.
 
         Args:
@@ -817,7 +817,7 @@ class ApplicationAPI:
             self.logger.error("getYarnVcoreAllocated failed", exc_info=True)
             return None
 
-    def getYarnTotalMemory(self, yarn_rm, yarn_port):
+    def get_yarn_total_memory(self, yarn_rm, yarn_port):
         """Get total memory allocated to yarn.
 
         Args:
@@ -847,7 +847,7 @@ class ApplicationAPI:
             self.logger.error("getYarnTotalMemory failed", exc_info=True)
             return None
 
-    def getYarnMemoryAvailable(self, cluster_name):
+    def get_yarn_memory_available(self, cluster_name):
         """Get yarn memory availability data over a date range.
 
         Args:
@@ -951,7 +951,7 @@ class ApplicationAPI:
             self.logger.error("getYarnMemoryAvailable failed", exc_info=True)
             return None
 
-    def getYarnMemoryAllocated(self, cluster_name):
+    def get_yarn_memory_allocated(self, cluster_name):
         """Get yarn memory allocation data over a date range.
 
         Args:
@@ -1089,7 +1089,7 @@ class ApplicationAPI:
             self.logger.error("getYarnMemoryAllocated failed", exc_info=True)
             return None
 
-    def getVcoreMemoryByApplication(self, yarn_application_df):
+    def get_vcore_memory_by_application(self, yarn_application_df):
         """Get vcore and memory breakdown by yarn application.
 
         Args:
@@ -1168,7 +1168,7 @@ class ApplicationAPI:
             self.logger.error("getVcoreMemoryByApplication failed", exc_info=True)
             return None
 
-    def getPendingApplication(self, cluster_name):
+    def get_pending_application(self, cluster_name):
         """Get pending application over a date range.
 
         Args:
@@ -1272,7 +1272,7 @@ class ApplicationAPI:
             self.logger.error("getPendingApplication failed", exc_info=True)
             return None
 
-    def getPendingMemory(self, cluster_name):
+    def get_pending_memory(self, cluster_name):
         """Get pending memory over a date range.
 
         Args:
@@ -1376,7 +1376,7 @@ class ApplicationAPI:
             self.logger.error("getPendingMemory failed", exc_info=True)
             return None
 
-    def getPendingVcore(self, cluster_name):
+    def get_pending_vcore(self, cluster_name):
         """Get pending vcore over a date range.
 
         Args:
@@ -1480,7 +1480,7 @@ class ApplicationAPI:
             self.logger.error("getPendingVcore failed", exc_info=True)
             return None
 
-    def getRunningApplication(self, cluster_name):
+    def get_running_application(self, cluster_name):
         """Get running application over a date range.
 
         Args:
@@ -1584,7 +1584,7 @@ class ApplicationAPI:
             self.logger.error("getRunningApplication failed", exc_info=True)
             return None
 
-    def getQueueDetails(self, yarn_rm, yarn_port):
+    def get_queue_details(self, yarn_rm, yarn_port):
         """Get details about yarn queues.
 
         Args:
@@ -1614,7 +1614,7 @@ class ApplicationAPI:
             self.logger.error("getQueueDetails failed", exc_info=True)
             return None
 
-    def getQueueApplication(self, yarn_application_df):
+    def get_queue_application(self, yarn_application_df):
         """Get yarn application count based on different yarn queues.
 
         Args:
@@ -1642,7 +1642,7 @@ class ApplicationAPI:
             self.logger.error("getQueueApplication failed", exc_info=True)
             return None
 
-    def getQueuePendingApplication(self, yarn_application_df):
+    def get_queue_pending_application(self, yarn_application_df):
         """Get details about yarn application pending in yarn queues.
 
         Args:
@@ -1686,7 +1686,7 @@ class ApplicationAPI:
             self.logger.error("getQueuePendingApplication failed", exc_info=True)
             return None
 
-    def getQueueVcoreMemory(self, yarn_application_df):
+    def get_queue_vcore_memory(self, yarn_application_df):
         """Get vcore and memory used by yarn queues.
 
         Args:
@@ -1772,7 +1772,7 @@ class ApplicationAPI:
             self.logger.error("getQueueVcoreMemory failed", exc_info=True)
             return None
 
-    def nodesServingHbase(self):
+    def nodes_serving_hbase(self):
         """Get number of nodes serving Hbase.
 
         Returns:
@@ -1793,7 +1793,7 @@ class ApplicationAPI:
             self.logger.error("nodesServingHbase failed", exc_info=True)
             return None
 
-    def getHbaseDataSize(self):
+    def get_hbase_data_size(self):
         """Get HBase storage details.
 
         Returns:
@@ -1837,7 +1837,7 @@ class ApplicationAPI:
             self.logger.error("getHbaseDataSize failed", exc_info=True)
             return None
 
-    def getHbaseReplication(self, cluster_name):
+    def get_hbase_replication(self, cluster_name):
         """Get HBase replication factor.
 
         Args:
@@ -1906,7 +1906,7 @@ class ApplicationAPI:
             self.logger.error("getHbaseReplication failed", exc_info=True)
             return None
 
-    def getHbaseSecondaryIndex(self, cluster_name):
+    def get_hbase_secondary_index(self, cluster_name):
         """Get HBase secondary indexing details.
 
         Args:
@@ -1978,7 +1978,7 @@ class ApplicationAPI:
             self.logger.error("getHbaseSecondaryIndex failed", exc_info=True)
             return None
 
-    def hBaseOnHive(self):
+    def hBase_on_hive(self):
         """Get HBase-hive information.
 
         Returns:
@@ -2000,7 +2000,7 @@ class ApplicationAPI:
             self.logger.error("hBaseOnHive failed", exc_info=True)
             return None
 
-    def phoenixinHBase(self):
+    def phoenix_in_hbase(self):
         """Get HBase phoenix information.
 
         Returns:
@@ -2031,7 +2031,7 @@ class ApplicationAPI:
             self.logger.error("phoenixinHBase failed", exc_info=True)
             return None
 
-    def coprocessorinHBase(self):
+    def coprocessor_in_hbase(self):
         """Get HBase coprocessor information.
 
         Returns:
@@ -2063,7 +2063,7 @@ class ApplicationAPI:
             self.logger.error("coprocessorinHBase failed", exc_info=True)
             return None
 
-    def getDynamicAllocationAndSparkResourceManager(self):
+    def get_dynamic_allocation_and_spark_resource_manager(self):
         """Get spark config details.
 
         Returns:
@@ -2094,7 +2094,7 @@ class ApplicationAPI:
             )
             return None
 
-    def getSparkVersion(self):
+    def get_spark_version(self):
         """Get Spark version details.
 
         Returns:
@@ -2118,7 +2118,7 @@ class ApplicationAPI:
             self.logger.error("getSparkVersion failed", exc_info=True)
             return None
 
-    def getSparkApiProgrammingLanguages(self):
+    def get_spark_api_programming_languages(self):
         """Get list of languages used by spark programs.
 
         Returns:
@@ -2177,7 +2177,7 @@ class ApplicationAPI:
             self.logger.error("getSparkApiProgrammingLanguages failed", exc_info=True)
             return None
 
-    def sparkComponentsUsed(self):
+    def spark_components_used(self):
         """Get components of spark used in programming.
 
         Returns:
@@ -2236,7 +2236,7 @@ class ApplicationAPI:
             self.logger.error("sparkComponentsUsed failed", exc_info=True)
             return None
 
-    def retentionPeriodKafka(self):
+    def retention_period_kafka(self):
         """Get retention period of kafka.
 
         Returns:
@@ -2258,7 +2258,7 @@ class ApplicationAPI:
             self.logger.error("retentionPeriodKafka failed", exc_info=True)
             return None
 
-    def ZookeeperConn(self):
+    def zookeeper_conn(self):
         """Get zookeeper connection string in kafka.
         
         Returns:
@@ -2286,7 +2286,7 @@ class ApplicationAPI:
             self.logger.error("ZookeeperConn failed", exc_info=True)
             return None
 
-    def numTopicsKafka(self, zookeeper_conn):
+    def num_topics_kafka(self, zookeeper_conn):
         """Get num of topics in kafka.
         
         Args:
@@ -2313,7 +2313,7 @@ class ApplicationAPI:
             self.logger.error("numTopicsKafka failed", exc_info=True)
             return None
 
-    def msgSizeKafka(self, zookeeper_conn):
+    def msg_size_kafka(self, zookeeper_conn):
         """Get volume of message in kafka in bytes.
         
         Args:
@@ -2364,7 +2364,7 @@ class ApplicationAPI:
                 self.logger.error("msgSizeKafka failed", exc_info=True)
                 return None
 
-    def msgCountKafka(self, zookeeper_conn):
+    def msg_count_kafka(self, zookeeper_conn):
         """Get count of messages in kafka topics.
 
         Args:
@@ -2417,7 +2417,7 @@ class ApplicationAPI:
                 self.logger.error("msgCountKafka failed", exc_info=True)
                 return None
 
-    def KafkaClusterSize(self):
+    def kafka_cluster_size(self):
         """Get Total size of Kafka Cluster.
 
         Returns:
@@ -2485,7 +2485,7 @@ class ApplicationAPI:
                 self.logger.error("KafkaClusterSize failed", exc_info=True)
                 return None
     
-    def BrokerSizeKafka(self):
+    def broker_size_kafka(self):
 
         """Get individual broker size in the Kafka Cluster.
 
@@ -2520,7 +2520,7 @@ class ApplicationAPI:
                 self.logger.error("BrokerSizeKafka failed", exc_info=True)
                 return None
 
-    def HAStrategyKafka(self, zookeeper_conn):
+    def ha_strategy_kafka(self, zookeeper_conn):
         """Check High Availability of Kafka Cluster
         
         Args:
@@ -2561,7 +2561,7 @@ class ApplicationAPI:
         
 
 
-    def useOfImpala(self):
+    def use_of_impala(self):
         """Get impala service in cluster.
 
         Returns:
@@ -2598,7 +2598,7 @@ class ApplicationAPI:
             self.logger.error("useOfImpala failed", exc_info=True)
             return None
 
-    def useOfSentry(self):
+    def use_of_sentry(self):
         """Get sentry service in cluster.
 
         Returns:
@@ -2634,7 +2634,7 @@ class ApplicationAPI:
             self.logger.error("useOfSentry failed", exc_info=True)
             return None
 
-    def useOfKudu(self):
+    def use_of_kudu(self):
         """Get kudu service in cluster.
 
         Returns:
@@ -2668,7 +2668,7 @@ class ApplicationAPI:
             self.logger.error("useOfKudu failed", exc_info=True)
             return None
 
-    def getClouderaServicesUsedForIngestion(self, cluster_name):
+    def get_cloudera_services_used_for_ingestion(self, cluster_name):
         """Get a list of services used for ingestion.
 
         Args:
@@ -2744,7 +2744,7 @@ class ApplicationAPI:
             self.logger.error("clusterServiceItem failed", exc_info=True)
             return None
 
-    def backupAndRecovery(self):
+    def backup_and_recovery(self):
         """Get backup and disaster recovery information.
 
         Returns:
