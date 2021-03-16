@@ -1,5 +1,12 @@
 #!bin/bash
 var=0
+# Activate python environment
+source $PWD/HDT_ENV/venv/bin/activate
+var=$?
+if [ $var -eq 1 ]
+then
+    echo ""
+fi
 #Go to the code directory
 cd $PWD/HDT_ENV/HDT/ 2>/dev/null
 var=$?
