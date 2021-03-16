@@ -38,7 +38,7 @@ class ApplicationAPI:
         self.start_date = inputs["start_date"]
         self.end_date = inputs["end_date"]
 
-    def getApplicationDetails(self, yarn_rm, yarn_port):
+    def get_application_details(self, yarn_rm, yarn_port):
         """Get list of all yarn related application over a date range.
 
         Args:
@@ -49,7 +49,8 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),verify = False
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_application = r.json()
@@ -157,19 +158,19 @@ class ApplicationAPI:
                         & (yarn_application_df["FinishedTime"] >= (self.start_date))
                     ]
                 yarn_application_df = yarn_application_df.reset_index(drop=True)
-                self.logger.info("getApplicationDetails successful")
+                self.logger.info("get_application_details successful")
                 return yarn_application_df
             else:
                 self.logger.error(
-                    "getApplicationDetails failed due to invalid API call. HTTP Response: ",
+                    "get_application_details failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getApplicationDetails failed", exc_info=True)
+            self.logger.error("get_application_details failed", exc_info=True)
             return None
 
-    def getApplicationTypeStatusCount(self, yarn_application_df):
+    def get_application_type_status_count(self, yarn_application_df):
         """Get yarn related application count based to its type and status.
 
         Args:
@@ -197,13 +198,13 @@ class ApplicationAPI:
             app_type_count_df = app_type_count_df.groupby(["Application Type"]).sum()
             app_status_count_df = app_count_df[["Status", "Count"]]
             app_status_count_df = app_status_count_df.groupby(["Status"]).sum()
-            self.logger.info("getApplicationTypeStatusCount successful")
+            self.logger.info("get_application_type_status_count successful")
             return app_count_df, app_type_count_df, app_status_count_df
         except Exception as e:
-            self.logger.error("getApplicationTypeStatusCount failed", exc_info=True)
+            self.logger.error("get_application_type_status_count failed", exc_info=True)
             return None
 
-    def streamingJobs(self, yarn_application_df):
+    def streaming_jobs(self, yarn_application_df):
         """Get a list of streaming application in cluster.
 
         Args:
@@ -266,13 +267,13 @@ class ApplicationAPI:
                 only_streaming = only_streaming.append(
                     insert_spark_if_streaming, ignore_index=True
                 )
-            self.logger.info("streamingJobs successful")
+            self.logger.info("streaming_jobs successful")
             return only_streaming
         except Exception as e:
-            self.logger.error("streamingJobs failed", exc_info=True)
+            self.logger.error("streaming_jobs failed", exc_info=True)
             return None
 
-    def dynamicResoucePool(self):
+    def dynamic_resouce_pool(self):
         """Get dynamic resource pool information of cluster.
 
         Returns:
@@ -291,13 +292,13 @@ class ApplicationAPI:
                 resource = "Dynamic resource pool is not Configured"
             else:
                 resource = "Dynamic resource pool are Configured"
-            self.logger.info("dynamicResoucePool successful")
+            self.logger.info("dynamic_resouce_pool successful")
             return resource
         except Exception as e:
-            self.logger.error("dynamicResoucePool failed", exc_info=True)
+            self.logger.error("dynamic_resouce_pool failed", exc_info=True)
             return None
 
-    def identifyHA(self):
+    def identify_ha(self):
         """Get HA config for various services.
 
         Returns:
@@ -370,13 +371,13 @@ class ApplicationAPI:
                 zookeeper_ha = 1
             else:
                 zookeeper_ha = 0
-            self.logger.info("identifyHA successful")
+            self.logger.info("identify_ha successful")
             return zookeeper_ha, hive_ha, yarn_ha, hdfs_ha
         except Exception as e:
-            self.logger.error("identifyHA failed", exc_info=True)
+            self.logger.error("identify_ha failed", exc_info=True)
             return None
 
-    def getApplicationVcoreMemoryUsage(self, yarn_application_df):
+    def get_application_vcore_memory_usage(self, yarn_application_df):
         """Get vcore and memory usage of yarn application.
 
         Args:
@@ -401,13 +402,15 @@ class ApplicationAPI:
                 }
             )
             app_memory_df = app_memory_df.groupby(["Application Type"]).sum()
-            self.logger.info("getApplicationVcoreMemoryUsage successful")
+            self.logger.info("get_application_vcore_memory_usage successful")
             return app_vcore_df, app_memory_df
         except Exception as e:
-            self.logger.error("getApplicationVcoreMemoryUsage failed", exc_info=True)
+            self.logger.error(
+                "get_application_vcore_memory_usage failed", exc_info=True
+            )
             return None
 
-    def getJobLaunchFrequency(self, yarn_application_df):
+    def get_job_launch_frequency(self, yarn_application_df):
         """Get details about job launch frequency of yarn application.
 
         Args:
@@ -442,13 +445,13 @@ class ApplicationAPI:
             job_launch_df.loc[job_launch_df["Count"] <= 20, "frequency"] = "Weekly"
             job_launch_df.loc[job_launch_df["Count"] <= 2, "frequency"] = "Monthly"
             job_launch_df = job_launch_df.drop(["StartedTime"], axis=1)
-            self.logger.info("getJobLaunchFrequency successful")
+            self.logger.info("get_job_launch_frequency successful")
             return job_launch_df
         except Exception as e:
-            self.logger.error("getJobLaunchFrequency failed", exc_info=True)
+            self.logger.error("get_job_launch_frequency failed", exc_info=True)
             return None
 
-    def getBurstyApplicationDetails(self, yarn_application_df):
+    def get_bursty_application_details(self, yarn_application_df):
         """Get details about busrty yarn application.
 
         Args:
@@ -522,13 +525,13 @@ class ApplicationAPI:
                     bursty_app_vcore_df = bursty_app_vcore_df.append(
                         bursty_app_vcore_tmp_df
                     )
-            self.logger.info("getBurstyApplicationDetails successful")
+            self.logger.info("get_bursty_application_details successful")
             return bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df
         except Exception as e:
-            self.logger.error("getBurstyApplicationDetails failed", exc_info=True)
+            self.logger.error("get_bursty_application_details failed", exc_info=True)
             return None
 
-    def getFailedApplicationDetails(self, yarn_application_df):
+    def get_failed_application_details(self, yarn_application_df):
         """Get details about failed or killed yarn application.
 
         Args:
@@ -542,13 +545,13 @@ class ApplicationAPI:
                 (yarn_application_df["FinalStatus"] == "KILLED")
                 | (yarn_application_df["FinalStatus"] == "FAILED")
             ].sort_values(by="ElapsedTime", ascending=False)
-            self.logger.info("getFailedApplicationDetails successful")
+            self.logger.info("get_failed_application_details successful")
             return yarn_failed_app
         except Exception as e:
-            self.logger.error("getFailedApplicationDetails failed", exc_info=True)
+            self.logger.error("get_failed_application_details failed", exc_info=True)
             return None
 
-    def getYarnTotalVcore(self, yarn_rm, yarn_port):
+    def get_yarn_total_vcore(self, yarn_rm, yarn_port):
         """Get total vcores allocated to yarn.
 
         Args:
@@ -559,25 +562,28 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port),verify = False
+                "{}://{}:{}/ws/v1/cluster/metrics".format(
+                    self.http, yarn_rm, yarn_port
+                ),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_total_vcores = r.json()
                 yarn_total_vcores_count = math.ceil(
                     yarn_total_vcores["clusterMetrics"]["totalVirtualCores"]
                 )
-                self.logger.info("getYarnTotalVcore successful")
+                self.logger.info("get_yarn_total_vcore successful")
                 return yarn_total_vcores_count
             else:
                 self.logger.error(
-                    "getYarnTotalVcore failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_total_vcore failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("getYarnTotalVcore failed", exc_info=True)
+            self.logger.error("get_yarn_total_vcore failed", exc_info=True)
             return None
 
-    def getYarnVcoreAvailable(self, cluster_name):
+    def get_yarn_vcore_available(self, cluster_name):
         """Get yarn vcore availability data over a date range.
 
         Args:
@@ -600,7 +606,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -614,7 +621,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -628,7 +636,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_vcore_available = r.json()
@@ -669,19 +678,19 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_vcore_available_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_vcore_available_df = yarn_vcore_available_df.set_index("Time")
-                self.logger.info("getYarnVcoreAvailable successful")
+                self.logger.info("get_yarn_vcore_available successful")
                 return yarn_vcore_available_df
             else:
                 self.logger.error(
-                    "getYarnVcoreAvailable failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_vcore_available failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnVcoreAvailable failed", exc_info=True)
+            self.logger.error("get_yarn_vcore_available failed", exc_info=True)
             return None
 
-    def getYarnVcoreAllocated(self, cluster_name):
+    def get_yarn_vcore_allocated(self, cluster_name):
         """Get yarn vcore allocation data over a date range.
 
         Args:
@@ -706,7 +715,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -720,7 +730,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -734,7 +745,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_vcore_allocated = r.json()
@@ -801,7 +813,7 @@ class ApplicationAPI:
                     values="Mean",
                 )
                 yarn_vcore_allocated_pivot_df = yarn_vcore_allocated_pivot_df.fillna(0)
-                self.logger.info("getYarnVcoreAllocated successful")
+                self.logger.info("get_yarn_vcore_allocated successful")
                 return (
                     yarn_vcore_allocated_avg,
                     yarn_vcore_allocated_df,
@@ -809,15 +821,15 @@ class ApplicationAPI:
                 )
             else:
                 self.logger.error(
-                    "getYarnVcoreAllocated failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_vcore_allocated failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnVcoreAllocated failed", exc_info=True)
+            self.logger.error("get_yarn_vcore_allocated failed", exc_info=True)
             return None
 
-    def getYarnTotalMemory(self, yarn_rm, yarn_port):
+    def get_yarn_total_memory(self, yarn_rm, yarn_port):
         """Get total memory allocated to yarn.
 
         Args:
@@ -828,26 +840,29 @@ class ApplicationAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/metrics".format(self.http, yarn_rm, yarn_port),verify = False
+                "{}://{}:{}/ws/v1/cluster/metrics".format(
+                    self.http, yarn_rm, yarn_port
+                ),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_total_memory = r.json()
                 yarn_total_memory_count = math.ceil(
                     yarn_total_memory["clusterMetrics"]["totalMB"] / 1024
                 )
-                self.logger.info("getYarnTotalMemory successful")
+                self.logger.info("get_yarn_total_memory successful")
                 return yarn_total_memory_count
             else:
                 self.logger.error(
-                    "getYarnTotalMemory failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_total_memory failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnTotalMemory failed", exc_info=True)
+            self.logger.error("get_yarn_total_memory failed", exc_info=True)
             return None
 
-    def getYarnMemoryAvailable(self, cluster_name):
+    def get_yarn_memory_available(self, cluster_name):
         """Get yarn memory availability data over a date range.
 
         Args:
@@ -870,7 +885,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -884,7 +900,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -898,7 +915,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_memory_available = r.json()
@@ -939,19 +957,19 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_memory_available_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_memory_available_df = yarn_memory_available_df.set_index("Time")
-                self.logger.info("getYarnMemoryAvailable successful")
+                self.logger.info("get_yarn_memory_available successful")
                 return yarn_memory_available_df
             else:
                 self.logger.error(
-                    "getYarnMemoryAvailable failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_memory_available failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnMemoryAvailable failed", exc_info=True)
+            self.logger.error("get_yarn_memory_available failed", exc_info=True)
             return None
 
-    def getYarnMemoryAllocated(self, cluster_name):
+    def get_yarn_memory_allocated(self, cluster_name):
         """Get yarn memory allocation data over a date range.
 
         Args:
@@ -976,7 +994,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -990,7 +1009,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1004,7 +1024,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_memory_allocated = r.json()
@@ -1073,7 +1094,7 @@ class ApplicationAPI:
                 yarn_memory_allocated_pivot_df = yarn_memory_allocated_pivot_df.fillna(
                     0
                 )
-                self.logger.info("getYarnMemoryAllocated successful")
+                self.logger.info("get_yarn_memory_allocated successful")
                 return (
                     yarn_memory_allocated_avg,
                     yarn_memory_allocated_df,
@@ -1081,15 +1102,15 @@ class ApplicationAPI:
                 )
             else:
                 self.logger.error(
-                    "getYarnMemoryAllocated failed due to invalid API call. HTTP Response: ",
+                    "get_yarn_memory_allocated failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getYarnMemoryAllocated failed", exc_info=True)
+            self.logger.error("get_yarn_memory_allocated failed", exc_info=True)
             return None
 
-    def getVcoreMemoryByApplication(self, yarn_application_df):
+    def get_vcore_memory_by_application(self, yarn_application_df):
         """Get vcore and memory breakdown by yarn application.
 
         Args:
@@ -1162,13 +1183,13 @@ class ApplicationAPI:
                 ),
                 columns=["Date"],
             )
-            self.logger.info("getVcoreMemoryByApplication successful")
+            self.logger.info("get_vcore_memory_by_application successful")
             return app_vcore_df, app_vcore_usage_df, app_memory_df, app_memory_usage_df
         except Exception as e:
-            self.logger.error("getVcoreMemoryByApplication failed", exc_info=True)
+            self.logger.error("get_vcore_memory_by_application failed", exc_info=True)
             return None
 
-    def getPendingApplication(self, cluster_name):
+    def get_pending_application(self, cluster_name):
         """Get pending application over a date range.
 
         Args:
@@ -1191,7 +1212,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1205,7 +1227,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1219,7 +1242,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_pending_apps = r.json()
@@ -1260,19 +1284,19 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_pending_apps_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_pending_apps_df = yarn_pending_apps_df.set_index("Time")
-                self.logger.info("getPendingApplication successful")
+                self.logger.info("get_pending_application successful")
                 return yarn_pending_apps_df
             else:
                 self.logger.error(
-                    "getPendingApplication failed due to invalid API call. HTTP Response: ",
+                    "get_pending_application failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getPendingApplication failed", exc_info=True)
+            self.logger.error("get_pending_application failed", exc_info=True)
             return None
 
-    def getPendingMemory(self, cluster_name):
+    def get_pending_memory(self, cluster_name):
         """Get pending memory over a date range.
 
         Args:
@@ -1295,7 +1319,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1309,7 +1334,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1323,7 +1349,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_pending_memory = r.json()
@@ -1364,19 +1391,19 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_pending_memory_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_pending_memory_df = yarn_pending_memory_df.set_index("Time")
-                self.logger.info("getPendingMemory successful")
+                self.logger.info("get_pending_memory successful")
                 return yarn_pending_memory_df
             else:
                 self.logger.error(
-                    "getPendingMemory failed due to invalid API call. HTTP Response: ",
+                    "get_pending_memory failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getPendingMemory failed", exc_info=True)
+            self.logger.error("get_pending_memory failed", exc_info=True)
             return None
 
-    def getPendingVcore(self, cluster_name):
+    def get_pending_vcore(self, cluster_name):
         """Get pending vcore over a date range.
 
         Args:
@@ -1399,7 +1426,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1413,7 +1441,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1427,7 +1456,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_pending_vcore = r.json()
@@ -1468,19 +1498,19 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_pending_vcore_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_pending_vcore_df = yarn_pending_vcore_df.set_index("Time")
-                self.logger.info("getPendingVcore successful")
+                self.logger.info("get_pending_vcore successful")
                 return yarn_pending_vcore_df
             else:
                 self.logger.error(
-                    "getPendingVcore failed due to invalid API call. HTTP Response: ",
+                    "get_pending_vcore failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getPendingVcore failed", exc_info=True)
+            self.logger.error("get_pending_vcore failed", exc_info=True)
             return None
 
-    def getRunningApplication(self, cluster_name):
+    def get_running_application(self, cluster_name):
         """Get running application over a date range.
 
         Args:
@@ -1503,7 +1533,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1517,7 +1548,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1531,7 +1563,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 yarn_running_apps = r.json()
@@ -1572,19 +1605,19 @@ class ApplicationAPI:
                     "Time"
                 ] = yarn_running_apps_df.DateTime.dt.strftime("%d-%b %H:%M")
                 yarn_running_apps_df = yarn_running_apps_df.set_index("Time")
-                self.logger.info("getRunningApplication successful")
+                self.logger.info("get_running_application successful")
                 return yarn_running_apps_df
             else:
                 self.logger.error(
-                    "getRunningApplication failed due to invalid API call. HTTP Response: ",
+                    "get_running_application failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getRunningApplication failed", exc_info=True)
+            self.logger.error("get_running_application failed", exc_info=True)
             return None
 
-    def getQueueDetails(self, yarn_rm, yarn_port):
+    def get_queue_details(self, yarn_rm, yarn_port):
         """Get details about yarn queues.
 
         Args:
@@ -1602,19 +1635,19 @@ class ApplicationAPI:
             if r.status_code == 200:
                 yarn_queues = r.json()
                 yarn_queues_list = yarn_queues["scheduler"]["schedulerInfo"]
-                self.logger.info("getQueueDetails successful")
+                self.logger.info("get_queue_details successful")
                 return yarn_queues_list
             else:
                 self.logger.error(
-                    "getQueueDetails failed due to invalid API call. HTTP Response: ",
+                    "get_queue_details failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getQueueDetails failed", exc_info=True)
+            self.logger.error("get_queue_details failed", exc_info=True)
             return None
 
-    def getQueueApplication(self, yarn_application_df):
+    def get_queue_application(self, yarn_application_df):
         """Get yarn application count based on different yarn queues.
 
         Args:
@@ -1636,13 +1669,13 @@ class ApplicationAPI:
                 }
             )
             queue_elapsed_time_df = queue_elapsed_time_df.groupby(["Queue"]).sum()
-            self.logger.info("getQueueApplication successful")
+            self.logger.info("get_queue_application successful")
             return queue_app_count_df, queue_elapsed_time_df
         except Exception as e:
-            self.logger.error("getQueueApplication failed", exc_info=True)
+            self.logger.error("get_queue_application failed", exc_info=True)
             return None
 
-    def getQueuePendingApplication(self, yarn_application_df):
+    def get_queue_pending_application(self, yarn_application_df):
         """Get details about yarn application pending in yarn queues.
 
         Args:
@@ -1680,13 +1713,13 @@ class ApplicationAPI:
                 ),
                 columns=["Date"],
             )
-            self.logger.info("getQueuePendingApplication successful")
+            self.logger.info("get_queue_pending_application successful")
             return app_queue_df, app_queue_usage_df
         except Exception as e:
-            self.logger.error("getQueuePendingApplication failed", exc_info=True)
+            self.logger.error("get_queue_pending_application failed", exc_info=True)
             return None
 
-    def getQueueVcoreMemory(self, yarn_application_df):
+    def get_queue_vcore_memory(self, yarn_application_df):
         """Get vcore and memory used by yarn queues.
 
         Args:
@@ -1761,7 +1794,7 @@ class ApplicationAPI:
                 ),
                 columns=["Date"],
             )
-            self.logger.info("getQueueVcoreMemory successful")
+            self.logger.info("get_queue_vcore_memory successful")
             return (
                 queue_vcore_df,
                 queue_vcore_usage_df,
@@ -1769,10 +1802,10 @@ class ApplicationAPI:
                 queue_memory_usage_df,
             )
         except Exception as e:
-            self.logger.error("getQueueVcoreMemory failed", exc_info=True)
+            self.logger.error("get_queue_vcore_memory failed", exc_info=True)
             return None
 
-    def nodesServingHbase(self):
+    def nodes_serving_hbase(self):
         """Get number of nodes serving Hbase.
 
         Returns:
@@ -1780,20 +1813,25 @@ class ApplicationAPI:
         """
 
         try:
-            statuscomm = subprocess.Popen("echo 'status' | hbase shell -n",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            statuscomm,err = statuscomm.communicate()    
+            statuscomm = subprocess.Popen(
+                "echo 'status' | hbase shell -n",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            statuscomm, err = statuscomm.communicate()
             statusinfo = statuscomm.split()
             if "servers," in statusinfo:
                 NumNodesServing = int(statusinfo[statusinfo.index("servers,") - 1])
             else:
                 NumNodesServing = None
-            self.logger.info("nodesServingHbase successful")
+            self.logger.info("nodes_serving_hbase successful")
             return NumNodesServing
         except Exception as e:
-            self.logger.error("nodesServingHbase failed", exc_info=True)
+            self.logger.error("nodes_serving_hbase failed", exc_info=True)
             return None
 
-    def getHbaseDataSize(self):
+    def get_hbase_data_size(self):
         """Get HBase storage details.
 
         Returns:
@@ -1805,9 +1843,12 @@ class ApplicationAPI:
             base_size = 0
             disk_space_consumed = 0
             out = subprocess.Popen(
-                "hdfs dfs -du -h /",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                "hdfs dfs -du -h /",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
-            out,err = out.communicate()
+            out, err = out.communicate()
             output = str(out)
             lines = output.split("\\n")
             for i in lines:
@@ -1831,13 +1872,13 @@ class ApplicationAPI:
                         disk_space_consumed = disk_space_consumed + "." + data_list[2]
                     else:
                         disk_space_consumed = 0
-            self.logger.info("getHbaseDataSize successful")
+            self.logger.info("get_hbase_data_size successful")
             return base_size, disk_space_consumed
         except Exception as e:
-            self.logger.error("getHbaseDataSize failed", exc_info=True)
+            self.logger.error("get_hbase_data_size failed", exc_info=True)
             return None
 
-    def getHbaseReplication(self, cluster_name):
+    def get_hbase_replication(self, cluster_name):
         """Get HBase replication factor.
 
         Args:
@@ -1858,7 +1899,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1870,7 +1912,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1882,7 +1925,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 hbase = r.json()
@@ -1894,19 +1938,19 @@ class ApplicationAPI:
                         hbase_replication = i["value"]
                         if hbase_replication == "true":
                             replication = "Yes"
-                self.logger.info("getHbaseReplication successful")
+                self.logger.info("get_hbase_replication successful")
                 return replication
             else:
                 self.logger.error(
-                    "getHbaseReplication failed due to invalid API call. HTTP Response: ",
+                    "get_hbase_replication failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHbaseReplication failed", exc_info=True)
+            self.logger.error("get_hbase_replication failed", exc_info=True)
             return None
 
-    def getHbaseSecondaryIndex(self, cluster_name):
+    def get_hbase_secondary_index(self, cluster_name):
         """Get HBase secondary indexing details.
 
         Args:
@@ -1927,7 +1971,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -1939,7 +1984,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -1951,7 +1997,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 hbase = r.json()
@@ -1966,19 +2013,19 @@ class ApplicationAPI:
                         hbase_replication = i["value"]
                 if hbase_indexing == hbase_replication == "true":
                     indexing = "Yes"
-                self.logger.info("getHbaseSecondaryIndex successful")
+                self.logger.info("get_hbase_secondary_index successful")
                 return indexing
             else:
                 self.logger.error(
-                    "getHbaseSecondaryIndex failed due to invalid API call. HTTP Response: ",
+                    "get_hbase_secondary_index failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
                 return None
         except Exception as e:
-            self.logger.error("getHbaseSecondaryIndex failed", exc_info=True)
+            self.logger.error("get_hbase_secondary_index failed", exc_info=True)
             return None
 
-    def hBaseOnHive(self):
+    def hBase_on_hive(self):
         """Get HBase-hive information.
 
         Returns:
@@ -1987,20 +2034,23 @@ class ApplicationAPI:
 
         try:
             hive_aux = subprocess.Popen(
-                "awk '/HIVE_AUX_JARS_PATH/ {print}' /etc/hive/conf/hive-env.sh",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                "awk '/HIVE_AUX_JARS_PATH/ {print}' /etc/hive/conf/hive-env.sh",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             hive_aux, err = hive_aux.communicate()
             if "hive-hbase-handler" in hive_aux:
                 hbasehive_var = "Yes"
             else:
                 hbasehive_var = "No"
-            self.logger.info("hBaseOnHive successful")
+            self.logger.info("hBase_on_hive successful")
             return hbasehive_var
         except Exception as e:
-            self.logger.error("hBaseOnHive failed", exc_info=True)
+            self.logger.error("hBase_on_hive failed", exc_info=True)
             return None
 
-    def phoenixinHBase(self):
+    def phoenix_in_hbase(self):
         """Get HBase phoenix information.
 
         Returns:
@@ -2009,7 +2059,10 @@ class ApplicationAPI:
 
         try:
             subprocess.Popen(
-                'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                'find / -path "*/hbase/lib/phoenix*.jar" 2>/dev/null > phoenixpath.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             sleep(1)
             phoenix_path_df = pd.read_csv(
@@ -2021,17 +2074,17 @@ class ApplicationAPI:
                 for i in phoenix_path_df["location"]:
                     if i != "":
                         phoenixHbase = "Yes"
-            self.logger.info("phoenixinHBase successful")
+            self.logger.info("phoenix_in_hbase successful")
             return phoenixHbase
         except EmptyDataError:
             phoenixHbase = "No"
-            self.logger.info("phoenixinHBase successful")
+            self.logger.info("phoenix_in_hbase successful")
             return phoenixHbase
         except Exception as e:
-            self.logger.error("phoenixinHBase failed", exc_info=True)
+            self.logger.error("phoenix_in_hbase failed", exc_info=True)
             return None
 
-    def coprocessorinHBase(self):
+    def coprocessor_in_hbase(self):
         """Get HBase coprocessor information.
 
         Returns:
@@ -2041,7 +2094,10 @@ class ApplicationAPI:
         try:
             coprocessorHbase = ""
             subprocess.Popen(
-                'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv',shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                'find / -path "*/hbase/lib/*coprocessor*.jar" 2>/dev/null > coprocessorpath.csv',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             sleep(1)
             coprocessor_path_df = pd.read_csv(
@@ -2053,17 +2109,17 @@ class ApplicationAPI:
                 for i in coprocessor_path_df["location"]:
                     if i != "":
                         coprocessorHbase = "Yes"
-            self.logger.info("coprocessorinHBase successful")
+            self.logger.info("coprocessor_in_hbase successful")
             return coprocessorHbase
         except EmptyDataError:
             coprocessorHbase = "No"
-            self.logger.info("coprocessorinHBase successful")
+            self.logger.info("coprocessor_in_hbase successful")
             return coprocessorHbase
         except Exception as e:
-            self.logger.error("coprocessorinHBase failed", exc_info=True)
+            self.logger.error("coprocessor_in_hbase failed", exc_info=True)
             return None
 
-    def getDynamicAllocationAndSparkResourceManager(self):
+    def get_dynamic_allocation_and_spark_resource_manager(self):
         """Get spark config details.
 
         Returns:
@@ -2086,15 +2142,18 @@ class ApplicationAPI:
                         spark_resource_manager = line.split("=")[1].strip()
                     else:
                         continue
-            self.logger.info("getDynamicAllocationAndSparkResourceManager successful")
+            self.logger.info(
+                "get_dynamic_allocation_and_spark_resource_manager successful"
+            )
             return dynamic_allocation, spark_resource_manager
         except Exception as e:
             self.logger.error(
-                "getDynamicAllocationAndSparkResourceManager failed", exc_info=True
+                "get_dynamic_allocation_and_spark_resource_manager failed",
+                exc_info=True,
             )
             return None
 
-    def getSparkVersion(self):
+    def get_spark_version(self):
         """Get Spark version details.
 
         Returns:
@@ -2112,13 +2171,13 @@ class ApplicationAPI:
                 spark_version = spark_version.split("'")[1]
                 spark_version = spark_version.split("version")[1]
                 spark_version = spark_version.strip()
-            self.logger.info("getSparkVersion successful")
+            self.logger.info("get_spark_version successful")
             return spark_version
         except Exception as e:
-            self.logger.error("getSparkVersion failed", exc_info=True)
+            self.logger.error("get_spark_version failed", exc_info=True)
             return None
 
-    def getSparkApiProgrammingLanguages(self):
+    def get_spark_api_programming_languages(self):
         """Get list of languages used by spark programs.
 
         Returns:
@@ -2171,13 +2230,15 @@ class ApplicationAPI:
                             if "R" not in language_list:
                                 language_list.append("R")
             language_list = ", ".join(language_list)
-            self.logger.info("getSparkApiProgrammingLanguages successful")
+            self.logger.info("get_spark_api_programming_languages successful")
             return language_list
         except Exception as e:
-            self.logger.error("getSparkApiProgrammingLanguages failed", exc_info=True)
+            self.logger.error(
+                "get_spark_api_programming_languages failed", exc_info=True
+            )
             return None
 
-    def sparkComponentsUsed(self):
+    def spark_components_used(self):
         """Get components of spark used in programming.
 
         Returns:
@@ -2230,13 +2291,13 @@ class ApplicationAPI:
                     df_flag = 1
                 if re.search(r"\borg.apache.spark.ml\b", parse_str):
                     mllib_flag = 1
-            self.logger.info("sparkComponentsUsed successful")
+            self.logger.info("spark_components_used successful")
             return rdd_flag, dataset_flag, sql_flag, df_flag, mllib_flag, stream_flag
         except Exception as e:
-            self.logger.error("sparkComponentsUsed failed", exc_info=True)
+            self.logger.error("spark_components_used failed", exc_info=True)
             return None
 
-    def retentionPeriodKafka(self):
+    def retention_period_kafka(self):
         """Get retention period of kafka.
 
         Returns:
@@ -2244,21 +2305,28 @@ class ApplicationAPI:
         """
 
         try:
-            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_password))
+            rversion_api = requests.get(
+                "http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full".format(
+                    self.cloudera_manager_host_ip, self.cluster_name, "kafka"
+                ),
+                auth=HTTPBasicAuth(
+                    self.cloudera_manager_username, self.cloudera_manager_password
+                ),
+            )
             version_related = rversion_api.json()
             for i in version_related["items"]:
                 try:
-                    if i['name'] == 'log.cleaner.delete.retention.ms':
-                        retention_period = int(i['value'])/(60*60*1000)
+                    if i["name"] == "log.cleaner.delete.retention.ms":
+                        retention_period = int(i["value"]) / (60 * 60 * 1000)
                 except KeyError:
-                        retention_period = int(i['default'])/(60*60*1000)
-            self.logger.info("retentionPeriodKafka successful")
+                    retention_period = int(i["default"]) / (60 * 60 * 1000)
+            self.logger.info("retention_period_kafka successful")
             return retention_period
         except Exception as e:
-            self.logger.error("retentionPeriodKafka failed", exc_info=True)
+            self.logger.error("retention_period_kafka failed", exc_info=True)
             return None
 
-    def ZookeeperConn(self):
+    def zookeeper_conn(self):
         """Get zookeeper connection string in kafka.
         
         Returns:
@@ -2266,27 +2334,34 @@ class ApplicationAPI:
         """
 
         try:
-            subprocess.Popen("awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv" ,shell=True,stdout=subprocess.PIPE,encoding="utf-8" )
+            subprocess.Popen(
+                "awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             sleep(1)
-            zookeeper_conn_df = pd.read_csv("zookeeper_conn.csv", delimiter = "\n",header=None)
-            zookeeper_conn_df.columns= ['parameters']
+            zookeeper_conn_df = pd.read_csv(
+                "zookeeper_conn.csv", delimiter="\n", header=None
+            )
+            zookeeper_conn_df.columns = ["parameters"]
             zookeeper_conn_df = zookeeper_conn_df.iloc[[-1]]
-            for i in zookeeper_conn_df['parameters']:
-                if i != '':
-                    zookeeper_conn = i.split('=')[-1]
-                else :
+            for i in zookeeper_conn_df["parameters"]:
+                if i != "":
+                    zookeeper_conn = i.split("=")[-1]
+                else:
                     zookeeper_conn = None
-            self.logger.info("ZookeeperConn successful")
+            self.logger.info("zookeeper_conn successful")
             return zookeeper_conn
         except EmptyDataError:
             zookeeper_conn = None
-            self.logger.info("ZookeeperConn successful")
+            self.logger.info("zookeeper_conn successful")
             return zookeeper_conn
         except Exception as e:
-            self.logger.error("ZookeeperConn failed", exc_info=True)
+            self.logger.error("zookeeper_conn failed", exc_info=True)
             return None
 
-    def numTopicsKafka(self, zookeeper_conn):
+    def num_topics_kafka(self, zookeeper_conn):
         """Get num of topics in kafka.
         
         Args:
@@ -2300,20 +2375,22 @@ class ApplicationAPI:
                 "timeout 20 kafka-topics --zookeeper "
                 + str(zookeeper_conn)
                 + " --list 2>/dev/null 1>topics_list.csv",
-                shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             topics.wait()
-            topics, err = topics.communicate() 
+            topics, err = topics.communicate()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
             num_topics = len(topics_df.index)
-            self.logger.info("numTopicsKafka successful")
+            self.logger.info("num_topics_kafka successful")
             return num_topics
         except Exception as e:
-            self.logger.error("numTopicsKafka failed", exc_info=True)
+            self.logger.error("num_topics_kafka failed", exc_info=True)
             return None
 
-    def msgSizeKafka(self, zookeeper_conn):
+    def msg_size_kafka(self, zookeeper_conn):
         """Get volume of message in kafka in bytes.
         
         Args:
@@ -2321,21 +2398,23 @@ class ApplicationAPI:
         Returns:
             sum_size (int): Message size of Kafka
         """
-        if not self.broker_list :
-            self.logger.error("msgCountKafka failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("msg_count_kafka failed", exc_info=True)
             return None
-        else :        
+        else:
             try:
-                broker_connection =''
+                broker_connection = ""
                 for i in self.broker_list:
-                    conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
-                    broker_connection =  broker_connection + conn_temp
+                    conn_temp = str(i["host"]) + str(":") + str(i["port"]) + str(",")
+                    broker_connection = broker_connection + conn_temp
                 broker_connection = broker_connection.strip(",")
                 topics = subprocess.Popen(
                     "timeout 20 kafka-topics --zookeeper "
                     + str(zookeeper_conn)
                     + " --list 2>/dev/null 1>topics_list.csv",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
                 )
                 topics.wait()
                 topics, err = topics.communicate()
@@ -2348,23 +2427,28 @@ class ApplicationAPI:
                         + str(broker_connection)
                         + "  --topic-list "
                         + str(i)
-                        + " --describe 2>/dev/null | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                        + " --describe 2>/dev/null | grep '^{'   | jq '[ ..|.size? | numbers ] | add'",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
                     )
                     msg_size.wait()
-                    msg_size,err = msg_size.communicate()
+                    msg_size, err = msg_size.communicate()
 
                     msg_size = msg_size.strip("\n")
-                    if msg_size != '':
-                        sum_size = sum_size + (int(msg_size) if msg_size != 'null' else 0)
-                    else :
+                    if msg_size != "":
+                        sum_size = sum_size + (
+                            int(msg_size) if msg_size != "null" else 0
+                        )
+                    else:
                         sum_size = 0
-                self.logger.info("msgSizeKafka successful")
+                self.logger.info("msg_size_kafka successful")
                 return sum_size
             except Exception as e:
-                self.logger.error("msgSizeKafka failed", exc_info=True)
+                self.logger.error("msg_size_kafka failed", exc_info=True)
                 return None
 
-    def msgCountKafka(self, zookeeper_conn):
+    def msg_count_kafka(self, zookeeper_conn):
         """Get count of messages in kafka topics.
 
         Args:
@@ -2372,22 +2456,24 @@ class ApplicationAPI:
         Returns:
             sum_count (int): Number of messages in Kafka
         """
-        if not self.broker_list :
-            self.logger.error("msgCountKafka failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("msg_count_kafka failed", exc_info=True)
             return None
-        else :
+        else:
             try:
-                sum_count = 0   
-                broker_connection =''
+                sum_count = 0
+                broker_connection = ""
                 for i in self.broker_list:
-                    conn_temp = str(i['host']) + str(":") +str(i['port'])+str(",")
-                    broker_connection =  broker_connection + conn_temp
+                    conn_temp = str(i["host"]) + str(":") + str(i["port"]) + str(",")
+                    broker_connection = broker_connection + conn_temp
                 broker_connection = broker_connection.strip(",")
                 topics = subprocess.Popen(
                     "timeout 20 kafka-topics --zookeeper "
                     + str(zookeeper_conn)
                     + " --list 2>/dev/null 1>topics_list.csv",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
                 )
                 topics.wait()
                 topics, err = topics.communicate()
@@ -2401,126 +2487,148 @@ class ApplicationAPI:
                         + str(broker_connection)
                         + " --topic "
                         + str(i)
-                        + " --time -1 --offsets 1 2>/dev/null | awk -F  \":\" '{sum += $3} END {print sum}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8"
+                        + " --time -1 --offsets 1 2>/dev/null | awk -F  \":\" '{sum += $3} END {print sum}'",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
                     )
                     msg_count.wait()
-                    msg_count,err = msg_count.communicate()
+                    msg_count, err = msg_count.communicate()
 
                     msg_count = msg_count.strip("\n")
-                    if msg_count != '':
+                    if msg_count != "":
                         sum_count = sum_count + int(msg_count)
-                    else :
-                        sum_count = None  
-                self.logger.info("msgCountKafka successful")
+                    else:
+                        sum_count = None
+                self.logger.info("msg_count_kafka successful")
                 return sum_count
             except Exception as e:
-                self.logger.error("msgCountKafka failed", exc_info=True)
+                self.logger.error("msg_count_kafka failed", exc_info=True)
                 return None
 
-    def KafkaClusterSize(self):
+    def kafka_cluster_size(self):
         """Get Total size of Kafka Cluster.
 
         Returns:
             total_size (int): Total size of Kafka Cluster in KB
         """
-        if not self.broker_list :
-            self.logger.error("KafkaClusterSize failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("kafka_cluster_size failed", exc_info=True)
             return None
-        else :
+        else:
             try:
                 broker_id = 0
-                brokersize = pd.DataFrame(columns = ["broker_size"])  
+                brokersize = pd.DataFrame(columns=["broker_size"])
                 j = 0
                 list_com = []
                 list_temp = []
                 for i in self.broker_list:
-                    list_temp = i['log_dir'].split("?")
+                    list_temp = i["log_dir"].split("?")
                     list_com = list_com + list_temp
                 if len(set(list_com)) == 1:
                     for val in set(list_com):
                         log_dir = val
-                    broker_dir = subprocess.Popen("du -sh " +str(log_dir)+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    broker_dir = subprocess.Popen(
+                        "du -sh " + str(log_dir) + "/* 2>/dev/null 1>broker_size.csv",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
+                    )
                     broker_dir.wait()
                     broker_dir, err = broker_dir.communicate()
                     try:
-                        brokers_df = pd.read_csv("broker_size.csv",header=None)
+                        brokers_df = pd.read_csv("broker_size.csv", header=None)
                         brokers_df.columns = ["logs"]
                         size_sum = 0
-                        for i in brokers_df['logs']:
-                            size = i.split("\t",1)[0]
-                            size= float(size.strip("K"))
+                        for i in brokers_df["logs"]:
+                            size = i.split("\t", 1)[0]
+                            size = float(size.strip("K"))
                             size_sum = size_sum + size
                         brokersize.loc[j] = size_sum
-                        broker_list_len = (len(self.broker_list)-1)
+                        broker_list_len = len(self.broker_list) - 1
                         for i in range(broker_list_len):
-                            brokersize.loc[j+i+1] = 0
+                            brokersize.loc[j + i + 1] = 0
                         total_size = size_sum
                     except EmptyDataError:
                         total_size = None
-                elif len(set(list_com)) == 0 :
+                elif len(set(list_com)) == 0:
                     total_size = None
-                else :
-                    try : 
+                else:
+                    try:
                         for k in self.broker_list:
-                            broker_dir = subprocess.Popen("du -sh " +str(k['log_dir'])+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                            broker_dir = subprocess.Popen(
+                                "du -sh "
+                                + str(k["log_dir"])
+                                + "/* 2>/dev/null 1>broker_size.csv",
+                                shell=True,
+                                stdout=subprocess.PIPE,
+                                encoding="utf-8",
+                            )
                             broker_dir.wait()
                             broker_dir, err = broker_dir.communicate()
-                            brokers_df = pd.read_csv("broker_size.csv",header=None)
+                            brokers_df = pd.read_csv("broker_size.csv", header=None)
                             brokers_df.columns = ["logs"]
                             size_sum = 0
-                            for i in brokers_df['logs']:
-                                size = i.split("\t",1)[0]
-                                size= float(size.strip("K"))
+                            for i in brokers_df["logs"]:
+                                size = i.split("\t", 1)[0]
+                                size = float(size.strip("K"))
                                 size_sum = size_sum + size
                             brokersize.loc[j] = size_sum
-                            j=j+1
+                            j = j + 1
                         total_size = 0
-                        for i in brokersize['broker_size']:
+                        for i in brokersize["broker_size"]:
                             total_size = total_size + float(i)
                     except EmptyDataError:
                         total_size = None
-                self.logger.info("KafkaClusterSize successful")
+                self.logger.info("kafka_cluster_size successful")
                 return total_size
-            except Exception as e :
-                self.logger.error("KafkaClusterSize failed", exc_info=True)
+            except Exception as e:
+                self.logger.error("kafka_cluster_size failed", exc_info=True)
                 return None
-    
-    def BrokerSizeKafka(self):
+
+    def broker_size_kafka(self):
 
         """Get individual broker size in the Kafka Cluster.
 
         Returns:
             brokersize (DataFrame): Returns a df with the sizes of all the brokers in the Kafka Cluster
         """
-        if not self.broker_list :
-            self.logger.error("BrokerSizeKafka failed", exc_info=True)
+        if not self.broker_list:
+            self.logger.error("broker_size_kafka failed", exc_info=True)
             return None
-        else :
+        else:
             try:
                 broker_id = 0
-                brokersize = pd.DataFrame(columns = ["broker_size"])  
+                brokersize = pd.DataFrame(columns=["broker_size"])
                 j = 0
                 for k in self.broker_list:
-                    broker_dir = subprocess.Popen("du -sh "+str(k['log_dir'])+"/* 2>/dev/null 1>broker_size.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    broker_dir = subprocess.Popen(
+                        "du -sh "
+                        + str(k["log_dir"])
+                        + "/* 2>/dev/null 1>broker_size.csv",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
+                    )
                     broker_dir.wait()
                     broker_dir, err = broker_dir.communicate()
-                    brokers_df = pd.read_csv("broker_size.csv",header=None)
+                    brokers_df = pd.read_csv("broker_size.csv", header=None)
                     brokers_df.columns = ["logs"]
                     size_sum = 0
-                    for i in brokers_df['logs']:
-                        size = i.split("\t",1)[0]
-                        size= float(size.strip("K"))
+                    for i in brokers_df["logs"]:
+                        size = i.split("\t", 1)[0]
+                        size = float(size.strip("K"))
                         size_sum = size_sum + size
                     brokersize.loc[j] = size_sum
-                    j=j+1
+                    j = j + 1
                 brokersize.columns = ["size"]
-                self.logger.info("BrokerSizeKafka successful")
+                self.logger.info("broker_size_kafka successful")
                 return brokersize
-            except Exception as e :
-                self.logger.error("BrokerSizeKafka failed", exc_info=True)
+            except Exception as e:
+                self.logger.error("broker_size_kafka failed", exc_info=True)
                 return None
 
-    def HAStrategyKafka(self, zookeeper_conn):
+    def ha_strategy_kafka(self, zookeeper_conn):
         """Check High Availability of Kafka Cluster
         
         Args:
@@ -2529,39 +2637,51 @@ class ApplicationAPI:
             HA_Strategy (str): returns whether High availability in kafka is enabled or not
         """
         try:
-            brokers = ''
+            brokers = ""
             Num_brokers = 0
-            broker_zk = subprocess.Popen("timeout 20 zkCli.sh -server " +str(zookeeper_conn)+ " ls /brokers/ids 2>/dev/null 1>broker_id.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            broker_zk = subprocess.Popen(
+                "timeout 20 zkCli.sh -server "
+                + str(zookeeper_conn)
+                + " ls /brokers/ids 2>/dev/null 1>broker_id.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             broker_zk.wait()
             broker_zk, err = broker_zk.communicate()
-            broker_id_df = pd.read_csv("broker_id.csv", delimiter = "\n",header=None)
-            broker_id_df.columns= ['parameters']
+            broker_id_df = pd.read_csv("broker_id.csv", delimiter="\n", header=None)
+            broker_id_df.columns = ["parameters"]
             broker_id_df = broker_id_df.iloc[[-1]]
-            for i in broker_id_df['parameters']:
-                if i != '':
-                    brokers = i.strip('][').split(', ') 
+            for i in broker_id_df["parameters"]:
+                if i != "":
+                    brokers = i.strip("][").split(", ")
                     Num_brokers = len(brokers)
-            rversion_api = requests.get('http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full'.format(self.cloudera_manager_host_ip,self.cluster_name,'kafka'),auth = HTTPBasicAuth(self.cloudera_manager_username, self.cloudera_manager_password))
+            rversion_api = requests.get(
+                "http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full".format(
+                    self.cloudera_manager_host_ip, self.cluster_name, "kafka"
+                ),
+                auth=HTTPBasicAuth(
+                    self.cloudera_manager_username, self.cloudera_manager_password
+                ),
+            )
             version_related = rversion_api.json()
             for i in version_related["items"]:
                 try:
-                    if i['name'] == 'offsets.topic.replication.factor':
-                        replication = int(i['value'])
+                    if i["name"] == "offsets.topic.replication.factor":
+                        replication = int(i["value"])
                 except KeyError:
-                    replication = int(i['default']) 
+                    replication = int(i["default"])
             if replication > 1 and Num_brokers > 1:
                 HA_Strategy = "Yes"
-            else :
+            else:
                 HA_Strategy = "No"
-            self.logger.info("HAStrategyKafka successful")
+            self.logger.info("ha_strategy_kafka successful")
             return HA_Strategy
         except Exception as e:
-            self.logger.error("HAStrategyKafka failed", exc_info=True)
+            self.logger.error("ha_strategy_kafka failed", exc_info=True)
             return None
-        
 
-
-    def useOfImpala(self):
+    def use_of_impala(self):
         """Get impala service in cluster.
 
         Returns:
@@ -2571,10 +2691,12 @@ class ApplicationAPI:
         try:
             output = ""
             inter = subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                     shell=True,stdout=subprocess.PIPE,encoding="utf-8"
-                )
-            inter,err = inter.communicate()
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            inter, err = inter.communicate()
             version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -2592,13 +2714,13 @@ class ApplicationAPI:
                 )
             else:
                 output = "Impala is not found"
-            self.logger.info("useOfImpala successful")
+            self.logger.info("use_of_impala successful")
             return output
         except Exception as e:
-            self.logger.error("useOfImpala failed", exc_info=True)
+            self.logger.error("use_of_impala failed", exc_info=True)
             return None
 
-    def useOfSentry(self):
+    def use_of_sentry(self):
         """Get sentry service in cluster.
 
         Returns:
@@ -2608,9 +2730,12 @@ class ApplicationAPI:
         try:
             output = ""
             inter = subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
-                    shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            inter,err = inter.communicate()
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            inter, err = inter.communicate()
             version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
@@ -2634,7 +2759,7 @@ class ApplicationAPI:
             self.logger.error("useOfSentry failed", exc_info=True)
             return None
 
-    def useOfKudu(self):
+    def use_of_kudu(self):
         """Get kudu service in cluster.
 
         Returns:
@@ -2643,9 +2768,14 @@ class ApplicationAPI:
 
         try:
             output = ""
-            inter = subprocess.Popen("cat /opt/cloudera/parcels/CDH/meta/parcel.json",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            inter,err = inter.communicate()
-            version_data = json.loads(inter)                
+            inter = subprocess.Popen(
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            inter, err = inter.communicate()
+            version_data = json.loads(inter)
             data = version_data["components"]
             df = pd.DataFrame(data)
             services_df = df
@@ -2662,13 +2792,13 @@ class ApplicationAPI:
                 )
             else:
                 output = "Apache Kudu is not found"
-            self.logger.info("useOfKudu successful")
+            self.logger.info("use_of_kudu successful")
             return output
         except Exception as e:
-            self.logger.error("useOfKudu failed", exc_info=True)
+            self.logger.error("use_of_kudu failed", exc_info=True)
             return None
 
-    def getClouderaServicesUsedForIngestion(self, cluster_name):
+    def get_cloudera_services_used_for_ingestion(self, cluster_name):
         """Get a list of services used for ingestion.
 
         Args:
@@ -2689,7 +2819,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -2701,7 +2832,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -2713,7 +2845,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 cluster_services = r.json()
@@ -2733,18 +2866,20 @@ class ApplicationAPI:
                     elif i["name"] == "nifi":
                         services_list.append("NiFi")
                 services = ", ".join(services_list)
-                self.logger.info("clusterServiceItem successful")
+                self.logger.info("get_cloudera_services_used_for_ingestion successful")
                 return services
             else:
                 self.logger.error(
-                    "clusterServiceItem failed due to invalid API call. HTTP Response: ",
+                    "get_cloudera_services_used_for_ingestion failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("clusterServiceItem failed", exc_info=True)
+            self.logger.error(
+                "get_cloudera_services_used_for_ingestion failed", exc_info=True
+            )
             return None
 
-    def backupAndRecovery(self):
+    def backup_and_recovery(self):
         """Get backup and disaster recovery information.
 
         Returns:
@@ -2762,7 +2897,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 6:
                 r = requests.get(
@@ -2773,7 +2909,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             elif self.version == 5:
                 r = requests.get(
@@ -2784,7 +2921,8 @@ class ApplicationAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
+                    ),
+                    verify=False,
                 )
             if r.status_code == 200:
                 Backup = r.json()
@@ -2792,13 +2930,13 @@ class ApplicationAPI:
                     br = "Cloudera Backup & Disaster Recovery are enabled"
                 else:
                     br = "Cloudera Backup & Disaster Recovery are not enabled"
-                self.logger.info("backupAndRecovery successful")
+                self.logger.info("backup_and_recovery successful")
                 return br
             else:
                 self.logger.error(
-                    "backupAndRecovery failed due to invalid API call. HTTP Response: ",
+                    "backup_and_recovery failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
         except Exception as e:
-            self.logger.error("backupAndRecovery failed", exc_info=True)
+            self.logger.error("backup_and_recovery failed", exc_info=True)
             return None
