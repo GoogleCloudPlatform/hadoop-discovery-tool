@@ -132,7 +132,7 @@ class PdfGenerator:
             hadoopVersionMajor, hadoopVersionMinor, distribution = temp
 
         mapped_df, total_storage = None, None
-        temp = obj2.totalSizeConfigured()
+        temp = obj2.total_size_configured()
         if type(temp) != type(None):
             mapped_df, total_storage = temp
 
@@ -352,7 +352,7 @@ class PdfGenerator:
 
         if type(t1) != type(None):
             database_server = t1
-            obj_pdf.dataBaseServer(database_server)
+            obj_pdf.database_server(database_server)
 
         if type(t2) != type(None):
             dns_server = t2
@@ -439,7 +439,7 @@ class PdfGenerator:
         temp = obj1.list_hadoop_nonhadoop_libs()
         if type(temp) != type(None):
             hadoop_native_df = temp
-            obj_pdf.list_hadoop_nonhadoop_libs(hadoop_native_df)
+            obj_pdf.list_hadoop_nonHadoop_libs(hadoop_native_df)
 
         python_flag, java_flag, scala_flag = None, None, None
         temp = obj1.check_libraries_installed()
