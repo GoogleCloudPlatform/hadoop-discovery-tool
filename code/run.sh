@@ -10,20 +10,20 @@ fi
 #Go to the code directory
 cd $PWD/HDT_ENV/HDT/ 2>/dev/null
 var=$?
-if [ $var == 1 ]
+if [ $var -eq 1 ]
 then
     echo "Directory Issue"
-	break
+	exit 1
 fi
 #run python file which will generate the pdf
-python3 __main__.py 2>/dev/null
+python3 __main__.py
 var=$?
-if [ $var == 1 ]
+if [ $var -eq 1 ]
 then
     echo "Error in Python code check logs for more info"
-	break
+	exit 1
 fi
-if [ $var == 1 ]
+if [ $var -eq 0 ]
 then
 	echo "Python Code ran Successfully"
 fi
