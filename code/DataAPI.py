@@ -30,6 +30,7 @@ class DataAPI:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.config_path = inputs["config_path"]
         self.ssl = inputs["ssl"]
         if self.ssl:
             self.http = "https"
@@ -49,8 +50,6 @@ class DataAPI:
         try:
             subprocess.Popen(
                 "hdfs dfsadmin -report > ./data.csv",
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -122,8 +121,6 @@ class DataAPI:
         try:
             replication_factor = subprocess.Popen(
                 "hdfs getconf -confKey dfs.replication",
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -145,9 +142,7 @@ class DataAPI:
 
         try:
             xml_data = subprocess.Popen(
-                "cat /etc/hadoop/conf/core-site.xml",
-                # stdout=subprocess.DEVNULL,
-                # stderr=subprocess.STDOUT,
+                "cat {}".format(self.config_path["core"]),
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -299,10 +294,6 @@ class DataAPI:
                 )
             if r.status_code == 200:
                 hdfs_capacity = r.json()
-                with open(
-                    "Discovery_Report/{}/hdfs_capacity.json".format(cluster_name), "w"
-                ) as fp:
-                    json.dump(hdfs_capacity, fp, indent=4)
                 hdfs_capacity_list = hdfs_capacity["items"][0]["timeSeries"][0]["data"]
                 hdfs_capacity_df = pd.DataFrame(hdfs_capacity_list)
                 hdfs_capacity_df = pd.DataFrame(
@@ -406,11 +397,6 @@ class DataAPI:
                 )
             if r.status_code == 200:
                 hdfs_capacity_used = r.json()
-                with open(
-                    "Discovery_Report/{}/hdfs_capacity_used.json".format(cluster_name),
-                    "w",
-                ) as fp:
-                    json.dump(hdfs_capacity_used, fp, indent=4)
                 hdfs_capacity_used_list = hdfs_capacity_used["items"][0]["timeSeries"][
                     0
                 ]["data"]
@@ -570,10 +556,10 @@ class DataAPI:
         """
 
         try:
-            path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
+            path_status = path.exists("{}".format(self.config_path["mapred"]))
             if path_status == True:
                 xml_data = subprocess.Popen(
-                    "cat /etc/hadoop/conf/mapred-site.xml",
+                    "cat {}".format(self.config_path["mapred"]),
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -1115,7 +1101,6 @@ class DataAPI:
             xml_data = subprocess.Popen(
                 "beeline --help", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
-            # xml_data = subprocess.Popen('echo $?',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
             xml_data.wait()
             out, err = xml_data.communicate()
             out = out.splitlines()
@@ -1140,7 +1125,6 @@ class DataAPI:
                 )
                 xml.wait()
                 xml, err = xml.communicate()
-            # hive_execution_engine = subprocess.check_output('hive -e "set hive.execution.engine"', shell=True)
             hive_execution_engine = str(xml)
             hive_execution_engine = hive_execution_engine.split("\\n")
             for line in hive_execution_engine:
@@ -1431,11 +1415,11 @@ class DataAPI:
         """
 
         try:
-            path_status = path.exists("/etc/hive/conf/hive-site.xml")
+            path_status = path.exists("{}".format(self.config_path["hive"]))
             if path_status == True:
                 hive_interactive_status = "NO"
                 xml_data = subprocess.Popen(
-                    "cat /etc/hive/conf/hive-site.xml",
+                    "cat {}".format(self.config_path["hive"]),
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",

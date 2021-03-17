@@ -31,6 +31,7 @@ class HardwareOSAPI:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.config_path = inputs["config_path"]
         self.ssl = inputs["ssl"]
         if self.ssl:
             self.http = "https"
@@ -112,8 +113,6 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 cluster = r.json()
-                with open("Discovery_Report/clusters.json", "w") as fp:
-                    json.dump(cluster, fp, indent=4)
                 cluster_items = cluster["items"]
                 self.logger.info("cluster_items successful")
                 return cluster_items
@@ -180,10 +179,6 @@ class HardwareOSAPI:
             if r.status_code == 200:
                 cluster_host = r.json()
                 cluster_host_len = len(cluster_host["items"])
-                with open(
-                    "Discovery_Report/{}/clusters_host.json".format(cluster_name), "w"
-                ) as fp:
-                    json.dump(cluster_host, fp, indent=4)
                 cluster_host_items = cluster_host["items"]
                 self.logger.info("cluster_host_items successful")
                 return cluster_host_items, cluster_host_len
@@ -248,11 +243,6 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 cluster_services = r.json()
-                with open(
-                    "Discovery_Report/{}/cluster_services.json".format(cluster_name),
-                    "w",
-                ) as fp:
-                    json.dump(cluster_services, fp, indent=4)
                 cluster_service_item = cluster_services["items"]
                 self.logger.info("cluster_service_item successful")
                 return cluster_service_item
@@ -387,11 +377,6 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 cluster_total_cores = r.json()
-                with open(
-                    "Discovery_Report/{}/cluster_total_cores.json".format(cluster_name),
-                    "w",
-                ) as fp:
-                    json.dump(cluster_total_cores, fp, indent=4)
                 cluster_total_cores_list = cluster_total_cores["items"][0][
                     "timeSeries"
                 ][0]["data"]
@@ -493,11 +478,6 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 cluster_cpu_usage = r.json()
-                with open(
-                    "Discovery_Report/{}/cluster_cpu_usage.json".format(cluster_name),
-                    "w",
-                ) as fp:
-                    json.dump(cluster_cpu_usage, fp, indent=4)
                 cluster_cpu_usage_list = cluster_cpu_usage["items"][0]["timeSeries"][0][
                     "data"
                 ]
@@ -608,13 +588,6 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 cluster_total_memory = r.json()
-                with open(
-                    "Discovery_Report/{}/cluster_total_memory.json".format(
-                        cluster_name
-                    ),
-                    "w",
-                ) as fp:
-                    json.dump(cluster_total_memory, fp, indent=4)
                 cluster_total_memory_list = cluster_total_memory["items"][0][
                     "timeSeries"
                 ][0]["data"]
@@ -716,13 +689,6 @@ class HardwareOSAPI:
                 )
             if r.status_code == 200:
                 cluster_memory_usage = r.json()
-                with open(
-                    "Discovery_Report/{}/cluster_memory_usage.json".format(
-                        cluster_name
-                    ),
-                    "w",
-                ) as fp:
-                    json.dump(cluster_memory_usage, fp, indent=4)
                 cluster_memory_usage_list = cluster_memory_usage["items"][0][
                     "timeSeries"
                 ][0]["data"]

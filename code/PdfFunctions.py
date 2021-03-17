@@ -72,7 +72,11 @@ class PdfFunctions:
                     pd.DataFrame({"Hostname": [host["hostname"]],}), ignore_index=True,
                 )
                 for role in host["roleRefs"]:
-                    if (re.search(r'\bNAMENODE\b', role['roleName']) or re.search(r'\bSECONDARYNAMENODE\b', role['roleName']) and "hdfs" in role['serviceName']):
+                    if (
+                        re.search(r"\bNAMENODE\b", role["roleName"])
+                        or re.search(r"\bSECONDARYNAMENODE\b", role["roleName"])
+                        and "hdfs" in role["serviceName"]
+                    ):
                         namenodes_df = namenodes_df.append(
                             pd.DataFrame({"HostName": [host["hostname"]],}),
                             ignore_index=True,
@@ -425,7 +429,11 @@ class PdfFunctions:
                     ignore_index=True,
                 )
             for role in host["roleRefs"]:
-                if (re.search(r'\bNAMENODE\b', role['roleName']) or re.search(r'\bSECONDARYNAMENODE\b', role['roleName']) and "hdfs" in role['serviceName']):
+                if (
+                    re.search(r"\bNAMENODE\b", role["roleName"])
+                    or re.search(r"\bSECONDARYNAMENODE\b", role["roleName"])
+                    and "hdfs" in role["serviceName"]
+                ):
                     namenodes_df = namenodes_df.append(
                         pd.DataFrame(
                             {
@@ -534,7 +542,7 @@ class PdfFunctions:
         for pos in range(0, len(host_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if(y > 300):
+            if y > 300:
                 self.pdf.add_page()
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
@@ -989,6 +997,8 @@ class PdfFunctions:
         self.pdf.image(
             "cluster_total_cores_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("cluster_total_cores_plot.png"):
+            os.remove("cluster_total_cores_plot.png")
         plt.figure()
         cluster_cpu_usage_plot = cluster_cpu_usage_df["Max"].plot(
             color="red", linestyle="--", label="Max Core Allocated", linewidth=1
@@ -1006,6 +1016,8 @@ class PdfFunctions:
         self.pdf.image(
             "cluster_cpu_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("cluster_cpu_usage_plot.png"):
+            os.remove("cluster_cpu_usage_plot.png")
 
     def cluster_memory_avg(self, cluster_memory_usage_avg):
         """Add average memory utilization of cluster in PDF.
@@ -1045,6 +1057,8 @@ class PdfFunctions:
         self.pdf.image(
             "cluster_total_memory_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("cluster_total_memory_plot.png"):
+            os.remove("cluster_total_memory_plot.png")
         plt.figure()
         cluster_memory_usage_plot = cluster_memory_usage_df["Mean"].plot(
             color="steelblue", label="Memory Allocated"
@@ -1056,6 +1070,8 @@ class PdfFunctions:
         self.pdf.image(
             "cluster_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("cluster_memory_usage_plot.png"):
+            os.remove("cluster_memory_usage_plot.png")
 
     def database_server(self, database_server):
         """Add database server like mysql for metadata in PDF.
@@ -1775,6 +1791,8 @@ class PdfFunctions:
         self.pdf.image(
             "hdfs_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("hdfs_usage_plot.png"):
+            os.remove("hdfs_usage_plot.png")
 
     def hdfs_storage(self, hdfs_storage_df, hdfs_flag):
         """Add HDFS folders and files details in PDF.
@@ -2179,11 +2197,19 @@ class PdfFunctions:
         )
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "Hot(within 1 day), Warm(from 1 to 3 days), Cold(more than 3 days)", 0, ln=1)
+        self.pdf.cell(
+            230,
+            8,
+            "Hot(within 1 day), Warm(from 1 to 3 days), Cold(more than 3 days)",
+            0,
+            ln=1,
+        )
         plt.savefig("table_type_count_plot.png")
         self.pdf.image(
             "table_type_count_plot.png", x=15, y=None, w=95, h=95, type="", link=""
         )
+        if os.path.exists("table_type_count_plot.png"):
+            os.remove("table_type_count_plot.png")
 
     def hive_adhoc_etl_query(self, query_type_count_df):
         """Add structure v/s unstructure data details in PDF.
@@ -2203,6 +2229,8 @@ class PdfFunctions:
         self.pdf.image(
             "hive_query_type_plot.png", x=15, y=None, w=95, h=95, type="", link=""
         )
+        if os.path.exists("hive_query_type_plot.png"):
+            os.remove("hive_query_type_plot.png")
 
     def structured_vs_unstructured(self, size_breakdown_df):
         """Add Hive adhoc and etl query count graph in PDF.
@@ -2441,7 +2469,11 @@ class PdfFunctions:
             230, 8, "Average Incoming Throughput: {: .2f} Kbps".format(avg_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Current Incoming Throughput: {: .2f} Kbps".format(curr_value), 0, 1,
+            230,
+            8,
+            "Current Incoming Throughput: {: .2f} Kbps".format(curr_value),
+            0,
+            1,
         )
 
     def egress(self, max_value, min_value, avg_value, curr_value):
@@ -2469,7 +2501,11 @@ class PdfFunctions:
             230, 8, "Average Outgoing Throughput: {: .2f} Kbps".format(avg_value), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Current Outgoing Throughput: {: .2f} Kbps".format(curr_value), 0, 1,
+            230,
+            8,
+            "Current Outgoing Throughput: {: .2f} Kbps".format(curr_value),
+            0,
+            1,
         )
 
     def disk_read_write(self, total_disk_read, total_disk_write):
@@ -2584,21 +2620,28 @@ class PdfFunctions:
             230, 8, "{}".format(elastic_search), 0, 1,
         )
 
-    def pdf_monitor_network_speed(self,max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2):
+    def pdf_monitor_network_speed(
+        self,
+        max_value_1,
+        min_value_1,
+        avg_value_1,
+        max_value_2,
+        min_value_2,
+        avg_value_2,
+    ):
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Third Party Network Monitoring:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(230, 8, "Receiver Speed:",0,ln=1)
-        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_1),0,ln=1)
-        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_1),0,ln=1)
-        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_1),0,ln=1)
-        self.pdf.cell(230, 8, "Transfer Speed:",0,ln=1)
-        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_2),0,ln=1)
-        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_2),0,ln=1)
-        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_2),0,ln=1)
-    
+        self.pdf.cell(230, 8, "Receiver Speed:", 0, ln=1)
+        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_1), 0, ln=1)
+        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_1), 0, ln=1)
+        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_1), 0, ln=1)
+        self.pdf.cell(230, 8, "Transfer Speed:", 0, ln=1)
+        self.pdf.cell(230, 8, "Peak Speed: {} ".format(max_value_2), 0, ln=1)
+        self.pdf.cell(230, 8, "Minimum Speed: {} ".format(min_value_2), 0, ln=1)
+        self.pdf.cell(230, 8, "Average Speed: {} ".format(avg_value_2), 0, ln=1)
 
     def get_logs(self, logs):
         """Add logs paths in PDF.
@@ -2738,6 +2781,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_vcore_usage_plot.png"):
+            os.remove("yarn_vcore_usage_plot.png")
 
     def yarn_vcore_seasonality(self, yarn_vcore_allocated_pivot_df):
         """Add yarn vcore seasonality graph in PDF.
@@ -2755,6 +2800,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_vcore_usage_heatmap.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_vcore_usage_heatmap.png"):
+            os.remove("yarn_vcore_usage_heatmap.png")
 
     def yarn_memory_total(self, yarn_total_memory_count):
         """Add yarn total memory in PDF.
@@ -2815,6 +2862,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_memory_usage_plot.png"):
+            os.remove("yarn_memory_usage_plot.png")
 
     def yarn_memory_seasonality(self, yarn_memory_allocated_pivot_df):
         """Add yarn memory seasonality graph in PDF.
@@ -2832,6 +2881,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_memory_usage_heatmap.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_memory_usage_heatmap.png"):
+            os.remove("yarn_memory_usage_heatmap.png")
 
     def yarn_app_count(self, app_count_df):
         """Add yarn application count table in PDF.
@@ -2888,6 +2939,8 @@ class PdfFunctions:
         self.pdf.image(
             "app_type_count_pie_plot.png", x=15, y=None, w=95, h=95, type="", link=""
         )
+        if os.path.exists("app_type_count_pie_plot.png"):
+            os.remove("app_type_count_pie_plot.png")
         self.pdf.set_xy(x, y)
         plt.figure()
         app_status_count_pie_plot = app_status_count_df.plot.pie(
@@ -2900,6 +2953,8 @@ class PdfFunctions:
         self.pdf.image(
             "app_status_count_pie_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
+        if os.path.exists("app_status_count_pie_plot.png"):
+            os.remove("app_status_count_pie_plot.png")
 
     def streaming_jobs(self, only_streaming):
         """Add list of streaming application in PDF.
@@ -2947,6 +3002,8 @@ class PdfFunctions:
         )
         plt.savefig("app_vcore_plot.png")
         self.pdf.image("app_vcore_plot.png", x=15, y=None, w=95, h=95, type="", link="")
+        if os.path.exists("app_vcore_plot.png"):
+            os.remove("app_vcore_plot.png")
         self.pdf.set_xy(x, y)
         plt.figure()
         app_memory_plot = app_memory_df.plot.pie(
@@ -2959,6 +3016,8 @@ class PdfFunctions:
         self.pdf.image(
             "app_memory_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
+        if os.path.exists("app_memory_plot.png"):
+            os.remove("app_memory_plot.png")
 
     def yarn_app_vcore_usage(self, app_vcore_df, app_vcore_usage_df):
         """Add yarn vcore usage graph in PDF.
@@ -3000,6 +3059,8 @@ class PdfFunctions:
         self.pdf.image(
             "app_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("app_vcore_usage_plot.png"):
+            os.remove("app_vcore_usage_plot.png")
 
     def yarn_app_memory_usage(self, app_memory_df, app_memory_usage_df):
         """Add yarn memory usage graph in PDF.
@@ -3043,6 +3104,8 @@ class PdfFunctions:
         self.pdf.image(
             "app_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("app_memory_usage_plot.png"):
+            os.remove("app_memory_usage_plot.png")
 
     def yarn_job_launch_frequency(self, job_launch_df):
         """Add details about job launch frequency of yarn application in PDF.
@@ -3152,6 +3215,8 @@ class PdfFunctions:
         self.pdf.image(
             "bursty_app_time_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("bursty_app_time_plot.png"):
+            os.remove("bursty_app_time_plot.png")
 
     def yarn_bursty_app_vcore(self, bursty_app_vcore_df):
         """Add yarn bursty application vcore graph in PDF.
@@ -3224,6 +3289,8 @@ class PdfFunctions:
         self.pdf.image(
             "bursty_app_vcore_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("bursty_app_vcore_plot.png"):
+            os.remove("bursty_app_vcore_plot.png")
 
     def yar_bursty_app_memory(self, bursty_app_mem_df):
         """Add yarn bursty application memory graph in PDF.
@@ -3298,6 +3365,8 @@ class PdfFunctions:
         self.pdf.image(
             "bursty_app_mem_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("bursty_app_mem_plot.png"):
+            os.remove("bursty_app_mem_plot.png")
 
     def yarn_failed_app(self, yarn_failed_app):
         """Add failed or killed yarn application in PDF.
@@ -3590,6 +3659,8 @@ class PdfFunctions:
         self.pdf.image(
             "queue_app_count_plot.png", x=15, y=None, w=95, h=95, type="", link=""
         )
+        if os.path.exists("queue_app_count_plot.png"):
+            os.remove("queue_app_count_plot.png")
         self.pdf.set_xy(x, y)
         plt.figure()
         queue_elapsed_time_plot = queue_elapsed_time_df.plot.pie(
@@ -3602,6 +3673,8 @@ class PdfFunctions:
         self.pdf.image(
             "queue_elapsed_time_plot.png", x=130, y=None, w=95, h=95, type="", link=""
         )
+        if os.path.exists("queue_elapsed_time_plot.png"):
+            os.remove("queue_elapsed_time_plot.png")
 
     def yarn_queue_vcore(self, queue_vcore_df, queue_vcore_usage_df):
         """Add yarn queued application vcore graph in PDF.
@@ -3645,6 +3718,8 @@ class PdfFunctions:
         self.pdf.image(
             "queue_vcore_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("queue_vcore_usage_plot.png"):
+            os.remove("queue_vcore_usage_plot.png")
 
     def yarn_queue_memory(self, queue_memory_df, queue_memory_usage_df):
         """Add yarn queued application memory graph in PDF.
@@ -3688,6 +3763,8 @@ class PdfFunctions:
         self.pdf.image(
             "queue_memory_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("queue_memory_usage_plot.png"):
+            os.remove("queue_memory_usage_plot.png")
 
     def yarn_queue_pending_app(self, app_queue_df, app_queue_usage_df):
         """Add yarn pending queued application graph in PDF.
@@ -3732,6 +3809,8 @@ class PdfFunctions:
         self.pdf.image(
             "app_queue_usage_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("app_queue_usage_plot.png"):
+            os.remove("app_queue_usage_plot.png")
 
     def yarn_pending_app(self, yarn_pending_apps_df):
         """Add yarn pending application count graph in PDF.
@@ -3751,6 +3830,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_pending_apps_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_pending_apps_plot.png"):
+            os.remove("yarn_pending_apps_plot.png")
 
     def yarn_pending_vcore(self, yarn_pending_vcore_df):
         """Add yarn pending application vcore graph in PDF.
@@ -3770,6 +3851,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_pending_vcore_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_pending_vcore_plot.png"):
+            os.remove("yarn_pending_vcore_plot.png")
 
     def yarn_pending_memory(self, yarn_pending_memory_df):
         """Add yarn pending application memory graph in PDF.
@@ -3789,6 +3872,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_pending_memory_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_pending_memory_plot.png"):
+            os.remove("yarn_pending_memory_plot.png")
 
     def yarn_running_app(self, yarn_running_apps_df):
         """Add yarn running application count graph in PDF.
@@ -3808,6 +3893,8 @@ class PdfFunctions:
         self.pdf.image(
             "yarn_running_apps_plot.png", x=0, y=None, w=250, h=85, type="", link=""
         )
+        if os.path.exists("yarn_running_apps_plot.png"):
+            os.remove("yarn_running_apps_plot.png")
 
     def nodes_serving_hbase(self, NumNodesServing):
         """Add number of nodes serving Hbase in PDF.
@@ -4061,7 +4148,11 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total Size of Messages in Kafka: {: .2f} KB".format(sum_size), 0, 1,
+            230,
+            8,
+            "Total Size of Messages in Kafka: {: .2f} KB".format(sum_size),
+            0,
+            1,
         )
 
     def msg_count(self, sum_count):
@@ -4091,8 +4182,10 @@ class PdfFunctions:
             230, 8, "Total Storage of Kafka Cluster: {} KB".format(total_size), 0, 1,
         )
         j = 0
-        for i in brokersize['size']:
-            self.pdf.cell(230, 5,"Size of broker {}  is  : {} KB".format(j,i),0,ln=1)
+        for i in brokersize["size"]:
+            self.pdf.cell(
+                230, 5, "Size of broker {}  is  : {} KB".format(j, i), 0, ln=1
+            )
             j = j + 1
 
     def ha_strategy(self, HA_Strategy):
@@ -4105,9 +4198,12 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Does High Availabiity enabled in Kafka Cluster: {}".format(HA_Strategy), 0, 1,
+            230,
+            8,
+            "Does High Availabiity enabled in Kafka Cluster: {}".format(HA_Strategy),
+            0,
+            1,
         )
-
 
     def services_used_for_ingestion(self, services):
         """Add services used for ingestion in PDF.

@@ -29,6 +29,7 @@ class SecurityAPI:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.config_path = inputs["config_path"]
         self.ssl = inputs["ssl"]
         if self.ssl:
             self.http = "https"
@@ -58,8 +59,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
@@ -70,8 +72,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
@@ -82,8 +85,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             if r.status_code == 200:
                 cluster_kerberos_info = r.json()
                 kerberized_status = str(cluster_kerberos_info["kerberized"])
@@ -123,8 +127,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -135,8 +140,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -147,15 +153,12 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             if r.status_code == 200:
                 ad_server = r.json()
                 ADServer = "LDAP server not present"
-                with open(
-                    "Discovery_Report/{}/AD_server_port.json".format(cluster_name), "w"
-                ) as fp:
-                    json.dump(ad_server, fp, indent=4)
                 ad_server = ad_server["managerSettings"]
                 for i in ad_server["items"]:
                     if i["name"] == "LDAP_URL":
@@ -193,8 +196,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -205,8 +209,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/deployment".format(
@@ -217,15 +222,12 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             if r.status_code == 200:
                 ad_server = r.json()
                 Server_dn = None
-                with open(
-                    "Discovery_Report/{}/AD_server_DN.json".format(cluster_name), "w"
-                ) as fp:
-                    json.dump(ad_server, fp, indent=4)
                 ad_server = ad_server["managerSettings"]
                 for i in ad_server["items"]:
                     if i["name"] == "LDAP_BIND_DN":
@@ -252,10 +254,10 @@ class SecurityAPI:
         """
 
         try:
-            path_status = path.exists("/etc/hadoop/conf/hdfs-site.xml")
+            path_status = path.exists("{}".format(self.config_path["hdfs"]))
             if path_status == True:
                 xml_data = subprocess.Popen(
-                    "cat /etc/hadoop/conf/hdfs-site.xml | grep HTTPS_ONLY",
+                    "cat {} | grep HTTPS_ONLY".format(self.config_path["hdfs"]),
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -268,10 +270,10 @@ class SecurityAPI:
                     hdfs_ssl = "SSL on HDFS is enabled"
             else:
                 hdfs_ssl = None
-            path_status = path.exists("/etc/hadoop/conf/yarn-site.xml")
+            path_status = path.exists("{}l".format(self.config_path["yarn"]))
             if path_status == True:
                 xml_data = subprocess.Popen(
-                    "cat /etc/hadoop/conf/yarn-site.xml | grep HTTPS_ONLY",
+                    "cat {}l | grep HTTPS_ONLY".format(self.config_path["yarn"]),
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -284,10 +286,10 @@ class SecurityAPI:
                     yarn_ssl = "SSL on Yarn is enabled"
             else:
                 yarn_ssl = None
-            path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
+            path_status = path.exists("{}".format(self.config_path["mapred"]))
             if path_status == True:
                 xml_data = subprocess.Popen(
-                    "cat /etc/hadoop/conf/mapred-site.xml | grep HTTPS_ONLY",
+                    "cat {} | grep HTTPS_ONLY".format(self.config_path["mapred"]),
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -328,8 +330,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 6:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/kerberosPrincipals".format(
@@ -339,8 +342,9 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             elif self.version == 5:
                 r = requests.get(
                     "{}://{}:{}/api/v19/cm/kerberosPrincipals".format(
@@ -350,15 +354,15 @@ class SecurityAPI:
                     ),
                     auth=HTTPBasicAuth(
                         self.cloudera_manager_username, self.cloudera_manager_password
-                    ), verify = False
-                 )
+                    ),
+                    verify=False,
+                )
             if r.status_code == 200:
                 keytab1 = r.json()
                 if len(keytab1["items"]) > 0:
                     keytab = "keytab exist"
                 else:
                     keytab = "keytab not exist"
-                # for detecting kerberos in each services    
                 keytab1 = keytab1["items"]
                 new_list = []
                 for i in range(0, len(keytab1)):
@@ -405,7 +409,12 @@ class SecurityAPI:
         """
 
         try:
-            subprocess.Popen("blkid > ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            subprocess.Popen(
+                "blkid > ./block.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
             columns = [
                 "block",
                 "section",
@@ -416,8 +425,12 @@ class SecurityAPI:
                 "part3",
                 "part4",
             ]
-            luks_detect = pd.read_csv("block.csv", names=columns, delimiter=r"\s+", header=None)
-            subprocess.Popen("rm ./block.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+            luks_detect = pd.read_csv(
+                "block.csv", names=columns, delimiter=r"\s+", header=None
+            )
+            subprocess.Popen(
+                "rm ./block.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+            ).wait()
             luks_detect.drop(
                 columns=["UUID", "part1", "part2", "part3", "part4"], inplace=True
             )
@@ -437,15 +450,27 @@ class SecurityAPI:
 
         try:
             port_df = pd.DataFrame(columns=["service", "port"])
-            subprocess.Popen("find / -name oozie-site.xml 2>/dev/null> oozie_port.csv ",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            with open("oozie_port.csv","r") as fp:
+            subprocess.Popen(
+                "find / -name oozie-site.xml 2>/dev/null> oozie_port.csv ",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+            with open("oozie_port.csv", "r") as fp:
                 for line in fp:
                     if "-oozie-OOZIE_SERVER/oozie-site.xml" in line:
                         xml_oozie = line
-            subprocess.Popen("rm ./oozie_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
-            dt_xml = subprocess.Popen("cat " + xml_oozie,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            subprocess.Popen(
+                "rm ./oozie_port.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+            dt_xml = subprocess.Popen(
+                "cat " + xml_oozie, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+            )
             dt_xml.wait()
-            dt_xml,err = dt_xml.communicate()
+            dt_xml, err = dt_xml.communicate()
             myxml = fromstring(dt_xml)
             for val in myxml.findall("property"):
                 name = val.find("name").text
@@ -462,11 +487,16 @@ class SecurityAPI:
                 df_port = {"service": "Oozie Port", "port": value}
             port_df = port_df.append(df_port, ignore_index=True)
             hdfs_line = ""
-            path_status = path.exists("/etc/hadoop/conf/core-site.xml")
+            path_status = path.exists("{}".format(self.config_path["core"]))
             if path_status == True:
-                xml_data = subprocess.Popen("cat /etc/hadoop/conf/core-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data = subprocess.Popen(
+                    "cat {}".format(self.config_path["core"]),
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 xml_data.wait()
-                xml_data,err = xml_data.communicate()
+                xml_data, err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -482,11 +512,16 @@ class SecurityAPI:
                     df_port = {"service": "HDFS Port", "port": value}
                 port_df = port_df.append(df_port, ignore_index=True)
             yarn_line = ""
-            path_status = path.exists("/etc/hadoop/conf/yarn-site.xml")
+            path_status = path.exists("{}".format(self.config_path["yarn"]))
             if path_status == True:
-                xml_data = subprocess.Popen("cat /etc/hadoop/conf/yarn-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data = subprocess.Popen(
+                    "cat {}".format(self.config_path["yarn"]),
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 xml_data.wait()
-                xml_data,err = xml_data.communicate()
+                xml_data, err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -502,11 +537,16 @@ class SecurityAPI:
                     df_port = {"service": "Yarn Port", "port": value}
                 port_df = port_df.append(df_port, ignore_index=True)
             mapred_line = ""
-            path_status = path.exists("/etc/hadoop/conf/mapred-site.xml")
+            path_status = path.exists("{}".format(self.config_path["mapred"]))
             if path_status == True:
-                xml_data = subprocess.Popen("cat /etc/hadoop/conf/mapred-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                xml_data = subprocess.Popen(
+                    "cat {}".format(self.config_path["mapred"]),
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 xml_data.wait()
-                xml_data,err = xml_data.communicate()
+                xml_data, err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
                     name = val.find("name").text
@@ -522,14 +562,24 @@ class SecurityAPI:
                     df_port = {"service": "Mapreduce Port", "port": value}
                 port_df = port_df.append(df_port, ignore_index=True)
             kafka_line = ""
-            path_status = path.exists("/etc/kafka/server.properties")
+            path_status = path.exists("{}".format(self.config_path["kafka"]))
             if path_status == True:
-                subprocess.Popen("cat /etc/kafka/server.properties > kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "cat {} > kafka_port.csv".format(self.config_path["kafka"]),
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 with open("kafka_port.csv") as fp:
                     for kafka_line in fp:
                         if "listeners=PLAINTEXT://" in kafka_line:
                             break
-                subprocess.Popen("rm ./kafka_port.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm ./kafka_port.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 kafka_line = " ".join(kafka_line.split(":", 2)[2:])
                 if kafka_line == "":
                     line = pd.NaT
@@ -539,16 +589,24 @@ class SecurityAPI:
                     df_port = {"service": "Kafka Port", "port": line.rstrip()}
                 port_df = port_df.append(df_port, ignore_index=True)
             spark_line = ""
-            path_status = path.exists("/etc/spark/conf/spark-defaults.conf")
+            path_status = path.exists("{}".format(self.config_path["spark"]))
             if path_status == True:
                 subprocess.Popen(
-                    "cat /etc/spark/conf/spark-defaults.conf > spark_data.csv"
-                ,shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                    "cat {} > spark_data.csv".format(self.config_path["spark"]),
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 with open("spark_data.csv") as fp:
                     for spark_line in fp:
                         if "spark.shuffle.service.port" in spark_line:
                             break
-                subprocess.Popen("rm -rf ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm -rf ./spark_data.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 spark_line = " ".join(spark_line.split("=", 1)[1:])
                 if spark_line == "":
                     line = pd.NaT
@@ -560,12 +618,22 @@ class SecurityAPI:
             kerberos_line = ""
             path_status = path.exists("/var/kerberos/krb5kdc/kdc.conf")
             if path_status == True:
-                subprocess.Popen("cat /var/kerberos/krb5kdc/kdc.conf > ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "cat /var/kerberos/krb5kdc/kdc.conf > ./spark_data.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 with open("spark_data.csv") as fp:
                     for kerberos_line in fp:
                         if "kdc_tcp_ports" in kerberos_line:
                             break
-                subprocess.Popen("rm ./spark_data.csv",shell=True,stdout=subprocess.PIPE,encoding="utf-8").wait()
+                subprocess.Popen(
+                    "rm ./spark_data.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait()
                 kerberos_line = " ".join(kerberos_line.split("=", 1)[1:])
                 if kerberos_line == "":
                     line = pd.NaT
@@ -575,14 +643,21 @@ class SecurityAPI:
                     df_port = {"service": "Kerberos Port", "port": line.rstrip()}
                 port_df = port_df.append(df_port, ignore_index=True)
             zookeeper_line = ""
-            dt = subprocess.Popen('find / -name "zoo.cfg" 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            dt = subprocess.Popen(
+                'find / -name "zoo.cfg" 2>/dev/null',
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
             dt.wait()
-            dt,err = dt.communicate()
+            dt, err = dt.communicate()
             res_list = dt.splitlines()
             for i in res_list:
                 if "/etc/zookeeper/conf.dist/zoo.cfg" in i:
-                    intermediate_list = subprocess.Popen("cat " + i,shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                    intermediate_list,err = intermediate_list.communicate()
+                    intermediate_list = subprocess.Popen(
+                        "cat " + i, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                    )
+                    intermediate_list, err = intermediate_list.communicate()
                     new_res_list = intermediate_list.splitlines()
                     res = [string for string in new_res_list if "clientPort=" in string]
                     listToStr = " ".join([str(elem) for elem in res])
