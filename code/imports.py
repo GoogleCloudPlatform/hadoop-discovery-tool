@@ -41,13 +41,9 @@ pd.set_option("display.max_colwidth", 0)
 pd.options.display.float_format = "{:,.2f}".format
 warnings.filterwarnings("ignore")
 sns.set(rc={"figure.figsize": (15, 5)})
-# date_range_start = datetime(2021, 2, 20, 0, 0, 0, 0)
-# date_range_end = datetime(2021, 2, 24, 15, 30, 0, 0)
-# start_date = date_range_start.strftime("%Y-%m-%dT%H:%M:%S")
-# end_date = date_range_end.strftime("%Y-%m-%dT%H:%M:%S")
 
 
-def checkSSL():
+def check_ssl():
     """Check whether SSL is enabled or not
 
     Returns:
@@ -55,7 +51,13 @@ def checkSSL():
     """
 
     ssl = True
-    xml_data = os.popen("cat /etc/hadoop/conf/core-site.xml").read()
+    if path.exists("/etc/hadoop/conf/core-site.xml"):
+        hadoop_path = "/etc/hadoop/conf/core-site.xml"
+    elif path.exists("/etc/hive/conf/core-site.xml"):
+        hadoop_path = "/etc/hive/conf/core-site.xml"
+    else:
+        hadoop_path = None
+    xml_data = os.popen("cat {}".format(hadoop_path)).read()
     root = ET.fromstring(xml_data)
     for val in root.findall("property"):
         name = val.find("name").text
@@ -74,7 +76,57 @@ def checkSSL():
     return ssl
 
 
-def clusterName(
+def check_config_path():
+    """Check whether configuration files exists or not
+
+    Returns:
+        config_path (dict): config paths
+    """
+    config_path = {}
+    if path.exists("/etc/hadoop/conf/core-site.xml"):
+        config_path["core"] = "/etc/hadoop/conf/core-site.xml"
+    else:
+        if path.exists("/etc/hive/conf/core-site.xml"):
+            config_path["core"] = "/etc/hive/conf/core-site.xml"
+        else:
+            config_path["core"] = None
+    if path.exists("/etc/hadoop/conf/yarn-site.xml"):
+        config_path["yarn"] = "/etc/hadoop/conf/yarn-site.xml"
+    else:
+        if path.exists("/etc/hive/conf/yarn-site.xml"):
+            config_path["yarn"] = "/etc/hive/conf/yarn-site.xml"
+        else:
+            config_path["yarn"] = None
+    if path.exists("/etc/hadoop/conf/mapred-site.xml"):
+        config_path["mapred"] = "/etc/hadoop/conf/mapred-site.xml"
+    else:
+        if path.exists("/etc/hive/conf/mapred-site.xml"):
+            config_path["mapred"] = "/etc/hive/conf/mapred-site.xml"
+        else:
+            config_path["mapred"] = None
+    if path.exists("/etc/hadoop/conf/hdfs-site.xml"):
+        config_path["hdfs"] = "/etc/hadoop/conf/hdfs-site.xml"
+    else:
+        if path.exists("/etc/hive/conf/hdfs-site.xml"):
+            config_path["hdfs"] = "/etc/hive/conf/hdfs-site.xml"
+        else:
+            config_path["hdfs"] = None
+    if path.exists("/etc/hive/conf/hive-site.xml"):
+        config_path["hive"] = "/etc/hive/conf/hive-site.xml"
+    else:
+        config_path["hive"] = None
+    if path.exists("/etc/spark/conf/spark-defaults.conf"):
+        config_path["spark"] = "/etc/spark/conf/spark-defaults.conf"
+    else:
+        config_path["spark"] = None
+    if path.exists("/etc/kafka/kafka-client.conf"):
+        config_path["kafka"] = "/etc/kafka/kafka-client.conf"
+    else:
+        config_path["kafka"] = None
+    return config_path
+
+
+def cloudera_cluster_name(
     version,
     cloudera_manager_host_ip,
     cloudera_manager_port,
@@ -149,12 +201,12 @@ def clusterName(
             cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
             print("This cluster is selected : ", cluster_name)
         else:
-            print("Wrong Input! Try Again")
+            print("Wrong Input!")
             exit()
     return cluster_name
 
 
-def BrokerListInput():
+def broker_list_input():
     broker_list = []
     t = input("Do you want to enter Kafka credentials? [y/n] ")
     if t in ["y", "Y"]:
@@ -302,7 +354,7 @@ def BrokerListInput():
     return broker_list
 
 
-def getInput(version):
+def get_input(version):
     """Get input from user related to cloudera manager like Host Ip, Username, 
     Password and Cluster Name.
 
@@ -315,8 +367,8 @@ def getInput(version):
 
     inputs = {}
     inputs["version"] = version
-    inputs["ssl"] = checkSSL()
-
+    inputs["ssl"] = check_ssl()
+    inputs["config_path"] = check_config_path()
     if inputs["ssl"]:
         print("Enter details accordingly as SSL is enabled.")
     else:
@@ -339,13 +391,13 @@ def getInput(version):
                     "Enter Cloudera Manager Port : "
                 )
             else:
-                print("Wrong Input! Try Again")
+                print("Wrong Input!")
                 exit()
         inputs["cloudera_manager_username"] = input("Enter Cloudera Manager Username: ")
         inputs["cloudera_manager_password"] = getpass(
             prompt="Enter Cloudera Manager Password: "
         )
-        inputs["cluster_name"] = clusterName(
+        inputs["cluster_name"] = cloudera_cluster_name(
             inputs["version"],
             inputs["cloudera_manager_host_ip"],
             inputs["cloudera_manager_port"],
@@ -382,7 +434,7 @@ def getInput(version):
                         "Enter Cloudera Manager Port : "
                     )
                 else:
-                    print("Wrong Input! Try Again")
+                    print("Wrong Input!")
                     exit()
             inputs["cloudera_manager_username"] = input(
                 "Enter Cloudera Manager Username: "
@@ -390,7 +442,7 @@ def getInput(version):
             inputs["cloudera_manager_password"] = getpass(
                 prompt="Enter Cloudera Manager Password: "
             )
-            inputs["cluster_name"] = clusterName(
+            inputs["cluster_name"] = cloudera_cluster_name(
                 inputs["version"],
                 inputs["cloudera_manager_host_ip"],
                 inputs["cloudera_manager_port"],
@@ -404,7 +456,7 @@ def getInput(version):
             inputs["cloudera_manager_password"] = None
             inputs["cluster_name"] = None
         else:
-            print("Wrong Input! Try Again")
+            print("Wrong Input!")
             exit()
     t = input("Do you want to enter Hive credentials? [y/n] ")
     if t in ["y", "Y"]:
@@ -423,9 +475,9 @@ def getInput(version):
             inputs["hive_username"] = None
             inputs["hive_password"] = None
         else:
-            print("Wrong Input! Try Again")
+            print("Wrong Input!")
             exit()
-    inputs["broker_list"] = BrokerListInput()
+    inputs["broker_list"] = broker_list_input()
     print("Select date range from list below : ")
     print("1. Week\n2. Month\n3. Custom")
     t = int(input("Enter serial number for selected date range: "))
@@ -469,31 +521,8 @@ def getInput(version):
                 input("Enter End Date (YYYY-MM-DD HH:MM) : "), "%Y-%m-%d %H:%M"
             ).strftime("%Y-%m-%dT%H:%M:%S")
         else:
-            print("Wrong Input! Try Again")
+            print("Wrong Input!")
             exit()
-    # if inputs["ssl"]:
-    #     inputs["cloudera_manager_port"] = 7183
-    # else:
-    #     inputs["cloudera_manager_port"] = 7180
-    # inputs["hive_username"] = "hive"
-    # if version == 7:
-    #     inputs["cloudera_manager_host_ip"] = "10.0.0.239"
-    #     inputs["cluster_name"] = "MSTECH"
-    #     inputs["cloudera_manager_username"] = "admin"
-    #     inputs["cloudera_manager_password"] = "admin"
-    #     inputs["hive_password"] = "MsSGI2lC9l"
-    # elif version == 6:
-    #     inputs["cloudera_manager_host_ip"] = "10.0.0.19"
-    #     inputs["cluster_name"] = "QPTECH"
-    #     inputs["cloudera_manager_username"] = "admin"
-    #     inputs["cloudera_manager_password"] = "admin"
-    #     inputs["hive_password"] = "pDkiWaKQB6"
-    # elif version == 5:
-    #     inputs["cloudera_manager_host_ip"] = "10.0.0.23"
-    #     inputs["cluster_name"] = "cluster"
-    #     inputs["cloudera_manager_username"] = "admin"
-    #     inputs["cloudera_manager_password"] = "admin"
-    #     inputs["hive_password"] = "4AH9FK2zk8"
     return inputs
 
 

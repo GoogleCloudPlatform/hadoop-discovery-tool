@@ -30,6 +30,7 @@ class FrameworkDetailsAPI:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.config_path = inputs["config_path"]
         self.ssl = inputs["ssl"]
         if self.ssl:
             self.http = "https"
@@ -301,12 +302,6 @@ class FrameworkDetailsAPI:
                     delimiter=r"\s+",
                     skiprows=5,
                 )
-                package_version.to_csv(
-                    "Discovery_Report/{}/centos_package_version.csv".format(
-                        self.cluster_name
-                    ),
-                    index=False,
-                )
                 subprocess.Popen(
                     "rm ./centos_package_version.csv",
                     shell=True,
@@ -327,12 +322,6 @@ class FrameworkDetailsAPI:
                     names=col_names,
                     delimiter=r"\s+",
                     skiprows=5,
-                )
-                package_version.to_csv(
-                    "Discovery_Report/{}/debian_package_version.csv".format(
-                        self.cluster_name
-                    ),
-                    index=False,
                 )
                 subprocess.Popen(
                     "rm ./debian_package_version.csv",
@@ -355,12 +344,6 @@ class FrameworkDetailsAPI:
                     delimiter=r"\s+",
                     skiprows=5,
                 )
-                package_version.to_csv(
-                    "Discovery_Report/{}/ubuntu_package_version.csv".format(
-                        self.cluster_name
-                    ),
-                    index=False,
-                )
                 subprocess.Popen(
                     "rm ./ubuntu_package_version.csv",
                     shell=True,
@@ -381,12 +364,6 @@ class FrameworkDetailsAPI:
                     names=col_names,
                     delimiter=r"\s+",
                     skiprows=5,
-                )
-                package_version.to_csv(
-                    "Discovery_Report/{}/redhat_package_version.csv".format(
-                        self.cluster_name
-                    ),
-                    index=False,
                 )
                 subprocess.Popen(
                     "rm -rf ./redhat_package_version.csv",

@@ -31,6 +31,7 @@ class NetworkMonitoringAPI:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.config_path = inputs["config_path"]
         self.ssl = inputs["ssl"]
         if self.ssl:
             self.http = "https"

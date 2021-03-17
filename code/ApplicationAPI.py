@@ -29,6 +29,7 @@ class ApplicationAPI:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.broker_list = inputs["broker_list"]
+        self.config_path = inputs["config_path"]
         self.logger = inputs["logger"]
         self.ssl = inputs["ssl"]
         if self.ssl:
@@ -314,7 +315,7 @@ class ApplicationAPI:
             hive_ha = 0
             zookeeper_ha = 0
             data_hdfs = subprocess.Popen(
-                "cat /etc/hadoop/conf/hdfs-site.xml | grep dfs.nameservices",
+                "cat {} | grep dfs.nameservices".format(self.config_path["hdfs"]),
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -325,7 +326,9 @@ class ApplicationAPI:
             else:
                 hdfs_ha = 0
             data_yarn = subprocess.Popen(
-                "cat /etc/hadoop/conf/yarn-site.xml | grep yarn.resourcemanager.ha.enabled",
+                "cat {} | grep yarn.resourcemanager.ha.enabled".format(
+                    self.config_path["yarn"]
+                ),
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -336,7 +339,7 @@ class ApplicationAPI:
             else:
                 yarn_ha = 0
             data_hive = subprocess.Popen(
-                " cat /etc/hive/conf/hive-site.xml",
+                " cat {}".format(self.config_path["hive"]),
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -354,7 +357,7 @@ class ApplicationAPI:
             else:
                 hive_ha = 0
             xml_data = subprocess.Popen(
-                "cat /etc/hive/conf/hive-site.xml",
+                "cat {}".format(self.config_path["hive"]),
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -2130,7 +2133,7 @@ class ApplicationAPI:
         try:
             dynamic_allocation = ""
             spark_resource_manager = ""
-            spark_config_filename = glob.glob("/etc/spark/conf.*/spark-defaults.conf")
+            spark_config_filename = glob.glob("{}".format(self.config_path["spark"]))
             with open(spark_config_filename[0], "r") as f:
                 for line in f:
                     if line.split("=")[0] == "spark.dynamicAllocation.enabled":
@@ -2335,7 +2338,9 @@ class ApplicationAPI:
 
         try:
             subprocess.Popen(
-                "awk '/zookeeper.connect/'  /etc/kafka/conf/kafka-client.conf > zookeeper_conn.csv",
+                "awk '/zookeeper.connect/'  {} > zookeeper_conn.csv".format(
+                    self.config_path["kafka"]
+                ),
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",

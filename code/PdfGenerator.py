@@ -36,6 +36,7 @@ class PdfGenerator:
         self.cloudera_manager_password = inputs["cloudera_manager_password"]
         self.cluster_name = inputs["cluster_name"]
         self.logger = inputs["logger"]
+        self.config_path = inputs["config_path"]
         self.ssl = inputs["ssl"]
         self.hive_username = inputs["hive_username"]
         self.hive_password = inputs["hive_password"]
@@ -281,8 +282,13 @@ class PdfGenerator:
             if (len(all_host_data) != 0) and (os_version != None):
                 obj_pdf.cluster_host_info(cluster_host_items, all_host_data, os_version)
 
-        xml_data = subprocess.Popen("cat /etc/hadoop/conf/yarn-site.xml",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-        xml_data,err = xml_data.communicate()
+        xml_data = subprocess.Popen(
+            "cat {}".format(self.config_path["yarn"]),
+            shell=True,
+            stdout=subprocess.PIPE,
+            encoding="utf-8",
+        )
+        xml_data, err = xml_data.communicate()
         root = ET.fromstring(xml_data)
         for val in root.findall("property"):
             name = val.find("name").text
@@ -333,7 +339,9 @@ class PdfGenerator:
             cluster_total_memory_df = temp1
             cluster_memory_usage_df, cluster_memory_usage_avg = temp2
             obj_pdf.cluster_memory_avg(cluster_memory_usage_avg)
-            obj_pdf.cluster_memory_plot(cluster_total_memory_df, cluster_memory_usage_df)
+            obj_pdf.cluster_memory_plot(
+                cluster_total_memory_df, cluster_memory_usage_df
+            )
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -492,7 +500,7 @@ class PdfGenerator:
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 8, "Details of Services/Software and Their Version:", 0, ln=1)
-        
+
         package_version = None
         temp = obj3.version_package()
         if type(temp) != type(None):
@@ -637,7 +645,9 @@ class PdfGenerator:
         temp = obj2.get_hive_config_items(cluster_name)
         if type(temp) != type(None):
             mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
-            obj_pdf.hive_metastore_details(mt_db_host, mt_db_name, mt_db_type, mt_db_port)
+            obj_pdf.hive_metastore_details(
+                mt_db_host, mt_db_name, mt_db_type, mt_db_port
+            )
 
             if mt_db_type == "postgresql":
                 database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
@@ -876,12 +886,33 @@ class PdfGenerator:
         if type(temp) != type(None):
             ddog, splunk, new_relic, elastic_search = temp
             obj_pdf.logging_tool(ddog, splunk, new_relic, elastic_search)
-        
-        max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2 = None, None, None, None, None, None
+
+        max_value_1, min_value_1, avg_value_1, max_value_2, min_value_2, avg_value_2 = (
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
         temp = obj5.monitor_network_speed()
         if type(temp) != type(None):
-            max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2 = temp
-            obj_pdf.pdf_monitor_network_speed(max_value_1,min_value_1,avg_value_1,max_value_2,min_value_2,avg_value_2)
+            (
+                max_value_1,
+                min_value_1,
+                avg_value_1,
+                max_value_2,
+                min_value_2,
+                avg_value_2,
+            ) = temp
+            obj_pdf.pdf_monitor_network_speed(
+                max_value_1,
+                min_value_1,
+                avg_value_1,
+                max_value_2,
+                min_value_2,
+                avg_value_2,
+            )
 
         logs = None
         temp = obj5.get_logs()
@@ -966,7 +997,9 @@ class PdfGenerator:
                 ],
             ) = (temp1, temp2)
             obj_pdf.yarn_memory_avg(yarn_memory_allocated_avg)
-            obj_pdf.yarn_memory_usage(yarn_memory_available_df, yarn_memory_allocated_df)
+            obj_pdf.yarn_memory_usage(
+                yarn_memory_available_df, yarn_memory_allocated_df
+            )
             obj_pdf.yarn_memory_seasonality(yarn_memory_allocated_pivot_df)
 
         yarn_application_df = None
@@ -1226,17 +1259,13 @@ class PdfGenerator:
             obj_pdf.num_topics(num_topics)
 
         sum_size = None
-        temp = obj_app.msg_size_kafka(
-            zookeeper_conn
-         )
+        temp = obj_app.msg_size_kafka(zookeeper_conn)
         if type(temp) != type(None):
             sum_size = temp
             obj_pdf.msg_size(sum_size)
 
         sum_count = None
-        temp = obj_app.msg_count_kafka(
-            zookeeper_conn
-         )
+        temp = obj_app.msg_count_kafka(zookeeper_conn)
         if type(temp) != type(None):
             sum_count = temp
             obj_pdf.msg_count(sum_count)
@@ -1247,17 +1276,14 @@ class PdfGenerator:
         if (type(temp1) and type(temp2)) != type(None):
             total_size = temp1
             brokersize = temp2
-            obj_pdf.cluster_size_and_brokerSize(total_size,brokersize)
-        
+            obj_pdf.cluster_size_and_brokerSize(total_size, brokersize)
+
         HA_Strategy = None
-        temp = obj_app.ha_strategy_kafka(
-            zookeeper_conn
-        )
+        temp = obj_app.ha_strategy_kafka(zookeeper_conn)
         if type(temp) != type(None):
             HA_Strategy = temp
             obj_pdf.ha_strategy(HA_Strategy)
 
-        
         pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
