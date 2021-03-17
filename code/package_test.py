@@ -25,14 +25,13 @@ trash, name = get_name.split("=")
 final_name = name.replace('"', "")
 final_name = final_name.strip("\n")
 
-final_version1 = "6"
 no_show = 0
 """
 Here based on the os of the current system respective block will execute and will install packages 
 with their respective package managers.
 """
 try:
-    if "centos" in os_name and final_version1 >= "7":
+    if "centos" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
