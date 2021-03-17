@@ -47,7 +47,7 @@ class PdfGenerator:
         """Generate PDF for CDH-5, CDH-6 and CDP-7"""
 
         pdf = FPDF(format=(250, 350))
-        p_bar = tqdm(total=6, desc="Hadoop Assessment Tool")
+        p_bar = tqdm(total=7, desc="Hadoop Assessment Tool")
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
         obj3 = FrameworkDetailsAPI(self.inputs)
@@ -919,6 +919,11 @@ class PdfGenerator:
         if type(temp) != type(None):
             logs = temp
             obj_pdf.get_logs(logs)
+
+        p_bar.update(1)
+        p_bar.set_description(
+            desc="Network, Traffic and Monitoring Metrics Added in PDF"
+        )
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)

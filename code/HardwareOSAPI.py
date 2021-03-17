@@ -48,18 +48,10 @@ class HardwareOSAPI:
         """
 
         try:
-            os_version = subprocess.Popen(
-                "cat /etc/*-release",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            os_version.wait()
-            os_version, err = os_version.communicate()
-            os_version = os_version.replace("\n", ",")
-            os_version = os_version.split(",")
-            os_version_series = pd.Series(data=os_version).T
-            os_version = os_version_series.iloc[18]
+            os_version=subprocess.Popen('grep PRETTY_NAME /etc/os-release',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_version, err = os_version.communicate()    
+            os_version = os_version.split("=")
+            os_version = os_version[1]
             self.logger.info("os_version successful")
             return os_version
         except Exception as e:
@@ -111,6 +103,9 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("cluster_items failed as cloudera does not exist",)
+                return None
             if r.status_code == 200:
                 cluster = r.json()
                 cluster_items = cluster["items"]
@@ -176,6 +171,11 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "cluster_host_items failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_host = r.json()
                 cluster_host_len = len(cluster_host["items"])
@@ -241,6 +241,11 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "cluster_service_item failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_services = r.json()
                 cluster_service_item = cluster_services["items"]
@@ -306,6 +311,9 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("host_data failed as cloudera does not exist",)
+                return None
             if r.status_code == 200:
                 host_data = r.json()
                 self.logger.info("host_data successful")
@@ -375,6 +383,11 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "cluster_total_cores failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_total_cores = r.json()
                 cluster_total_cores_list = cluster_total_cores["items"][0][
@@ -476,6 +489,11 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "cluster_cpu_usage failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_cpu_usage = r.json()
                 cluster_cpu_usage_list = cluster_cpu_usage["items"][0]["timeSeries"][0][
@@ -586,6 +604,11 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "cluster_total_memory failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_total_memory = r.json()
                 cluster_total_memory_list = cluster_total_memory["items"][0][
@@ -687,6 +710,11 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "cluster_memory_usage failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_memory_usage = r.json()
                 cluster_memory_usage_list = cluster_memory_usage["items"][0][
@@ -780,6 +808,9 @@ class HardwareOSAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("database_server failed as cloudera does not exist",)
+                return None
             if r.status_code == 200:
                 database_server = r.json()
                 database_server = database_server["scmDbType"]

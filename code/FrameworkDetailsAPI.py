@@ -155,6 +155,9 @@ class FrameworkDetailsAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("version_mapping failed as cloudera does not exist",)
+                return None
             if r.status_code == 200:
                 version_related = r.json()
                 version_related_count = version_related["items"]
