@@ -48,18 +48,10 @@ class HardwareOSAPI:
         """
 
         try:
-            os_version = subprocess.Popen(
-                "cat /etc/*-release",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            os_version.wait()
-            os_version, err = os_version.communicate()
-            os_version = os_version.replace("\n", ",")
-            os_version = os_version.split(",")
-            os_version_series = pd.Series(data=os_version).T
-            os_version = os_version_series.iloc[18]
+            os_version=subprocess.Popen('grep PRETTY_NAME /etc/os-release',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_version, err = os_version.communicate()    
+            os_version = os_version.split("=")
+            os_version = os_version[1]
             self.logger.info("os_version successful")
             return os_version
         except Exception as e:
