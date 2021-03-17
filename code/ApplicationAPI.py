@@ -158,6 +158,39 @@ class ApplicationAPI:
                         & (yarn_application_df["StartedTime"] >= (self.start_date))
                         & (yarn_application_df["FinishedTime"] >= (self.start_date))
                     ]
+                else:
+                    yarn_application_df = pd.DataFrame(
+                        {
+                            "ApplicationId": yarn_application_df["id"],
+                            "ApplicationType": yarn_application_df["applicationType"],
+                            "LaunchTime": pd.to_datetime(
+                                (yarn_application_df["startedTime"] + 500) / 1000,
+                                unit="s",
+                            ),
+                            "StartedTime": pd.to_datetime(
+                                (yarn_application_df["startedTime"] + 500) / 1000,
+                                unit="s",
+                            ),
+                            "FinishedTime": pd.to_datetime(
+                                (yarn_application_df["finishedTime"] + 500) / 1000,
+                                unit="s",
+                            ),
+                            "ElapsedTime": (yarn_application_df["elapsedTime"] + 500)
+                            / 1000,
+                            "FinalStatus": yarn_application_df["finalStatus"],
+                            "MemorySeconds": yarn_application_df["memorySeconds"],
+                            "VcoreSeconds": yarn_application_df["vcoreSeconds"],
+                            "User": yarn_application_df["user"],
+                            "Diagnostics": yarn_application_df["diagnostics"],
+                            "Queue": yarn_application_df["queue"],
+                            "Name": yarn_application_df["name"],
+                        }
+                    )
+                    yarn_application_df = yarn_application_df[
+                        (yarn_application_df["StartedTime"] < (self.end_date))
+                        & (yarn_application_df["StartedTime"] >= (self.start_date))
+                        & (yarn_application_df["FinishedTime"] >= (self.start_date))
+                    ]
                 yarn_application_df = yarn_application_df.reset_index(drop=True)
                 self.logger.info("get_application_details successful")
                 return yarn_application_df
@@ -642,6 +675,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_yarn_vcore_available failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_vcore_available = r.json()
                 yarn_vcore_available_list = yarn_vcore_available["items"][0][
@@ -751,6 +789,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_yarn_vcore_allocated failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_vcore_allocated = r.json()
                 yarn_vcore_allocated_list = yarn_vcore_allocated["items"][0][
@@ -921,6 +964,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_yarn_memory_available failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_memory_available = r.json()
                 yarn_memory_available_list = yarn_memory_available["items"][0][
@@ -1030,6 +1078,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_yarn_memory_allocated failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_memory_allocated = r.json()
                 yarn_memory_allocated_list = yarn_memory_allocated["items"][0][
@@ -1248,6 +1301,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_pending_application failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_pending_apps = r.json()
                 yarn_pending_apps_list = yarn_pending_apps["items"][0]["timeSeries"][0][
@@ -1355,6 +1413,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_pending_memory failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_pending_memory = r.json()
                 yarn_pending_memory_list = yarn_pending_memory["items"][0][
@@ -1462,6 +1525,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_pending_vcore failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_pending_vcore = r.json()
                 yarn_pending_vcore_list = yarn_pending_vcore["items"][0]["timeSeries"][
@@ -1569,6 +1637,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_running_application failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 yarn_running_apps = r.json()
                 yarn_running_apps_list = yarn_running_apps["items"][0]["timeSeries"][0][
@@ -1931,6 +2004,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_hbase_replication failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 hbase = r.json()
                 hbase_config = hbase["items"]
@@ -2003,6 +2081,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_hbase_secondary_index failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 hbase = r.json()
                 hbase_config = hbase["items"]
@@ -2308,15 +2391,55 @@ class ApplicationAPI:
         """
 
         try:
-            rversion_api = requests.get(
-                "http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full".format(
-                    self.cloudera_manager_host_ip, self.cluster_name, "kafka"
-                ),
-                auth=HTTPBasicAuth(
-                    self.cloudera_manager_username, self.cloudera_manager_password
-                ),
-            )
-            version_related = rversion_api.json()
+            r = None
+            if self.version == 7:
+                r = requests.get(
+                    "{}://{}:{}/api/v41/clusters/{}/services/{}/config?view=full".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        self.cluster_name,
+                        "kafka",
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                    verify=False,
+                )
+            elif self.version == 6:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        self.cluster_name,
+                        "kafka",
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                    verify=False,
+                )
+            elif self.version == 5:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        self.cluster_name,
+                        "kafka",
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                    verify=False,
+                )
+            else:
+                self.logger.error(
+                    "retention_period_kafka failed as cloudera does not exist",
+                )
+                return None
+            version_related = r.json()
             for i in version_related["items"]:
                 try:
                     if i["name"] == "log.cleaner.delete.retention.ms":
@@ -2661,15 +2784,55 @@ class ApplicationAPI:
                 if i != "":
                     brokers = i.strip("][").split(", ")
                     Num_brokers = len(brokers)
-            rversion_api = requests.get(
-                "http://{}:7180/api/v33/clusters/{}/services/{}/config?view=full".format(
-                    self.cloudera_manager_host_ip, self.cluster_name, "kafka"
-                ),
-                auth=HTTPBasicAuth(
-                    self.cloudera_manager_username, self.cloudera_manager_password
-                ),
-            )
-            version_related = rversion_api.json()
+            r = None
+            if self.version == 7:
+                r = requests.get(
+                    "{}://{}:{}/api/v41/clusters/{}/services/{}/config?view=full".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        self.cluster_name,
+                        "kafka",
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                    verify=False,
+                )
+            elif self.version == 6:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        self.cluster_name,
+                        "kafka",
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                    verify=False,
+                )
+            elif self.version == 5:
+                r = requests.get(
+                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                        self.http,
+                        self.cloudera_manager_host_ip,
+                        self.cloudera_manager_port,
+                        self.cluster_name,
+                        "kafka",
+                    ),
+                    auth=HTTPBasicAuth(
+                        self.cloudera_manager_username, self.cloudera_manager_password
+                    ),
+                    verify=False,
+                )
+            else:
+                self.logger.error(
+                    "ha_strategy_kafka failed as cloudera does not exist",
+                )
+                return None
+            version_related = r.json()
             for i in version_related["items"]:
                 try:
                     if i["name"] == "offsets.topic.replication.factor":
@@ -2853,6 +3016,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_cloudera_services_used_for_ingestion failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_services = r.json()
                 cluster_service_item = cluster_services["items"]
@@ -2929,6 +3097,11 @@ class ApplicationAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "backup_and_recovery failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 Backup = r.json()
                 if len(Backup["items"]) >= 1:

@@ -88,6 +88,11 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "cluster_kerberos_info failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 cluster_kerberos_info = r.json()
                 kerberized_status = str(cluster_kerberos_info["kerberized"])
@@ -156,6 +161,11 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "ad_server_name_and_port failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 ad_server = r.json()
                 ADServer = "LDAP server not present"
@@ -225,6 +235,11 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "ad_server_based_dn failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 ad_server = r.json()
                 Server_dn = None
@@ -357,6 +372,11 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "kerberos_http_auth failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 keytab1 = r.json()
                 if len(keytab1["items"]) > 0:

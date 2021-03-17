@@ -1817,7 +1817,7 @@ class PdfFunctions:
                 self.pdf.cell(30, 5, "Storage Policy", 1, 0, "C", True)
                 self.pdf.cell(25, 5, "Permissions", 1, 0, "C", True)
                 self.pdf.cell(15, 5, "User", 1, 0, "C", True)
-                self.pdf.cell(25, 5, "User-Group", 1, 0, "C", True)
+                self.pdf.cell(20, 5, "User-Group", 1, 0, "C", True)
                 self.pdf.cell(15, 5, "Other", 1, 1, "C", True)
                 self.pdf.set_text_color(r=1, g=1, b=1)
                 self.pdf.set_fill_color(r=244, g=244, b=244)

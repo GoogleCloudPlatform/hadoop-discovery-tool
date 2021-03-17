@@ -119,8 +119,8 @@ def check_config_path():
         config_path["spark"] = "/etc/spark/conf/spark-defaults.conf"
     else:
         config_path["spark"] = None
-    if path.exists("/etc/kafka/kafka-client.conf"):
-        config_path["kafka"] = "/etc/kafka/kafka-client.conf"
+    if path.exists("/etc/kafka/conf/kafka-client.conf"):
+        config_path["kafka"] = "/etc/kafka/conf/kafka-client.conf"
     else:
         config_path["kafka"] = None
     return config_path
@@ -211,10 +211,18 @@ def broker_list_input():
     t = input("Do you want to enter Kafka credentials? [y/n] ")
     if t in ["y", "Y"]:
         broker_list = []
-        n = int(input("Enter number of brokers: "))
+        n = input("Enter number of brokers: ")
+        if type(1) != type(n):
+            print("Wrong Input! Number of brokers should be integer! Try Again")
+            n = input("Enter number of brokers: ")
+            if type(1) != type(n):
+                print("Wrong Input!")
+                exit()
         for i in range(0, n):
             broker = {"host": "", "port": "", "log_dir": ""}
-            broker["host"] = input("Enter the hostname or IP of broker {}: ".format(i))
+            broker["host"] = input(
+                "Enter the hostname or IP of broker {}: ".format(i + 1)
+            )
             t1 = input(
                 "Is your broker hosted on {} have port number 9092? [y/n] ".format(
                     broker["host"]
@@ -283,7 +291,7 @@ def broker_list_input():
             for i in range(0, n):
                 broker = {"host": "", "port": "", "log_dir": ""}
                 broker["host"] = input(
-                    "Enter the hostname or IP of broker {}: ".format(i)
+                    "Enter the hostname or IP of broker {}: ".format(i + 1)
                 )
                 t1 = input(
                     "Is your broker hosted on {} have port number 9092? [y/n] ".format(
@@ -526,7 +534,7 @@ def get_input(version):
     return inputs
 
 
-def getLogger():
+def get_logger():
     """Defining custom logger object with custom formatter and file handler.
 
     Returns:

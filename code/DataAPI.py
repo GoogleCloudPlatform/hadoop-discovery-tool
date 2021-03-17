@@ -292,6 +292,11 @@ class DataAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_hdfs_capacity failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 hdfs_capacity = r.json()
                 hdfs_capacity_list = hdfs_capacity["items"][0]["timeSeries"][0]["data"]
@@ -395,6 +400,11 @@ class DataAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_hdfs_capacity_used failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 hdfs_capacity_used = r.json()
                 hdfs_capacity_used_list = hdfs_capacity_used["items"][0]["timeSeries"][
@@ -687,6 +697,11 @@ class DataAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error(
+                    "get_hive_config_items failed as cloudera does not exist",
+                )
+                return None
             if r.status_code == 200:
                 hive_config = r.json()
                 hive_config_items = hive_config["items"]
