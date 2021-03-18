@@ -53,7 +53,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             maxbandwidth_df = pd.read_csv("MaxBandwidth.csv", delimiter="\n")
             max_bandwidth = str(maxbandwidth_df["MaxBandwidth"][0])
             self.logger.info("max_bandwidth successful")
@@ -79,15 +79,16 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            net_dev.wait()
+            net_dev.wait(10)
             net_dev, err = net_dev.communicate()
             traffic = subprocess.Popen(
                 ' cd /sys/class/net/'+str(net_dev)+'/statistics/ 2>/dev/null ; old="$(<rx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<rx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 encoding="utf-8",
             )
-            traffic.wait()
+            traffic.wait(10)
             traffic, err = traffic.communicate()
             if traffic_list != '':
                 traffic_list = traffic.split("\n", 10)
@@ -126,15 +127,16 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            net_dev.wait()
+            net_dev.wait(10)
             net_dev, err = net_dev.communicate()
             traffic = subprocess.Popen(
                 ' cd /sys/class/net/'+str(net_dev)+'/statistics/ 2>/dev/null ; old="$(<tx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 encoding="utf-8",
             )
-            traffic.wait()
+            traffic.wait(10)
             traffic, err = traffic.communicate()
             if traffic_list != '':
                 traffic_list = traffic.split("\n", 10)
@@ -170,7 +172,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             disk_df = pd.read_csv("disk.csv", delimiter=",")
             disk_df = disk_df.fillna(0)
             disk_df.columns = ["disk_read", "disk_write"]
@@ -204,7 +206,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            os_name.wait()
+            os_name.wait(10)
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             softwares_installed = ""
@@ -212,13 +214,13 @@ class NetworkMonitoringAPI:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
                 softwares_installed, err = softwares_installed.communicate()
             elif "debian" in os_name:
                 softwares_installed = subprocess.Popen(
                     "dpkg -l", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
                 softwares_installed, err = softwares_installed.communicate()
             elif "ubuntu" in os_name:
                 softwares_installed = subprocess.Popen(
@@ -227,19 +229,19 @@ class NetworkMonitoringAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
                 softwares_installed, err = softwares_installed.communicate()
             elif "red hat" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
                 softwares_installed, err = softwares_installed.communicate()
             elif "suse" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
                 softwares_installed, err = softwares_installed.communicate()
             prometheus_server = subprocess.Popen(
                 "systemctl status prometheus 2>/dev/null | grep active",
@@ -247,7 +249,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            prometheus_server.wait()
+            prometheus_server.wait(10)
             out, err = prometheus_server.communicate()
             if not out:
                 prometheus_server = "Prometheus server is not present"
@@ -271,7 +273,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            ganglia_server.wait()
+            ganglia_server.wait(10)
             out, err = ganglia_server.communicate()
             if not out:
                 ganglia_server = "ganglia server is not present"
@@ -283,7 +285,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            check_mk_server.wait()
+            check_mk_server.wait(10)
             out, err = check_mk_server.communicate()
             if not out:
                 check_mk_server = "check mk server is not present"
@@ -314,7 +316,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             col_names = [
                 "permission",
                 "links",
@@ -334,7 +336,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             remove_list = ["root", "chrony", "ntp"]
             logs = df11[~df11["owner"].isin(remove_list)]
             logs.reset_index(inplace=True)
@@ -372,7 +374,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            crontab.wait()
+            crontab.wait(10)
             crontab, err = crontab.communicate()
             if crontab.find("cronie") == -1:
                 crontab_flag = "crontab not installed"
@@ -384,7 +386,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            airflow.wait()
+            airflow.wait(10)
             airflow, err = airflow.communicate()
             if not airflow:
                 airflow_flag = "airflow is not enabled"
@@ -413,7 +415,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            ddog.wait()
+            ddog.wait(10)
             out, err = ddog.communicate()
             if not out:
                 ddog = "Datadog is not installed"
@@ -425,7 +427,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            logging.wait()
+            logging.wait(10)
             logging, err = logging.communicate()
             if logging.find("splunk") == -1:
                 splunk = "Splunk not installed"
@@ -460,7 +462,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )
@@ -469,7 +471,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             column1 = df["Received"]
             max_value_1 = (column1.max()) / 1024
             min_value_1 = (column1.min()) / 1024

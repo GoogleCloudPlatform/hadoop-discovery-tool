@@ -316,7 +316,7 @@ class ApplicationAPI:
 
         try:
             resource = subprocess.Popen(
-                "ls /run/cloudera-scm-agent/process | grep refresh",
+                "ls /run/cloudera-scm-agent/process 2>/dev/null | grep refresh",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -1919,36 +1919,31 @@ class ApplicationAPI:
             base_size = 0
             disk_space_consumed = 0
             out = subprocess.Popen(
-                "hdfs dfs -du -h /",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
+            "hdfs dfs -du -h / | grep 'hbase'",
+            shell=True,
+            stdout=subprocess.PIPE,
+            encoding="utf-8",
             )
             out, err = out.communicate()
-            output = str(out)
-            lines = output.split("\\n")
-            for i in lines:
-                if i.split("/")[-1] == "hbase":
-                    base_size = ""
-                    disk_space_consumed = ""
-                    hbase_data = i.split("/")[0].strip()
-                    hbase_data = hbase_data.split("'")[1]
-                    data_list = hbase_data.split(".")
-                    base_size = (
-                        data_list[0]
-                        + "."
-                        + data_list[1][0]
-                        + data_list[1][1]
-                        + data_list[1][2]
-                    )
-                    if len(data_list[1]) > 3:
-                        for j in data_list[1][3:]:
-                            if j != (" "):
-                                disk_space_consumed = disk_space_consumed + j
+            base_size = ""
+            disk_space_consumed = ""
+            hbase_data = out.split("/")[0].strip()
+            data_list = hbase_data.split(".")
+            base_size = (
+            data_list[0]
+            + "."
+            + data_list[1][0]
+            + data_list[1][1]
+            + data_list[1][2]
+            )
+            if len(data_list[1]) > 3:
+                for j in data_list[1][3:]:
+                    if j != (" "):
+                        disk_space_consumed = disk_space_consumed + j
                         disk_space_consumed = disk_space_consumed + "." + data_list[2]
                     else:
                         disk_space_consumed = 0
-            self.logger.info("get_hbase_data_size successful")
+                        self.logger.info("get_hbase_data_size successful")
             return base_size, disk_space_consumed
         except Exception as e:
             self.logger.error("get_hbase_data_size failed", exc_info=True)
@@ -2510,7 +2505,7 @@ class ApplicationAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            topics.wait()
+            topics.wait(10)
             topics, err = topics.communicate()
             topics_df = pd.read_csv("topics_list.csv", header=None)
             topics_df.columns = ["topics"]
@@ -2547,7 +2542,7 @@ class ApplicationAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                topics.wait()
+                topics.wait(10)
                 topics, err = topics.communicate()
                 topics_df = pd.read_csv("topics_list.csv", header=None)
                 topics_df.columns = ["topics"]
@@ -2563,7 +2558,7 @@ class ApplicationAPI:
                         stdout=subprocess.PIPE,
                         encoding="utf-8",
                     )
-                    msg_size.wait()
+                    msg_size.wait(10)
                     msg_size, err = msg_size.communicate()
 
                     msg_size = msg_size.strip("\n")
@@ -2606,7 +2601,7 @@ class ApplicationAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                topics.wait()
+                topics.wait(10)
                 topics, err = topics.communicate()
                 sleep(1)
                 topics_df = pd.read_csv("topics_list.csv", header=None)
@@ -2623,7 +2618,7 @@ class ApplicationAPI:
                         stdout=subprocess.PIPE,
                         encoding="utf-8",
                     )
-                    msg_count.wait()
+                    msg_count.wait(10)
                     msg_count, err = msg_count.communicate()
 
                     msg_count = msg_count.strip("\n")
@@ -2665,7 +2660,7 @@ class ApplicationAPI:
                         stdout=subprocess.PIPE,
                         encoding="utf-8",
                     )
-                    broker_dir.wait()
+                    broker_dir.wait(10)
                     broker_dir, err = broker_dir.communicate()
                     try:
                         brokers_df = pd.read_csv("broker_size.csv", header=None)
@@ -2695,7 +2690,7 @@ class ApplicationAPI:
                                 stdout=subprocess.PIPE,
                                 encoding="utf-8",
                             )
-                            broker_dir.wait()
+                            broker_dir.wait(10)
                             broker_dir, err = broker_dir.communicate()
                             brokers_df = pd.read_csv("broker_size.csv", header=None)
                             brokers_df.columns = ["logs"]
@@ -2741,7 +2736,7 @@ class ApplicationAPI:
                         stdout=subprocess.PIPE,
                         encoding="utf-8",
                     )
-                    broker_dir.wait()
+                    broker_dir.wait(10)
                     broker_dir, err = broker_dir.communicate()
                     brokers_df = pd.read_csv("broker_size.csv", header=None)
                     brokers_df.columns = ["logs"]
@@ -2778,7 +2773,7 @@ class ApplicationAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            broker_zk.wait()
+            broker_zk.wait(10)
             broker_zk, err = broker_zk.communicate()
             broker_id_df = pd.read_csv("broker_id.csv", delimiter="\n", header=None)
             broker_id_df.columns = ["parameters"]
@@ -2862,7 +2857,7 @@ class ApplicationAPI:
         try:
             output = ""
             inter = subprocess.Popen(
-                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json 2>/dev/null",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -2901,7 +2896,7 @@ class ApplicationAPI:
         try:
             output = ""
             inter = subprocess.Popen(
-                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json 2>/dev/null",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -2940,7 +2935,7 @@ class ApplicationAPI:
         try:
             output = ""
             inter = subprocess.Popen(
-                "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                "cat /opt/cloudera/parcels/CDH/meta/parcel.json 2>/dev/null",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",

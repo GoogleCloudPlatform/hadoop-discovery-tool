@@ -33,6 +33,7 @@ with their respective package managers.
 try:
     if "centos" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
+        os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
         os.popen("yum install gcc gcc-c++ -y").read()
@@ -54,7 +55,7 @@ try:
         os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
         os.popen("apt install -y python3-dev 2>/dev/null").read()
         os.popen("apt install -y python3-pip 2>/dev/null").read()
-        os.popen("apt install -y python3-venv 2>/dev/null").read()
+        os.popen("apt install -y python-virtualenv 2>/dev/null").read()
         os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
         nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
         vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
@@ -68,6 +69,7 @@ try:
         ).read()
     elif "red hat" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
+        os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
         os.popen("yum install gcc gcc-c++ -y").read()

@@ -53,7 +53,7 @@ class DataAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             dt = "Live datanodes "
             list_of_results = []
             flag = 0
@@ -87,13 +87,13 @@ class DataAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             subprocess.Popen(
                 "rm -rf ./out2.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             mapped_df[
                 ["Configured_Capacity_bytes", "Configured_Capacity"]
             ] = mapped_df.Configured_Capacity.str.split("\(|\)", expand=True).iloc[
@@ -125,7 +125,7 @@ class DataAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            replication_factor.wait()
+            replication_factor.wait(10)
             replication_factor, err = replication_factor.communicate()
             self.logger.info("replication_factor successful")
             return replication_factor
@@ -147,7 +147,7 @@ class DataAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            xml_data.wait()
+            xml_data.wait(10)
             xml_data, err = xml_data.communicate()
             root = ET.fromstring(xml_data)
             for val in root.findall("property"):
@@ -184,7 +184,7 @@ class DataAPI:
                 stderr=subprocess.STDOUT,
                 encoding="utf-8",
             )
-            data.wait()
+            data.wait(10)
             data_out, data_err = data.communicate()
             final_val = "false"
             if len(data_out) > 0:
@@ -227,7 +227,7 @@ class DataAPI:
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                 )
-                out.wait()
+                out.wait(10)
                 stdout, stderr = out.communicate()
                 hdfs_root_dir = stdout
             self.logger.info("get_cliresult successful")
@@ -474,7 +474,7 @@ class DataAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            raw.wait()
+            raw.wait(10)
             raw, err = raw.communicate()
             hdfs_storage_df = pd.read_csv("direc_list.csv")
             hdfs_storage_df.columns = ["output"]
@@ -495,7 +495,7 @@ class DataAPI:
                 sam_text = subprocess.Popen(
                     comm, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
                 )
-                sam_text.wait()
+                sam_text.wait(10)
                 sam_text, err = sam_text.communicate()
                 sam_text = sam_text.split("is ", 1)[1]
                 hdfs_storage_df["storage_policy"] = sam_text.split("\n", 1)[0]
@@ -505,7 +505,7 @@ class DataAPI:
                 sam_text = subprocess.Popen(
                     comm, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
                 )
-                sam_text.wait()
+                sam_text.wait(10)
                 sam_text, err = sam_text.communicate()
             hdfs_storage_df_temp = pd.read_csv("acl_list.csv")
             for i in hdfs_storage_df_temp:
@@ -575,7 +575,7 @@ class DataAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                xml_data.wait()
+                xml_data.wait(10)
                 xml_data, err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for val in root.findall("property"):
@@ -608,7 +608,7 @@ class DataAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             col_names = [
                 "permission",
                 "links",
@@ -629,7 +629,7 @@ class DataAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             big_data["FileType"] = big_data.name.apply(lambda x: x.split(".")[-1])
             big_data = big_data[big_data["FileType"].apply(lambda x: len(x) < 8)]
             grpby_data = big_data.groupby("FileType")["size_mb"].sum()
@@ -1117,7 +1117,7 @@ class DataAPI:
             xml_data = subprocess.Popen(
                 "beeline --help", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
-            xml_data.wait()
+            xml_data.wait(10)
             out, err = xml_data.communicate()
             out = out.splitlines()
             out1 = str(out)
@@ -1131,7 +1131,7 @@ class DataAPI:
                     stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
-                xml.wait()
+                xml.wait(10)
                 xml, err = xml.communicate()
             else:
                 xml = subprocess.Popen(
@@ -1141,7 +1141,7 @@ class DataAPI:
                     stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
-                xml.wait()
+                xml.wait(10)
                 xml, err = xml.communicate()
             hive_execution_engine = str(xml)
             hive_execution_engine = hive_execution_engine.split("\\n")
@@ -1228,7 +1228,7 @@ class DataAPI:
                         stdout=subprocess.PIPE,
                         encoding="utf-8",
                     )
-                    xml_data.wait()
+                    xml_data.wait(10)
                     out, err = xml_data.communicate()
                     out = out.splitlines()
                     out1 = str(out)
@@ -1244,7 +1244,7 @@ class DataAPI:
                             stderr=subprocess.STDOUT,
                             encoding="utf-8",
                         )
-                        xml.wait()
+                        xml.wait(10)
                         xml, err = xml.communicate()
                     else:
                         xml = subprocess.Popen(
@@ -1256,7 +1256,7 @@ class DataAPI:
                             stderr=subprocess.STDOUT,
                             encoding="utf-8",
                         )
-                        xml.wait()
+                        xml.wait(10)
                         xml, err = xml.communicate()
                     file_format = str(xml.strip())
                     file_format = file_format.split("'")[1]
@@ -1282,7 +1282,7 @@ class DataAPI:
             xml_data = subprocess.Popen(
                 "beeline --help", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
-            xml_data.wait()
+            xml_data.wait(10)
             out, err = xml_data.communicate()
             out = out.splitlines()
             out1 = str(out)
@@ -1296,7 +1296,7 @@ class DataAPI:
                     stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
-                concurrency.wait()
+                concurrency.wait(10)
                 concurrency, err = concurrency.communicate()
                 txn_manager = subprocess.Popen(
                     'beeline -u jdbc:hive2:// -e "set hive.txn.manager" 2>/dev/null',
@@ -1305,7 +1305,7 @@ class DataAPI:
                     stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
-                txn_manager.wait()
+                txn_manager.wait(10)
                 txn_manager, err = txn_manager.communicate()
 
             else:
@@ -1316,7 +1316,7 @@ class DataAPI:
                     stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
-                concurrency.wait()
+                concurrency.wait(10)
                 concurrency, err = concurrency.communicate()
                 txn_manager = subprocess.Popen(
                     'hive -e "set hive.txn.manager" 2>/dev/null',
@@ -1325,7 +1325,7 @@ class DataAPI:
                     stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
-                txn_manager.wait()
+                txn_manager.wait(10)
                 txn_manager, err = txn_manager.communicate()
 
             concurrency = str(concurrency)
@@ -1448,7 +1448,7 @@ class DataAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                xml_data.wait()
+                xml_data.wait(10)
                 xml_data, err = xml_data.communicate()
                 root = ET.fromstring(xml_data)
                 for key in root.findall("property"):
