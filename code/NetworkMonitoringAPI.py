@@ -197,7 +197,7 @@ class NetworkMonitoringAPI:
                 softwares_installed, err = softwares_installed.communicate()
             elif "ubuntu" in os_name:
                 softwares_installed = subprocess.Popen(
-                    "apt list --installed",
+                    "apt list --installed 2>/dev/null",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -333,6 +333,7 @@ class NetworkMonitoringAPI:
                 "oozie admin -status | grep mode",
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 encoding="utf-8",
             )
             orchestrate, err = orchestrate.communicate()

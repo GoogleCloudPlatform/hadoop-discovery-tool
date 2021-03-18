@@ -859,19 +859,45 @@ class HardwareOSAPI:
         """
 
         try:
-            web_server = subprocess.Popen(
-                "systemctl status httpd 2>/dev/null | grep Active",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            web_server.wait()
-            web_server, err = web_server.communicate()
-            web_server = web_server.split(":")
-            if "inactive" in web_server[1]:
-                web_server = "Web server is not enabled"
-            else:
-                web_server = "Web server is enabled"
+            os_name=os.popen("grep PRETTY_NAME /etc/os-release").read()
+            os_name=os_name.lower()
+            web_server=""
+            if "centos" in os_name:
+                web_server = subprocess.Popen("systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server.wait()
+                web_server, err = web_server.communicate()
+                web_server = web_server.split(":")
+                if "inactive" in web_server[1]:
+                    web_server = "Web server is not enabled"
+                else:
+                    web_server = "Web server is enabled"
+            elif "ubuntu" in os_name:
+                web_server = subprocess.Popen("systemctl status apache2  2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server.wait()
+                web_server, err = web_server.communicate()
+                web_server = web_server.split(":")
+                if "inactive" in web_server[1]:
+                    web_server = "Web server is not enabled"
+                else:
+                    web_server = "Web server is enabled"
+            elif "red hat" in os_name:
+                web_server = subprocess.Popen("systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server.wait()
+                web_server, err = web_server.communicate()
+                web_server = web_server.split(":")
+                if "inactive" in web_server[1]:
+                    web_server = "Web server is not enabled"
+                else:
+                    web_server = "Web server is enabled"
+            elif "suse" in os_name:
+                web_server = subprocess.Popen("systemctl status apache2  2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server.wait()
+                web_server, err = web_server.communicate()
+                web_server = web_server.split(":")
+                if "inactive" in web_server[1]:
+                    web_server = "Web server is not enabled"
+                else:
+                    web_server = "Web server is enabled"
             self.logger.info("web_server successful")
             return web_server
         except Exception as e:
@@ -886,16 +912,39 @@ class HardwareOSAPI:
         """
 
         try:
-            ntp_server = subprocess.Popen(
-                "timedatectl status 2>/dev/null | grep NTP | grep enabled",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            ntp_server.wait()
-            ntp_server, err = ntp_server.communicate()
-            ntp_server = ntp_server.split(":")
-            ntp_server = ntp_server[1]
+            os_name=os.popen("grep PRETTY_NAME /etc/os-release").read()
+            os_name=os_name.lower()
+            ntp_server=""
+            if "centos" in os_name:
+                ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server.wait()
+                ntp_server, err = ntp_server.communicate()
+                ntp_server = ntp_server.split(":")
+                ntp_server = ntp_server[1]
+            elif "ubuntu" in os_name:
+                ntp_server = subprocess.Popen("systemctl status ntp | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server.wait()
+                ntp_server, err = ntp_server.communicate()
+                ntp_server = ntp_server.split(":")
+                if "inactive" in ntp_server[1]:
+                    ntp_server = "not enabled"
+                else:
+                    ntp_server = "enabled"
+            elif "red hat" in os_name:
+                ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server.wait()
+                ntp_server, err = ntp_server.communicate()
+                ntp_server = ntp_server.split(":")
+                ntp_server = ntp_server[1]
+            elif "suse" in os_name:
+                ntp_server = subprocess.Popen("systemctl status chronyd | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server.wait()
+                ntp_server, err = ntp_server.communicate()
+                ntp_server = ntp_server.split(":")
+                if "inactive" in ntp_server[1]:
+                    ntp_server = "not enabled"
+                else:
+                    ntp_server = "enabled"
             self.logger.info("ntp_server successful")
             return ntp_server
         except Exception as e:
@@ -1125,7 +1174,7 @@ class HardwareOSAPI:
             os_name.wait()
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
-            if "centos" or "red hat" in os_name:
+            if "centos" in os_name or "red hat" in os_name:
                 subprocess.getoutput(
                     "sudo yum updateinfo list security installed | grep /Sec > security_level.csv"
                 )
@@ -1185,9 +1234,9 @@ class HardwareOSAPI:
                 patch_dataframe = pd.merge(
                     security_df, patch_date_df, on="Security_Package", how="inner"
                 )
-            elif "debian" or "ubuntu" in os_name:
+            elif "debian" in os_name or "ubuntu" in os_name:
                 subprocess.Popen(
-                    "sudo apt-show-versions | grep security | grep all | sort -u | head -10 > ./output.csv",
+                    "sudo apt-show-versions 2>/dev/null | grep security | grep all | sort -u | head -10 > ./output.csv",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -1323,7 +1372,7 @@ class HardwareOSAPI:
             os_name = os_name.lower()
             if "centos" in os_name:
                 softwares_installed = subprocess.Popen(
-                    "rpm -qa | grep java > ./java_check.csv",
+                    "rpm -qa 2>/dev/null | grep java > ./java_check.csv",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -1339,7 +1388,7 @@ class HardwareOSAPI:
                 softwares_installed.wait()
             elif "ubuntu" in os_name:
                 softwares_installed = subprocess.Popen(
-                    "apt list --installed | grep java > ./java_check.csv",
+                    "apt list --installed 2>/dev/null | grep java > ./java_check.csv",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",

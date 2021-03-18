@@ -178,9 +178,10 @@ class DataAPI:
         try:
             keyword = ["dfs.permissions"]
             data = subprocess.Popen(
-                "ls -at /run/cloudera-scm-agent/process/*-hdfs-NAMENODE/hdfs-site.xml | head -n 1",
+                "ls -at /run/cloudera-scm-agent/process/*-hdfs-NAMENODE/hdfs-site.xml 2>/dev/null | head -n 1",
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
                 encoding="utf-8",
             )
             data.wait()
@@ -1127,6 +1128,7 @@ class DataAPI:
                     'beeline -u jdbc:hive2:// -e "set hive.execution.engine" 2>/dev/null',
                     shell=True,
                     stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
                 xml.wait()
@@ -1136,6 +1138,7 @@ class DataAPI:
                     'hive -e "set hive.execution.engine" 2>/dev/null',
                     shell=True,
                     stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
                 xml.wait()
@@ -1238,6 +1241,7 @@ class DataAPI:
                             ),
                             shell=True,
                             stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT,
                             encoding="utf-8",
                         )
                         xml.wait()
@@ -1249,6 +1253,7 @@ class DataAPI:
                             ),
                             shell=True,
                             stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT,
                             encoding="utf-8",
                         )
                         xml.wait()
@@ -1288,6 +1293,7 @@ class DataAPI:
                     'beeline -u jdbc:hive2:// -e "set hive.support.concurrency" 2>/dev/null',
                     shell=True,
                     stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
                 concurrency.wait()
@@ -1296,6 +1302,7 @@ class DataAPI:
                     'beeline -u jdbc:hive2:// -e "set hive.txn.manager" 2>/dev/null',
                     shell=True,
                     stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
                 txn_manager.wait()
@@ -1306,6 +1313,7 @@ class DataAPI:
                     'hive -e "set hive.support.concurrency" 2>/dev/null',
                     shell=True,
                     stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
                 concurrency.wait()
@@ -1314,6 +1322,7 @@ class DataAPI:
                     'hive -e "set hive.txn.manager" 2>/dev/null',
                     shell=True,
                     stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
                     encoding="utf-8",
                 )
                 txn_manager.wait()

@@ -2252,11 +2252,14 @@ class ApplicationAPI:
                 shell=True,
                 stderr=subprocess.STDOUT,
             )
-            spark_version = str(out.strip())
-            if spark_version != "b''":
-                spark_version = spark_version.split("'")[1]
-                spark_version = spark_version.split("version")[1]
-                spark_version = spark_version.strip()
+            spark_version = out.splitlines()
+            dt = ""
+            for i in spark_version:
+                if "version" in i:
+                    dt=i
+                    break
+            dt=dt.split()
+            spark_version=dt[-1]
             self.logger.info("get_spark_version successful")
             return spark_version
         except Exception as e:
