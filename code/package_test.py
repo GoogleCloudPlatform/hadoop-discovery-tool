@@ -2,7 +2,7 @@ import os
 import re
 
 # initialise flags to identify packages
-nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt, pydevel_dt = "", "", "", "", "", ""
+nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt, pydevel_dt, =  "", "", "", "", "", ""
 # list to hold installed and non installed data
 installed, not_installed = [], []
 # This command will fetch os-name for ex. centos,debian,opensuse etc.
@@ -33,6 +33,7 @@ with their respective package managers.
 try:
     if "centos" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
+        os.popen('pip3 install -U pip').read()
         os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
@@ -46,8 +47,10 @@ try:
         sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
         odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
         pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
+        venv_dt = "Venv"
     elif "ubuntu" in os_name and final_version >= "18.04":
         print("Os Dependencies Installing...")
+        os.popen('pip3 install -U pip').read()
         os.popen("apt install -y nload 2>/dev/null").read()
         os.popen("apt install -y vnstat 2>/dev/null").read()
         os.popen("apt install -y g++ 2>/dev/null").read()
@@ -69,6 +72,7 @@ try:
         ).read()
     elif "red hat" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
+        os.popen('pip3 install -U pip').read()
         os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
@@ -138,5 +142,8 @@ if no_show == 0:
         print("Packages not Installed :- None")
     else:
         print("Packages not Installed " + not_installed_string)
+    if "GCC-C++" in not_installed_string or "Unix ODBC-Devel" in not_installed_string or "Python3-Devel" in not_installed_string or "Cyrus SASL-Devel" in not_installed_string:
+        print("Cannot proceed as package ",not_installed_string," not installed")
+        os.popen("exit 1").read()
 else:
     pass
