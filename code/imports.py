@@ -57,6 +57,7 @@ def check_ssl():
         hadoop_path = "/etc/hive/conf/core-site.xml"
     else:
         hadoop_path = None
+        return None
     xml_data = os.popen("cat {}".format(hadoop_path)).read()
     root = ET.fromstring(xml_data)
     for val in root.findall("property"):
