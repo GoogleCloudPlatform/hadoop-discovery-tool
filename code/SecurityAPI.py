@@ -273,7 +273,7 @@ class SecurityAPI:
             path_status = path.exists("{}".format(self.config_path["yarn"]))
             if path_status == True:
                 xml_data = subprocess.Popen(
-                    "cat {}l | grep HTTPS_ONLY".format(self.config_path["yarn"]),
+                    "cat {} | grep HTTPS_ONLY".format(self.config_path["yarn"]),
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",

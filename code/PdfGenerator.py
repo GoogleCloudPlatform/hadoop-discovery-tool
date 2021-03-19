@@ -282,7 +282,7 @@ class PdfGenerator:
             if (len(all_host_data) != 0) and (os_version != None):
                 obj_pdf.cluster_host_info(cluster_host_items, all_host_data, os_version)
 
-        if config_path["yarn"] != None:
+        if self.config_path["yarn"] != None:
             xml_data = subprocess.Popen(
                 "cat {}".format(self.config_path["yarn"]),
                 shell=True,
