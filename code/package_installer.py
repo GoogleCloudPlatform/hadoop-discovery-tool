@@ -58,7 +58,7 @@ try:
         os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
         os.popen("apt install -y python3-dev 2>/dev/null").read()
         os.popen("apt install -y python3-pip 2>/dev/null").read()
-        os.popen("apt install -y python-virtualenv 2>/dev/null").read()
+        os.popen("apt install -y python3-venv 2>/dev/null").read()
         os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
         nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
         vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
