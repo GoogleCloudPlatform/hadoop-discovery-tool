@@ -839,7 +839,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            dns_server.wait()
+            dns_server.wait(10)
             dns_server, err = dns_server.communicate()
             if not dns_server:
                 dns_server = "DNS server does not enabled within machine"
@@ -864,7 +864,7 @@ class HardwareOSAPI:
             web_server=""
             if "centos" in os_name:
                 web_server = subprocess.Popen("systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                web_server.wait()
+                web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
                 if "inactive" in web_server[1]:
@@ -873,7 +873,7 @@ class HardwareOSAPI:
                     web_server = "Web server is enabled"
             elif "ubuntu" in os_name:
                 web_server = subprocess.Popen("systemctl status apache2  2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                web_server.wait()
+                web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
                 if "inactive" in web_server[1]:
@@ -882,7 +882,7 @@ class HardwareOSAPI:
                     web_server = "Web server is enabled"
             elif "red hat" in os_name:
                 web_server = subprocess.Popen("systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                web_server.wait()
+                web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
                 if "inactive" in web_server[1]:
@@ -891,7 +891,7 @@ class HardwareOSAPI:
                     web_server = "Web server is enabled"
             elif "suse" in os_name:
                 web_server = subprocess.Popen("systemctl status apache2  2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                web_server.wait()
+                web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
                 if "inactive" in web_server[1]:
@@ -917,13 +917,13 @@ class HardwareOSAPI:
             ntp_server=""
             if "centos" in os_name:
                 ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                ntp_server.wait()
+                ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 ntp_server = ntp_server.split(":")
                 ntp_server = ntp_server[1]
             elif "ubuntu" in os_name:
-                ntp_server = subprocess.Popen("systemctl status ntp | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                ntp_server.wait()
+                ntp_server = subprocess.Popen("systemctl status ntp 2>/dev/null| grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 ntp_server = ntp_server.split(":")
                 if "inactive" in ntp_server[1]:
@@ -932,13 +932,13 @@ class HardwareOSAPI:
                     ntp_server = "enabled"
             elif "red hat" in os_name:
                 ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                ntp_server.wait()
+                ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 ntp_server = ntp_server.split(":")
                 ntp_server = ntp_server[1]
             elif "suse" in os_name:
-                ntp_server = subprocess.Popen("systemctl status chronyd | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-                ntp_server.wait()
+                ntp_server = subprocess.Popen("systemctl status chronyd 2>/dev/null| grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 ntp_server = ntp_server.split(":")
                 if "inactive" in ntp_server[1]:
@@ -965,7 +965,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            manufacturer_name.wait()
+            manufacturer_name.wait(10)
             manufacturer_name, err = manufacturer_name.communicate()
             manufacturer_name = manufacturer_name.split(":")
             manufacturer_name = manufacturer_name[1]
@@ -989,7 +989,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            serial_no.wait()
+            serial_no.wait(10)
             serial_no, err = serial_no.communicate()
             serial_no = serial_no.split(":")
             serial_no = serial_no[1]
@@ -1013,7 +1013,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            family.wait()
+            family.wait(10)
             family, err = family.communicate()
             family = family.split(":")
             family = family[1]
@@ -1037,7 +1037,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            model_name.wait()
+            model_name.wait(10)
             model_name, err = model_name.communicate()
             model_name = model_name.split(":")
             model_name = model_name[1]
@@ -1061,7 +1061,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            microcode.wait()
+            microcode.wait(10)
             microcode, err = microcode.communicate()
             microcode = microcode.split(":")
             microcode = microcode[1]
@@ -1085,7 +1085,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            cpu_mhz.wait()
+            cpu_mhz.wait(10)
             cpu_mhz, err = cpu_mhz.communicate()
             cpu_mhz = cpu_mhz.split(":")
             cpu_mhz = cpu_mhz[1]
@@ -1109,7 +1109,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            cpu_family.wait()
+            cpu_family.wait(10)
             cpu_family, err = cpu_family.communicate()
             cpu_family = cpu_family.split(":")
             cpu_family = cpu_family[1]
@@ -1141,13 +1141,13 @@ class HardwareOSAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             subprocess.Popen(
                 "rm -rf ./nic_ip.txt",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             delete_row = nic_details[nic_details["nic"] == "lo"].index
             nic_details = nic_details.drop(delete_row)
             self.logger.info("network_interface_details successful")
@@ -1171,7 +1171,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            os_name.wait()
+            os_name.wait(10)
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             if "centos" in os_name or "red hat" in os_name:
@@ -1193,13 +1193,13 @@ class HardwareOSAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 subprocess.Popen(
                     "rm -rf ./security_final.csv",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 subprocess.check_output(
                     "bash YUM_Get_Patch_Date.sh", shell=True, stderr=subprocess.STDOUT
                 )
@@ -1224,13 +1224,13 @@ class HardwareOSAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 subprocess.Popen(
                     "rm -rf ./security_patch_date.csv",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 patch_dataframe = pd.merge(
                     security_df, patch_date_df, on="Security_Package", how="inner"
                 )
@@ -1240,7 +1240,7 @@ class HardwareOSAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 fin = open("output.csv", "r")
                 fout = open("ubuntu_patches.csv", "w")
                 for iterator in fin:
@@ -1258,13 +1258,13 @@ class HardwareOSAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 subprocess.Popen(
                     "rm -rf ./ubuntu_patches.csv",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
             else:
                 patch_dataframe = pd.DataFrame(
                     ["Operating System is Not Supported"], columns=["Supported_Status"]
@@ -1288,7 +1288,7 @@ class HardwareOSAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             fin = open("hadoop_native.csv", "r")
             fout = open("hadoop_native_library.csv", "w")
             for iterator in fin:
@@ -1304,13 +1304,13 @@ class HardwareOSAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             subprocess.Popen(
                 "rm -rf ./hadoop_native.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             hadoop_native_df["Hadoop_Libraries"] = hadoop_native_df[
                 "Hadoop_Libraries"
             ].str.rstrip(":")
@@ -1320,7 +1320,7 @@ class HardwareOSAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             column_names = ["Non_Hadoop_Libraries"]
             custom_lib = pd.read_csv("./user_libs.csv", names=column_names, header=None)
             subprocess.Popen(
@@ -1328,7 +1328,7 @@ class HardwareOSAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             hadoop_native_df["Non_Hadoop_Libraries"] = custom_lib[
                 "Non_Hadoop_Libraries"
             ]
@@ -1359,7 +1359,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            python_check.wait()
+            python_check.wait(10)
             python_check, err = python_check.communicate()
             os_name = subprocess.Popen(
                 "grep PRETTY_NAME /etc/os-release",
@@ -1367,7 +1367,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            os_name.wait()
+            os_name.wait(10)
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             if "centos" in os_name:
@@ -1377,7 +1377,7 @@ class HardwareOSAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
             elif "debian" in os_name:
                 softwares_installed = subprocess.Popen(
                     "dpkg -l | grep java > ./java_check.csv",
@@ -1385,7 +1385,7 @@ class HardwareOSAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
             elif "ubuntu" in os_name:
                 softwares_installed = subprocess.Popen(
                     "apt list --installed 2>/dev/null | grep java > ./java_check.csv",
@@ -1393,7 +1393,7 @@ class HardwareOSAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
             elif "red hat" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa | grep java > ./java_check.csv",
@@ -1401,7 +1401,7 @@ class HardwareOSAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
             elif "suse" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa | grep java > ./java_check.csv",
@@ -1409,7 +1409,7 @@ class HardwareOSAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 )
-                softwares_installed.wait()
+                softwares_installed.wait(10)
             if "Python 3." in python_check:
                 python_flag = 1
             with open("java_check.csv", "r") as fp:
@@ -1422,12 +1422,12 @@ class HardwareOSAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             os.popen("timeout -k 30 29 spark-shell > ./scala.csv 2>/dev/null").read()
             spark_scala = subprocess.Popen(
                 "cat ./scala.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
-            spark_scala.wait()
+            spark_scala.wait(10)
             out, err = spark_scala.communicate()
             if "Spark context available as" in out:
                 scala_flag = 1
@@ -1436,7 +1436,7 @@ class HardwareOSAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             self.logger.info("check_libraries_installed successful")
             return python_flag, java_flag, scala_flag
         except Exception as e:
@@ -1457,15 +1457,15 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            cyberSecurity.wait()
+            cyberSecurity.wait(10)
             cyberSecurity, err = cyberSecurity.communicate()
             Cloudera_navigator = subprocess.Popen(
-                "ls /*/*/*/webapp/static/release/js/cloudera/navigator",
+                "ls /*/*/*/webapp/static/release/js/cloudera/navigator 2>/dev/null",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            Cloudera_navigator.wait()
+            Cloudera_navigator.wait(10)
             out, err = Cloudera_navigator.communicate()
             security_software = {}
             if cyberSecurity.find("ranger-admin") == -1:
@@ -1502,7 +1502,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            osquery.wait()
+            osquery.wait(10)
             osquery, err = osquery.communicate()
             if not osquery:
                 security_software["osquery"] = "OSQuery is not installed"
@@ -1536,7 +1536,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            gpu_status.wait()
+            gpu_status.wait(10)
             gpu_status, err = gpu_status.communicate()
             self.logger.info("speciality_hardware successful")
             return gpu_status

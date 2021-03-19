@@ -55,7 +55,7 @@ class FrameworkDetailsAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            hversion.wait()
+            hversion.wait(10)
             hversion, err = hversion.communicate()
             hadoop_major = hversion[0:12]
             subprocess.Popen(
@@ -63,7 +63,7 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             dt = "This command was run using "
             a = ""
             with open("data.csv", "r") as fp:
@@ -87,10 +87,10 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             subprocess.Popen(
                 "rm ./out2.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
-            ).wait()
+            ).wait(10)
             distribution = ""
             if re.search(r"\bcdh7\b", a):
                 distribution = "CDH7"
@@ -172,7 +172,7 @@ class FrameworkDetailsAPI:
                     list_apache_services, columns=["name"]
                 )
                 inter = subprocess.Popen(
-                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json",
+                    "cat /opt/cloudera/parcels/CDH/meta/parcel.json 2>/dev/null",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -229,7 +229,7 @@ class FrameworkDetailsAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            os_name.wait()
+            os_name.wait(10)
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             third_party_package = None
@@ -239,7 +239,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 col_names = ["name", "version", "package_level"]
                 third_party_package = pd.read_csv(
                     "centos_third_party.csv", names=col_names, delimiter=r"\s+"
@@ -249,14 +249,14 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
             elif "red hat" in os_name:
                 subprocess.Popen(
                     "yum list installed | grep @epel > ./centos_third_party.csv",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 col_names = ["name", "version", "package_level"]
                 third_party_package = pd.read_csv(
                     "centos_third_party.csv", names=col_names, delimiter=r"\s+"
@@ -266,7 +266,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
             self.logger.info("third_party_software successful")
             return third_party_package
         except Exception as e:
@@ -287,7 +287,7 @@ class FrameworkDetailsAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            os_name.wait()
+            os_name.wait(10)
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             package_version = None
@@ -297,7 +297,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "centos_package_version.csv",
@@ -310,7 +310,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 package_version = package_version[1:10]
             elif "debian" in os_name:
                 subprocess.Popen(
@@ -318,7 +318,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "debian_package_version.csv",
@@ -331,7 +331,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 package_version = package_version[1:10]
             elif "ubuntu" in os_name:
                 subprocess.Popen(
@@ -339,7 +339,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "ubuntu_package_version.csv",
@@ -352,7 +352,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 package_version = package_version[1:10]
             elif "red hat" in os_name:
                 subprocess.Popen(
@@ -360,7 +360,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 col_names = ["name", "version"]
                 package_version = pd.read_csv(
                     "redhat_package_version.csv",
@@ -373,7 +373,7 @@ class FrameworkDetailsAPI:
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
-                ).wait()
+                ).wait(10)
                 package_version = package_version[1:10]
             elif "suse" in os_name:
                 pass
@@ -396,14 +396,14 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             df11 = pd.read_csv("jdbc_odbc.csv", delimiter=r"\s+", names=["name"])
             subprocess.Popen(
                 "rm ./jdbc_odbc.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             BetweenTwoSymbols1 = df11["name"].str.split("/").str[-1]
             result1 = BetweenTwoSymbols1.drop_duplicates()
             final_df = result1.to_frame()
@@ -427,7 +427,7 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             df_salesforce = pd.read_csv(
                 "salesforce.csv", delimiter=r"\s+", names=["name"]
             )
@@ -436,17 +436,17 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             subprocess.Popen(
                 'find / -iname "ngdbc.jar" 2>/dev/null> ./ngdbc.csv',
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             df_ngdbc = pd.read_csv("ngdbc.csv", delimiter=r"\s+", names=["name"])
             subprocess.Popen(
                 "rm ./ngdbc.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
-            ).wait()
+            ).wait(10)
             self.logger.info("salesfroce_sapDriver successful")
             return df_ngdbc, df_salesforce
         except Exception as e:
@@ -466,14 +466,14 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             connector_df = pd.read_csv("./connector.csv", names=["Connector_Name"])
             subprocess.Popen(
                 "rm -rf ./connector.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait()
+            ).wait(10)
             connector_details = connector_df["Connector_Name"].str.split("/").str[-1]
             connectors_present = connector_details.drop_duplicates()
             connectors_present = connectors_present.to_frame()
