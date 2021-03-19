@@ -74,7 +74,7 @@ class NetworkMonitoringAPI:
 
         try:
             net_dev = subprocess.Popen(
-                ' route | grep "default" | awk "{print $NF}"',
+                "route | grep 'default' | awk '{print $NF}'",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -89,22 +89,18 @@ class NetworkMonitoringAPI:
             )
             traffic.wait()
             traffic, err = traffic.communicate()
-            if traffic_list != '':
-                traffic_list = traffic.split("\n", 10)
-                traffic_list.remove("0")
-                traffic_list.remove("")
-                traffic_list = [int(i) for i in traffic_list]
-                max_value = max(traffic_list)
-                min_value = min(traffic_list)
-                avg_value = (
-                    0 if len(traffic_list) == 0 else sum(traffic_list) / len(traffic_list)
+            traffic_list = traffic.split("\n", 10)
+            traffic_list.remove("0")
+            traffic_list.remove("")
+            traffic_list = [int(i) for i in traffic_list]
+            max_value = max(traffic_list)
+            min_value = min(traffic_list)
+            avg_value = (
+                0 if len(traffic_list) == 0 else sum(traffic_list) / len(traffic_list)
                 )
-                curr_value = traffic_list[-1]
-                self.logger.info("ingress successful")
-                return max_value, min_value, avg_value, curr_value
-            else :
-                self.logger.error("ingress failed", exc_info=True)
-                return None
+            curr_value = traffic_list[-1]
+            self.logger.info("ingress successful")
+            return max_value, min_value, avg_value, curr_value
         except Exception as e:
             self.logger.error("ingress failed", exc_info=True)
             return None
@@ -121,7 +117,7 @@ class NetworkMonitoringAPI:
 
         try:
             net_dev = subprocess.Popen(
-                ' route | grep "default" | awk "{print $NF}"',
+                " route | grep 'default' | awk '{print $NF}'",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -129,29 +125,25 @@ class NetworkMonitoringAPI:
             net_dev.wait()
             net_dev, err = net_dev.communicate()
             traffic = subprocess.Popen(
-                ' cd /sys/class/net/'+str(net_dev)+'/statistics/ 2>/dev/null ; old="$(<tx_bytes)"; coun=1 ;  while [[ "$coun" -le 10 ]]; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',
+                'cd /sys/class/net/'+str(net_dev)+'/statistics/ 2>/dev/null ; old="$(<tx_bytes)" ; coun=1 ; while [["$coun" -le 10]] ; do  now=$(<tx_bytes); echo $((($now-$old)/1024)); old=$now; coun=`expr $coun + 1` ; $(sleep 1)  ;done',
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
             traffic.wait()
             traffic, err = traffic.communicate()
-            if traffic_list != '':
-                traffic_list = traffic.split("\n", 10)
-                traffic_list.remove("0")
-                traffic_list.remove("")
-                traffic_list = [int(i) for i in traffic_list]
-                max_value = max(traffic_list)
-                min_value = min(traffic_list)
-                avg_value = (
-                    0 if len(traffic_list) == 0 else sum(traffic_list) / len(traffic_list)
+            traffic_list = traffic.split("\n", 10)
+            traffic_list.remove("0")
+            traffic_list.remove("")
+            traffic_list = [int(i) for i in traffic_list]
+            max_value = max(traffic_list)
+            min_value = min(traffic_list)
+            avg_value = (
+                0 if len(traffic_list) == 0 else sum(traffic_list) / len(traffic_list)
                 )
-                curr_value = traffic_list[-1]
-                self.logger.info("egress successful")
-                return max_value, min_value, avg_value, curr_value
-            else :
-                self.logger.error("egress failed", exc_info=True)
-                return None
+            curr_value = traffic_list[-1]
+            self.logger.info("egress successful")
+            return max_value, min_value, avg_value, curr_value
         except Exception as e:
             self.logger.error("egress failed", exc_info=True)
             return None
