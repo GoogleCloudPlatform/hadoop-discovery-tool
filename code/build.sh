@@ -1,14 +1,21 @@
 #!bin/bash
 var=0
+python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' | grep -E '3.3|3.4|3.5|3.9'  > /dev/null
+var=$?
+if [ $var -eq 0 ]
+then
+        echo "Python version not satisfied"
+        exit 1
+fi
 python3 --version 2>/dev/null
 var=$?
 flag=0
 if [ $var -eq 127 ]
 then
-        sudo python3.8 os_package_installer.py
+        python3.8 os_package_installer.py
         flag=8
 else
-        sudo python3 os_package_installer.py
+        python3 os_package_installer.py
         flag=6
 if [ $var -eq 1 ]
 then
