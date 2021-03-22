@@ -1,6 +1,6 @@
 import os
 import re
-
+import sys
 # initialise flags to identify packages
 nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt, pydevel_dt, =  "", "", "", "", "", ""
 # list to hold installed and non installed data
@@ -9,6 +9,13 @@ installed, not_installed = [], []
 os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
 os_name = os_name.lower()
 final_version = ""
+
+vs,trash,name,dt,getpython,getpython1,getpython2="","","","","","",""
+
+final_name = ""
+py_val=""
+flag=0
+py_val=os.popen('python3 --version 2>/dev/null').read()
 
 vs = os.popen("grep VERSION_ID /etc/os-release").read()
 trash, version = vs.split("=")
@@ -27,7 +34,7 @@ final_name = final_name.strip("\n")
 
 no_show = 0
 """
-Here based on the os of the current system respective block will execute and will install packages 
+Here based on the os of the current system respective block will execute and will install packages
 with their respective package managers.
 """
 try:
@@ -50,29 +57,71 @@ try:
         venv_dt = "Venv"
     elif "ubuntu" in os_name and final_version >= "18.04":
         print("Os Dependencies Installing...")
-        os.popen('pip3 install -U pip').read()
-        os.popen("apt install -y nload 2>/dev/null").read()
-        os.popen("apt install -y vnstat 2>/dev/null").read()
-        os.popen("apt install -y g++ 2>/dev/null").read()
-        os.popen("apt install -y sasl2-bin 2>/dev/null").read()
-        os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
-        os.popen("apt install -y python3-dev 2>/dev/null").read()
-        os.popen("apt install -y python3-pip 2>/dev/null").read()
-        os.popen("apt install -y python3-venv 2>/dev/null").read()
-        os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
-        nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
-        vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
-        gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
-        sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
-        odbc_dt = os.popen(
-            "apt list --installed 2>/dev/null | grep unixodbc-dev"
-        ).read()
-        pydevel_dt = os.popen(
-            "apt list --installed 2>/dev/null | grep python3-dev"
-        ).read()
+        if(py_val >= "3.6" and flag==0):
+            os.popen("apt install -y nload 2>/dev/null").read()
+            os.popen("apt install -y vnstat 2>/dev/null").read()
+            os.popen("apt install -y g++ 2>/dev/null").read()
+            os.popen("apt install -y sasl2-bin 2>/dev/null").read()
+            os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
+            os.popen("apt install -y python3-dev 2>/dev/null").read()
+            #os.popen("apt install -y python3-pip 2>/dev/null").read()
+            os.popen("apt install -y python3-venv 2>/dev/null").read()
+            os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
+            nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
+            vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
+            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
+            sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
+            odbc_dt = os.popen(
+                "apt list --installed 2>/dev/null | grep unixodbc-dev"
+            ).read()
+            pydevel_dt = os.popen(
+                "apt list --installed 2>/dev/null | grep python3-dev"
+            ).read()
+            flag=1
+        if (py_val >= "3.7" and flag==0):
+            os.popen("apt install -y nload 2>/dev/null").read()
+            os.popen("apt install -y vnstat 2>/dev/null").read()
+            os.popen("apt install -y g++ 2>/dev/null").read()
+            os.popen("apt install -y sasl2-bin 2>/dev/null").read()
+            os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
+            os.popen("apt install -y python3.7-dev 2>/dev/null").read()
+            #os.popen("apt install -y python3-pip 2>/dev/null").read()
+            os.popen("apt install -y python3.7-venv 2>/dev/null").read()
+            os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
+            nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
+            vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
+            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
+            sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
+            odbc_dt = os.popen(
+                "apt list --installed 2>/dev/null | grep unixodbc-dev"
+            ).read()
+            pydevel_dt = os.popen(
+                "apt list --installed 2>/dev/null | grep python3-dev"
+            ).read()
+            flag=1
+        else:
+            os.popen("apt install -y nload 2>/dev/null").read()
+            os.popen("apt install -y vnstat 2>/dev/null").read()
+            os.popen("apt install -y g++ 2>/dev/null").read()
+            os.popen("apt install -y sasl2-bin 2>/dev/null").read()
+            os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
+            os.popen("apt install -y python3.8-dev 2>/dev/null").read()
+            #os.popen("apt install -y python3-pip 2>/dev/null").read()
+            os.popen("apt install -y python3.8-venv 2>/dev/null").read()
+            os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
+            nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
+            vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
+            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
+            sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
+            odbc_dt = os.popen(
+                "apt list --installed 2>/dev/null | grep unixodbc-dev"
+            ).read()
+            pydevel_dt = os.popen(
+                "apt list --installed 2>/dev/null | grep python3-dev"
+            ).read()
+            flag=1
     elif "red hat" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
-        os.popen('pip3 install -U pip').read()
         os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
@@ -144,6 +193,6 @@ if no_show == 0:
         print("Packages not Installed " + not_installed_string)
     if "GCC-C++" in not_installed_string or "Unix ODBC-Devel" in not_installed_string or "Python3-Devel" in not_installed_string or "Cyrus SASL-Devel" in not_installed_string:
         print("Cannot proceed as package ",not_installed_string," not installed")
-        os.popen("exit 1").read()
+        os._exit(1)
 else:
     pass
