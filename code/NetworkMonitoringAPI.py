@@ -419,7 +419,7 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            logging.wait(10)
+            logging.wait(30)
             logging, err = logging.communicate()
             if logging.find("splunk") == -1:
                 splunk = "Splunk not installed"

@@ -282,23 +282,27 @@ class PdfGenerator:
             if (len(all_host_data) != 0) and (os_version != None):
                 obj_pdf.cluster_host_info(cluster_host_items, all_host_data, os_version)
 
-        xml_data = subprocess.Popen(
-            "cat {}".format(self.config_path["yarn"]),
-            shell=True,
-            stdout=subprocess.PIPE,
-            encoding="utf-8",
-        )
-        xml_data, err = xml_data.communicate()
-        root = ET.fromstring(xml_data)
-        for val in root.findall("property"):
-            name = val.find("name").text
-            value = val.find("value").text
-            if self.ssl:
-                if "yarn.resourcemanager.webapp.https.address" in name:
-                    yarn_rm, yarn_port = value.split(":")
-            else:
-                if "yarn.resourcemanager.webapp.address" in name:
-                    yarn_rm, yarn_port = value.split(":")
+        if self.config_path["yarn"] != None:
+            xml_data = subprocess.Popen(
+                "cat {}".format(self.config_path["yarn"]),
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            xml_data.wait(10)
+            xml_data, err = xml_data.communicate()
+            root = ET.fromstring(xml_data)
+            for val in root.findall("property"):
+                name = val.find("name").text
+                value = val.find("value").text
+                if self.ssl:
+                    if "yarn.resourcemanager.webapp.https.address" in name:
+                        yarn_rm, yarn_port = value.split(":")
+                else:
+                    if "yarn.resourcemanager.webapp.address" in name:
+                        yarn_rm, yarn_port = value.split(":")
+        else:
+            yarn_rm, yarn_port = None, None
 
         cluster_service_item = None
         temp = obj1.cluster_service_item(cluster_name)
@@ -487,24 +491,22 @@ class PdfGenerator:
             list_services_installed_df, new_ref_df = temp
             obj_pdf.service_installed(new_ref_df)
 
-        pdf.set_font("Arial", "", 12)
-        pdf.set_text_color(r=66, g=133, b=244)
-        pdf.cell(230, 8, "Third Party Software and Their Version:", 0, ln=1)
-
         third_party_package = None
         temp = obj3.third_party_software()
         if type(temp) != type(None):
             third_party_package = temp
+            pdf.set_font("Arial", "", 12)
+            pdf.set_text_color(r=66, g=133, b=244)
+            pdf.cell(230, 8, "Third Party Software and Their Version:", 0, ln=1)
             obj_pdf.third_party_software(third_party_package)
-
-        pdf.set_font("Arial", "", 12)
-        pdf.set_text_color(r=66, g=133, b=244)
-        pdf.cell(230, 8, "Details of Services/Software and Their Version:", 0, ln=1)
 
         package_version = None
         temp = obj3.version_package()
         if type(temp) != type(None):
             package_version = temp
+            pdf.set_font("Arial", "", 12)
+            pdf.set_text_color(r=66, g=133, b=244)
+            pdf.cell(230, 8, "Details of Services/Software and Their Version:", 0, ln=1)
             obj_pdf.version_package(package_version)
 
         pdf.set_font("Arial", "", 12)

@@ -27,3 +27,6 @@ if [ $var -eq 0 ]
 then
 	echo "Python Code ran Successfully"
 fi
+deactivate
+cd ..
+cd ..

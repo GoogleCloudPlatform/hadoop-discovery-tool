@@ -925,11 +925,14 @@ class HardwareOSAPI:
                 ntp_server = subprocess.Popen("systemctl status ntp 2>/dev/null| grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
-                ntp_server = ntp_server.split(":")
-                if "inactive" in ntp_server[1]:
+                if not ntp_server:
                     ntp_server = "not enabled"
                 else:
-                    ntp_server = "enabled"
+                    ntp_server = ntp_server.split(":")
+                    if "inactive" in ntp_server[1]:
+                        ntp_server = "not enabled"
+                    else:
+                        ntp_server = "enabled"
             elif "red hat" in os_name:
                 ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 ntp_server.wait(10)
@@ -940,11 +943,14 @@ class HardwareOSAPI:
                 ntp_server = subprocess.Popen("systemctl status chronyd 2>/dev/null| grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
                 ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
-                ntp_server = ntp_server.split(":")
-                if "inactive" in ntp_server[1]:
+                if not ntp_server:
                     ntp_server = "not enabled"
                 else:
-                    ntp_server = "enabled"
+                    ntp_server = ntp_server.split(":")
+                    if "inactive" in ntp_server[1]:
+                        ntp_server = "not enabled"
+                    else:
+                        ntp_server = "enabled"
             self.logger.info("ntp_server successful")
             return ntp_server
         except Exception as e:
@@ -1457,7 +1463,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            cyberSecurity.wait(10)
+            cyberSecurity.wait(30)
             cyberSecurity, err = cyberSecurity.communicate()
             Cloudera_navigator = subprocess.Popen(
                 "ls /*/*/*/webapp/static/release/js/cloudera/navigator 2>/dev/null",
