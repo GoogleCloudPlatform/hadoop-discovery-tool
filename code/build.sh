@@ -19,13 +19,52 @@ then
     exit 1
 fi
 flag=0
+hat_check=0
+touch hat_file.txt
+echo $hat_check > hat_file.txt
+val=$?
 if [ $var -eq 127 ]
 then
-    sudo python3.8 os_package_installer.py
+    if [ $val -eq 0 ]
+    then
+        python3.8 os_package_installer.py
+        check=$?
+        if [ $check -eq 0 ]
+        then
+            value="0"
+            value=$(<hat_latest_flag.txt)
+            echo $value
+            rm -rf hat_latest_flag.txt
+            if [[ $value -eq "1" ]]
+            then
+                echo "ERROR - OS Packages not Installed Successfully"
+                exit 1
+            fi
+        fi
+    fi
+    #python3.8 os_package_installer.py
     flag=8
 else
-    sudo python3 os_package_installer.py
+    if [ $val -eq 0 ]
+    then
+        python3 os_package_installer.py
+        check=$?
+        if [ $check -eq 0 ]
+        then
+            value="0"
+            value=$(<hat_latest_flag.txt)
+            echo $value
+            rm -rf hat_latest_flag.txt
+            if [[ $value -eq "1" ]]
+            then
+                echo "ERROR - OS Packages not Installed Successfully"
+                exit 1
+            fi
+        fi
+    fi
+    #python3 os_package_installer.py
     flag=6
+fi        
 var=$?
 if [ $var -eq 1 ]
 then
