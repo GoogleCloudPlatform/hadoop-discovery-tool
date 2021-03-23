@@ -185,28 +185,18 @@ def cloudera_cluster_name(
         else:
             print("Unable to fetch cloudera clusters as cloudera does not exist")
             return None
-        cluster = initial_run.json()
-        cluster_items = cluster["items"]
-        index_count = 0
-        cluster_dt = pd.DataFrame()
-        input_index = 1
-        for name in cluster_items:
-            cluster_temp = pd.DataFrame(
-                {"Index": input_index, "Name": name["name"]}, index=[index_count]
-            )
-            cluster_dt = cluster_dt.append(cluster_temp)
-            input_index = input_index + 1
-        print("Select cluster name from list below : ")
-        for ind in cluster_dt.index:
-            print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
-        var = int(input("Enter serial number for selected cluster name : "))
-        name_list = cluster_dt["Index"].tolist()
-        cluster_name = None
-        if var in name_list:
-            cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
-            print("This cluster is selected : ", cluster_name)
-        else:
-            print("Wrong Input! Try Again")
+        if initial_run.status_code == 200:
+            cluster = initial_run.json()
+            cluster_items = cluster["items"]
+            index_count = 0
+            cluster_dt = pd.DataFrame()
+            input_index = 1
+            for name in cluster_items:
+                cluster_temp = pd.DataFrame(
+                    {"Index": input_index, "Name": name["name"]}, index=[index_count]
+                )
+                cluster_dt = cluster_dt.append(cluster_temp)
+                input_index = input_index + 1
             print("Select cluster name from list below : ")
             for ind in cluster_dt.index:
                 print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
@@ -217,10 +207,29 @@ def cloudera_cluster_name(
                 cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
                 print("This cluster is selected : ", cluster_name)
             else:
-                print("Wrong Input!")
-                exit()
+                print("Wrong Input! Try Again")
+                print("Select cluster name from list below : ")
+                for ind in cluster_dt.index:
+                    print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
+                var = int(input("Enter serial number for selected cluster name : "))
+                name_list = cluster_dt["Index"].tolist()
+                cluster_name = None
+                if var in name_list:
+                    cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
+                    print("This cluster is selected : ", cluster_name)
+                else:
+                    print("Wrong Input!")
+                    exit()
+        else:
+            print(
+                "Entered password is incorrect or unable to connect to Cloudera Manager!"
+            )
+            return None
         return cluster_name
     except Exception as e:
+        print(
+            "Entered password is incorrect or unable to connect to Cloudera Manager!"
+        )
         return None
 
 
@@ -419,52 +428,7 @@ def get_input(version):
             print("Enter details accordingly as SSL is enabled.")
         else:
             print("Enter details accordingly as SSL is disabled.")
-        t = input("Do you want to enter clouder manager credentials? [y/n] ")
-        if t in ["y", "Y"]:
-            inputs["cloudera_manager_host_ip"] = input(
-                "Enter Cloudera Manager Host IP: "
-            )
-            t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
-            if t1 in ["y", "Y"]:
-                inputs["cloudera_manager_port"] = "7180"
-            elif t1 in ["n", "N"]:
-                inputs["cloudera_manager_port"] = input(
-                    "Enter Cloudera Manager Port : "
-                )
-            else:
-                print("Wrong Input! Try Again")
-                t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
-                if t1 in ["y", "Y"]:
-                    inputs["cloudera_manager_port"] = "7180"
-                elif t1 in ["n", "N"]:
-                    inputs["cloudera_manager_port"] = input(
-                        "Enter Cloudera Manager Port : "
-                    )
-                else:
-                    print("Wrong Input!")
-                    exit()
-            inputs["cloudera_manager_username"] = input(
-                "Enter Cloudera Manager Username: "
-            )
-            inputs["cloudera_manager_password"] = getpass(
-                prompt="Enter Cloudera Manager Password: "
-            )
-            inputs["cluster_name"] = cloudera_cluster_name(
-                inputs["version"],
-                inputs["ssl"],
-                inputs["cloudera_manager_host_ip"],
-                inputs["cloudera_manager_port"],
-                inputs["cloudera_manager_username"],
-                inputs["cloudera_manager_password"],
-            )
-        elif t in ["n", "N"]:
-            inputs["cloudera_manager_host_ip"] = None
-            inputs["cloudera_manager_port"] = None
-            inputs["cloudera_manager_username"] = None
-            inputs["cloudera_manager_password"] = None
-            inputs["cluster_name"] = None
-        else:
-            print("Wrong Input! Try Again")
+        if inputs["version"] == 0:
             t = input("Do you want to enter clouder manager credentials? [y/n] ")
             if t in ["y", "Y"]:
                 inputs["cloudera_manager_host_ip"] = input(
@@ -503,6 +467,18 @@ def get_input(version):
                     inputs["cloudera_manager_username"],
                     inputs["cloudera_manager_password"],
                 )
+                if inputs["cluster_name"] == None:
+                    print("Try Again")
+                    inputs["cluster_name"] = cloudera_cluster_name(
+                        inputs["version"],
+                        inputs["ssl"],
+                        inputs["cloudera_manager_host_ip"],
+                        inputs["cloudera_manager_port"],
+                        inputs["cloudera_manager_username"],
+                        inputs["cloudera_manager_password"],
+                    )
+                    if inputs["cluster_name"] == None:
+                        exit()
             elif t in ["n", "N"]:
                 inputs["cloudera_manager_host_ip"] = None
                 inputs["cloudera_manager_port"] = None
@@ -510,8 +486,54 @@ def get_input(version):
                 inputs["cloudera_manager_password"] = None
                 inputs["cluster_name"] = None
             else:
-                print("Wrong Input!")
-                exit()
+                print("Wrong Input! Try Again")
+                t = input("Do you want to enter clouder manager credentials? [y/n] ")
+                if t in ["y", "Y"]:
+                    inputs["cloudera_manager_host_ip"] = input(
+                        "Enter Cloudera Manager Host IP: "
+                    )
+                    t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
+                    if t1 in ["y", "Y"]:
+                        inputs["cloudera_manager_port"] = "7180"
+                    elif t1 in ["n", "N"]:
+                        inputs["cloudera_manager_port"] = input(
+                            "Enter Cloudera Manager Port : "
+                        )
+                    else:
+                        print("Wrong Input! Try Again")
+                        t1 = input("Is your Cloudera Manager Port number 7180? [y/n] ")
+                        if t1 in ["y", "Y"]:
+                            inputs["cloudera_manager_port"] = "7180"
+                        elif t1 in ["n", "N"]:
+                            inputs["cloudera_manager_port"] = input(
+                                "Enter Cloudera Manager Port : "
+                            )
+                        else:
+                            print("Wrong Input!")
+                            exit()
+                    inputs["cloudera_manager_username"] = input(
+                        "Enter Cloudera Manager Username: "
+                    )
+                    inputs["cloudera_manager_password"] = getpass(
+                        prompt="Enter Cloudera Manager Password: "
+                    )
+                    inputs["cluster_name"] = cloudera_cluster_name(
+                        inputs["version"],
+                        inputs["ssl"],
+                        inputs["cloudera_manager_host_ip"],
+                        inputs["cloudera_manager_port"],
+                        inputs["cloudera_manager_username"],
+                        inputs["cloudera_manager_password"],
+                    )
+                elif t in ["n", "N"]:
+                    inputs["cloudera_manager_host_ip"] = None
+                    inputs["cloudera_manager_port"] = None
+                    inputs["cloudera_manager_username"] = None
+                    inputs["cloudera_manager_password"] = None
+                    inputs["cluster_name"] = None
+                else:
+                    print("Wrong Input!")
+                    exit()
         t = input("Do you want to enter Hive credentials? [y/n] ")
         if t in ["y", "Y"]:
             inputs["hive_username"] = input("Enter Hive Metastore Username: ")
