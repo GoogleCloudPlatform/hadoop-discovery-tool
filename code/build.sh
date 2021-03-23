@@ -12,10 +12,10 @@ var=$?
 flag=0
 if [ $var -eq 127 ]
 then
-        python3.8 os_package_installer.py
+        sudo python3.8 os_package_installer.py
         flag=8
 else
-        python3 os_package_installer.py
+        sudo python3 os_package_installer.py
         flag=6
 if [ $var -eq 1 ]
 then
