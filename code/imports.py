@@ -227,9 +227,7 @@ def cloudera_cluster_name(
             return None
         return cluster_name
     except Exception as e:
-        print(
-            "Entered password is incorrect or unable to connect to Cloudera Manager!"
-        )
+        print("Entered password is incorrect or unable to connect to Cloudera Manager!")
         return None
 
 
@@ -428,7 +426,7 @@ def get_input(version):
             print("Enter details accordingly as SSL is enabled.")
         else:
             print("Enter details accordingly as SSL is disabled.")
-        if inputs["version"] == 0:
+        if inputs["version"] != 0:
             t = input("Do you want to enter clouder manager credentials? [y/n] ")
             if t in ["y", "Y"]:
                 inputs["cloudera_manager_host_ip"] = input(
