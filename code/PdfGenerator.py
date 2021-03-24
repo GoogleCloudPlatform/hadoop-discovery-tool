@@ -47,7 +47,6 @@ class PdfGenerator:
         """Generate PDF for CDH-5, CDH-6 and CDP-7"""
 
         pdf = FPDF(format=(250, 350))
-        p_bar = tqdm(total=7, desc="Hadoop Assessment Tool")
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
         obj3 = FrameworkDetailsAPI(self.inputs)
@@ -248,8 +247,7 @@ class PdfGenerator:
             base_size,
         )
 
-        p_bar.update(1)
-        p_bar.set_description(desc="Key Metrics Added in PDF")
+        print("[STATUS][1/18][#.................][6%] Key Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -310,6 +308,10 @@ class PdfGenerator:
             cluster_service_item = temp
             obj_pdf.cluster_service_info(cluster_service_item)
 
+        print(
+            "[STATUS][2/18][##................][11%] Cluster Information added in PDF"
+        )
+
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -346,6 +348,8 @@ class PdfGenerator:
             obj_pdf.cluster_memory_plot(
                 cluster_total_memory_df, cluster_memory_usage_df
             )
+
+        print("[STATUS][3/18][###...............][17%] Cluster Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -471,8 +475,9 @@ class PdfGenerator:
             gpu_status = temp
             obj_pdf.speciality_hardware(gpu_status)
 
-        p_bar.update(1)
-        p_bar.set_description(desc="Hardware and OS footprint Metrics Added in PDF")
+        print(
+            "[STATUS][4/18][####..............][22%] Hardware and OS Metrics added in PDF"
+        )
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -531,8 +536,9 @@ class PdfGenerator:
             connectors_present = temp
             obj_pdf.installed_connectors(connectors_present)
 
-        p_bar.update(1)
-        p_bar.set_description(desc="Framework and software details Added in PDF")
+        print(
+            "[STATUS][5/18][#####.............][28%] Framework and software details added in PDF"
+        )
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -638,6 +644,8 @@ class PdfGenerator:
                         )
                     pdf.cell(230, 3, "", 0, ln=1)
 
+        print("[STATUS][6/18][######............][33%] HDFS Metrics added in PDF")
+
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -741,8 +749,7 @@ class PdfGenerator:
                 query_type_count_df = temp1
                 obj_pdf.hive_adhoc_etl_query(query_type_count_df)
 
-        p_bar.update(1)
-        p_bar.set_description(desc="Data Metrics Added in PDF")
+        print("[STATUS][7/18][#######...........][39%] Hive Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -811,8 +818,7 @@ class PdfGenerator:
             enc_zoneList = temp
             obj_pdf.encryption_zone(enc_zoneList)
 
-        p_bar.update(1)
-        p_bar.set_description(desc="Security Metrics Added in PDF")
+        print("[STATUS][8/18][########..........][44%] Security Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -852,6 +858,8 @@ class PdfGenerator:
         if type(temp) != type(None):
             total_disk_read, total_disk_write = temp
             obj_pdf.disk_read_write(total_disk_read, total_disk_write)
+
+        print("[STATUS][9/18][#########.........][50%] Networking Metrics added in PDF")
 
         (
             softwares_installed,
@@ -922,9 +930,8 @@ class PdfGenerator:
             logs = temp
             obj_pdf.get_logs(logs)
 
-        p_bar.update(1)
-        p_bar.set_description(
-            desc="Network, Traffic and Monitoring Metrics Added in PDF"
+        print(
+            "[STATUS][10/18][##########........][56%] Monitoring Metrics added in PDF"
         )
 
         pdf.add_page()
@@ -1009,6 +1016,10 @@ class PdfGenerator:
             )
             obj_pdf.yarn_memory_seasonality(yarn_memory_allocated_pivot_df)
 
+        print(
+            "[STATUS][11/18][###########.......][61%] Yarn Resources Metrics added in PDF"
+        )
+
         yarn_application_df = None
         temp = obj_app.get_application_details(yarn_rm, yarn_port)
         if type(temp) != type(None):
@@ -1060,6 +1071,10 @@ class PdfGenerator:
             if type(temp1) != type(None):
                 job_launch_df = temp1
                 obj_pdf.yarn_job_launch_frequency(job_launch_df)
+
+            print(
+                "[STATUS][12/18][############......][67%] Yarn Application Metrics added in PDF"
+            )
 
             bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = (
                 None,
@@ -1131,6 +1146,10 @@ class PdfGenerator:
                     app_queue_df, app_queue_usage_df = temp1
                     obj_pdf.yarn_queue_pending_app(app_queue_df, app_queue_usage_df)
 
+        print(
+            "[STATUS][13/18][#############.....][72%] Yarn Queue Metrics added in PDF"
+        )
+
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -1159,6 +1178,10 @@ class PdfGenerator:
         if type(temp) != type(None):
             yarn_running_apps_df = temp
             obj_pdf.yarn_running_app(yarn_running_apps_df)
+
+        print(
+            "[STATUS][14/18][##############....][78%] Yarn Running and Pending Application Metrics added in PDF"
+        )
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -1207,6 +1230,8 @@ class PdfGenerator:
             coprocessorHbase = temp
             obj_pdf.coprocessor_in_hbase(coprocessorHbase)
 
+        print("[STATUS][15/18][###############...][83%] HBase Metrics added in PDF")
+
         pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -1246,6 +1271,8 @@ class PdfGenerator:
             obj_pdf.spark_components_used(
                 rdd_flag, dataset_flag, sql_flag, df_flag, mllib_flag, stream_flag
             )
+
+        print("[STATUS][16/18][################..][89%] Spark Metrics added in PDF")
 
         pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
@@ -1291,6 +1318,8 @@ class PdfGenerator:
             HA_Strategy = temp
             obj_pdf.ha_strategy(HA_Strategy)
 
+        print("[STATUS][17/18][#################.][94%] Kafka Metrics added in PDF")
+
         pdf.cell(230, 10, "", 0, ln=1)
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -1326,9 +1355,6 @@ class PdfGenerator:
             kudu = temp
             obj_pdf.kudu(kudu)
 
-        p_bar.update(1)
-        p_bar.set_description(desc="Application Metrics Added in PDF")
-        p_bar.close()
+        print("[STATUS][18/18][##################][100%] Completed!!")
 
-        print("Completed !!")
         pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")

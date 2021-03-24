@@ -1251,7 +1251,7 @@ class PdfFunctions:
             os_name (str): OS distribution
         """
 
-        if "centos" or "red hat" in os_name:
+        if "centos" in os_name or "red hat" in os_name:
             self.pdf.set_font("Arial", "", 12)
             self.pdf.set_text_color(r=66, g=133, b=244)
             self.pdf.cell(230, 8, "Security Patches Details: ", 0, ln=1)
@@ -3920,10 +3920,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Base Size of Data: {}".format(disk_space_consumed), 0, 1,
+            230, 8, "Base Size of Data: {: .2f} GB".format(disk_space_consumed), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Disk Space Consumed: {}".format(base_size), 0, 1,
+            230, 8, "Disk Space Consumed: {: .2f} GB".format(base_size), 0, 1,
         )
 
     def hbase_replication(self, replication):
