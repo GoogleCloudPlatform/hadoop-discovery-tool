@@ -1919,7 +1919,7 @@ class ApplicationAPI:
             base_size = 0
             disk_space_consumed = 0
             out = subprocess.Popen(
-            "hdfs dfs -du -h / | grep 'hbase'",
+            "hdfs dfs -du / | grep 'hbase'",
             shell=True,
             stdout=subprocess.PIPE,
             encoding="utf-8",
@@ -1928,22 +1928,22 @@ class ApplicationAPI:
             base_size = ""
             disk_space_consumed = ""
             hbase_data = out.split("/")[0].strip()
-            data_list = hbase_data.split(".")
-            base_size = (
-            data_list[0]
-            + "."
-            + data_list[1][0]
-            + data_list[1][1]
-            + data_list[1][2]
-            )
-            if len(data_list[1]) > 3:
-                for j in data_list[1][3:]:
-                    if j != (" "):
-                        disk_space_consumed = disk_space_consumed + j
-                        disk_space_consumed = disk_space_consumed + "." + data_list[2]
-                    else:
-                        disk_space_consumed = 0
-                        self.logger.info("get_hbase_data_size successful")
+            dt=hbase_data.split(" ")
+            base_size=0
+            disk_space_consumed=0
+            count=0
+            for i in dt:
+                try:
+                    count=count+1
+                    if(isinstance(int(i), int)==True):
+                        if(count>1):
+                            disk_space_consumed=i
+                except:
+                    pass
+            if(isinstance(int(dt[0]), int)==True):
+                base_size=int(dt[0])/1024/1024/1024
+            disk_space_consumed=int(disk_space_consumed)/1024/1024/1024
+            self.logger.info("get_hbase_data_size successful")
             return base_size, disk_space_consumed
         except Exception as e:
             self.logger.error("get_hbase_data_size failed", exc_info=True)
@@ -2250,11 +2250,12 @@ class ApplicationAPI:
             spark_version = out.splitlines()
             dt = ""
             for i in spark_version:
-                if "version" in i:
+                if "version" in str(i):
                     dt=i
                     break
             dt=dt.split()
             spark_version=dt[-1]
+            spark_version=spark_version.decode("utf-8")
             self.logger.info("get_spark_version successful")
             return spark_version
         except Exception as e:

@@ -824,7 +824,7 @@ class DataAPI:
 
         try:
             engine = create_engine(database_uri)
-            table_count = 0
+            #table_count = 0
             database_df = pd.DataFrame(columns=["Database", "File_Size", "Count"])
             if database_type == "postgresql":
                 result = engine.execute(
@@ -848,6 +848,7 @@ class DataAPI:
                 )
             for row in result:
                 db = row[0]
+                table_count=0
                 if database_type == "postgresql":
                     result = engine.execute(
                         """
@@ -921,9 +922,9 @@ class DataAPI:
                     )
                     database_df = database_df.append(database_tmp_df)
             database_df["File_Size"] = database_df["File_Size"].astype(str).astype(int)
-            database_df["Count"] = 1
-            database_df = database_df.groupby(["Database"]).sum()
-            database_df.reset_index(inplace=True)
+            #database_df["Count"] = 1
+            #database_df = database_df.groupby(["Database"]).sum()
+            #database_df.reset_index(inplace=True)
             self.logger.info("get_hive_database_info successful")
             return database_df
         except Exception as e:
