@@ -2660,7 +2660,7 @@ class ApplicationAPI:
                         stdout=subprocess.PIPE,
                         encoding="utf-8",
                     )
-                    broker_dir.wait(10)
+                    broker_dir.wait()
                     broker_dir, err = broker_dir.communicate()
                     try:
                         brokers_df = pd.read_csv("broker_size.csv", header=None)
@@ -2765,8 +2765,17 @@ class ApplicationAPI:
         try:
             brokers = ""
             Num_brokers = 0
+            zkcli_path = subprocess.Popen(
+                "find / -path '*/zookeeper/bin/zkCli.sh' 2>/dev/null",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            zkcli_path.wait(10)
+            zkcli_path, err = zkcli_path.communicate()
+
             broker_zk = subprocess.Popen(
-                "timeout 20 zkCli.sh -server "
+                "timeout 20 "+str(zkcli_path) +  " -server "
                 + str(zookeeper_conn)
                 + " ls /brokers/ids 2>/dev/null 1>broker_id.csv",
                 shell=True,
