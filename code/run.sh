@@ -17,7 +17,7 @@ then
 	exit 1
 fi
 #run python file which will generate the pdf
-python3 __main__.py
+python3 __main__.py 2>/dev/null
 var=$?
 if [ $var -eq 1 ]
 then
