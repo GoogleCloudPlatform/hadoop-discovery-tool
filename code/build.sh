@@ -9,7 +9,9 @@ then
 fi
 if [ $var -eq 1 ]
 then
+    echo "*****************************************************************"
     echo "INFO - Python version satisfied"
+    echo "*****************************************************************"
 fi
 python3 --version 2>/dev/null
 var=$?
@@ -32,8 +34,11 @@ then
         if [ $check -eq 0 ]
         then
             value="0"
-            value=$(<hat_latest_flag.txt)
-            echo $value
+            if [ -e hat_latest_flag.txt ]
+            then
+                value=$(<hat_latest_flag.txt)
+            fi
+            #echo $value
             rm -rf hat_latest_flag.txt
             if [[ $value -eq "1" ]]
             then
@@ -52,8 +57,11 @@ else
         if [ $check -eq 0 ]
         then
             value="0"
-            value=$(<hat_latest_flag.txt)
-            echo $value
+            if [ -e hat_latest_flag.txt ]
+            then
+                value=$(<hat_latest_flag.txt)
+            fi
+            #echo $value
             rm -rf hat_latest_flag.txt
             if [[ $value -eq "1" ]]
             then
@@ -64,7 +72,7 @@ else
     fi
     #python3 os_package_installer.py
     flag=6
-fi        
+fi
 var=$?
 if [ $var -eq 1 ]
 then
@@ -73,7 +81,12 @@ then
 fi
 if [ $var -eq 0 ]
 then
+    echo "*****************************************************************"
     echo "INFO - Os Dependencies Installed "
+    echo "###########################################################################################################"
+    echo "During python installation, some error messages might pop up , but those can be ignored if last message says,"
+    echo "Python Dependencies Installed Successfully"
+    echo "############################################################################################################"
 fi
 # remove old environment directory
 rm -rf HDT_ENV
@@ -93,6 +106,7 @@ then
 fi
 if [ $var -eq 0 ]
 then
+    echo "*****************************************************************"
     echo "INFO - New Directory created for python environment"
 fi
 # create a new python environment
@@ -110,11 +124,13 @@ fi
 var=$?
 if [ $var -eq 1 ]
 then
+    echo "*****************************************************************"
     echo "ERROR - Virtual Environment is not created"
     exit 1
 fi
 if [ $var -eq 0 ]
 then
+    echo "*****************************************************************"
     echo "INFO - Virtual Environment created successfully"
 fi
 # Activate python environment
@@ -127,11 +143,11 @@ then
 fi
 if [ $var -eq 0 ]
 then
+    echo "*****************************************************************"
     echo "INFO - Python environment activated"
-    exit 1
 fi
 # Copy offline packages into new virtual environment for installation
-cp -a $PWD/HDT/packages $PWD/HDT_ENV/packages
+cp -r $PWD/HDT/packages $PWD/HDT_ENV/packages
 var=$?
 if [ $var -eq 1 ]
 then
@@ -140,7 +156,8 @@ then
 fi
 if [ $var -eq 0 ]
 then
-    echo "INFO - Packages moved to python environment"
+   echo "*****************************************************************"
+   echo "INFO - Packages moved to python environment"
 fi
 # Copy requirements.txt into the new environments to fetch packages one by one
 cp $PWD/HDT/requirements.txt $PWD/HDT_ENV/packages
@@ -152,7 +169,9 @@ then
 fi
 if [ $var -eq 0 ]
 then
+    echo "*****************************************************************"
     echo "INFO - requirements.txt moved to python environment"
+    echo "*****************************************************************"
 fi
 # Install all the offline packages into the virtual environment
 # pip3 install -r $PWD/HDT_ENV/packages/requirements.txt --no-index --find-links $PWD/HDT_ENV/packages
@@ -165,6 +184,7 @@ then
 fi
 if [ $var -eq 0 ]
 then
+    echo "*****************************************************************"
     echo "INFO - Python Dependencies Installed Successfully"
 fi
 # copy codebase into the new virtual environment
@@ -177,5 +197,7 @@ then
 fi
 if [ $var -eq 0 ]
 then
+    echo "*****************************************************************"
     echo "INFO - Code moved to python environment"
+    echo "*****************************************************************"
 fi

@@ -15,7 +15,10 @@ vs,trash,name,dt,getpython,getpython1,getpython2="","","","","","",""
 final_name = ""
 py_val=""
 flag=0
-py_val=os.popen('python3 --version 2>/dev/null').read()
+
+py_val=os.popen("""python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))'""").read()
+py_val = ''.join([str(elem) for elem in py_val])
+py_val=py_val.replace("\n","")
 
 vs = os.popen("grep VERSION_ID /etc/os-release").read()
 trash, version = vs.split("=")
@@ -58,7 +61,7 @@ try:
         venv_dt = "Venv"
     elif "ubuntu" in os_name and (final_version >= "18.04" or final_version >= "16.04") :
         print("Os Dependencies Installing...")
-        if (py_val >= "3.8" and flag==0):
+        if (py_val == "3.8" and flag==0):
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
             os.popen("apt install -y g++ 2>/dev/null").read()
@@ -80,7 +83,7 @@ try:
                 "apt list --installed 2>/dev/null | grep python3-dev"
             ).read()
             flag=1
-        if (py_val >= "3.7" and flag==0):
+        if (py_val == "3.7" and flag==0):
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
             os.popen("apt install -y g++ 2>/dev/null").read()
@@ -102,7 +105,7 @@ try:
                 "apt list --installed 2>/dev/null | grep python3-dev"
             ).read()
             flag=1
-        if(py_val >= "3.6" and flag==0):
+        if(py_val == "3.6" and flag==0):
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
             os.popen("apt install -y g++ 2>/dev/null").read()
