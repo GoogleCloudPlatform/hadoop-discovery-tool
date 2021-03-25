@@ -6,9 +6,6 @@
 # ------------------------------------------------------------------------------
 
 # Importing required libraries
-import time
-
-p_start = time.time()
 from imports import *
 from PdfGenerator import *
 
@@ -40,5 +37,3 @@ else:
     inputs["logger"] = logger
     obj = PdfGenerator(inputs)
     obj.run()
-p_end = time.time()
-print(p_end - p_start)

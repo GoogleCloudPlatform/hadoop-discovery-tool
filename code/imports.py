@@ -50,7 +50,7 @@ def check_ssl():
         ssl (bool): SSL flag
     """
 
-    ssl = True
+    ssl = None
     if path.exists("/etc/hadoop/conf/core-site.xml"):
         hadoop_path = "/etc/hadoop/conf/core-site.xml"
     elif path.exists("/etc/hive/conf/core-site.xml"):
@@ -64,7 +64,7 @@ def check_ssl():
         if "hadoop.ssl.enabled" not in name:
             root.remove(val)
     if len(root) == 0:
-        ssl = True
+        ssl = None
     else:
         value = root[0][1].text
         if value == "true":
@@ -82,6 +82,7 @@ def check_config_path():
     Returns:
         config_path (dict): config paths
     """
+
     config_path = {}
     if path.exists("/etc/hadoop/conf/core-site.xml"):
         config_path["core"] = "/etc/hadoop/conf/core-site.xml"
@@ -124,6 +125,58 @@ def check_config_path():
     else:
         config_path["kafka"] = None
     return config_path
+
+
+def get_cloudera_creds(version, ssl):
+    """Get input from user related to cloudera manager.
+
+    Returns:
+        inputs (dict): Contains user input attributes
+
+    """
+
+    try:
+        c = 3
+        while c > 0:
+            print(
+                "A major number of metrics generation would require Cloudera manager credentials"
+            )
+            print(
+                "Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]:"
+            )
+            t = input()
+            if t in ["y", "Y"]:
+                print("Enter Cloudera Manager Host IP: ")
+                host = input()
+                c1 = 3
+                while c1 > 0:
+                    print("Is your Cloudera Manager Port number 7180? [y/n] ")
+                    t1 = input()
+                    if t1 in ["y", "Y"]:
+                        port = "7180"
+                    elif t1 in ["n", "N"]:
+                        print("Enter Cloudera Manager Port: ")
+                        port = input()
+                    c1 = c1 - 1
+                    if c1 == 0:
+                        print("Incorrect Input!")
+                        exit()
+                    else:
+                        print("Incorrect Input! Try Again")
+                print("Enter Cloudera Manager Username: ")
+                uname = input()
+                password = getpass(prompt="Enter Cloudera Manager Password: ")
+                return host, port, uname, password
+            elif t in ["n", "N"]:
+                return None, None, None, None
+            c = c - 1
+            if c == 0:
+                print("Incorrect Input!")
+                exit()
+            else:
+                print("Incorrect Input! Try Again")
+    except Exception as e:
+        return None, None, None, None
 
 
 def cloudera_cluster_name(
@@ -187,50 +240,165 @@ def cloudera_cluster_name(
             return None
         if initial_run.status_code == 200:
             cluster = initial_run.json()
-            cluster_items = cluster["items"]
-            index_count = 0
-            cluster_dt = pd.DataFrame()
-            input_index = 1
-            for name in cluster_items:
-                cluster_temp = pd.DataFrame(
-                    {"Index": input_index, "Name": name["name"]}, index=[index_count]
+            cluster_list = []
+            for i in cluster["items"]:
+                cluster_list.append(i["name"])
+            c = 3
+            while c > 0:
+                print("Select cluster name from list below: ")
+                for i in range(len(cluster_list)):
+                    print(str(i + 1) + ". " + cluster_list[i])
+                print(
+                    "Enter the serial number(1/2/../n) for the selected cluster name: "
                 )
-                cluster_dt = cluster_dt.append(cluster_temp)
-                input_index = input_index + 1
-            print("Select cluster name from list below : ")
-            for ind in cluster_dt.index:
-                print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
-            print("Enter serial number for selected cluster name: ")
-            var = int(input())
-            name_list = cluster_dt["Index"].tolist()
-            cluster_name = None
-            if var in name_list:
-                cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
-                print("This cluster is selected : ", cluster_name)
-            else:
-                print("Wrong Input! Try Again")
-                print("Select cluster name from list below : ")
-                for ind in cluster_dt.index:
-                    print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
-                print("Enter serial number for selected cluster name: ")
-                var = int(input())
-                name_list = cluster_dt["Index"].tolist()
-                cluster_name = None
-                if var in name_list:
-                    cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
-                    print("This cluster is selected : ", cluster_name)
-                else:
-                    print("Wrong Input!")
+                var = input()
+                if var.numeric():
+                    var = int(var)
+                    if (var > 0) and (var <= len(cluster_list)):
+                        break
+                c = c - 1
+                if c == 0:
+                    print("Incorrect Input!")
                     exit()
+                else:
+                    print("Incorrect Input! Try Again")
+            cluster_name = cluster_list[var - 1]
+            print("This cluster is selected: " + cluster_name)
+            return cluster_name
         else:
             print(
-                "Entered password is incorrect or unable to connect to Cloudera Manager!"
+                "Cloudera credentials are incorrect or unable to connect to Cloudera Manager!"
             )
             return None
-        return cluster_name
     except Exception as e:
-        print("Entered password is incorrect or unable to connect to Cloudera Manager!")
+        print(
+            "Cloudera credentials are incorrect or unable to connect to Cloudera Manager!"
+        )
         return None
+
+
+def get_hive_creds(inputs):
+    """Get input from user related to Hive.
+
+    Returns:
+        inputs (dict): Contains user input attributes
+
+    """
+
+    try:
+        c = 3
+        while c > 0:
+            print("Do you want to enter Hive credentials? [y/n] ")
+            t = input()
+            if t in ["y", "Y"]:
+                print("Enter Hive Metastore Username: ")
+                hive_username = input()
+                hive_password = getpass(prompt="Enter Hive Metastore Password: ")
+                r = None
+                http = None
+                if inputs["ssl"]:
+                    http = "https"
+                else:
+                    http = "http"
+                if inputs["version"] == 7:
+                    r = requests.get(
+                        "{}://{}:{}/api/v41/clusters/{}/services/hive/config".format(
+                            http,
+                            inputs["cloudera_manager_host_ip"],
+                            inputs["cloudera_manager_port"],
+                            inputs["cluster_name"],
+                        ),
+                        auth=HTTPBasicAuth(
+                            inputs["cloudera_manager_username"],
+                            inputs["cloudera_manager_password"],
+                        ),
+                        verify=False,
+                    )
+                elif inputs["version"] == 6:
+                    r = requests.get(
+                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                            http,
+                            inputs["cloudera_manager_host_ip"],
+                            inputs["cloudera_manager_port"],
+                            inputs["cluster_name"],
+                        ),
+                        auth=HTTPBasicAuth(
+                            inputs["cloudera_manager_username"],
+                            inputs["cloudera_manager_password"],
+                        ),
+                        verify=False,
+                    )
+                elif inputs["version"] == 5:
+                    r = requests.get(
+                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                            http,
+                            inputs["cloudera_manager_host_ip"],
+                            inputs["cloudera_manager_port"],
+                            inputs["cluster_name"],
+                        ),
+                        auth=HTTPBasicAuth(
+                            inputs["cloudera_manager_username"],
+                            inputs["cloudera_manager_password"],
+                        ),
+                        verify=False,
+                    )
+                else:
+                    return None, None
+                if r.status_code == 200:
+                    hive_config = r.json()
+                    hive_config_items = hive_config["items"]
+                    mt_db_host = ""
+                    mt_db_name = ""
+                    mt_db_type = ""
+                    mt_db_port = ""
+                    for i in hive_config_items:
+                        if i["name"] == "hive_metastore_database_host":
+                            mt_db_host = i["value"]
+                        elif i["name"] == "hive_metastore_database_name":
+                            mt_db_name = i["value"]
+                        elif i["name"] == "hive_metastore_database_port":
+                            mt_db_port = i["value"]
+                        elif i["name"] == "hive_metastore_database_type":
+                            mt_db_type = i["value"]
+                    if mt_db_type == "postgresql":
+                        database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
+                            hive_username,
+                            hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                        )
+                        engine = create_engine(database_uri)
+                        result = engine.execute("""select * from "DBS";""")
+                    if mt_db_type == "mysql":
+                        database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
+                            hive_username,
+                            hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                        )
+                        engine = create_engine(database_uri)
+                        result = engine.execute("""select * from DBS;""")
+                    f = False
+                    for row in result:
+                        f = True
+                    if f:
+                        return hive_username, hive_password
+                    else:
+                        print("Unable to connect to Hive!")
+                else:
+                    print("Unable to connect to Cloudera Manager!")
+            elif t in ["n", "N"]:
+                return None, None
+            c = c - 1
+            if c == 0:
+                print("Incorrect Input!")
+                return None, None
+            else:
+                print("Incorrect Input! Try Again")
+    except Exception as e:
+        return None, None
 
 
 def broker_list_input():
@@ -442,40 +610,41 @@ def get_input(version):
         inputs = {}
         inputs["version"] = version
         inputs["ssl"] = check_ssl()
-        inputs["config_path"] = check_config_path()
-        if inputs["ssl"]:
-            print("Enter details accordingly as SSL is enabled.")
-        else:
-            print("Enter details accordingly as SSL is disabled.")
-        if inputs["version"] != 0:
-            print("Do you want to enter clouder manager credentials? [y/n] ")
-            t = input()
-            if t in ["y", "Y"]:
-                print("Enter Cloudera Manager Host IP: ")
-                inputs["cloudera_manager_host_ip"] = input()
-                print("Is your Cloudera Manager Port number 7180? [y/n] ")
-                t1 = input()
-                if t1 in ["y", "Y"]:
-                    inputs["cloudera_manager_port"] = "7180"
-                elif t1 in ["n", "N"]:
-                    print("Enter Cloudera Manager Port : ")
-                    inputs["cloudera_manager_port"] = input()
+        if inputs["ssl"] == None:
+            c = 3
+            while c > 0:
+                print("Do you have SSL enabled for your cluster? [y/n] ")
+                t = input()
+                if t in ["y", "Y"]:
+                    inputs["ssl"] = True
+                    break
+                elif t in ["n", "N"]:
+                    inputs["ssl"] = False
+                    break
+                c = c - 1
+                if c == 0:
+                    print("Incorrect Input!")
+                    exit()
                 else:
-                    print("Wrong Input! Try Again")
-                    t1 = input()
-                    if t1 in ["y", "Y"]:
-                        inputs["cloudera_manager_port"] = "7180"
-                    elif t1 in ["n", "N"]:
-                        print("Enter Cloudera Manager Port : ")
-                        inputs["cloudera_manager_port"] = input()
-                    else:
-                        print("Wrong Input!")
-                        exit()
-                print("Enter Cloudera Manager Username: ")
-                inputs["cloudera_manager_username"] = input()
-                inputs["cloudera_manager_password"] = getpass(
-                    prompt="Enter Cloudera Manager Password: "
-                )
+                    print("Incorrect Input! Try Again")
+        else:
+            if inputs["ssl"]:
+                print("Enter details accordingly as SSL is enabled.")
+            else:
+                print("Enter details accordingly as SSL is disabled.")
+        inputs["config_path"] = check_config_path()
+        if inputs["version"] != 0:
+            c = 3
+            while c > 0:
+                (
+                    inputs["cloudera_manager_host_ip"],
+                    inputs["cloudera_manager_port"],
+                    inputs["cloudera_manager_username"],
+                    inputs["cloudera_manager_password"],
+                ) = get_cloudera_creds()
+                if inputs["cloudera_manager_host_ip"] == None:
+                    inputs["cluster_name"] = None
+                    break
                 inputs["cluster_name"] = cloudera_cluster_name(
                     inputs["version"],
                     inputs["ssl"],
@@ -485,107 +654,18 @@ def get_input(version):
                     inputs["cloudera_manager_password"],
                 )
                 if inputs["cluster_name"] == None:
-                    print("Try Again")
-                    inputs["cluster_name"] = cloudera_cluster_name(
-                        inputs["version"],
-                        inputs["ssl"],
-                        inputs["cloudera_manager_host_ip"],
-                        inputs["cloudera_manager_port"],
-                        inputs["cloudera_manager_username"],
-                        inputs["cloudera_manager_password"],
-                    )
-                    if inputs["cluster_name"] == None:
+                    c = c - 1
+                    if c == 0:
+                        print("Incorrect Input!")
                         exit()
-            elif t in ["n", "N"]:
-                inputs["cloudera_manager_host_ip"] = None
-                inputs["cloudera_manager_port"] = None
-                inputs["cloudera_manager_username"] = None
-                inputs["cloudera_manager_password"] = None
-                inputs["cluster_name"] = None
-            else:
-                print("Wrong Input! Try Again")
-                print("Do you want to enter clouder manager credentials? [y/n] ")
-                t = input()
-                if t in ["y", "Y"]:
-                    print("Enter Cloudera Manager Host IP: ")
-                    inputs["cloudera_manager_host_ip"] = input()
-                    print("Is your Cloudera Manager Port number 7180? [y/n] ")
-                    t1 = input()
-                    if t1 in ["y", "Y"]:
-                        inputs["cloudera_manager_port"] = "7180"
-                    elif t1 in ["n", "N"]:
-                        print("Enter Cloudera Manager Port : ")
-                        inputs["cloudera_manager_port"] = input()
                     else:
-                        print("Wrong Input! Try Again")
-                        t1 = input()
-                        if t1 in ["y", "Y"]:
-                            inputs["cloudera_manager_port"] = "7180"
-                        elif t1 in ["n", "N"]:
-                            print("Enter Cloudera Manager Port : ")
-                            inputs["cloudera_manager_port"] = input()
-                        else:
-                            print("Wrong Input!")
-                            exit()
-                    print("Enter Cloudera Manager Username: ")
-                    inputs["cloudera_manager_username"] = input()
-                    inputs["cloudera_manager_password"] = getpass(
-                        prompt="Enter Cloudera Manager Password: "
-                    )
-                    inputs["cluster_name"] = cloudera_cluster_name(
-                        inputs["version"],
-                        inputs["ssl"],
-                        inputs["cloudera_manager_host_ip"],
-                        inputs["cloudera_manager_port"],
-                        inputs["cloudera_manager_username"],
-                        inputs["cloudera_manager_password"],
-                    )
-                    if inputs["cluster_name"] == None:
-                        print("Try Again")
-                        inputs["cluster_name"] = cloudera_cluster_name(
-                            inputs["version"],
-                            inputs["ssl"],
-                            inputs["cloudera_manager_host_ip"],
-                            inputs["cloudera_manager_port"],
-                            inputs["cloudera_manager_username"],
-                            inputs["cloudera_manager_password"],
-                        )
-                        if inputs["cluster_name"] == None:
-                            exit()
-                elif t in ["n", "N"]:
-                    inputs["cloudera_manager_host_ip"] = None
-                    inputs["cloudera_manager_port"] = None
-                    inputs["cloudera_manager_username"] = None
-                    inputs["cloudera_manager_password"] = None
-                    inputs["cluster_name"] = None
+                        print("Incorrect Input! Try Again")
                 else:
-                    print("Wrong Input!")
-                    exit()
-        print("Do you want to enter Hive credentials? [y/n] ")
-        t = input()
-        if t in ["y", "Y"]:
-            print("Enter Hive Metastore Username: ")
-            inputs["hive_username"] = input()
-            inputs["hive_password"] = getpass(prompt="Enter Hive Metastore Password: ")
-        elif t in ["n", "N"]:
-            inputs["hive_username"] = None
-            inputs["hive_password"] = None
+                    break
+        if inputs["cloudera_manager_host_ip"] == None:
+            inputs["hive_username"], inputs["hive_password"] = None, None
         else:
-            print("Wrong Input! Try Again")
-            print("Do you want to enter Hive credentials? [y/n] ")
-            t = input()
-            if t in ["y", "Y"]:
-                print("Enter Hive Metastore Username: ")
-                inputs["hive_username"] = input()
-                inputs["hive_password"] = getpass(
-                    prompt="Enter Hive Metastore Password: "
-                )
-            elif t in ["n", "N"]:
-                inputs["hive_username"] = None
-                inputs["hive_password"] = None
-            else:
-                print("Wrong Input!")
-                exit()
+            inputs["hive_username"], inputs["hive_password"] = get_hive_creds(inputs)
         inputs["broker_list"] = broker_list_input()
         print("Select date range from list below : ")
         print("1. Week\n2. Month\n3. Custom")
