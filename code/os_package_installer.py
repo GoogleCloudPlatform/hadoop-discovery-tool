@@ -59,7 +59,7 @@ try:
         odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
         pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
         venv_dt = "Venv"
-    elif "ubuntu" in os_name and (final_version >= "18.04" or final_version >= "16.04") :
+    elif "ubuntu" in os_name and (final_version >= "16.04") :
         print("Os Dependencies Installing...")
         if (py_val == "3.8" and flag==0):
             os.popen("apt install -y nload 2>/dev/null").read()
@@ -67,8 +67,7 @@ try:
             os.popen("apt install -y g++ 2>/dev/null").read()
             os.popen("apt install -y sasl2-bin 2>/dev/null").read()
             os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
-            os.popen("apt install -y python3.8-dev 2>/dev/null").read()
-            #os.popen("apt install -y python3-pip 2>/dev/null").read()
+            os.popen("apt install -y python3.8-dev 2>/dev/null").read()            
             os.popen("apt install -y python3.8-venv 2>/dev/null").read()
             os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
             os.popen("apt install -y jq 2>/dev/null").read()
@@ -90,7 +89,6 @@ try:
             os.popen("apt install -y sasl2-bin 2>/dev/null").read()
             os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
             os.popen("apt install -y python3.7-dev 2>/dev/null").read()
-            #os.popen("apt install -y python3-pip 2>/dev/null").read()
             os.popen("apt install -y python3.7-venv 2>/dev/null").read()
             os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
             os.popen("apt install -y jq 2>/dev/null").read()
@@ -111,8 +109,7 @@ try:
             os.popen("apt install -y g++ 2>/dev/null").read()
             os.popen("apt install -y sasl2-bin 2>/dev/null").read()
             os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
-            os.popen("apt install -y python3-dev 2>/dev/null").read()
-            #os.popen("apt install -y python3-pip 2>/dev/null").read()
+            os.popen("apt install -y python3-dev 2>/dev/null").read()            
             os.popen("apt install -y python3-venv 2>/dev/null").read()
             os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
             os.popen("apt install -y jq 2>/dev/null").read()
@@ -239,10 +236,8 @@ if no_show == 0:
         print("Packages not Installed :- None")
     else:
         print("Packages not Installed:")
-        notInstalled_list = not_installed_string.replace(":","\n")
-        # print(my_list)
-        notIntalled_listToStr = ''.join([str(elem) for elem in notInstalled_list])
-        # print(repr(listToStr))
+        notInstalled_list = not_installed_string.replace(":","\n")        
+        notIntalled_listToStr = ''.join([str(elem) for elem in notInstalled_list])        
         var=""
         dt_notInstalled=[]
         for i in notIntalled_listToStr:
@@ -259,8 +254,7 @@ if no_show == 0:
         print("Cannot proceed as package ",not_installed_string," not installed")
         text_file = open('hat_file.txt','r')
         line_list = text_file.readlines()
-        listToStr = ' '.join([str(elem) for elem in line_list])
-        # print(listToStr.replace("\n",""))
+        listToStr = ' '.join([str(elem) for elem in line_list])        
         os.popen('rm -rf hat_file.txt').read()
         text_file = open('hat_latest_flag.txt','w')
         text_file.write("1")
