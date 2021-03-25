@@ -154,9 +154,11 @@ def get_cloudera_creds(version, ssl):
                     t1 = input()
                     if t1 in ["y", "Y"]:
                         port = "7180"
+                        break
                     elif t1 in ["n", "N"]:
                         print("Enter Cloudera Manager Port: ")
                         port = input()
+                        break
                     c1 = c1 - 1
                     if c1 == 0:
                         print("Incorrect Input!")
@@ -252,7 +254,7 @@ def cloudera_cluster_name(
                     "Enter the serial number(1/2/../n) for the selected cluster name: "
                 )
                 var = input()
-                if var.numeric():
+                if var.isnumeric():
                     var = int(var)
                     if (var > 0) and (var <= len(cluster_list)):
                         break
@@ -641,7 +643,7 @@ def get_input(version):
                     inputs["cloudera_manager_port"],
                     inputs["cloudera_manager_username"],
                     inputs["cloudera_manager_password"],
-                ) = get_cloudera_creds()
+                ) = get_cloudera_creds(version, inputs["ssl"])
                 if inputs["cloudera_manager_host_ip"] == None:
                     inputs["cluster_name"] = None
                     break
