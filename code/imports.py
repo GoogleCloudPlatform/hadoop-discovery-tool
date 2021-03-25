@@ -187,37 +187,28 @@ def cloudera_cluster_name(
             return None
         if initial_run.status_code == 200:
             cluster = initial_run.json()
-            cluster_items = cluster["items"]
-            index_count = 0
-            cluster_dt = pd.DataFrame()
-            input_index = 1
-            for name in cluster_items:
-                cluster_temp = pd.DataFrame(
-                    {"Index": input_index, "Name": name["name"]}, index=[index_count]
-                )
-                cluster_dt = cluster_dt.append(cluster_temp)
-                input_index = input_index + 1
+            cluster_name = ""
+            inter = ""
+            for i in range(0,len(cluster["items"])):
+                cluster_service_item = cluster["items"][i]["name"]
+                inter += cluster_service_item + ","
+                
+            inter = inter.split(",")
+            inter = ' '.join(inter).split()
             print("Select cluster name from list below : ")
-            for ind in cluster_dt.index:
-                print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
+            df = pd.DataFrame(inter,columns=['cluster Name'])
+            df.index = df.index + 1
+            print(df)
             print("Enter serial number for selected cluster name: ")
             var = int(input())
-            name_list = cluster_dt["Index"].tolist()
-            cluster_name = None
-            if var in name_list:
-                cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
+            if var <= len(inter):
+                cluster_name = inter[var-1]
                 print("This cluster is selected : ", cluster_name)
             else:
                 print("Wrong Input! Try Again")
-                print("Select cluster name from list below : ")
-                for ind in cluster_dt.index:
-                    print(cluster_dt["Index"][ind], ".", cluster_dt["Name"][ind])
-                print("Enter serial number for selected cluster name: ")
                 var = int(input())
-                name_list = cluster_dt["Index"].tolist()
-                cluster_name = None
-                if var in name_list:
-                    cluster_name = cluster_dt[cluster_dt["Index"] == var].Name.iloc[0]
+                if var <= len(inter):
+                    cluster_name = inter[var-1]
                     print("This cluster is selected : ", cluster_name)
                 else:
                     print("Wrong Input!")
