@@ -213,18 +213,48 @@ if pydevel_dt != "":
     installed.append(pydevel_dt)
 else:
     not_installed.append("Python3-Devel")
-installed_string = ",".join(installed)
-not_installed_string = ",".join(not_installed)
+installed_string = ":".join(installed)
+not_installed_string = ":".join(not_installed)
 # Here the code will decide based on the size of list which message to show to user about os packages installation
 if no_show == 0:
     if len(installed) == 0:
         print("Installed packages :- None")
     else:
-        print("Installed Packages " + installed_string)
+        print("Installed Packages:")
+        installed_list = installed_string.split(":")
+        installed_listToStr = ''.join([str(elem) for elem in installed_list])
+        var=""
+        dt_installed=[]
+        for i in installed_listToStr:
+            if(i!='\n'):
+                var=var+i
+            else:
+                dt_installed.append(var)
+                var=""
+        counter=1
+        for i in dt_installed:
+            print(counter,"-",i)
+            counter=counter+1
     if len(not_installed) == 0:
         print("Packages not Installed :- None")
     else:
-        print("Packages not Installed " + not_installed_string)
+        print("Packages not Installed:")
+        notInstalled_list = not_installed_string.replace(":","\n")
+        # print(my_list)
+        notIntalled_listToStr = ''.join([str(elem) for elem in notInstalled_list])
+        # print(repr(listToStr))
+        var=""
+        dt_notInstalled=[]
+        for i in notIntalled_listToStr:
+            if(i!='\n'):
+                var=var+i
+            else:
+                dt_notInstalled.append(var)
+                var=""
+        counter=1
+        for i in dt_notInstalled:
+            print(counter,"-",i)
+            counter=counter+1
     if "GCC-C++" in not_installed_string or "Unix ODBC-Devel" in not_installed_string or "Python3-Devel" in not_installed_string or "Cyrus SASL-Devel" in not_installed_string:
         print("Cannot proceed as package ",not_installed_string," not installed")
         text_file = open('hat_file.txt','r')
