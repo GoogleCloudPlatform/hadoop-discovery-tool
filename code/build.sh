@@ -13,7 +13,8 @@ then
     echo "INFO - Python version satisfied"
     echo "*****************************************************************"
 fi
-python3 --version 2>/dev/null
+echo "Python version "$(python3 -c 'import sys; print(".".join(map(str, sys.version_info[:3])))')" detected"
+python3 --version &>/dev/null
 var=$?
 if [ $var -eq 1 ]
 then
@@ -81,7 +82,6 @@ then
 fi
 if [ $var -eq 0 ]
 then
-    echo "*****************************************************************"
     echo "INFO - Os Dependencies Installed "
     echo "###########################################################################################################"
     echo "During python installation, some error messages might pop up , but those can be ignored if last message says,"
@@ -198,6 +198,7 @@ fi
 if [ $var -eq 0 ]
 then
     echo "*****************************************************************"
-    echo "INFO - Code moved to python environment"
+    echo "INFO - Hadoop Assessment Tool Deployed Successfully"
     echo "*****************************************************************"
 fi
+rm -rf hat_file.txt

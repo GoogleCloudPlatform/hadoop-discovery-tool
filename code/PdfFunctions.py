@@ -378,6 +378,7 @@ class PdfFunctions:
             ]
         )
         namenodes_df = pd.DataFrame(columns=["HostName", "Cores", "Memory"])
+        masternodes_df = pd.DataFrame(columns=["HostName", "Cores", "Memory"])
         datanodes_df = pd.DataFrame(columns=["HostName", "Cores", "Memory"])
         edgenodes_df = pd.DataFrame(columns=["HostName", "Cores", "Memory"])
         client_gateway_df = pd.DataFrame(columns=["service"])
@@ -451,6 +452,24 @@ class PdfFunctions:
                         ),
                         ignore_index=True,
                     )
+                if (re.search(r"\bNAMENODE\b", role["roleName"]) or re.search(r"\bkafka-KAFKA_BROKER\b", role["roleName"]) or re.search(r"\bhive-HIVESERVER2\b", role["roleName"]) or re.search(r"\byarn-RESOURCEMANAGER\b", role["roleName"]) or re.search(r"\bSECONDARYNAMENODE\b", role["roleName"]) and "hdfs" in role["serviceName"]):
+                    masternodes_df = masternodes_df.append(
+                        pd.DataFrame(
+                            {
+                                "HostName": [host["hostname"]],
+                                "Cores": [host["numCores"]],
+                                "Memory": [
+                                    "{: .2f}".format(
+                                        float(host["totalPhysMemBytes"])
+                                        / 1024
+                                        / 1024
+                                        / 1024
+                                    )
+                                ],
+                            }
+                        ),
+                        ignore_index=True,
+                    )    
                 if re.search(r"\bDATANODE\b", role["roleName"]):
                     datanodes_df = datanodes_df.append(
                         pd.DataFrame(
@@ -496,11 +515,15 @@ class PdfFunctions:
                         ignore_index=True,
                     )
         client_gateway_df.drop_duplicates(inplace=True)
+        masternodes_df.drop_duplicates(inplace=True)
         self.pdf.cell(
             230, 8, "Number of Host: {}".format(len(all_host_data)), 0, 1,
         )
         self.pdf.cell(
             230, 8, "Number of NameNodes: {}".format(len(namenodes_df)), 0, 1,
+        )
+        self.pdf.cell(
+            230, 8, "Number of MasterNodes: {}".format(len(masternodes_df)), 0, 1,
         )
         self.pdf.cell(
             230, 8, "Number of DataNodes: {}".format(len(datanodes_df)), 0, 1,
@@ -670,7 +693,7 @@ class PdfFunctions:
             230,
             8,
             "Total Cores Assigned to All the MasterNode: {}".format(
-                namenodes_df["Cores"].sum()
+                masternodes_df["Cores"].sum()
             ),
             0,
             1,
@@ -679,12 +702,12 @@ class PdfFunctions:
             230,
             8,
             "Total Memory Assigned to All the MasterNodes: {: .2f} GB".format(
-                namenodes_df["Memory"].astype("float64").sum()
+                masternodes_df["Memory"].astype("float64").sum()
             ),
             0,
             1,
         )
-        if len(namenodes_df) != 0:
+        if len(masternodes_df) != 0:
             self.pdf.set_font("Arial", "B", 12)
             self.pdf.set_fill_color(r=66, g=133, b=244)
             self.pdf.set_text_color(r=255, g=255, b=255)
@@ -694,23 +717,23 @@ class PdfFunctions:
             self.pdf.set_text_color(r=1, g=1, b=1)
             self.pdf.set_fill_color(r=244, g=244, b=244)
             self.pdf.set_font("Arial", "", 12)
-            for pos in range(0, len(namenodes_df)):
+            for pos in range(0, len(masternodes_df)):
                 self.pdf.cell(
                     120,
                     5,
-                    "{}".format(namenodes_df["HostName"].iloc[pos]),
+                    "{}".format(masternodes_df["HostName"].iloc[pos]),
                     1,
                     0,
                     "C",
                     True,
                 )
                 self.pdf.cell(
-                    20, 5, "{}".format(namenodes_df["Cores"].iloc[pos]), 1, 0, "C", True
+                    20, 5, "{}".format(masternodes_df["Cores"].iloc[pos]), 1, 0, "C", True
                 )
                 self.pdf.cell(
                     30,
                     5,
-                    "{} GB".format(namenodes_df["Memory"].iloc[pos]),
+                    "{} GB".format(masternodes_df["Memory"].iloc[pos]),
                     1,
                     1,
                     "C",
