@@ -456,6 +456,7 @@ class SecurityAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
+            xml_oozie = ""
             with open("oozie_port.csv", "r") as fp:
                 for line in fp:
                     if "-oozie-OOZIE_SERVER/oozie-site.xml" in line:
@@ -702,7 +703,7 @@ class SecurityAPI:
             self.logger.info("key_list successful")
             return key_list
         except Exception as e:
-            self.logger.error("key_list failed", exc_info=True)
+            self.logger.error("ey_list failed", exc_info=True)
             return None
 
     def encryption_zone(self):
