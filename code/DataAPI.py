@@ -1245,7 +1245,7 @@ class DataAPI:
                             stderr=subprocess.STDOUT,
                             encoding="utf-8",
                         )
-                        xml.wait(10)
+                        xml.wait()
                         xml, err = xml.communicate()
                     else:
                         xml = subprocess.Popen(
