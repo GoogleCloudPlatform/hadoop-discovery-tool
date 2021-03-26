@@ -249,9 +249,9 @@ def cloudera_cluster_name(
             while c > 0:
                 print("Select cluster name from list below: ")
                 for i in range(len(cluster_list)):
-                    print(str(i + 1) + ". " + cluster_list[i])
+                    print(str(i + 1) + "] " + cluster_list[i])
                 print(
-                    "Enter the serial number(1/2/../n) for the selected cluster name: "
+                    "Enter the serial number (1/2/../n) for the selected cluster name: "
                 )
                 var = input()
                 if var.isnumeric():
@@ -290,12 +290,12 @@ def get_hive_creds(inputs):
     try:
         c = 3
         while c > 0:
-            print("Do you want to enter Hive credentials? [y/n] ")
+            print("To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: ")
             t = input()
             if t in ["y", "Y"]:
-                print("Enter Hive Metastore Username: ")
+                print("Enter Hive Metastore username: ")
                 hive_username = input()
-                hive_password = getpass(prompt="Enter Hive Metastore Password: ")
+                hive_password = getpass(prompt="Enter Hive Metastore password: ")
                 r = None
                 http = None
                 if inputs["ssl"]:
@@ -406,17 +406,17 @@ def get_hive_creds(inputs):
 def broker_list_input():
     try:
         broker_list = []
-        print("Do you want to enter Kafka credentials? [y/n] ")
+        print("To view kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: ")
         t = input()
         if t in ["y", "Y"]:
             broker_list = []
-            print("Enter number of brokers: ")
+            print("Enter the number of brokers: ")
             n = input()
             if not n.isnumeric():
                 print(
                     "Wrong Input! Number of brokers should be positive integer! Try Again"
                 )
-                print("Enter number of brokers: ")
+                print("Enter the number of brokers: ")
                 n = input()
                 if not n.isnumeric():
                     print("Wrong Input!")
@@ -434,7 +434,7 @@ def broker_list_input():
                 t1 = input()
                 if t1 in ["n", "N"]:
                     print(
-                        "Enter the port of broker hosted on {}: ".format(broker["host"])
+                        "Please enter the port number of broker hosted on {}: ".format(broker["host"])
                     )
                     broker["port"] = input()
                 elif t1 in ["y", "Y"]:
@@ -449,7 +449,7 @@ def broker_list_input():
                     t2 = input()
                     if t2 in ["n", "N"]:
                         print(
-                            "Enter the port of broker hosted on {}: ".format(
+                            "Please enter the port number of broker hosted on {}: ".format(
                                 broker["host"]
                             )
                         )
@@ -460,7 +460,7 @@ def broker_list_input():
                         print("Wrong Input!")
                         exit()
                 print(
-                    "Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(
+                    "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
                         broker["host"]
                     )
                 )
@@ -477,7 +477,7 @@ def broker_list_input():
                 else:
                     print("Wrong Input! Try Again")
                     print(
-                        "Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(
+                        "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
                             broker["host"]
                         )
                     )
@@ -500,13 +500,13 @@ def broker_list_input():
         else:
             if t in ["y", "Y"]:
                 broker_list = []
-                print("Enter number of brokers: ")
+                print("Enter the number of brokers: ")
                 n = input()
                 if not n.isnumeric():
                     print(
                         "Wrong Input! Number of brokers should be positive integer! Try Again"
                     )
-                    print("Enter number of brokers: ")
+                    print("Enter the number of brokers: ")
                     n = input()
                     if not n.isnumeric():
                         print("Wrong Input!")
@@ -524,7 +524,7 @@ def broker_list_input():
                     t1 = input()
                     if t1 in ["n", "N"]:
                         print(
-                            "Enter the port of broker hosted on {}: ".format(
+                            "Please enter the port number of broker hosted on {}: ".format(
                                 broker["host"]
                             )
                         )
@@ -541,7 +541,7 @@ def broker_list_input():
                         t2 = input()
                         if t2 in ["n", "N"]:
                             print(
-                                "Enter the port of broker hosted on {}: ".format(
+                                "Please enter the port number of broker hosted on {}: ".format(
                                     broker["host"]
                                 )
                             )
@@ -552,7 +552,7 @@ def broker_list_input():
                             print("Wrong Input!")
                             exit()
                     print(
-                        "Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(
+                        "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
                             broker["host"]
                         )
                     )
@@ -569,7 +569,7 @@ def broker_list_input():
                     else:
                         print("Wrong Input! Try Again")
                         print(
-                            "Is your broker hosted on {} have log directory path /var/local/kafka/data/? [y/n] ".format(
+                            "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
                                 broker["host"]
                             )
                         )
@@ -631,9 +631,9 @@ def get_input(version):
                     print("Incorrect Input! Try Again")
         else:
             if inputs["ssl"]:
-                print("Enter details accordingly as SSL is enabled.")
+                print("As SSL is enabled, enter the inputs accordingly")
             else:
-                print("Enter details accordingly as SSL is disabled.")
+                print("As SSL is disabled, enter the inputs accordingly")
         inputs["config_path"] = check_config_path()
         if inputs["version"] != 0:
             c = 3
@@ -669,9 +669,9 @@ def get_input(version):
         else:
             inputs["hive_username"], inputs["hive_password"] = get_hive_creds(inputs)
         inputs["broker_list"] = broker_list_input()
-        print("Select date range from list below : ")
-        print("1. Week\n2. Month\n3. Custom")
-        print("Enter serial number for selected date range: ")
+        print("Select the options below for the time period of the PDF Assessment Report: ")
+        print("[1] Week: generates the report from today to 7 days prior\n[2] Month: generates the report from today to 30 days prior\n[3] Custom: generates the report for a custom time period")
+        print("Enter the serial number [1/2/3] as required: ")
         t = int(input())
         if t == 1:
             inputs["start_date"] = (datetime.now() - timedelta(days=7)).strftime(
@@ -684,19 +684,19 @@ def get_input(version):
             )
             inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         elif t == 3:
-            print("Enter Start Date (YYYY-MM-DD HH:MM): ")
+            print("Enter start date: YYYY-MM-DD HH:MM ")
             inputs["start_date"] = datetime.strptime(
                 input(), "%Y-%m-%d %H:%M"
             ).strftime("%Y-%m-%dT%H:%M:%S")
-            print("Enter End Date (YYYY-MM-DD HH:MM): ")
+            print("Enter end date: YYYY-MM-DD HH:MM ")
             inputs["end_date"] = datetime.strptime(input(), "%Y-%m-%d %H:%M").strftime(
                 "%Y-%m-%dT%H:%M:%S"
             )
         else:
             print("Wrong Input! Try Again")
             print("Select date range from list below : ")
-            print("1. Week\n2. Month\n3. Custom")
-            print("Enter serial number for selected date range: ")
+            print("[1] Week: generates the report from today to 7 days prior\n[2] Month: generates the report from today to 30 days prior\n[3] Custom: generates the report for a custom time period")
+            print("Enter the serial number [1/2/3] as required: ")
             t = int(input())
             if t == 1:
                 inputs["start_date"] = (datetime.now() - timedelta(days=7)).strftime(
@@ -709,11 +709,11 @@ def get_input(version):
                 )
                 inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
             elif t == 3:
-                print("Enter Start Date (YYYY-MM-DD HH:MM): ")
+                print("Enter start date: YYYY-MM-DD HH:MM : ")
                 inputs["start_date"] = datetime.strptime(
                     input(), "%Y-%m-%d %H:%M"
                 ).strftime("%Y-%m-%dT%H:%M:%S")
-                print("Enter End Date (YYYY-MM-DD HH:MM): ")
+                print("Enter end date: YYYY-MM-DD HH:MM : ")
                 inputs["end_date"] = datetime.strptime(
                     input(), "%Y-%m-%d %H:%M"
                 ).strftime("%Y-%m-%dT%H:%M:%S")

@@ -451,7 +451,7 @@ class SecurityAPI:
         try:
             port_df = pd.DataFrame(columns=["service", "port"])
             subprocess.Popen(
-                "find / -name oozie-site.xml 2>/dev/null > oozie_port.csv ",
+                "find / -iname oozie-site.xml 2>/dev/null > oozie_port.csv ",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
