@@ -1463,7 +1463,7 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            cyberSecurity.wait(30)
+            cyberSecurity.wait()
             cyberSecurity, err = cyberSecurity.communicate()
             Cloudera_navigator = subprocess.Popen(
                 "ls /*/*/*/webapp/static/release/js/cloudera/navigator 2>/dev/null",

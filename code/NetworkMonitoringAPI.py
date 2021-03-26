@@ -74,11 +74,11 @@ class NetworkMonitoringAPI:
 
         try:
             subprocess.Popen(
-                "sh ./getload.sh 2>/dev/null 1>parse.csv",
+                "bash ./getload.sh 2>/dev/null 1>parse.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait()
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )
@@ -87,19 +87,23 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
-            column1 = df["Received"]
-            max_value = (column1.max()) / 1024
-            min_value = (column1.min()) / 1024
-            avg_value = (column1.mean()) / 1024
-            curr_value = (column1.iloc[0]) / 1024
-            self.logger.info("ingress successful")
-            return (
-                max_value,
-                min_value,
-                avg_value,
-                curr_value
-            )
+            ).wait()
+            if not df.empty:
+                column1 = df["Received"]
+                max_value = (column1.max()) / 1024
+                min_value = (column1.min()) / 1024
+                avg_value = (column1.mean()) / 1024
+                curr_value = (column1.iloc[0]) / 1024
+                self.logger.info("ingress successful")
+                return (
+                    max_value,
+                    min_value,
+                    avg_value,
+                    curr_value
+                )
+            else :
+                self.logger.error("ingress failed", exc_info=True)
+                return None
         except Exception as e:
             self.logger.error("ingress failed", exc_info=True)
             return None
@@ -120,7 +124,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait()
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )
@@ -129,19 +133,23 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
-            column2 = df["Transfer"]
-            max_value = (column2.max()) / 1024
-            min_value = (column2.min()) / 1024
-            avg_value = (column2.mean()) / 1024
-            curr_value = (column2.iloc[0]) / 1024
-            self.logger.info("egress successful")
-            return (
-                max_value,
-                min_value,
-                avg_value,
-                curr_value
-            )
+            ).wait()
+            if not df.empty:
+                column2 = df["Transfer"]
+                max_value = (column2.max()) / 1024
+                min_value = (column2.min()) / 1024
+                avg_value = (column2.mean()) / 1024
+                curr_value = (column2.iloc[0]) / 1024
+                self.logger.info("egress successful")
+                return (
+                    max_value,
+                    min_value,
+                    avg_value,
+                    curr_value
+                )
+            else :
+                self.logger.error("egress failed", exc_info=True)
+                return None
         except Exception as e:
             self.logger.error("egress failed", exc_info=True)
             return None
@@ -450,7 +458,7 @@ class NetworkMonitoringAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait()
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )

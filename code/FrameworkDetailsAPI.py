@@ -396,7 +396,7 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait()
             df11 = pd.read_csv("jdbc_odbc.csv", delimiter=r"\s+", names=["name"])
             subprocess.Popen(
                 "rm ./jdbc_odbc.csv",
@@ -436,7 +436,7 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait()
             subprocess.Popen(
                 'find / -iname "ngdbc.jar" 2>/dev/null> ./ngdbc.csv',
                 shell=True,
@@ -466,7 +466,7 @@ class FrameworkDetailsAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait()
             connector_df = pd.read_csv("./connector.csv", names=["Connector_Name"])
             subprocess.Popen(
                 "rm -rf ./connector.csv",
