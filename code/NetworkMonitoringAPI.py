@@ -62,97 +62,67 @@ class NetworkMonitoringAPI:
             self.logger.error("max_bandwidth failed", exc_info=True)
             return None
 
-    def ingress(self):
-        """Get ingress network traffic cluster.
+    def ingress_egress(self):
+        """Get ingress_egress network traffic cluster.
 
         Returns:
-            max_value (str) : Maximun ingress value
-            min_value (str) : Minimun ingress value
-            avg_value (str) : Average ingress value
-            curr_value (str) : Current ingress value
+            max_value_in (str) : Maximun ingress value
+            min_value_in (str) : Minimun ingress value
+            avg_value_in (str) : Average ingress value
+            curr_value_in (str) : Current ingress value
+            max_value_in (str) : Maximun egress value
+            min_value_in (str) : Minimun egress value
+            avg_value_in (str) : Average egress value
+            curr_value_in (str) : Current egress value
         """
 
         try:
+            subprocess.Popen(
+                "sed -i 's/\r//g' ./getload.sh 2>/dev/null",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+
             subprocess.Popen(
                 "bash ./getload.sh 2>/dev/null 1>parse.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait()
+
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )
-            subprocess.Popen(
-                "rm -rf ./parse.csv 2>/dev/null",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait()
             if not df.empty:
                 column1 = df["Received"]
-                max_value = (column1.max()) / 1024
-                min_value = (column1.min()) / 1024
-                avg_value = (column1.mean()) / 1024
-                curr_value = (column1.iloc[0]) / 1024
-                self.logger.info("ingress successful")
-                return (
-                    max_value,
-                    min_value,
-                    avg_value,
-                    curr_value
-                )
-            else :
-                self.logger.error("ingress failed", exc_info=True)
-                return None
-        except Exception as e:
-            self.logger.error("ingress failed", exc_info=True)
-            return None
-
-    def egress(self):
-        """Get egress network traffic cluster.
-
-        Returns:
-            max_value (str) : Maximun egress value
-            min_value (str) : Minimun egress value
-            avg_value (str) : Average egress value
-            curr_value (str) : Current egress value
-        """
-
-        try:
-            subprocess.Popen(
-                "sh ./getload.sh 2>/dev/null 1>parse.csv",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait()
-            df = pd.read_csv(
-                "./parse.csv", names=["Index", "Received", "Transfer"], header=None
-            )
-            subprocess.Popen(
-                "rm -rf ./parse.csv 2>/dev/null",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait()
-            if not df.empty:
+                max_value_in = (column1.max()) / 1024
+                min_value_in = (column1.min()) / 1024
+                avg_value_in = (column1.mean()) / 1024
+                curr_value_in = (column1.iloc[0]) / 1024
                 column2 = df["Transfer"]
-                max_value = (column2.max()) / 1024
-                min_value = (column2.min()) / 1024
-                avg_value = (column2.mean()) / 1024
-                curr_value = (column2.iloc[0]) / 1024
-                self.logger.info("egress successful")
+                max_value_out = (column2.max()) / 1024
+                min_value_out = (column2.min()) / 1024
+                avg_value_out = (column2.mean()) / 1024
+                curr_value_out = (column2.iloc[0]) / 1024
+                self.logger.info("ingress_egress successful")
                 return (
-                    max_value,
-                    min_value,
-                    avg_value,
-                    curr_value
+                    max_value_in,
+                    min_value_in,
+                    avg_value_in,
+                    curr_value_in,
+                    max_value_out,
+                    min_value_out,
+                    avg_value_out,
+                    curr_value_out
                 )
             else :
-                self.logger.error("egress failed", exc_info=True)
+                self.logger.error("ingress_egress failed", exc_info=True)
                 return None
         except Exception as e:
-            self.logger.error("egress failed", exc_info=True)
+            self.logger.error("ingress_egress failed", exc_info=True)
             return None
+
 
     def disk_read_write(self):
         """Get disk read and write speed of cluster.
@@ -453,6 +423,13 @@ class NetworkMonitoringAPI:
         """
 
         try:
+            subprocess.Popen(
+                "sed -i 's/\r//g' ./getload.sh 2>/dev/null",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+
             subprocess.Popen(
                 "sh ./getload.sh 2>/dev/null 1>parse.csv",
                 shell=True,

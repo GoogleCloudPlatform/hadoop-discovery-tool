@@ -2467,7 +2467,7 @@ class PdfFunctions:
             230, 8, "Maximum Data Transferred: {} Mbps".format(max_bandwidth), 0, 1,
         )
 
-    def ingress(self, max_value, min_value, avg_value, curr_value):
+    def ingress_egress(self, max_value_in, min_value_in, avg_value_in, curr_value_in,max_value_out, min_value_out, avg_value_out, curr_value_out):
         """Add ingress network traffic information in PDF.
 
         Args:
@@ -2483,50 +2483,39 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Incoming Throughput: {: .2f} Kbps".format(max_value), 0, 1,
+            230, 8, "Maximum Incoming Throughput: {: .2f} Kbps".format(max_value_in), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Minimum Incoming Throughput: {: .2f} Kbps".format(min_value), 0, 1,
+            230, 8, "Minimum Incoming Throughput: {: .2f} Kbps".format(min_value_in), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Average Incoming Throughput: {: .2f} Kbps".format(avg_value), 0, 1,
+            230, 8, "Average Incoming Throughput: {: .2f} Kbps".format(avg_value_in), 0, 1,
         )
         self.pdf.cell(
             230,
             8,
-            "Current Incoming Throughput: {: .2f} Kbps".format(curr_value),
+            "Current Incoming Throughput: {: .2f} Kbps".format(curr_value_in),
             0,
             1,
         )
-
-    def egress(self, max_value, min_value, avg_value, curr_value):
-        """Add egress network traffic information in PDF.
-
-        Args:
-            max_value (str) : Maximun egress value
-            min_value (str) : Minimun egress value
-            avg_value (str) : Average egress value
-            curr_value (str) : Current egress value
-        """
-
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Egress Traffic:", 0, ln=1)
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Outgoing Throughput: {: .2f} Kbps".format(max_value), 0, 1,
+            230, 8, "Maximum Outgoing Throughput: {: .2f} Kbps".format(max_value_out), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Minimum Outgoing Throughput: {: .2f} Kbps".format(min_value), 0, 1,
+            230, 8, "Minimum Outgoing Throughput: {: .2f} Kbps".format(min_value_out), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Average Outgoing Throughput: {: .2f} Kbps".format(avg_value), 0, 1,
+            230, 8, "Average Outgoing Throughput: {: .2f} Kbps".format(avg_value_out), 0, 1,
         )
         self.pdf.cell(
             230,
             8,
-            "Current Outgoing Throughput: {: .2f} Kbps".format(curr_value),
+            "Current Outgoing Throughput: {: .2f} Kbps".format(curr_value_out),
             0,
             1,
         )
@@ -2545,10 +2534,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total disk read in KB/s: {}".format(total_disk_read), 0, 1,
+            230, 8, "Total disk read in KB/s: {: .2f}".format(total_disk_read), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Total disk write in KB/s: {}".format(total_disk_write), 0, 1,
+            230, 8, "Total disk write in KB/s: {: .2f}".format(total_disk_write), 0, 1,
         )
 
     def third_party_monitor(
