@@ -451,11 +451,12 @@ class SecurityAPI:
         try:
             port_df = pd.DataFrame(columns=["service", "port"])
             subprocess.Popen(
-                "find / -name oozie-site.xml 2>/dev/null> oozie_port.csv ",
+                "find / -name oozie-site.xml 2>/dev/null > oozie_port.csv ",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
+            xml_oozie = ""
             with open("oozie_port.csv", "r") as fp:
                 for line in fp:
                     if "-oozie-OOZIE_SERVER/oozie-site.xml" in line:
@@ -466,25 +467,29 @@ class SecurityAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
-            dt_xml = subprocess.Popen(
-                "cat " + xml_oozie, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
-            )
-            dt_xml.wait(10)
-            dt_xml, err = dt_xml.communicate()
-            myxml = fromstring(dt_xml)
-            for val in myxml.findall("property"):
-                name = val.find("name").text
-                if "oozie.base.url" not in name:
-                    myxml.remove(val)
-            value = myxml[0][1].text
-            value = " ".join(value.split(":", 2)[2:])
-            value = " ".join(value.split("/", 1)[:1])
-            if line == "":
+            if xml_oozie != "":
+                dt_xml = subprocess.Popen(
+                    "cat " + xml_oozie, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                )
+                dt_xml.wait(10)
+                dt_xml, err = dt_xml.communicate()            
+                myxml = fromstring(dt_xml)
+                for val in myxml.findall("property"):
+                    name = val.find("name").text
+                    if "oozie.base.url" not in name:
+                        myxml.remove(val)
+                value = myxml[0][1].text
+                value = " ".join(value.split(":", 2)[2:])
+                value = " ".join(value.split("/", 1)[:1])
+                if line == "":
+                    line = pd.NaT
+                    df_port = {"service": "Oozie Port", "port": pd.NaT}
+                else:
+                    line = line
+                    df_port = {"service": "Oozie Port", "port": value}
+            else:
                 line = pd.NaT
                 df_port = {"service": "Oozie Port", "port": pd.NaT}
-            else:
-                line = line
-                df_port = {"service": "Oozie Port", "port": value}
             port_df = port_df.append(df_port, ignore_index=True)
             hdfs_line = ""
             path_status = path.exists("{}".format(self.config_path["core"]))
@@ -580,13 +585,17 @@ class SecurityAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 ).wait(10)
-                kafka_line = " ".join(kafka_line.split(":", 2)[2:])
+                kafka_line = kafka_line.split(",")
+                kafka_line = kafka_line[0]
+                kafka_line = kafka_line.replace(":",",")
+                kafka_line = kafka_line.split(",")
+                kafka_line = kafka_line[1]
                 if kafka_line == "":
                     line = pd.NaT
                     df_port = {"service": "Kafka Port", "port": pd.NaT}
                 else:
                     line = kafka_line
-                    df_port = {"service": "Kafka Port", "port": line.rstrip()}
+                    df_port = {"service": "Kafka Port", "port": line}
                 port_df = port_df.append(df_port, ignore_index=True)
             spark_line = ""
             path_status = path.exists("{}".format(self.config_path["spark"]))
@@ -702,7 +711,7 @@ class SecurityAPI:
             self.logger.info("key_list successful")
             return key_list
         except Exception as e:
-            self.logger.error("key_list failed", exc_info=True)
+            self.logger.error("ey_list failed", exc_info=True)
             return None
 
     def encryption_zone(self):
