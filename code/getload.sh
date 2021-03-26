@@ -14,4 +14,3 @@ while $(sleep 1); do
                 break
         fi
 done
-
