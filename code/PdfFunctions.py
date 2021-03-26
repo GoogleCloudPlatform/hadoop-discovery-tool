@@ -2545,10 +2545,10 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Total disk read in KB/s: {}".format(total_disk_read), 0, 1,
+            230, 8, "Total disk read in KB/s: {: .2f}".format(total_disk_read), 0, 1,
         )
         self.pdf.cell(
-            230, 8, "Total disk write in KB/s: {}".format(total_disk_write), 0, 1,
+            230, 8, "Total disk write in KB/s: {: .2f}".format(total_disk_write), 0, 1,
         )
 
     def third_party_monitor(

@@ -74,6 +74,13 @@ class NetworkMonitoringAPI:
 
         try:
             subprocess.Popen(
+                "sed -i 's/\r//g' ./getload.sh 2>/dev/null",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+
+            subprocess.Popen(
                 "bash ./getload.sh 2>/dev/null 1>parse.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
@@ -82,12 +89,6 @@ class NetworkMonitoringAPI:
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )
-            subprocess.Popen(
-                "rm -rf ./parse.csv 2>/dev/null",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait()
             if not df.empty:
                 column1 = df["Received"]
                 max_value = (column1.max()) / 1024
@@ -120,7 +121,14 @@ class NetworkMonitoringAPI:
 
         try:
             subprocess.Popen(
-                "sh ./getload.sh 2>/dev/null 1>parse.csv",
+                "sed -i 's/\r//g' ./getload.sh 2>/dev/null",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+
+            subprocess.Popen(
+                "bash ./getload.sh 2>/dev/null 1>parse.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -128,19 +136,13 @@ class NetworkMonitoringAPI:
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )
-            subprocess.Popen(
-                "rm -rf ./parse.csv 2>/dev/null",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait()
             if not df.empty:
                 column2 = df["Transfer"]
                 max_value = (column2.max()) / 1024
                 min_value = (column2.min()) / 1024
                 avg_value = (column2.mean()) / 1024
                 curr_value = (column2.iloc[0]) / 1024
-                self.logger.info("egress successful")
+                self.logger.info("engress successful")
                 return (
                     max_value,
                     min_value,
@@ -148,10 +150,10 @@ class NetworkMonitoringAPI:
                     curr_value
                 )
             else :
-                self.logger.error("egress failed", exc_info=True)
+                self.logger.error("engress failed", exc_info=True)
                 return None
         except Exception as e:
-            self.logger.error("egress failed", exc_info=True)
+            self.logger.error("engress failed", exc_info=True)
             return None
 
     def disk_read_write(self):
@@ -453,6 +455,13 @@ class NetworkMonitoringAPI:
         """
 
         try:
+            subprocess.Popen(
+                "sed -i 's/\r//g' ./getload.sh 2>/dev/null",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait()
+
             subprocess.Popen(
                 "sh ./getload.sh 2>/dev/null 1>parse.csv",
                 shell=True,
