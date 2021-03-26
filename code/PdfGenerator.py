@@ -831,27 +831,21 @@ class PdfGenerator:
             max_bandwidth = temp
             obj_pdf.max_bandwidth(max_bandwidth)
 
-        max_value, min_value, avg_value, curr_value = (
+        max_value_in, min_value_in, avg_value_in, curr_value_in, max_value_out, min_value_out, avg_value_out, curr_value_out = (
             None,
             None,
             None,
             None,
+            None,
+            None,
+            None,
+            None
         )
-        temp = obj5.ingress()
+        temp = obj5.ingress_egress()
         if type(temp) != type(None):
-            max_value, min_value, avg_value, curr_value = temp
-            obj_pdf.ingress(max_value, min_value, avg_value, curr_value)
+            max_value_in, min_value_in, avg_value_in, curr_value_in, max_value_out, min_value_out, avg_value_out, curr_value_out = temp
+            obj_pdf.ingress_egress(max_value_in, min_value_in, avg_value_in, curr_value_in, max_value_out, min_value_out, avg_value_out, curr_value_out)
 
-        max_value, min_value, avg_value, curr_value = (
-            None,
-            None,
-            None,
-            None,
-        )
-        temp = obj5.egress()
-        if type(temp) != type(None):
-            max_value, min_value, avg_value, curr_value = temp
-            obj_pdf.egress(max_value, min_value, avg_value, curr_value)
 
         total_disk_read, total_disk_write = None, None
         temp = obj5.disk_read_write()
