@@ -39,7 +39,9 @@ else:
     obj.run()
 
 if os.path.exists("../../hadoop_assessment_report.pdf"):
-    response = "PDF report generated successfully!!"
+    response = "PDF report generated successfully!!\nPDF path: {}".format(
+        os.path.abspath("../../hadoop_assessment_report.pdf")
+    )
 else:
     response = "Unable to generat PDF report, check logs for more details"
 print(response)

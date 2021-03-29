@@ -54,8 +54,8 @@ class PdfGenerator:
         obj5 = NetworkMonitoringAPI(self.inputs)
         obj_app = ApplicationAPI(self.inputs)
         obj_pdf = PdfFunctions(self.inputs, pdf)
-        yarn_rm = ""
-        yarn_port = ""
+        yarn_rm = self.inputs["yarn_rm"]
+        yarn_port = self.inputs["yarn_port"]
         cluster_name = self.cluster_name
 
         pdf.add_page()
@@ -273,28 +273,6 @@ class PdfGenerator:
                     all_host_data.append(host_data)
             if (len(all_host_data) != 0) and (os_version != None):
                 obj_pdf.cluster_host_info(cluster_host_items, all_host_data, os_version)
-
-        if self.config_path["yarn"] != None:
-            xml_data = subprocess.Popen(
-                "cat {}".format(self.config_path["yarn"]),
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            xml_data.wait(10)
-            xml_data, err = xml_data.communicate()
-            root = ET.fromstring(xml_data)
-            for val in root.findall("property"):
-                name = val.find("name").text
-                value = val.find("value").text
-                if self.ssl:
-                    if "yarn.resourcemanager.webapp.https.address" in name:
-                        yarn_rm, yarn_port = value.split(":")
-                else:
-                    if "yarn.resourcemanager.webapp.address" in name:
-                        yarn_rm, yarn_port = value.split(":")
-        else:
-            yarn_rm, yarn_port = None, None
 
         cluster_service_item = None
         temp = obj1.cluster_service_item(cluster_name)

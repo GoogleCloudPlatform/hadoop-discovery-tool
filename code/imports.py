@@ -299,6 +299,91 @@ def cloudera_cluster_name(
         return None
 
 
+def get_yarn_creds(inputs):
+    """Get input from user related to Hive.
+
+    Returns:
+        inputs (dict): Contains user input attributes
+
+    """
+
+    try:
+        if inputs["config_path"]["yarn"] != None:
+            xml_data = subprocess.Popen(
+                "cat {}".format(inputs["config_path"]["yarn"]),
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            xml_data.wait(10)
+            xml_data, err = xml_data.communicate()
+            root = ET.fromstring(xml_data)
+            for val in root.findall("property"):
+                name = val.find("name").text
+                value = val.find("value").text
+                if inputs["ssl"]:
+                    if "yarn.resourcemanager.webapp.https.address" in name:
+                        yarn_rm, yarn_port = value.split(":")
+                else:
+                    if "yarn.resourcemanager.webapp.address" in name:
+                        yarn_rm, yarn_port = value.split(":")
+                return yarn_rm, yarn_port
+        else:
+            c = 3
+            while c > 0:
+                print(
+                    "To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]: "
+                )
+                t = input()
+                if t in ["y", "Y"]:
+                    c1 = 3
+                    while c1 > 0:
+                        print("Enter Yarn Resource Manager Host IP or Hostname: ")
+                        yarn_rm = input()
+                        if not yarn_rm.isnumeric():
+                            break
+                        c1 = c1 - 1
+                        if c1 == 0:
+                            print("Incorrect Input!")
+                            exit()
+                        else:
+                            print("Incorrect Input! Try Again")
+                    c1 = 3
+                    while c1 > 0:
+                        print("Enter Yarn Resource Manager Port: ")
+                        yarn_port = input()
+                        if yarn_port.isnumeric():
+                            break
+                        c1 = c1 - 1
+                        if c1 == 0:
+                            print("Incorrect Input!")
+                            exit()
+                        else:
+                            print("Incorrect Input! Try Again")
+                    if inputs["ssl"]:
+                        http = "https"
+                    else:
+                        http = "http"
+                    r = requests.get(
+                        "{}://{}:{}/ws/v1/cluster".format(http, yarn_rm, yarn_port),
+                        verify=False,
+                    )
+                    if r.status_code == 200:
+                        return yarn_rm, yarn_port
+                    else:
+                        print("Unable to connect to Yarn Resource Manager")
+                elif t in ["n", "N"]:
+                    return None, None
+                c = c - 1
+                if c == 0:
+                    print("Incorrect Input!")
+                    return None, None
+                else:
+                    print("Incorrect Input! Try Again")
+    except Exception as e:
+        return None, None
+
+
 def get_hive_creds(inputs):
     """Get input from user related to Hive.
 
@@ -606,6 +691,7 @@ def get_input(version):
                         print("Incorrect Input! Try Again")
                 else:
                     break
+        inputs["yarn_rm"], inputs["yarn_port"] == get_yarn_creds(inputs)
         if inputs["cloudera_manager_host_ip"] == None:
             inputs["hive_username"], inputs["hive_password"] = None, None
         else:
