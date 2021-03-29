@@ -23,7 +23,7 @@ py_val=py_val.replace("\n","")
 vs = os.popen("grep VERSION_ID /etc/os-release").read()
 trash, version = vs.split("=")
 final_version = version.replace('"', "")
-final_version = final_version.strip("\n")
+final_version = float(final_version.strip("\n"))
 
 dt = os.popen("grep ID= /etc/os-release").read()
 dt = dt.splitlines()
@@ -59,7 +59,7 @@ try:
         odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
         pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
         venv_dt = "Venv"
-    elif "ubuntu" in os_name and (final_version >= "16.04") :
+    elif "ubuntu" in os_name and (final_version >= 16.04) :
         print("Os Dependencies Installing...")
         if (py_val == "3.8" and flag==0):
             os.popen("apt install -y nload 2>/dev/null").read()
@@ -73,13 +73,13 @@ try:
             os.popen("apt install -y jq 2>/dev/null").read()
             nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
             vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
-            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
+            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++*").read()
             sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
             odbc_dt = os.popen(
                 "apt list --installed 2>/dev/null | grep unixodbc-dev"
             ).read()
             pydevel_dt = os.popen(
-                "apt list --installed 2>/dev/null | grep python3-dev"
+                "apt list --installed 2>/dev/null | grep -e \'python\S*-dev\'"
             ).read()
             flag=1
         if (py_val == "3.7" and flag==0):
@@ -94,13 +94,13 @@ try:
             os.popen("apt install -y jq 2>/dev/null").read()
             nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
             vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
-            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
+            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-*").read()
             sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
             odbc_dt = os.popen(
                 "apt list --installed 2>/dev/null | grep unixodbc-dev"
             ).read()
             pydevel_dt = os.popen(
-                "apt list --installed 2>/dev/null | grep python3-dev"
+                "apt list --installed 2>/dev/null | grep -e \'python\S*-dev\'"
             ).read()
             flag=1
         if(py_val == "3.6" and flag==0):
@@ -115,16 +115,16 @@ try:
             os.popen("apt install -y jq 2>/dev/null").read()
             nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
             vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
-            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
+            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-*").read()
             sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
             odbc_dt = os.popen(
                 "apt list --installed 2>/dev/null | grep unixodbc-dev"
             ).read()
             pydevel_dt = os.popen(
-                "apt list --installed 2>/dev/null | grep python3-dev"
+                "apt list --installed 2>/dev/null | grep -e \'python\S*-dev\'"
             ).read()
             flag=1
-    elif "debian" in os_name and final_version >= "8.9":
+    elif "debian" in os_name and (final_version >= 8.9) :
         print("Os Dependencies Installing...")
         if(py_val >= "3.6" and flag==0):
             os.popen("apt install -y nload 2>/dev/null").read()
@@ -135,18 +135,18 @@ try:
             os.popen("apt install -y python3-dev 2>/dev/null").read()
             #os.popen("apt install -y python3-pip 2>/dev/null").read()
             #os.popen("apt install -y python3-venv 2>/dev/null").read()
-            os.popen('apt install -y python3 python3-venv').read()
-            os.popen('apt install -y virtualenv python3-virtualenv').read()
+            os.popen('apt install -y python3 python3-venv 2>/dev/null').read()
+            os.popen('apt install -y virtualenv python3-virtualenv 2>/dev/null').read()
             os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
             nload_dt = os.popen("apt list --installed 2>/dev/null | grep nload").read()
             vnstat_dt = os.popen("apt list --installed 2>/dev/null | grep vnstat").read()
-            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++-7").read()
+            gcc_dt = os.popen("apt list --installed 2>/dev/null | grep g++*").read()
             sasl_dt = os.popen("apt list --installed 2>/dev/null | grep sasl2-bin").read()
             odbc_dt = os.popen(
                 "apt list --installed 2>/dev/null | grep unixodbc-dev"
             ).read()
             pydevel_dt = os.popen(
-                "apt list --installed 2>/dev/null | grep python3-dev"
+                "apt list --installed 2>/dev/null | grep -e \'python\S*-dev\'"
             ).read()
             flag=1        
     elif "red hat" in os_name and final_version >= "7":
@@ -205,7 +205,7 @@ else:
 if sasl_dt != "":
     installed.append(sasl_dt)
 else:
-    not_installed.append("Cyrus SASL-Devel")
+    not_installed.append("Cyrus SASL-Devel")    
 if pydevel_dt != "":
     installed.append(pydevel_dt)
 else:
