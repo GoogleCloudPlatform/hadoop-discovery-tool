@@ -1,7 +1,7 @@
 #!bin/bash
 var=0
 # Activate python environment
-source $PWD/HDT_ENV/venv/bin/activate
+source $PWD/python_environment/venv/bin/activate
 var=$?
 if [ $var -eq 1 ]
 then
@@ -9,7 +9,7 @@ then
     exit 1
 fi
 #Go to the code directory
-cd $PWD/HDT_ENV/HDT/ 2>/dev/null
+cd $PWD/python_environment/codebase/ 2>/dev/null
 var=$?
 if [ $var -eq 1 ]
 then
@@ -29,5 +29,4 @@ then
 	echo "INFO - Python Code ran Successfully"
 fi
 deactivate
-cd ..
-cd ..
+cd ../..

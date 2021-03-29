@@ -146,18 +146,38 @@ def get_cloudera_creds(version, ssl):
             )
             t = input()
             if t in ["y", "Y"]:
-                print("Enter Cloudera Manager Host IP: ")
-                host = input()
                 c1 = 3
                 while c1 > 0:
-                    print("Is your Cloudera Manager Port number 7180? [y/n] ")
+                    print("Enter Cloudera Manager Host IP or Hostname: ")
+                    host = input()
+                    if not host.isnumeric():
+                        break
+                    c1 = c1 - 1
+                    if c1 == 0:
+                        print("Incorrect Input!")
+                        exit()
+                    else:
+                        print("Incorrect Input! Try Again")
+                c1 = 3
+                while c1 > 0:
+                    print("Is your Cloudera Manager Port number 7180? [y/n]: ")
                     t1 = input()
                     if t1 in ["y", "Y"]:
                         port = "7180"
                         break
                     elif t1 in ["n", "N"]:
-                        print("Enter Cloudera Manager Port: ")
-                        port = input()
+                        c2 = 3
+                        while c2 > 0:
+                            print("Enter Cloudera Manager Port: ")
+                            port = input()
+                            if port.isnumeric():
+                                break
+                            c2 = c2 - 1
+                            if c2 == 0:
+                                print("Incorrect Input!")
+                                exit()
+                            else:
+                                print("Incorrect Input! Try Again")
                         break
                     c1 = c1 - 1
                     if c1 == 0:
@@ -212,7 +232,7 @@ def cloudera_cluster_name(
             http = "http"
         if version == 7:
             initial_run = requests.get(
-                "{}://{}:{}/api/v41/clusters".format(
+                "{}://{}:{}/api/v40/clusters".format(
                     http, cloudera_manager_host_ip, cloudera_manager_port
                 ),
                 auth=HTTPBasicAuth(
@@ -290,7 +310,9 @@ def get_hive_creds(inputs):
     try:
         c = 3
         while c > 0:
-            print("To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: ")
+            print(
+                "To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: "
+            )
             t = input()
             if t in ["y", "Y"]:
                 print("Enter Hive Metastore username: ")
@@ -304,7 +326,7 @@ def get_hive_creds(inputs):
                     http = "http"
                 if inputs["version"] == 7:
                     r = requests.get(
-                        "{}://{}:{}/api/v41/clusters/{}/services/hive/config".format(
+                        "{}://{}:{}/api/v40/clusters/{}/services/hive/config".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
@@ -371,7 +393,6 @@ def get_hive_creds(inputs):
                             mt_db_name,
                         )
                         engine = create_engine(database_uri)
-                        result = engine.execute("""select * from "DBS";""")
                     if mt_db_type == "mysql":
                         database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
                             hive_username,
@@ -381,14 +402,36 @@ def get_hive_creds(inputs):
                             mt_db_name,
                         )
                         engine = create_engine(database_uri)
-                        result = engine.execute("""select * from DBS;""")
-                    f = False
-                    for row in result:
-                        f = True
-                    if f:
+                    if mt_db_type == "mssql":
+                        sql_server_driver = ""
+                        driver_names = [
+                            x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
+                        ]
+                        if driver_names:
+                            sql_server_driver = driver_names[0]
+                            sql_server_driver = sql_server_driver.replace(" ", "+")
+                            database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}?driver={}".format(
+                                hive_username,
+                                hive_password,
+                                mt_db_host,
+                                mt_db_port,
+                                mt_db_name,
+                                sql_server_driver,
+                            )
+                        else:
+                            database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}".format(
+                                hive_username,
+                                hive_password,
+                                mt_db_host,
+                                mt_db_port,
+                                mt_db_name,
+                            )
+                        engine = create_engine(database_uri)
+                    try:
+                        engine.connect()
                         return hive_username, hive_password
-                    else:
-                        print("Unable to connect to Hive!")
+                    except Exception as ee:
+                        print("Unable to connect to Hive Metastore!")
                 else:
                     print("Unable to connect to Cloudera Manager!")
             elif t in ["n", "N"]:
@@ -406,192 +449,91 @@ def get_hive_creds(inputs):
 def broker_list_input():
     try:
         broker_list = []
-        print("To view kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: ")
-        t = input()
-        if t in ["y", "Y"]:
-            broker_list = []
-            print("Enter the number of brokers: ")
-            n = input()
-            if not n.isnumeric():
-                print(
-                    "Wrong Input! Number of brokers should be positive integer! Try Again"
-                )
-                print("Enter the number of brokers: ")
-                n = input()
-                if not n.isnumeric():
-                    print("Wrong Input!")
-                    exit()
-            n = int(n)
-            for i in range(0, n):
-                broker = {"host": "", "port": "", "log_dir": ""}
-                print("Enter the hostname or IP of broker {}: ".format(i + 1))
-                broker["host"] = input()
-                print(
-                    "Is your broker hosted on {} have port number 9092? [y/n] ".format(
-                        broker["host"]
-                    )
-                )
-                t1 = input()
-                if t1 in ["n", "N"]:
-                    print(
-                        "Please enter the port number of broker hosted on {}: ".format(broker["host"])
-                    )
-                    broker["port"] = input()
-                elif t1 in ["y", "Y"]:
-                    broker["port"] = "9092"
-                else:
-                    print("Wrong Input! Try Again")
-                    print(
-                        "Is your broker hosted on {} have port number 9092? [y/n] ".format(
-                            broker["host"]
-                        )
-                    )
-                    t2 = input()
-                    if t2 in ["n", "N"]:
-                        print(
-                            "Please enter the port number of broker hosted on {}: ".format(
-                                broker["host"]
-                            )
-                        )
-                        broker["port"] = input()
-                    elif t2 in ["y", "Y"]:
-                        broker["port"] = "9092"
-                    else:
-                        print("Wrong Input!")
-                        exit()
-                print(
-                    "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
-                        broker["host"]
-                    )
-                )
-                t1 = input()
-                if t1 in ["n", "N"]:
-                    print(
-                        "Enter the log directory path of broker hosted on {}: ".format(
-                            broker["host"]
-                        )
-                    )
-                    broker["log_dir"] = input()
-                elif t1 in ["y", "Y"]:
-                    broker["log_dir"] = "/var/local/kafka/data/"
-                else:
-                    print("Wrong Input! Try Again")
-                    print(
-                        "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
-                            broker["host"]
-                        )
-                    )
-                    t2 = input()
-                    if t2 in ["n", "N"]:
-                        print(
-                            "Enter the log directory path of broker hosted on {}: ".format(
-                                broker["host"]
-                            )
-                        )
-                        broker["log_dir"] = input()
-                    elif t2 in ["y", "Y"]:
-                        broker["log_dir"] = "/var/local/kafka/data/"
-                    else:
-                        print("Wrong Input!")
-                        exit()
-                broker_list.append(broker)
-        elif t in ["n", "N"]:
-            broker_list = []
-        else:
+        c = 3
+        while c > 0:
+            print(
+                "To view kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: "
+            )
+            t = input()
             if t in ["y", "Y"]:
                 broker_list = []
-                print("Enter the number of brokers: ")
-                n = input()
-                if not n.isnumeric():
-                    print(
-                        "Wrong Input! Number of brokers should be positive integer! Try Again"
-                    )
+                c1 = 3
+                while c1 > 0:
                     print("Enter the number of brokers: ")
                     n = input()
-                    if not n.isnumeric():
-                        print("Wrong Input!")
+                    if n.isnumeric():
+                        n = int(n)
+                        for i in range(0, n):
+                            broker = {"host": "", "port": "", "log_dir": ""}
+                            print(
+                                "Enter the hostname or IP of broker {}: ".format(i + 1)
+                            )
+                            broker["host"] = input()
+                            c2 = 3
+                            while c2 > 0:
+                                print(
+                                    "Is your broker hosted on {} have port number 9092? [y/n] ".format(
+                                        broker["host"]
+                                    )
+                                )
+                                t1 = input()
+                                if t1 in ["y", "Y"]:
+                                    broker["port"] = "9092"
+                                    break
+                                elif t1 in ["n", "N"]:
+                                    print(
+                                        "Please enter the port number of broker hosted on {}: ".format(
+                                            broker["host"]
+                                        )
+                                    )
+                                    broker["port"] = input()
+                                    break
+                                c2 = c2 - 1
+                                if c2 == 0:
+                                    print("Incorrect Input!")
+                                    exit()
+                                else:
+                                    print("Incorrect Input! Try Again")
+                            c2 = 3
+                            while c2 > 0:
+                                print(
+                                    "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
+                                        broker["host"]
+                                    )
+                                )
+                                t1 = input()
+                                if t1 in ["y", "Y"]:
+                                    broker["log_dir"] = "/var/local/kafka/data/"
+                                    break
+                                elif t1 in ["n", "N"]:
+                                    print(
+                                        "Enter the log directory path of broker hosted on {}: ".format(
+                                            broker["host"]
+                                        )
+                                    )
+                                    broker["log_dir"] = input()
+                                    break
+                                c2 = c2 - 1
+                                if c2 == 0:
+                                    print("Incorrect Input!")
+                                    exit()
+                                else:
+                                    print("Incorrect Input! Try Again")
+                        return broker_list
+                    c1 = c1 - 1
+                    if c1 == 0:
+                        print("Incorrect Input!")
                         exit()
-                n = int(n)
-                for i in range(0, n):
-                    broker = {"host": "", "port": "", "log_dir": ""}
-                    print("Enter the hostname or IP of broker {}: ".format(i + 1))
-                    broker["host"] = input()
-                    print(
-                        "Is your broker hosted on {} have port number 9092? [y/n] ".format(
-                            broker["host"]
-                        )
-                    )
-                    t1 = input()
-                    if t1 in ["n", "N"]:
-                        print(
-                            "Please enter the port number of broker hosted on {}: ".format(
-                                broker["host"]
-                            )
-                        )
-                        broker["port"] = input()
-                    elif t1 in ["y", "Y"]:
-                        broker["port"] = "9092"
                     else:
-                        print("Wrong Input! Try Again")
-                        print(
-                            "Is your broker hosted on {} have port number 9092? [y/n] ".format(
-                                broker["host"]
-                            )
-                        )
-                        t2 = input()
-                        if t2 in ["n", "N"]:
-                            print(
-                                "Please enter the port number of broker hosted on {}: ".format(
-                                    broker["host"]
-                                )
-                            )
-                            broker["port"] = input()
-                        elif t2 in ["y", "Y"]:
-                            broker["port"] = "9092"
-                        else:
-                            print("Wrong Input!")
-                            exit()
-                    print(
-                        "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
-                            broker["host"]
-                        )
-                    )
-                    t1 = input()
-                    if t1 in ["n", "N"]:
-                        print(
-                            "Enter the log directory path of broker hosted on {}: ".format(
-                                broker["host"]
-                            )
-                        )
-                        broker["log_dir"] = input()
-                    elif t1 in ["y", "Y"]:
-                        broker["log_dir"] = "/var/local/kafka/data/"
-                    else:
-                        print("Wrong Input! Try Again")
-                        print(
-                            "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
-                                broker["host"]
-                            )
-                        )
-                        t2 = input()
-                        if t2 in ["n", "N"]:
-                            print(
-                                "Enter the log directory path of broker hosted on {}: ".format(
-                                    broker["host"]
-                                )
-                            )
-                            broker["log_dir"] = input()
-                        elif t2 in ["y", "Y"]:
-                            broker["log_dir"] = "/var/local/kafka/data/"
-                        else:
-                            print("Wrong Input!")
-                            exit()
-                    broker_list.append(broker)
+                        print("Incorrect Input! Try Again")
             elif t in ["n", "N"]:
-                broker_list = []
-            else:
-                print("Wrong Input!")
+                return []
+            c = c - 1
+            if c == 0:
+                print("Incorrect Input!")
                 exit()
+            else:
+                print("Incorrect Input! Try Again")
         return broker_list
     except Exception as e:
         return []
@@ -669,57 +611,48 @@ def get_input(version):
         else:
             inputs["hive_username"], inputs["hive_password"] = get_hive_creds(inputs)
         inputs["broker_list"] = broker_list_input()
-        print("Select the options below for the time period of the PDF Assessment Report: ")
-        print("[1] Week: generates the report from today to 7 days prior\n[2] Month: generates the report from today to 30 days prior\n[3] Custom: generates the report for a custom time period")
-        print("Enter the serial number [1/2/3] as required: ")
-        t = int(input())
-        if t == 1:
-            inputs["start_date"] = (datetime.now() - timedelta(days=7)).strftime(
-                "%Y-%m-%dT%H:%M:%S"
+        c = 3
+        while c > 0:
+            print(
+                "Select the options below for the time period of the PDF Assessment Report: "
             )
-            inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-        elif t == 2:
-            inputs["start_date"] = (datetime.now() - timedelta(days=30)).strftime(
-                "%Y-%m-%dT%H:%M:%S"
+            print(
+                "[1] Week: generates the report from today to 7 days prior\n[2] Month: generates the report from today to 30 days prior\n[3] Custom: generates the report for a custom time period"
             )
-            inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-        elif t == 3:
-            print("Enter start date: YYYY-MM-DD HH:MM ")
-            inputs["start_date"] = datetime.strptime(
-                input(), "%Y-%m-%d %H:%M"
-            ).strftime("%Y-%m-%dT%H:%M:%S")
-            print("Enter end date: YYYY-MM-DD HH:MM ")
-            inputs["end_date"] = datetime.strptime(input(), "%Y-%m-%d %H:%M").strftime(
-                "%Y-%m-%dT%H:%M:%S"
-            )
-        else:
-            print("Wrong Input! Try Again")
-            print("Select date range from list below : ")
-            print("[1] Week: generates the report from today to 7 days prior\n[2] Month: generates the report from today to 30 days prior\n[3] Custom: generates the report for a custom time period")
             print("Enter the serial number [1/2/3] as required: ")
-            t = int(input())
-            if t == 1:
-                inputs["start_date"] = (datetime.now() - timedelta(days=7)).strftime(
-                    "%Y-%m-%dT%H:%M:%S"
-                )
-                inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-            elif t == 2:
-                inputs["start_date"] = (datetime.now() - timedelta(days=30)).strftime(
-                    "%Y-%m-%dT%H:%M:%S"
-                )
-                inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-            elif t == 3:
-                print("Enter start date: YYYY-MM-DD HH:MM : ")
-                inputs["start_date"] = datetime.strptime(
-                    input(), "%Y-%m-%d %H:%M"
-                ).strftime("%Y-%m-%dT%H:%M:%S")
-                print("Enter end date: YYYY-MM-DD HH:MM : ")
-                inputs["end_date"] = datetime.strptime(
-                    input(), "%Y-%m-%d %H:%M"
-                ).strftime("%Y-%m-%dT%H:%M:%S")
-            else:
-                print("Wrong Input!")
+            t = input()
+            if t.isnumeric():
+                t = int(t)
+                if t == 1:
+                    inputs["start_date"] = (
+                        datetime.now() - timedelta(days=7)
+                    ).strftime("%Y-%m-%dT%H:%M:%S")
+                    inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                    break
+                elif t == 2:
+                    inputs["start_date"] = (
+                        datetime.now() - timedelta(days=30)
+                    ).strftime("%Y-%m-%dT%H:%M:%S")
+                    inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+                    break
+                elif t == 3:
+                    print("Enter start date: YYYY-MM-DD HH:MM: ")
+                    t = input()
+                    inputs["start_date"] = datetime.strptime(
+                        t, "%Y-%m-%d %H:%M"
+                    ).strftime("%Y-%m-%dT%H:%M:%S")
+                    print("Enter end date: YYYY-MM-DD HH:MM: ")
+                    t = input()
+                    inputs["end_date"] = datetime.strptime(
+                        t, "%Y-%m-%d %H:%M"
+                    ).strftime("%Y-%m-%dT%H:%M:%S")
+                    break
+            c = c - 1
+            if c == 0:
+                print("Incorrect Input!")
                 exit()
+            else:
+                print("Incorrect Input! Try Again")
         return inputs
     except Exception as e:
         return {}
@@ -734,7 +667,7 @@ def get_logger():
 
     logger = logging.getLogger("hadoop_assessment_tool")
     handler = logging.FileHandler(
-        "hadoop_assessment_tool_{}.log".format(datetime.now())
+        "../../hadoop_assessment_tool_{}.log".format(datetime.now())
     )
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))

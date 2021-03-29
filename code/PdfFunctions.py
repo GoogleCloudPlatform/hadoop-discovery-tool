@@ -452,7 +452,14 @@ class PdfFunctions:
                         ),
                         ignore_index=True,
                     )
-                if (re.search(r"\bNAMENODE\b", role["roleName"]) or re.search(r"\bkafka-KAFKA_BROKER\b", role["roleName"]) or re.search(r"\bhive-HIVESERVER2\b", role["roleName"]) or re.search(r"\byarn-RESOURCEMANAGER\b", role["roleName"]) or re.search(r"\bSECONDARYNAMENODE\b", role["roleName"]) and "hdfs" in role["serviceName"]):
+                if (
+                    re.search(r"\bNAMENODE\b", role["roleName"])
+                    or re.search(r"\bkafka-KAFKA_BROKER\b", role["roleName"])
+                    or re.search(r"\bhive-HIVESERVER2\b", role["roleName"])
+                    or re.search(r"\byarn-RESOURCEMANAGER\b", role["roleName"])
+                    or re.search(r"\bSECONDARYNAMENODE\b", role["roleName"])
+                    and "hdfs" in role["serviceName"]
+                ):
                     masternodes_df = masternodes_df.append(
                         pd.DataFrame(
                             {
@@ -469,7 +476,7 @@ class PdfFunctions:
                             }
                         ),
                         ignore_index=True,
-                    )    
+                    )
                 if re.search(r"\bDATANODE\b", role["roleName"]):
                     datanodes_df = datanodes_df.append(
                         pd.DataFrame(
@@ -728,7 +735,13 @@ class PdfFunctions:
                     True,
                 )
                 self.pdf.cell(
-                    20, 5, "{}".format(masternodes_df["Cores"].iloc[pos]), 1, 0, "C", True
+                    20,
+                    5,
+                    "{}".format(masternodes_df["Cores"].iloc[pos]),
+                    1,
+                    0,
+                    "C",
+                    True,
                 )
                 self.pdf.cell(
                     30,
@@ -2467,7 +2480,17 @@ class PdfFunctions:
             230, 8, "Maximum Data Transferred: {} Mbps".format(max_bandwidth), 0, 1,
         )
 
-    def ingress_egress(self, max_value_in, min_value_in, avg_value_in, curr_value_in,max_value_out, min_value_out, avg_value_out, curr_value_out):
+    def ingress_egress(
+        self,
+        max_value_in,
+        min_value_in,
+        avg_value_in,
+        curr_value_in,
+        max_value_out,
+        min_value_out,
+        avg_value_out,
+        curr_value_out,
+    ):
         """Add ingress network traffic information in PDF.
 
         Args:
@@ -2483,13 +2506,25 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Incoming Throughput: {: .2f} Kbps".format(max_value_in), 0, 1,
+            230,
+            8,
+            "Maximum Incoming Throughput: {: .2f} Kbps".format(max_value_in),
+            0,
+            1,
         )
         self.pdf.cell(
-            230, 8, "Minimum Incoming Throughput: {: .2f} Kbps".format(min_value_in), 0, 1,
+            230,
+            8,
+            "Minimum Incoming Throughput: {: .2f} Kbps".format(min_value_in),
+            0,
+            1,
         )
         self.pdf.cell(
-            230, 8, "Average Incoming Throughput: {: .2f} Kbps".format(avg_value_in), 0, 1,
+            230,
+            8,
+            "Average Incoming Throughput: {: .2f} Kbps".format(avg_value_in),
+            0,
+            1,
         )
         self.pdf.cell(
             230,
@@ -2504,13 +2539,25 @@ class PdfFunctions:
         self.pdf.set_font("Arial", "", 12)
         self.pdf.set_text_color(r=1, g=1, b=1)
         self.pdf.cell(
-            230, 8, "Maximum Outgoing Throughput: {: .2f} Kbps".format(max_value_out), 0, 1,
+            230,
+            8,
+            "Maximum Outgoing Throughput: {: .2f} Kbps".format(max_value_out),
+            0,
+            1,
         )
         self.pdf.cell(
-            230, 8, "Minimum Outgoing Throughput: {: .2f} Kbps".format(min_value_out), 0, 1,
+            230,
+            8,
+            "Minimum Outgoing Throughput: {: .2f} Kbps".format(min_value_out),
+            0,
+            1,
         )
         self.pdf.cell(
-            230, 8, "Average Outgoing Throughput: {: .2f} Kbps".format(avg_value_out), 0, 1,
+            230,
+            8,
+            "Average Outgoing Throughput: {: .2f} Kbps".format(avg_value_out),
+            0,
+            1,
         )
         self.pdf.cell(
             230,

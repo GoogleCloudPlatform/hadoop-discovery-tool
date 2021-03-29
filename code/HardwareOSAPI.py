@@ -48,8 +48,13 @@ class HardwareOSAPI:
         """
 
         try:
-            os_version=subprocess.Popen('grep PRETTY_NAME /etc/os-release',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
-            os_version, err = os_version.communicate()    
+            os_version = subprocess.Popen(
+                "grep PRETTY_NAME /etc/os-release",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            )
+            os_version, err = os_version.communicate()
             os_version = os_version.split("=")
             os_version = os_version[1]
             self.logger.info("os_version successful")
@@ -69,7 +74,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters".format(
+                    "{}://{}:{}/api/v40/clusters".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -134,7 +139,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/hosts".format(
+                    "{}://{}:{}/api/v40/clusters/{}/hosts".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -204,7 +209,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -274,7 +279,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/hosts/{}".format(
+                    "{}://{}:{}/api/v40/hosts/{}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -340,7 +345,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_cores_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -446,7 +451,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20cpu_percent_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -561,7 +566,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -667,7 +672,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=SELECT%20%20%20%20100*total_physical_memory_used_across_hosts/total_physical_memory_total_across_hosts%20WHERE%20%20%20%20category%3DCLUSTER%20%20%20%20AND%20clusterName%3D{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -774,7 +779,7 @@ class HardwareOSAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/cm/scmDbInfo".format(
+                    "{}://{}:{}/api/v40/cm/scmDbInfo".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -859,11 +864,16 @@ class HardwareOSAPI:
         """
 
         try:
-            os_name=os.popen("grep PRETTY_NAME /etc/os-release").read()
-            os_name=os_name.lower()
-            web_server=""
+            os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
+            os_name = os_name.lower()
+            web_server = ""
             if "centos" in os_name:
-                web_server = subprocess.Popen("systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server = subprocess.Popen(
+                    "systemctl status httpd 2>/dev/null | grep Active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
@@ -872,7 +882,12 @@ class HardwareOSAPI:
                 else:
                     web_server = "Web server is enabled"
             elif "ubuntu" in os_name:
-                web_server = subprocess.Popen("systemctl status apache2  2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server = subprocess.Popen(
+                    "systemctl status apache2  2>/dev/null | grep Active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
@@ -881,7 +896,12 @@ class HardwareOSAPI:
                 else:
                     web_server = "Web server is enabled"
             elif "red hat" in os_name:
-                web_server = subprocess.Popen("systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server = subprocess.Popen(
+                    "systemctl status httpd 2>/dev/null | grep Active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
@@ -890,7 +910,12 @@ class HardwareOSAPI:
                 else:
                     web_server = "Web server is enabled"
             elif "suse" in os_name:
-                web_server = subprocess.Popen("systemctl status apache2  2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                web_server = subprocess.Popen(
+                    "systemctl status apache2  2>/dev/null | grep Active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 web_server.wait(10)
                 web_server, err = web_server.communicate()
                 web_server = web_server.split(":")
@@ -912,17 +937,27 @@ class HardwareOSAPI:
         """
 
         try:
-            os_name=os.popen("grep PRETTY_NAME /etc/os-release").read()
-            os_name=os_name.lower()
-            ntp_server=""
+            os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
+            os_name = os_name.lower()
+            ntp_server = ""
             if "centos" in os_name:
-                ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server = subprocess.Popen(
+                    "timedatectl status 2>/dev/null | grep NTP | grep enabled",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 ntp_server = ntp_server.split(":")
                 ntp_server = ntp_server[1]
             elif "ubuntu" in os_name:
-                ntp_server = subprocess.Popen("systemctl status ntp 2>/dev/null| grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server = subprocess.Popen(
+                    "systemctl status ntp 2>/dev/null| grep Active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 if not ntp_server:
@@ -934,13 +969,23 @@ class HardwareOSAPI:
                     else:
                         ntp_server = "enabled"
             elif "red hat" in os_name:
-                ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server = subprocess.Popen(
+                    "timedatectl status 2>/dev/null | grep NTP | grep enabled",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 ntp_server = ntp_server.split(":")
                 ntp_server = ntp_server[1]
             elif "suse" in os_name:
-                ntp_server = subprocess.Popen("systemctl status chronyd 2>/dev/null| grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ntp_server = subprocess.Popen(
+                    "systemctl status chronyd 2>/dev/null| grep Active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
                 ntp_server.wait(10)
                 ntp_server, err = ntp_server.communicate()
                 if not ntp_server:
@@ -1458,7 +1503,7 @@ class HardwareOSAPI:
 
         try:
             cyberSecurity = subprocess.Popen(
-                'find / -type f \( -iname "knox-server" -o -iname "ranger-admin" -o -iname "grr" -o -iname "splunk" -o -iname "MISP" -o -iname "TheHive-Project" -o -iname "nagios.cfg" \) 2>/dev/null',
+                'find / -type f \( -iname "knox-server" -o -iname "grr" -o -iname "splunk" -o -iname "MISP" -o -iname "TheHive-Project" -o -iname "nagios.cfg" \) 2>/dev/null',
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
@@ -1474,10 +1519,6 @@ class HardwareOSAPI:
             Cloudera_navigator.wait(10)
             out, err = Cloudera_navigator.communicate()
             security_software = {}
-            if cyberSecurity.find("ranger-admin") == -1:
-                security_software["ranger"] = "Ranger is not installed"
-            else:
-                security_software["ranger"] = "Ranger is installed"
             if cyberSecurity.find("knox-server") == -1:
                 security_software["knox"] = "Knox-server is not installed"
             else:
@@ -1522,6 +1563,33 @@ class HardwareOSAPI:
                 security_software[
                     "cloudera_navigator"
                 ] = "Cloudera Navigator is installed"
+            security_software["ranger"] = "Ranger is not installed"
+            try:
+                r = None
+                if self.version == 7:
+                    r = requests.get(
+                        "{}://{}:{}/api/v40/clusters/{}/services".format(
+                            self.http,
+                            self.cloudera_manager_host_ip,
+                            self.cloudera_manager_port,
+                            cluster_name,
+                        ),
+                        auth=HTTPBasicAuth(
+                            self.cloudera_manager_username,
+                            self.cloudera_manager_password,
+                        ),
+                        verify=False,
+                    )
+                    if r.status_code == 200:
+                        r = r.json()
+                        inter = ""
+                        for i in range(0, len(r["items"])):
+                            cluster_service_item = r["items"][i]["name"]
+                            inter += cluster_service_item + ","
+                        if inter.find("ranger") != -1:
+                            security_software["ranger"] = "Ranger is installed"
+            except Exception as e:
+                security_software["ranger"] = "Ranger is not installed"
             self.logger.info("security_software successful")
             return security_software
         except Exception as e:

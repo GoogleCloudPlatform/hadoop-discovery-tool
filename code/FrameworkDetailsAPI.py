@@ -98,6 +98,8 @@ class FrameworkDetailsAPI:
                 distribution = "CDH6"
             elif re.search(r"\bcdh5\b", a):
                 distribution = "CDH5"
+            if self.version == 0:
+                hadoop_minor, distribution = None, None
             self.logger.info("hadoop_version successful")
             return hadoop_major, hadoop_minor, distribution
         except Exception as e:
@@ -118,7 +120,7 @@ class FrameworkDetailsAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,

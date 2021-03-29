@@ -57,12 +57,6 @@ class PdfGenerator:
         yarn_rm = ""
         yarn_port = ""
         cluster_name = self.cluster_name
-        if os.path.exists("Discovery_Report"):
-            shutil.rmtree("Discovery_Report")
-        os.makedirs("Discovery_Report")
-        if os.path.exists("Discovery_Report/{}".format(cluster_name)):
-            shutil.rmtree("Discovery_Report/{}".format(cluster_name))
-        os.makedirs("Discovery_Report/{}".format(cluster_name))
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 26)
@@ -247,7 +241,7 @@ class PdfGenerator:
             base_size,
         )
 
-        print("[STATUS][1/18][#.................][6%]  Key Metrics added in PDF")
+        print("[STATUS][01/18][#.................][06%] Key Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -309,7 +303,7 @@ class PdfGenerator:
             obj_pdf.cluster_service_info(cluster_service_item)
 
         print(
-            "[STATUS][2/18][##................][11%] Cluster Information added in PDF"
+            "[STATUS][02/18][##................][11%] Cluster Information added in PDF"
         )
 
         pdf.add_page()
@@ -349,7 +343,7 @@ class PdfGenerator:
                 cluster_total_memory_df, cluster_memory_usage_df
             )
 
-        print("[STATUS][3/18][###...............][17%] Cluster Metrics added in PDF")
+        print("[STATUS][03/18][###...............][17%] Cluster Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -476,7 +470,7 @@ class PdfGenerator:
             obj_pdf.speciality_hardware(gpu_status)
 
         print(
-            "[STATUS][4/18][####..............][22%] Hardware and OS Metrics added in PDF"
+            "[STATUS][04/18][####..............][22%] Hardware and OS Metrics added in PDF"
         )
 
         pdf.add_page()
@@ -537,7 +531,7 @@ class PdfGenerator:
             obj_pdf.installed_connectors(connectors_present)
 
         print(
-            "[STATUS][5/18][#####.............][28%] Framework and software details added in PDF"
+            "[STATUS][05/18][#####.............][28%] Framework and software details added in PDF"
         )
 
         pdf.add_page()
@@ -644,7 +638,7 @@ class PdfGenerator:
                         )
                     pdf.cell(230, 3, "", 0, ln=1)
 
-        print("[STATUS][6/18][######............][33%] HDFS Metrics added in PDF")
+        print("[STATUS][06/18][######............][33%] HDFS Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -675,6 +669,30 @@ class PdfGenerator:
                     mt_db_port,
                     mt_db_name,
                 )
+            if mt_db_type == "mssql":
+                sql_server_driver = ""
+                driver_names = [
+                    x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
+                ]
+                if driver_names:
+                    sql_server_driver = driver_names[0]
+                    sql_server_driver = sql_server_driver.replace(" ", "+")
+                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}?driver={}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                        sql_server_driver,
+                    )
+                else:
+                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                    )
 
             (
                 database_count,
@@ -749,7 +767,7 @@ class PdfGenerator:
                 query_type_count_df = temp1
                 obj_pdf.hive_adhoc_etl_query(query_type_count_df)
 
-        print("[STATUS][7/18][#######...........][39%] Hive Metrics added in PDF")
+        print("[STATUS][07/18][#######...........][39%] Hive Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -818,7 +836,7 @@ class PdfGenerator:
             enc_zoneList = temp
             obj_pdf.encryption_zone(enc_zoneList)
 
-        print("[STATUS][8/18][########..........][44%] Security Metrics added in PDF")
+        print("[STATUS][08/18][########..........][44%] Security Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
@@ -831,21 +849,38 @@ class PdfGenerator:
             max_bandwidth = temp
             obj_pdf.max_bandwidth(max_bandwidth)
 
-        max_value_in, min_value_in, avg_value_in, curr_value_in, max_value_out, min_value_out, avg_value_out, curr_value_out = (
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None
-        )
+        (
+            max_value_in,
+            min_value_in,
+            avg_value_in,
+            curr_value_in,
+            max_value_out,
+            min_value_out,
+            avg_value_out,
+            curr_value_out,
+        ) = (None, None, None, None, None, None, None, None)
         temp = obj5.ingress_egress()
         if type(temp) != type(None):
-            max_value_in, min_value_in, avg_value_in, curr_value_in, max_value_out, min_value_out, avg_value_out, curr_value_out = temp
-            obj_pdf.ingress_egress(max_value_in, min_value_in, avg_value_in, curr_value_in, max_value_out, min_value_out, avg_value_out, curr_value_out)
-
+            (
+                max_value_in,
+                min_value_in,
+                avg_value_in,
+                curr_value_in,
+                max_value_out,
+                min_value_out,
+                avg_value_out,
+                curr_value_out,
+            ) = temp
+            obj_pdf.ingress_egress(
+                max_value_in,
+                min_value_in,
+                avg_value_in,
+                curr_value_in,
+                max_value_out,
+                min_value_out,
+                avg_value_out,
+                curr_value_out,
+            )
 
         total_disk_read, total_disk_write = None, None
         temp = obj5.disk_read_write()
@@ -853,7 +888,9 @@ class PdfGenerator:
             total_disk_read, total_disk_write = temp
             obj_pdf.disk_read_write(total_disk_read, total_disk_write)
 
-        print("[STATUS][9/18][#########.........][50%] Networking Metrics added in PDF")
+        print(
+            "[STATUS][09/18][#########.........][50%] Networking Metrics added in PDF"
+        )
 
         (
             softwares_installed,
@@ -1351,4 +1388,4 @@ class PdfGenerator:
 
         print("[STATUS][18/18][##################][100%] Completed!!")
 
-        pdf.output("Discovery_Report/{}.pdf".format(cluster_name), "F")
+        pdf.output("../../hadoop_assessment_report.pdf", "F")

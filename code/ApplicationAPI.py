@@ -632,7 +632,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -746,7 +746,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -921,7 +921,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1035,7 +1035,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1258,7 +1258,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1370,7 +1370,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1482,7 +1482,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1594,7 +1594,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_running_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_running_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1919,30 +1919,30 @@ class ApplicationAPI:
             base_size = 0
             disk_space_consumed = 0
             out = subprocess.Popen(
-            "hdfs dfs -du / | grep 'hbase'",
-            shell=True,
-            stdout=subprocess.PIPE,
-            encoding="utf-8",
+                "hdfs dfs -du / | grep 'hbase'",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             )
             out, err = out.communicate()
             base_size = ""
             disk_space_consumed = ""
             hbase_data = out.split("/")[0].strip()
-            dt=hbase_data.split(" ")
-            base_size=0
-            disk_space_consumed=0
-            count=0
+            dt = hbase_data.split(" ")
+            base_size = 0
+            disk_space_consumed = 0
+            count = 0
             for i in dt:
                 try:
-                    count=count+1
-                    if(isinstance(int(i), int)==True):
-                        if(count>1):
-                            disk_space_consumed=i
+                    count = count + 1
+                    if isinstance(int(i), int) == True:
+                        if count > 1:
+                            disk_space_consumed = i
                 except:
                     pass
-            if(isinstance(int(dt[0]), int)==True):
-                base_size=int(dt[0])/1024/1024/1024
-            disk_space_consumed=int(disk_space_consumed)/1024/1024/1024
+            if isinstance(int(dt[0]), int) == True:
+                base_size = int(dt[0]) / 1024 / 1024 / 1024
+            disk_space_consumed = int(disk_space_consumed) / 1024 / 1024 / 1024
             self.logger.info("get_hbase_data_size successful")
             return base_size, disk_space_consumed
         except Exception as e:
@@ -1962,7 +1962,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services/hbase/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2039,7 +2039,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services/hbase/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2149,6 +2149,12 @@ class ApplicationAPI:
             phoenix_path_df = pd.read_csv(
                 "phoenixpath.csv", delimiter="\n", header=None
             )
+            subprocess.Popen(
+                "rm ./phoenixpath.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             phoenixHbase = "No"
             if not phoenix_path_df.empty:
                 phoenix_path_df.columns = ["location"]
@@ -2184,6 +2190,12 @@ class ApplicationAPI:
             coprocessor_path_df = pd.read_csv(
                 "coprocessorpath.csv", delimiter="\n", header=None
             )
+            subprocess.Popen(
+                "rm ./coprocessorpath.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             coprocessorHbase = "No"
             if not coprocessor_path_df.empty:
                 coprocessor_path_df.columns = ["location"]
@@ -2251,11 +2263,11 @@ class ApplicationAPI:
             dt = ""
             for i in spark_version:
                 if "version" in str(i):
-                    dt=i
+                    dt = i
                     break
-            dt=dt.split()
-            spark_version=dt[-1]
-            spark_version=spark_version.decode("utf-8")
+            dt = dt.split()
+            spark_version = dt[-1]
+            spark_version = spark_version.decode("utf-8")
             self.logger.info("get_spark_version successful")
             return spark_version
         except Exception as e:
@@ -2393,7 +2405,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services/{}/config?view=full".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services/{}/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2471,6 +2483,12 @@ class ApplicationAPI:
             zookeeper_conn_df = pd.read_csv(
                 "zookeeper_conn.csv", delimiter="\n", header=None
             )
+            subprocess.Popen(
+                "rm ./zookeeper_conn.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             zookeeper_conn_df.columns = ["parameters"]
             zookeeper_conn_df = zookeeper_conn_df.iloc[[-1]]
             for i in zookeeper_conn_df["parameters"]:
@@ -2509,6 +2527,12 @@ class ApplicationAPI:
             topics.wait(10)
             topics, err = topics.communicate()
             topics_df = pd.read_csv("topics_list.csv", header=None)
+            subprocess.Popen(
+                "rm ./topics_list.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             topics_df.columns = ["topics"]
             num_topics = len(topics_df.index)
             self.logger.info("num_topics_kafka successful")
@@ -2546,6 +2570,12 @@ class ApplicationAPI:
                 topics.wait(10)
                 topics, err = topics.communicate()
                 topics_df = pd.read_csv("topics_list.csv", header=None)
+                subprocess.Popen(
+                    "rm ./topics_list.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait(10)
                 topics_df.columns = ["topics"]
                 sum_size = 0
                 for i in topics_df["topics"]:
@@ -2606,6 +2636,12 @@ class ApplicationAPI:
                 topics, err = topics.communicate()
                 sleep(1)
                 topics_df = pd.read_csv("topics_list.csv", header=None)
+                subprocess.Popen(
+                    "rm ./topics_list.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait(10)
                 topics_df.columns = ["topics"]
                 sum_count = 0
                 for i in topics_df["topics"]:
@@ -2665,6 +2701,12 @@ class ApplicationAPI:
                     broker_dir, err = broker_dir.communicate()
                     try:
                         brokers_df = pd.read_csv("broker_size.csv", header=None)
+                        subprocess.Popen(
+                            "rm ./broker_size.csv",
+                            shell=True,
+                            stdout=subprocess.PIPE,
+                            encoding="utf-8",
+                        ).wait(10)
                         brokers_df.columns = ["logs"]
                         size_sum = 0
                         for i in brokers_df["logs"]:
@@ -2694,6 +2736,12 @@ class ApplicationAPI:
                             broker_dir.wait()
                             broker_dir, err = broker_dir.communicate()
                             brokers_df = pd.read_csv("broker_size.csv", header=None)
+                            subprocess.Popen(
+                                "rm ./broker_size.csv",
+                                shell=True,
+                                stdout=subprocess.PIPE,
+                                encoding="utf-8",
+                            ).wait(10)
                             brokers_df.columns = ["logs"]
                             size_sum = 0
                             for i in brokers_df["logs"]:
@@ -2740,6 +2788,12 @@ class ApplicationAPI:
                     broker_dir.wait()
                     broker_dir, err = broker_dir.communicate()
                     brokers_df = pd.read_csv("broker_size.csv", header=None)
+                    subprocess.Popen(
+                        "rm ./broker_size.csv",
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        encoding="utf-8",
+                    ).wait(10)
                     brokers_df.columns = ["logs"]
                     size_sum = 0
                     for i in brokers_df["logs"]:
@@ -2773,6 +2827,12 @@ class ApplicationAPI:
                 encoding="utf-8",
             ).wait(10)
             broker_id_df = pd.read_csv("./broker_id.csv", delimiter="\n", header=None)
+            subprocess.Popen(
+                "rm ./broker_id.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             broker_id_df.columns = ["parameters"]
             broker_id_df = broker_id_df.iloc[[-1]]
             for i in broker_id_df["parameters"]:
@@ -2782,7 +2842,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services/{}/config?view=full".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services/{}/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2974,7 +3034,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -3058,7 +3118,7 @@ class ApplicationAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/cm/peers".format(
+                    "{}://{}:{}/api/v40/cm/peers".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
