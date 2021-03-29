@@ -1,8 +1,9 @@
 import os
 import re
 import sys
+
 # initialise flags to identify packages
-nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt, pydevel_dt, =  "", "", "", "", "", ""
+nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt, pydevel_dt, = "", "", "", "", "", ""
 # list to hold installed and non installed data
 installed, not_installed = [], []
 # This command will fetch os-name for ex. centos,debian,opensuse etc.
@@ -10,15 +11,17 @@ os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
 os_name = os_name.lower()
 final_version = ""
 
-vs,trash,name,dt,getpython,getpython1,getpython2="","","","","","",""
+vs, trash, name, dt, getpython, getpython1, getpython2 = "", "", "", "", "", "", ""
 
 final_name = ""
-py_val=""
-flag=0
+py_val = ""
+flag = 0
 
-py_val=os.popen("""python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))'""").read()
-py_val = ''.join([str(elem) for elem in py_val])
-py_val=py_val.replace("\n","")
+py_val = os.popen(
+    """python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))'"""
+).read()
+py_val = "".join([str(elem) for elem in py_val])
+py_val = py_val.replace("\n", "")
 
 vs = os.popen("grep VERSION_ID /etc/os-release").read()
 trash, version = vs.split("=")
@@ -43,7 +46,7 @@ with their respective package managers.
 try:
     if "centos" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
-        os.popen('pip3 install -U pip').read()
+        os.popen("pip3 install -U pip").read()
         os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
@@ -61,13 +64,13 @@ try:
         venv_dt = "Venv"
     elif "ubuntu" in os_name and (final_version >= 16.04) :
         print("Os Dependencies Installing...")
-        if (py_val == "3.8" and flag==0):
+        if py_val == "3.8" and flag == 0:
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
             os.popen("apt install -y g++ 2>/dev/null").read()
             os.popen("apt install -y sasl2-bin 2>/dev/null").read()
             os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
-            os.popen("apt install -y python3.8-dev 2>/dev/null").read()            
+            os.popen("apt install -y python3.8-dev 2>/dev/null").read()
             os.popen("apt install -y python3.8-venv 2>/dev/null").read()
             os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
             os.popen("apt install -y jq 2>/dev/null").read()
@@ -81,8 +84,8 @@ try:
             pydevel_dt = os.popen(
                 "apt list --installed 2>/dev/null | grep -e \'python\S*-dev\'"
             ).read()
-            flag=1
-        if (py_val == "3.7" and flag==0):
+            flag = 1
+        if py_val == "3.7" and flag == 0:
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
             os.popen("apt install -y g++ 2>/dev/null").read()
@@ -102,14 +105,14 @@ try:
             pydevel_dt = os.popen(
                 "apt list --installed 2>/dev/null | grep -e \'python\S*-dev\'"
             ).read()
-            flag=1
-        if(py_val == "3.6" and flag==0):
+            flag = 1
+        if py_val == "3.6" and flag == 0:
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
             os.popen("apt install -y g++ 2>/dev/null").read()
             os.popen("apt install -y sasl2-bin 2>/dev/null").read()
             os.popen("apt install -y unixodbc-dev 2>/dev/null").read()
-            os.popen("apt install -y python3-dev 2>/dev/null").read()            
+            os.popen("apt install -y python3-dev 2>/dev/null").read()
             os.popen("apt install -y python3-venv 2>/dev/null").read()
             os.popen("apt install -y libsasl2-dev 2>/dev/null").read()
             os.popen("apt install -y jq 2>/dev/null").read()
@@ -126,7 +129,7 @@ try:
             flag=1
     elif "debian" in os_name and (final_version >= 8.9) :
         print("Os Dependencies Installing...")
-        if(py_val >= "3.6" and flag==0):
+        if py_val >= "3.6" and flag == 0:
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
             os.popen("apt install -y g++ 2>/dev/null").read()
@@ -148,7 +151,7 @@ try:
             pydevel_dt = os.popen(
                 "apt list --installed 2>/dev/null | grep -e \'python\S*-dev\'"
             ).read()
-            flag=1        
+            flag = 1
     elif "red hat" in os_name and final_version >= "7":
         print("Os Dependencies Installing...")
         os.popen("yum install epel-release -y").read()
@@ -219,44 +222,49 @@ if no_show == 0:
     else:
         print("Installed Packages:")
         installed_list = installed_string.split(":")
-        installed_listToStr = ''.join([str(elem) for elem in installed_list])
-        var=""
-        dt_installed=[]
+        installed_listToStr = "".join([str(elem) for elem in installed_list])
+        var = ""
+        dt_installed = []
         for i in installed_listToStr:
-            if(i!='\n'):
-                var=var+i
+            if i != "\n":
+                var = var + i
             else:
                 dt_installed.append(var)
-                var=""
-        counter=1
+                var = ""
+        counter = 1
         for i in dt_installed:
-            print(counter,"-",i)
-            counter=counter+1
+            print(counter, "-", i)
+            counter = counter + 1
     if len(not_installed) == 0:
         print("Packages not Installed :- None")
     else:
         print("Packages not Installed:")
-        notInstalled_list = not_installed_string.replace(":","\n")        
-        notIntalled_listToStr = ''.join([str(elem) for elem in notInstalled_list])        
-        var=""
-        dt_notInstalled=[]
+        notInstalled_list = not_installed_string.replace(":", "\n")
+        notIntalled_listToStr = "".join([str(elem) for elem in notInstalled_list])
+        var = ""
+        dt_notInstalled = []
         for i in notIntalled_listToStr:
-            if(i!='\n'):
-                var=var+i
+            if i != "\n":
+                var = var + i
             else:
                 dt_notInstalled.append(var)
-                var=""
-        counter=1
+                var = ""
+        counter = 1
         for i in dt_notInstalled:
-            print(counter,"-",i)
-            counter=counter+1
-    if "GCC-C++" in not_installed_string or "Unix ODBC-Devel" in not_installed_string or "Python3-Devel" in not_installed_string or "Cyrus SASL-Devel" in not_installed_string:
-        print("Cannot proceed as package ",not_installed_string," not installed")
-        text_file = open('hat_file.txt','r')
+            print(counter, "-", i)
+            counter = counter + 1
+    if (
+        "GCC-C++" in not_installed_string
+        or "Unix ODBC-Devel" in not_installed_string
+        or "Python3-Devel" in not_installed_string
+        or "Cyrus SASL-Devel" in not_installed_string
+    ):
+        print("Cannot proceed as package ", not_installed_string, " not installed")
+        text_file = open("hat_file.txt", "r")
         line_list = text_file.readlines()
-        listToStr = ' '.join([str(elem) for elem in line_list])        
-        os.popen('rm -rf hat_file.txt').read()
-        text_file = open('hat_latest_flag.txt','w')
+        listToStr = " ".join([str(elem) for elem in line_list])
+        os.popen("rm -rf hat_file.txt").read()
+        text_file = open("hat_latest_flag.txt", "w")
         text_file.write("1")
         text_file.close()
 else:

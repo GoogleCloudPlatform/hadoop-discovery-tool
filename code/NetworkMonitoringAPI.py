@@ -55,6 +55,12 @@ class NetworkMonitoringAPI:
                 encoding="utf-8",
             ).wait(10)
             maxbandwidth_df = pd.read_csv("MaxBandwidth.csv", delimiter="\n")
+            subprocess.Popen(
+                "rm ./MaxBandwidth.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             max_bandwidth = str(maxbandwidth_df["MaxBandwidth"][0])
             self.logger.info("max_bandwidth successful")
             return max_bandwidth
@@ -83,7 +89,6 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait()
-
             subprocess.Popen(
                 "bash ./getload.sh 2>/dev/null 1>parse.csv",
                 shell=True,
@@ -94,6 +99,9 @@ class NetworkMonitoringAPI:
             df = pd.read_csv(
                 "./parse.csv", names=["Index", "Received", "Transfer"], header=None
             )
+            subprocess.Popen(
+                "rm ./parse.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8",
+            ).wait(10)
             if not df.empty:
                 column1 = df["Received"]
                 max_value_in = (column1.max()) / 1024
@@ -114,15 +122,14 @@ class NetworkMonitoringAPI:
                     max_value_out,
                     min_value_out,
                     avg_value_out,
-                    curr_value_out
+                    curr_value_out,
                 )
-            else :
+            else:
                 self.logger.error("ingress_egress failed", exc_info=True)
                 return None
         except Exception as e:
             self.logger.error("ingress_egress failed", exc_info=True)
             return None
-
 
     def disk_read_write(self):
         """Get disk read and write speed of cluster.
@@ -140,6 +147,9 @@ class NetworkMonitoringAPI:
                 encoding="utf-8",
             ).wait(10)
             disk_df = pd.read_csv("disk.csv", delimiter=",")
+            subprocess.Popen(
+                "rm ./disk.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8",
+            ).wait(10)
             disk_df = disk_df.fillna(0)
             disk_df.columns = ["disk_read", "disk_write"]
             total_disk_read = 0

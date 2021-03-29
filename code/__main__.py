@@ -37,3 +37,9 @@ else:
     inputs["logger"] = logger
     obj = PdfGenerator(inputs)
     obj.run()
+
+if os.path.exists("../../hadoop_assessment_report.pdf"):
+    response = "PDF report generated successfully!!"
+else:
+    response = "Unable to generat PDF report, check logs for more details"
+print(response)

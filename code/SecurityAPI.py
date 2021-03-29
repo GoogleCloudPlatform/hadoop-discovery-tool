@@ -51,7 +51,7 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/kerberosInfo".format(
+                    "{}://{}:{}/api/v40/clusters/{}/kerberosInfo".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -119,7 +119,7 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/cm/deployment".format(
+                    "{}://{}:{}/api/v40/cm/deployment".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -188,7 +188,7 @@ class SecurityAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/cm/deployment".format(
+                    "{}://{}:{}/api/v40/cm/deployment".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -469,10 +469,13 @@ class SecurityAPI:
             ).wait(10)
             if xml_oozie != "":
                 dt_xml = subprocess.Popen(
-                    "cat " + xml_oozie, shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                    "cat " + xml_oozie,
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
                 )
                 dt_xml.wait(10)
-                dt_xml, err = dt_xml.communicate()            
+                dt_xml, err = dt_xml.communicate()
                 myxml = fromstring(dt_xml)
                 for val in myxml.findall("property"):
                     name = val.find("name").text
@@ -587,7 +590,7 @@ class SecurityAPI:
                 ).wait(10)
                 kafka_line = kafka_line.split(",")
                 kafka_line = kafka_line[0]
-                kafka_line = kafka_line.replace(":",",")
+                kafka_line = kafka_line.replace(":", ",")
                 kafka_line = kafka_line.split(",")
                 kafka_line = kafka_line[1]
                 if kafka_line == "":

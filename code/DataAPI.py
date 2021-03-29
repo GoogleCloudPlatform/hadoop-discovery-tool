@@ -69,6 +69,12 @@ class DataAPI:
             dataframe.dropna(axis=0, how="all", inplace=True)
             dataframe.to_csv("sizeConfigured.csv", index=False)
             dataframe = pd.read_csv("sizeConfigured.csv", names=["key", "value"])
+            subprocess.Popen(
+                "rm ./sizeConfigured.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             list_Hostnames = []
             list_Configured_Capacity = []
             count_row = dataframe.shape[0]
@@ -250,7 +256,7 @@ class DataAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -358,7 +364,7 @@ class DataAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -477,6 +483,12 @@ class DataAPI:
             raw.wait(10)
             raw, err = raw.communicate()
             hdfs_storage_df = pd.read_csv("direc_list.csv")
+            subprocess.Popen(
+                "rm ./direc_list.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             hdfs_storage_df.columns = ["output"]
             hdfs_storage_df[
                 [
@@ -508,6 +520,12 @@ class DataAPI:
                 sam_text.wait(10)
                 sam_text, err = sam_text.communicate()
             hdfs_storage_df_temp = pd.read_csv("acl_list.csv")
+            subprocess.Popen(
+                "rm ./acl_list.csv",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
+            ).wait(10)
             for i in hdfs_storage_df_temp:
                 user_str = str(hdfs_storage_df_temp.iloc[[2]])
                 group_str = str(hdfs_storage_df_temp.iloc[[3]])
@@ -622,14 +640,14 @@ class DataAPI:
             big_data = pd.read_csv(
                 "hadoop_storage.csv", names=col_names, delimiter=r"\s+", skiprows=1,
             )
-            big_data = big_data.assign(size_mb=lambda x: (x["size"] / (1024 * 1024)))
-            big_data.drop(big_data[big_data["size_mb"] <= 0.1].index, inplace=True)
             subprocess.Popen(
-                "rm -rf ./data.csv",
+                "rm ./hadoop_storage.csv",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
+            big_data = big_data.assign(size_mb=lambda x: (x["size"] / (1024 * 1024)))
+            big_data.drop(big_data[big_data["size_mb"] <= 0.1].index, inplace=True)
             big_data["FileType"] = big_data.name.apply(lambda x: x.split(".")[-1])
             big_data = big_data[big_data["FileType"].apply(lambda x: len(x) < 8)]
             grpby_data = big_data.groupby("FileType")["size_mb"].sum()
@@ -661,7 +679,7 @@ class DataAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v41/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services/hive/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -771,6 +789,18 @@ class DataAPI:
                 d.NAME not in ('information_schema','sys');
                 """
                 )
+            elif database_type == "mssql":
+                result = engine.execute(
+                    """
+                select t.TBL_NAME, t.LAST_ACCESS_TIME, d.NAME 
+                from 
+                DBS as d join TBLS as t 
+                on 
+                t.DB_ID=d.DB_ID 
+                where 
+                d.NAME not in ('information_schema','sys');
+                """
+                )
             for row in result:
                 table_count = table_count + 1
                 table_name = row[0]
@@ -824,7 +854,6 @@ class DataAPI:
 
         try:
             engine = create_engine(database_uri)
-            #table_count = 0
             database_df = pd.DataFrame(columns=["Database", "File_Size", "Count"])
             if database_type == "postgresql":
                 result = engine.execute(
@@ -846,9 +875,19 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            elif database_type == "mssql":
+                result = engine.execute(
+                    """
+                select NAME
+                from
+                DBS
+                where
+                NAME not in ('information_schema','sys');
+                """
+                )
             for row in result:
                 db = row[0]
-                table_count=0
+                table_count = 0
                 if database_type == "postgresql":
                     result = engine.execute(
                         """
@@ -865,6 +904,21 @@ class DataAPI:
                         )
                     )
                 elif database_type == "mysql":
+                    result = engine.execute(
+                        """
+                    SELECT count(t.TBL_ID)
+                    FROM
+                    DBS as d join TBLS as t
+                    on
+                    d.DB_ID=t.DB_ID
+                    where
+                    d.NAME = '{}'
+                    GROUP BY d.DB_ID;
+                    """.format(
+                            db
+                        )
+                    )
+                elif database_type == "mssql":
                     result = engine.execute(
                         """
                     SELECT count(t.TBL_ID)
@@ -905,6 +959,18 @@ class DataAPI:
                             db
                         )
                     )
+                elif database_type == "mssql":
+                    result = engine.execute(
+                        """
+                    SELECT DB_LOCATION_URI
+                    FROM
+                    DBS
+                    where
+                    NAME = '{}';
+                    """.format(
+                            db
+                        )
+                    )
                 for row in result:
                     database_location = row[0]
                     command = "hdfs dfs -du -s -h {}".format(database_location)
@@ -922,9 +988,6 @@ class DataAPI:
                     )
                     database_df = database_df.append(database_tmp_df)
             database_df["File_Size"] = database_df["File_Size"].astype(str).astype(int)
-            #database_df["Count"] = 1
-            #database_df = database_df.groupby(["Database"]).sum()
-            #database_df.reset_index(inplace=True)
             self.logger.info("get_hive_database_info successful")
             return database_df
         except Exception as e:
@@ -951,6 +1014,12 @@ class DataAPI:
                 """
                 )
             elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select count(DB_ID) from DBS where NAME not in ('information_schema','sys')
+                """
+                )
+            elif database_type == "mssql":
                 result = engine.execute(
                     """
                 select count(DB_ID) from DBS where NAME not in ('information_schema','sys')
@@ -992,6 +1061,12 @@ class DataAPI:
                 select count(distinct(TBL_ID)) from PARTITIONS
                 """
                 )
+            elif database_type == "mssql":
+                result = engine.execute(
+                    """
+                select count(distinct(TBL_ID)) from PARTITIONS
+                """
+                )
             for row in result:
                 number_of_tables_with_partition = row[0]
             if database_type == "postgresql":
@@ -1007,6 +1082,18 @@ class DataAPI:
                 """
                 )
             elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                select count(t.TBL_NAME) 
+                from 
+                DBS as d join TBLS as t 
+                on 
+                t.DB_ID=d.DB_ID 
+                where 
+                d.NAME not in ('information_schema','sys');
+                """
+                )
+            elif database_type == "mssql":
                 result = engine.execute(
                     """
                 select count(t.TBL_NAME) 
@@ -1070,6 +1157,19 @@ class DataAPI:
                 GROUP BY a.DB_ID
                 """
                 )
+            elif database_type == "mssql":
+                result = engine.execute(
+                    """
+                SELECT count(b.TBL_ID)
+                FROM
+                DBS as a join TBLS as b
+                on
+                a.DB_ID=b.DB_ID
+                where
+                a.NAME not in('information_schema','sys') and b.TBL_TYPE = 'MANAGED_TABLE'
+                GROUP BY a.DB_ID
+                """
+                )
             for row in result:
                 internal_tables = row[0]
             if database_type == "postgresql":
@@ -1086,6 +1186,19 @@ class DataAPI:
                 """
                 )
             elif database_type == "mysql":
+                result = engine.execute(
+                    """
+                SELECT count(b.TBL_ID)
+                FROM
+                DBS as a join TBLS as b
+                on
+                a.DB_ID=b.DB_ID
+                where
+                a.NAME not in('information_schema','sys') and b.TBL_TYPE = 'EXTERNAL_TABLE'
+                GROUP BY a.DB_ID
+                """
+                )
+            elif database_type == "mssql":
                 result = engine.execute(
                     """
                 SELECT count(b.TBL_ID)
@@ -1191,6 +1304,16 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            elif database_type == "mssql":
+                result = engine.execute(
+                    """
+                select NAME, DB_ID
+                from 
+                DBS 
+                where 
+                NAME not in ('information_schema','sys');
+                """
+                )
             for row in result:
                 db = row[0]
                 db_id = row[1]
@@ -1207,6 +1330,18 @@ class DataAPI:
                         )
                     )
                 elif database_type == "mysql":
+                    result = engine.execute(
+                        """
+                    select TBL_NAME
+                    from 
+                    TBLS
+                    where 
+                    DB_ID = {};
+                    """.format(
+                            db_id
+                        )
+                    )
+                elif database_type == "mssql":
                     result = engine.execute(
                         """
                     select TBL_NAME
