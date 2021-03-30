@@ -56,6 +56,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
          sudo zypper update
        ```
 7. Cloudera manager user should have one of the following roles:
+   
    | Hadoop Version | Roles |
    |-----------------|:-------------|
    | CDH 5.16.2 | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
