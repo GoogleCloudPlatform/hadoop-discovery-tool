@@ -1508,7 +1508,8 @@ class DataAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_application = r.json()

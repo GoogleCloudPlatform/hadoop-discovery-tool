@@ -240,6 +240,7 @@ def cloudera_cluster_name(
                 auth=HTTPBasicAuth(
                     cloudera_manager_username, cloudera_manager_password
                 ),
+                verify=False,
                 timeout=5,
             )
         elif version == 6:
@@ -250,6 +251,7 @@ def cloudera_cluster_name(
                 auth=HTTPBasicAuth(
                     cloudera_manager_username, cloudera_manager_password
                 ),
+                verify=False,
                 timeout=5,
             )
         elif version == 5:
@@ -260,6 +262,7 @@ def cloudera_cluster_name(
                 auth=HTTPBasicAuth(
                     cloudera_manager_username, cloudera_manager_password
                 ),
+                verify=False,
                 timeout=5,
             )
         else:
