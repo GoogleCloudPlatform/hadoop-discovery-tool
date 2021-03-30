@@ -45,14 +45,14 @@ else:
     obj.run()
 
 if os.path.exists("../../hadoop_assessment_report_{}.pdf".format(cur_date)):
-    response = "Hadoop Assessment tool has run successfully, PDF report is generated\nFollowing is the PDF path: {}".format(
+    response = "\nHadoop Assessment tool has been successfully executed and report is available in the following location: \n{}".format(
         os.path.abspath("../../hadoop_assessment_report_{}.pdf".format(cur_date))
     )
 else:
     if os.path.exists("../../hadoop_assessment_tool_{}.log".format(cur_date)):
-        response = "Unable to generate PDF report, check logs for more details\nFollowing is the Log path: {}".format(
+        response = "\nUnable to generate PDF report, check logs for more details and log is available in the following location: \n{}".format(
             os.path.abspath("../../hadoop_assessment_tool_{}.log".format(cur_date))
         )
     else:
-        response = "Unable to generate PDF report"
+        response = "\nUnable to generate PDF report"
 print(response)

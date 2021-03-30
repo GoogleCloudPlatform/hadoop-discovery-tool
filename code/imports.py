@@ -329,10 +329,11 @@ def get_yarn_creds(inputs):
                 if inputs["ssl"]:
                     if "yarn.resourcemanager.webapp.https.address" in name:
                         yarn_rm, yarn_port = value.split(":")
+                        return yarn_rm, yarn_port
                 else:
                     if "yarn.resourcemanager.webapp.address" in name:
                         yarn_rm, yarn_port = value.split(":")
-                return yarn_rm, yarn_port
+                        return yarn_rm, yarn_port
         else:
             c = 3
             while c > 0:
