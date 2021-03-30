@@ -60,7 +60,7 @@ try:
         gcc_dt = os.popen("rpm -qa | grep gcc-c++").read()
         sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
         odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
-        pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
+        pydevel_dt = os.popen("rpm -qa | grep -e 'python\S*-dev'").read()
         venv_dt = "Venv"
     elif "ubuntu" in os_name and (final_version >= 16.04):
         print("OS Dependencies Installing...")
@@ -166,7 +166,7 @@ try:
                 "apt list --installed 2>/dev/null | grep -e 'python\S*-dev'"
             ).read()
             flag = 1
-    elif "red hat" in os_name and final_version >= "7":
+    elif "red hat" in os_name and final_version >= 7:
         print("OS Dependencies Installing...")
         os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
@@ -181,8 +181,8 @@ try:
         gcc_dt = os.popen("rpm -qa | grep gcc-c++").read()
         sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
         odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
-        pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
-    elif "suse" in os_name and final_version >= "12":
+        pydevel_dt = os.popen("rpm -qa | grep -e 'python\S*-dev'").read()
+    elif "suse" in os_name and final_version >= 12:
         print("OS Dependencies Installing...")
         os.popen("zypper -n install nload").read()
         os.popen("zypper -n install vnstat").read()
@@ -196,7 +196,7 @@ try:
         gcc_dt = os.popen("rpm -qa | grep gcc-c++").read()
         sasl_dt = os.popen("rpm -qa | grep cyrus-sasl-devel").read()
         odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
-        pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
+        pydevel_dt = os.popen("rpm -qa | grep -e 'python\S*-dev'").read()
     else:
         print("OS " + final_name + " " + final_version1 + " Not supported")
         no_show = 1
