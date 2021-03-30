@@ -9,7 +9,7 @@
 from imports import *
 from PdfGenerator import *
 
-cur_date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+cur_date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 # Creating logger object
 logger = get_logger(cur_date)
