@@ -60,7 +60,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
    |-----------------|:-------------|
    | CDH 5.16.2 | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
    | CDH 6.x | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
-   | CDH 7.x | Auditor, Cluster Administrator, Configurator, Dashboard\_User, Full\_Administrator, Key Administrator, Limited\_Cluster\_Administrator, Limited\_Operator, Navigator\_Administrator, Operator, Read\_Only, Replication\_Administrator, User_Administrator |
+   | CDH 7.x | Auditor, Cluster Administrator, Configurator, Dashboard User, Full Administrator, Key Administrator, Limited Cluster Administrator, Limited Operator, Navigator Administrator, Operator, Read Only, Replication Administrator, User Administrator |
 
 8. Following OS packages will be installed to generate metrics: 
    1. Tool checks if each package is already installed
