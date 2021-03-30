@@ -1684,7 +1684,7 @@ class HardwareOSAPI:
                             self.http,
                             self.cloudera_manager_host_ip,
                             self.cloudera_manager_port,
-                            cluster_name,
+                            self.cluster_name,
                         ),
                         auth=HTTPBasicAuth(
                             self.cloudera_manager_username,
