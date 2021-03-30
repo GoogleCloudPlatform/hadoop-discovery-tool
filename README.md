@@ -256,7 +256,7 @@ sudo bash run.sh
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
     5. **Step 8.5: Kafka credentials -** the prompt would ask you whether you want to enter your Kafka credentials; you would have to select **'y'** or **'n'**
-    \nWARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
+    <br>WARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
        1. **8.5.1:** If you select **'y'**, continue to Step 8.5.1.1
           ```bash
            To view Kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: 
@@ -320,7 +320,7 @@ sudo bash run.sh
          Enter end date: [YYYY-MM-DD HH:MM]
          2021-03-30 00:00
          ```
-9. Step 9: PDF Report - A PDF report will be generated at the end of successful execution, which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1.
+9. **Step 9:** PDF Report - A PDF report will be generated at the end of successful execution, which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1.
 
 ## Contributing
 
