@@ -139,7 +139,7 @@ def get_cloudera_creds(version, ssl):
         c = 3
         while c > 0:
             print(
-                "\nA major number of metrics generation would require Cloudera manager credentials"
+                "\nA major number of metrics generation would require Cloudera manager credentials."
             )
             print(
                 "Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]:"
@@ -287,7 +287,7 @@ def cloudera_cluster_name(
                 else:
                     print("Incorrect input, try again!")
             cluster_name = cluster_list[var - 1]
-            print("This cluster is selected: " + cluster_name)
+            print("Selected cluster for assessment: " + cluster_name)
             return cluster_name
         else:
             print(
