@@ -161,7 +161,7 @@ sudo bash run.sh
 **Step success criteria: Hadoop Assessment Tool has been successfully completed and the report is available at the following location**
 
 8. **Step 8**: Following details would be required for further execution of the script:
-    1. **Step 8.1(Optional) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
+    1. **Step 8.1(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
        ```bash
        Do you have SSL enabled for your cluster? [y/n]
        ```
@@ -256,7 +256,7 @@ sudo bash run.sh
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
     5. **Step 8.5: Kafka credentials -** the prompt would ask you whether you want to enter your Kafka credentials; you would have to select **'y'** or **'n'**
-    WARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
+    \nWARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
        1. **8.5.1:** If you select **'y'**, continue to Step 8.5.1.1
           ```bash
            To view Kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: 
