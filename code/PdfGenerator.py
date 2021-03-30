@@ -921,32 +921,32 @@ class PdfGenerator:
             ddog, splunk, new_relic, elastic_search = temp
             obj_pdf.logging_tool(ddog, splunk, new_relic, elastic_search)
 
-        max_value_1, min_value_1, avg_value_1, max_value_2, min_value_2, avg_value_2 = (
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
-        temp = obj5.monitor_network_speed()
-        if type(temp) != type(None):
-            (
-                max_value_1,
-                min_value_1,
-                avg_value_1,
-                max_value_2,
-                min_value_2,
-                avg_value_2,
-            ) = temp
-            obj_pdf.pdf_monitor_network_speed(
-                max_value_1,
-                min_value_1,
-                avg_value_1,
-                max_value_2,
-                min_value_2,
-                avg_value_2,
-            )
+        # max_value_1, min_value_1, avg_value_1, max_value_2, min_value_2, avg_value_2 = (
+        #     None,
+        #     None,
+        #     None,
+        #     None,
+        #     None,
+        #     None,
+        # )
+        # temp = obj5.monitor_network_speed()
+        # if type(temp) != type(None):
+        #     (
+        #         max_value_1,
+        #         min_value_1,
+        #         avg_value_1,
+        #         max_value_2,
+        #         min_value_2,
+        #         avg_value_2,
+        #     ) = temp
+        #     obj_pdf.pdf_monitor_network_speed(
+        #         max_value_1,
+        #         min_value_1,
+        #         avg_value_1,
+        #         max_value_2,
+        #         min_value_2,
+        #         avg_value_2,
+        #     )
 
         logs = None
         temp = obj5.get_logs()

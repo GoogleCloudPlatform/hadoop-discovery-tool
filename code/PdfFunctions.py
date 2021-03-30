@@ -529,9 +529,9 @@ class PdfFunctions:
         self.pdf.cell(
             230, 8, "Number of NameNodes: {}".format(len(namenodes_df)), 0, 1,
         )
-        self.pdf.cell(
-            230, 8, "Number of MasterNodes: {}".format(len(masternodes_df)), 0, 1,
-        )
+        # self.pdf.cell(
+        #     230, 8, "Number of MasterNodes: {}".format(len(masternodes_df)), 0, 1,
+        # )
         self.pdf.cell(
             230, 8, "Number of DataNodes: {}".format(len(datanodes_df)), 0, 1,
         )
