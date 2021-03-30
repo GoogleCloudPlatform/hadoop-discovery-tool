@@ -369,14 +369,17 @@ def get_yarn_creds(inputs):
                         http = "https"
                     else:
                         http = "http"
-                    r = requests.get(
-                        "{}://{}:{}/ws/v1/cluster".format(http, yarn_rm, yarn_port),
-                        verify=False,
-                        timeout=5,
-                    )
-                    if r.status_code == 200:
-                        return yarn_rm, yarn_port
-                    else:
+                    try:
+                        r = requests.get(
+                            "{}://{}:{}/ws/v1/cluster".format(http, yarn_rm, yarn_port),
+                            verify=False,
+                            timeout=5,
+                        )
+                        if r.status_code == 200:
+                            return yarn_rm, yarn_port
+                        else:
+                            print("Unable to connect to Yarn Resource Manager")
+                    except Exception as e:
                         print("Unable to connect to Yarn Resource Manager")
                 elif t in ["n", "N"]:
                     return None, None
@@ -668,11 +671,10 @@ def get_input(version):
                     exit()
                 else:
                     print("Incorrect input, try again!")
+        if inputs["ssl"]:
+            print("As SSL is enabled, enter the inputs accordingly")
         else:
-            if inputs["ssl"]:
-                print("As SSL is enabled, enter the inputs accordingly")
-            else:
-                print("As SSL is disabled, enter the inputs accordingly")
+            print("As SSL is disabled, enter the inputs accordingly")
         inputs["config_path"] = check_config_path()
         if inputs["version"] != 0:
             c = 3
@@ -711,11 +713,11 @@ def get_input(version):
                 inputs["cloudera_manager_password"],
                 inputs["cluster_name"],
             ) = (None, None, None, None, None)
-        inputs["yarn_rm"], inputs["yarn_port"] = get_yarn_creds(inputs)
         if inputs["cloudera_manager_host_ip"] == None:
             inputs["hive_username"], inputs["hive_password"] = None, None
         else:
             inputs["hive_username"], inputs["hive_password"] = get_hive_creds(inputs)
+        inputs["yarn_rm"], inputs["yarn_port"] = get_yarn_creds(inputs)
         inputs["broker_list"] = broker_list_input()
         c = 3
         while c > 0:
