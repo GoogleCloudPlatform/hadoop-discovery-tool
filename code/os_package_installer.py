@@ -44,7 +44,7 @@ Here based on the os of the current system respective block will execute and wil
 with their respective package managers.
 """
 try:
-    if "centos" in os_name and final_version >= "7":
+    if "centos" in os_name and final_version >= 7:
         print("OS Dependencies Installing...")
         os.popen("pip3 install -U pip").read()
         os.popen("yum install epel-release -y").read()
