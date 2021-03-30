@@ -118,8 +118,8 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
         3. IP of each broker
         4. Port number of each broker
         5. Log directory path of each broker
-    5. SSL is enabled or not(conditional input - if automatic detection doesn't work it will be prompted.)
-    6. Yarn (conditional input - if automatic detection doesn't work it will be prompted.)
+    5. SSL is enabled or not(conditional input - if automatic detection doesn't work it will be prompted)
+    6. Yarn (conditional input - if automatic detection doesn't work it will be prompted)
         1. Resource managers hostname or IP address
         2. Port Number
 
@@ -256,7 +256,7 @@ sudo bash run.sh
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
     5. **Step 8.5: Kafka credentials -** the prompt would ask you whether you want to enter your Kafka credentials; you would have to select **'y'** or **'n'**
-WARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
+    WARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
        1. **8.5.1:** If you select **'y'**, continue to Step 8.5.1.1
           ```bash
            To view Kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: 
