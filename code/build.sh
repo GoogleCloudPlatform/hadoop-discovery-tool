@@ -214,7 +214,8 @@ if [ $var -eq 0 ]
 then
     echo "*****************************************************************"
     echo "INFO - Hadoop Assessment Tool Deployed Successfully"
-    echo "Run 'sudo bash run.sh' to generate the PDF report"
+    echo "*****************************************************************"
+    echo "NEXT STEP - Run 'sudo bash run.sh' to generate the PDF report"
     echo "*****************************************************************"
 fi
 rm -rf hat_file.txt

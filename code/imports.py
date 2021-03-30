@@ -142,13 +142,13 @@ def get_cloudera_creds(version, ssl):
                 "\nA major number of metrics generation would require Cloudera manager credentials."
             )
             print(
-                "Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]:"
+                "Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]"
             )
             t = input()
             if t in ["y", "Y"]:
                 c1 = 3
                 while c1 > 0:
-                    print("\nEnter Cloudera Manager Host IP or Hostname: ")
+                    print("\nEnter Cloudera Manager Host IP or Hostname:")
                     host = input()
                     if not host.isnumeric():
                         break
@@ -160,7 +160,7 @@ def get_cloudera_creds(version, ssl):
                         print("Incorrect input, try again!")
                 c1 = 3
                 while c1 > 0:
-                    print("\nIs your Cloudera Manager Port number 7180? [y/n]: ")
+                    print("\nIs your Cloudera Manager Port number 7180? [y/n]")
                     t1 = input()
                     if t1 in ["y", "Y"]:
                         port = "7180"
@@ -168,7 +168,7 @@ def get_cloudera_creds(version, ssl):
                     elif t1 in ["n", "N"]:
                         c2 = 3
                         while c2 > 0:
-                            print("\nEnter Cloudera Manager Port: ")
+                            print("\nEnter Cloudera Manager Port:")
                             port = input()
                             if port.isnumeric():
                                 break
@@ -187,9 +187,9 @@ def get_cloudera_creds(version, ssl):
                         exit()
                     else:
                         print("Incorrect input, try again!")
-                print("\nEnter Cloudera Manager Username: ")
+                print("\nEnter Cloudera Manager Username:")
                 uname = input()
-                password = getpass(prompt="\nEnter Cloudera Manager Password: ")
+                password = getpass(prompt="\nEnter Cloudera Manager Password:")
                 return host, port, uname, password
             elif t in ["n", "N"]:
                 return None, None, None, None
@@ -276,7 +276,7 @@ def cloudera_cluster_name(
                 for i in range(len(cluster_list)):
                     print(str(i + 1) + "] " + cluster_list[i])
                 print(
-                    "Enter the serial number (1/2/../n) for the selected cluster name: "
+                    "Enter the serial number (1/2/../n) for the selected cluster name:"
                 )
                 var = input()
                 if var.isnumeric():
@@ -338,13 +338,13 @@ def get_yarn_creds(inputs):
             c = 3
             while c > 0:
                 print(
-                    "\nTo view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]: "
+                    "\nTo view yarn-related metrics, would you be able to enter Yarn credentials? [y/n]"
                 )
                 t = input()
                 if t in ["y", "Y"]:
                     c1 = 3
                     while c1 > 0:
-                        print("\nEnter Yarn Resource Manager Host IP or Hostname: ")
+                        print("\nEnter Yarn Resource Manager Host IP or Hostname:")
                         yarn_rm = input()
                         if not yarn_rm.isnumeric():
                             break
@@ -356,7 +356,7 @@ def get_yarn_creds(inputs):
                             print("Incorrect input, try again!")
                     c1 = 3
                     while c1 > 0:
-                        print("\nEnter Yarn Resource Manager Port: ")
+                        print("\nEnter Yarn Resource Manager Port:")
                         yarn_port = input()
                         if yarn_port.isnumeric():
                             break
@@ -406,13 +406,13 @@ def get_hive_creds(inputs):
         c = 3
         while c > 0:
             print(
-                "\nTo view hive-related metrics, would you be able to enter Hive credentials?[y/n]: "
+                "\nTo view hive-related metrics, would you be able to enter Hive credentials? [y/n]"
             )
             t = input()
             if t in ["y", "Y"]:
                 print("\nEnter Hive Metastore username: ")
                 hive_username = input()
-                hive_password = getpass(prompt="\nEnter Hive Metastore password: ")
+                hive_password = getpass(prompt="\nEnter Hive Metastore password:")
                 r = None
                 http = None
                 if inputs["ssl"]:
@@ -547,29 +547,27 @@ def broker_list_input():
         c = 3
         while c > 0:
             print(
-                "\nTo view kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: "
+                "\nTo view kafka-related metrics, would you be able to provide Kafka credentials? [y/n]"
             )
             t = input()
             if t in ["y", "Y"]:
                 broker_list = []
                 c1 = 3
                 while c1 > 0:
-                    print("\nEnter the number of Kafka brokers: ")
+                    print("\nEnter the number of Kafka brokers:")
                     n = input()
                     if n.isnumeric():
                         n = int(n)
                         for i in range(0, n):
                             broker = {"host": "", "port": "", "log_dir": ""}
                             print(
-                                "\nEnter the hostname or IP of broker {}: ".format(
-                                    i + 1
-                                )
+                                "\nEnter the hostname or IP of broker {}:".format(i + 1)
                             )
                             broker["host"] = input()
                             c2 = 3
                             while c2 > 0:
                                 print(
-                                    "\nIs your broker hosted on {} have port number 9092? [y/n] ".format(
+                                    "\nIs your broker hosted on {} have port number 9092? [y/n]".format(
                                         broker["host"]
                                     )
                                 )
@@ -579,7 +577,7 @@ def broker_list_input():
                                     break
                                 elif t1 in ["n", "N"]:
                                     print(
-                                        "\nPlease enter the port number of broker hosted on {}: ".format(
+                                        "\nPlease enter the port number of broker hosted on {}:".format(
                                             broker["host"]
                                         )
                                     )
@@ -596,7 +594,7 @@ def broker_list_input():
                             c2 = 3
                             while c2 > 0:
                                 print(
-                                    "\nDoes the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
+                                    "\nDoes the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n]".format(
                                         broker["host"]
                                     )
                                 )
@@ -606,7 +604,7 @@ def broker_list_input():
                                     break
                                 elif t1 in ["n", "N"]:
                                     print(
-                                        "\nEnter the log directory path of broker hosted on {}: ".format(
+                                        "\nEnter the log directory path of broker hosted on {}:".format(
                                             broker["host"]
                                         )
                                     )
@@ -658,7 +656,7 @@ def get_input(version):
         if inputs["ssl"] == None:
             c = 3
             while c > 0:
-                print("Do you have SSL enabled for your cluster? [y/n] ")
+                print("Do you have SSL enabled for your cluster? [y/n]")
                 t = input()
                 if t in ["y", "Y"]:
                     inputs["ssl"] = True
@@ -723,12 +721,12 @@ def get_input(version):
         c = 3
         while c > 0:
             print(
-                "\nSelect the options below for the time period of the PDF Assessment Report: "
+                "\nSelect the time range of the PDF Assessment report from the options below:"
             )
             print(
                 "[1] Week: generates the report from today to 7 days prior\n[2] Month: generates the report from today to 30 days prior\n[3] Custom: generates the report for a custom time period"
             )
-            print("Enter the serial number [1/2/3] as required: ")
+            print("Enter the serial number [1/2/3] as required:")
             t = input()
             if t.isnumeric():
                 t = int(t)
@@ -747,7 +745,7 @@ def get_input(version):
                 elif t == 3:
                     c1 = 3
                     while c1 > 0:
-                        print("Enter start date: YYYY-MM-DD HH:MM: ")
+                        print("Enter start date: [YYYY-MM-DD HH:MM]")
                         t = input()
                         try:
                             start_date = datetime.strptime(t, "%Y-%m-%d %H:%M")
@@ -764,7 +762,7 @@ def get_input(version):
                     inputs["start_date"] = start_date.strftime("%Y-%m-%dT%H:%M:%S")
                     c1 = 3
                     while c1 > 0:
-                        print("Enter end date: YYYY-MM-DD HH:MM: ")
+                        print("Enter end date: [YYYY-MM-DD HH:MM]")
                         t = input()
                         try:
                             end_date = datetime.strptime(t, "%Y-%m-%d %H:%M")
