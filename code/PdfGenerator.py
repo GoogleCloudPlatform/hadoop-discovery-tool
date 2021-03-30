@@ -241,7 +241,7 @@ class PdfGenerator:
             base_size,
         )
 
-        print("[STATUS][01/18][#.................][06%] Key Metrics added in PDF")
+        print("\n[STATUS][01/18][#.................][06%] Key Metrics added in PDF")
 
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)

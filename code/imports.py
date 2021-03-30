@@ -139,7 +139,7 @@ def get_cloudera_creds(version, ssl):
         c = 3
         while c > 0:
             print(
-                "A major number of metrics generation would require Cloudera manager credentials"
+                "\nA major number of metrics generation would require Cloudera manager credentials"
             )
             print(
                 "Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]:"
@@ -148,19 +148,19 @@ def get_cloudera_creds(version, ssl):
             if t in ["y", "Y"]:
                 c1 = 3
                 while c1 > 0:
-                    print("Enter Cloudera Manager Host IP or Hostname: ")
+                    print("\nEnter Cloudera Manager Host IP or Hostname: ")
                     host = input()
                     if not host.isnumeric():
                         break
                     c1 = c1 - 1
                     if c1 == 0:
-                        print("Incorrect Input!")
+                        print("Received incorrect input 3 times, exiting the tool")
                         exit()
                     else:
-                        print("Incorrect Input! Try Again")
+                        print("Incorrect input, try again!")
                 c1 = 3
                 while c1 > 0:
-                    print("Is your Cloudera Manager Port number 7180? [y/n]: ")
+                    print("\nIs your Cloudera Manager Port number 7180? [y/n]: ")
                     t1 = input()
                     if t1 in ["y", "Y"]:
                         port = "7180"
@@ -168,35 +168,37 @@ def get_cloudera_creds(version, ssl):
                     elif t1 in ["n", "N"]:
                         c2 = 3
                         while c2 > 0:
-                            print("Enter Cloudera Manager Port: ")
+                            print("\nEnter Cloudera Manager Port: ")
                             port = input()
                             if port.isnumeric():
                                 break
                             c2 = c2 - 1
                             if c2 == 0:
-                                print("Incorrect Input!")
+                                print(
+                                    "Received incorrect input 3 times, exiting the tool"
+                                )
                                 exit()
                             else:
-                                print("Incorrect Input! Try Again")
+                                print("Incorrect input, try again!")
                         break
                     c1 = c1 - 1
                     if c1 == 0:
-                        print("Incorrect Input!")
+                        print("Received incorrect input 3 times, exiting the tool")
                         exit()
                     else:
-                        print("Incorrect Input! Try Again")
-                print("Enter Cloudera Manager Username: ")
+                        print("Incorrect input, try again!")
+                print("\nEnter Cloudera Manager Username: ")
                 uname = input()
-                password = getpass(prompt="Enter Cloudera Manager Password: ")
+                password = getpass(prompt="\nEnter Cloudera Manager Password: ")
                 return host, port, uname, password
             elif t in ["n", "N"]:
                 return None, None, None, None
             c = c - 1
             if c == 0:
-                print("Incorrect Input!")
+                print("Received incorrect input 3 times, exiting the tool")
                 exit()
             else:
-                print("Incorrect Input! Try Again")
+                print("Incorrect input, try again!")
     except Exception as e:
         return None, None, None, None
 
@@ -267,7 +269,7 @@ def cloudera_cluster_name(
                 cluster_list.append(i["name"])
             c = 3
             while c > 0:
-                print("Select cluster name from list below: ")
+                print("\nSelect cluster name from list below: ")
                 for i in range(len(cluster_list)):
                     print(str(i + 1) + "] " + cluster_list[i])
                 print(
@@ -280,10 +282,10 @@ def cloudera_cluster_name(
                         break
                 c = c - 1
                 if c == 0:
-                    print("Incorrect Input!")
+                    print("Received incorrect input 3 times, exiting the tool")
                     exit()
                 else:
-                    print("Incorrect Input! Try Again")
+                    print("Incorrect input, try again!")
             cluster_name = cluster_list[var - 1]
             print("This cluster is selected: " + cluster_name)
             return cluster_name
@@ -332,34 +334,34 @@ def get_yarn_creds(inputs):
             c = 3
             while c > 0:
                 print(
-                    "To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]: "
+                    "\nTo view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]: "
                 )
                 t = input()
                 if t in ["y", "Y"]:
                     c1 = 3
                     while c1 > 0:
-                        print("Enter Yarn Resource Manager Host IP or Hostname: ")
+                        print("\nEnter Yarn Resource Manager Host IP or Hostname: ")
                         yarn_rm = input()
                         if not yarn_rm.isnumeric():
                             break
                         c1 = c1 - 1
                         if c1 == 0:
-                            print("Incorrect Input!")
+                            print("Received incorrect input 3 times, exiting the tool")
                             exit()
                         else:
-                            print("Incorrect Input! Try Again")
+                            print("Incorrect input, try again!")
                     c1 = 3
                     while c1 > 0:
-                        print("Enter Yarn Resource Manager Port: ")
+                        print("\nEnter Yarn Resource Manager Port: ")
                         yarn_port = input()
                         if yarn_port.isnumeric():
                             break
                         c1 = c1 - 1
                         if c1 == 0:
-                            print("Incorrect Input!")
+                            print("Received incorrect input 3 times, exiting the tool")
                             exit()
                         else:
-                            print("Incorrect Input! Try Again")
+                            print("Incorrect input, try again!")
                     if inputs["ssl"]:
                         http = "https"
                     else:
@@ -376,10 +378,10 @@ def get_yarn_creds(inputs):
                     return None, None
                 c = c - 1
                 if c == 0:
-                    print("Incorrect Input!")
+                    print("Received incorrect input 3 times, exiting the tool")
                     return None, None
                 else:
-                    print("Incorrect Input! Try Again")
+                    print("Incorrect input, try again!")
     except Exception as e:
         return None, None
 
@@ -396,13 +398,13 @@ def get_hive_creds(inputs):
         c = 3
         while c > 0:
             print(
-                "To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: "
+                "\nTo view hive-related metrics, would you be able to enter Hive credentials?[y/n]: "
             )
             t = input()
             if t in ["y", "Y"]:
-                print("Enter Hive Metastore username: ")
+                print("\nEnter Hive Metastore username: ")
                 hive_username = input()
-                hive_password = getpass(prompt="Enter Hive Metastore password: ")
+                hive_password = getpass(prompt="\nEnter Hive Metastore password: ")
                 r = None
                 http = None
                 if inputs["ssl"]:
@@ -523,10 +525,10 @@ def get_hive_creds(inputs):
                 return None, None
             c = c - 1
             if c == 0:
-                print("Incorrect Input!")
+                print("Received incorrect input 3 times, exiting the tool")
                 return None, None
             else:
-                print("Incorrect Input! Try Again")
+                print("Incorrect input, try again!")
     except Exception as e:
         return None, None
 
@@ -537,27 +539,29 @@ def broker_list_input():
         c = 3
         while c > 0:
             print(
-                "To view kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: "
+                "\nTo view kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: "
             )
             t = input()
             if t in ["y", "Y"]:
                 broker_list = []
                 c1 = 3
                 while c1 > 0:
-                    print("Enter the number of brokers: ")
+                    print("\nEnter the number of Kafka brokers: ")
                     n = input()
                     if n.isnumeric():
                         n = int(n)
                         for i in range(0, n):
                             broker = {"host": "", "port": "", "log_dir": ""}
                             print(
-                                "Enter the hostname or IP of broker {}: ".format(i + 1)
+                                "\nEnter the hostname or IP of broker {}: ".format(
+                                    i + 1
+                                )
                             )
                             broker["host"] = input()
                             c2 = 3
                             while c2 > 0:
                                 print(
-                                    "Is your broker hosted on {} have port number 9092? [y/n] ".format(
+                                    "\nIs your broker hosted on {} have port number 9092? [y/n] ".format(
                                         broker["host"]
                                     )
                                 )
@@ -567,7 +571,7 @@ def broker_list_input():
                                     break
                                 elif t1 in ["n", "N"]:
                                     print(
-                                        "Please enter the port number of broker hosted on {}: ".format(
+                                        "\nPlease enter the port number of broker hosted on {}: ".format(
                                             broker["host"]
                                         )
                                     )
@@ -575,14 +579,16 @@ def broker_list_input():
                                     break
                                 c2 = c2 - 1
                                 if c2 == 0:
-                                    print("Incorrect Input!")
+                                    print(
+                                        "Received incorrect input 3 times, exiting the tool"
+                                    )
                                     exit()
                                 else:
-                                    print("Incorrect Input! Try Again")
+                                    print("Incorrect input, try again!")
                             c2 = 3
                             while c2 > 0:
                                 print(
-                                    "Does the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
+                                    "\nDoes the broker hosted on {} have the following path to the log directory /var/local/kafka/data/? [y/n] ".format(
                                         broker["host"]
                                     )
                                 )
@@ -592,7 +598,7 @@ def broker_list_input():
                                     break
                                 elif t1 in ["n", "N"]:
                                     print(
-                                        "Enter the log directory path of broker hosted on {}: ".format(
+                                        "\nEnter the log directory path of broker hosted on {}: ".format(
                                             broker["host"]
                                         )
                                     )
@@ -600,25 +606,27 @@ def broker_list_input():
                                     break
                                 c2 = c2 - 1
                                 if c2 == 0:
-                                    print("Incorrect Input!")
+                                    print(
+                                        "Received incorrect input 3 times, exiting the tool"
+                                    )
                                     exit()
                                 else:
-                                    print("Incorrect Input! Try Again")
+                                    print("Incorrect input, try again!")
                         return broker_list
                     c1 = c1 - 1
                     if c1 == 0:
-                        print("Incorrect Input!")
+                        print("Received incorrect input 3 times, exiting the tool")
                         exit()
                     else:
-                        print("Incorrect Input! Try Again")
+                        print("Incorrect input, try again!")
             elif t in ["n", "N"]:
                 return []
             c = c - 1
             if c == 0:
-                print("Incorrect Input!")
+                print("Received incorrect input 3 times, exiting the tool")
                 exit()
             else:
-                print("Incorrect Input! Try Again")
+                print("Incorrect input, try again!")
         return broker_list
     except Exception as e:
         return []
@@ -652,10 +660,10 @@ def get_input(version):
                     break
                 c = c - 1
                 if c == 0:
-                    print("Incorrect Input!")
+                    print("Received incorrect input 3 times, exiting the tool")
                     exit()
                 else:
-                    print("Incorrect Input! Try Again")
+                    print("Incorrect input, try again!")
         else:
             if inputs["ssl"]:
                 print("As SSL is enabled, enter the inputs accordingly")
@@ -685,13 +693,13 @@ def get_input(version):
                 if inputs["cluster_name"] == None:
                     c = c - 1
                     if c == 0:
-                        print("Incorrect Input!")
+                        print("Received incorrect input 3 times, exiting the tool")
                         exit()
                     else:
-                        print("Incorrect Input! Try Again")
+                        print("Incorrect input, try again!")
                 else:
                     break
-        inputs["yarn_rm"], inputs["yarn_port"] == get_yarn_creds(inputs)
+        inputs["yarn_rm"], inputs["yarn_port"] = get_yarn_creds(inputs)
         if inputs["cloudera_manager_host_ip"] == None:
             inputs["hive_username"], inputs["hive_password"] = None, None
         else:
@@ -700,7 +708,7 @@ def get_input(version):
         c = 3
         while c > 0:
             print(
-                "Select the options below for the time period of the PDF Assessment Report: "
+                "\nSelect the options below for the time period of the PDF Assessment Report: "
             )
             print(
                 "[1] Week: generates the report from today to 7 days prior\n[2] Month: generates the report from today to 30 days prior\n[3] Custom: generates the report for a custom time period"
@@ -735,10 +743,10 @@ def get_input(version):
                     break
             c = c - 1
             if c == 0:
-                print("Incorrect Input!")
+                print("Received incorrect input 3 times, exiting the tool")
                 exit()
             else:
-                print("Incorrect Input! Try Again")
+                print("Incorrect input, try again!")
         return inputs
     except Exception as e:
         return {}

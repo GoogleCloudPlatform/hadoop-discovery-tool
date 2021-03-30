@@ -78,7 +78,7 @@ then
 fi
 if [ $var -eq 0 ]
 then
-    echo "INFO - Os Dependencies Installed "
+    echo "INFO - OS Dependencies Installed "
     echo "###########################################################################################################"
     echo "During python installation, some error messages might pop up , but those can be ignored if last message says,"
     echo "Python Dependencies Installed Successfully"
@@ -150,6 +150,18 @@ if [ $var -eq 0 ]
 then
 echo "*****************************************************************"
 echo "INFO - Packages moved to python environment"
+fi
+pip3 install pip==21.0.1 --no-index --no-deps --find-links $PWD/python_environment/packages/
+var=$?
+if [ $var -eq 1 ]
+then
+    echo "ERROR - Cannot update pip in python environment"
+    exit 1
+fi
+if [ $var -eq 0 ]
+then
+echo "*****************************************************************"
+echo "INFO - Pip updated in python environment"
 fi
 # Install all the offline packages into the virtual environment
 pip3 install -r $PWD/python_environment/packages/requirements.txt --no-index --no-deps --find-links $PWD/python_environment/packages/

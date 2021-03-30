@@ -45,7 +45,7 @@ with their respective package managers.
 """
 try:
     if "centos" in os_name and final_version >= "7":
-        print("Os Dependencies Installing...")
+        print("OS Dependencies Installing...")
         os.popen("pip3 install -U pip").read()
         os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
@@ -63,7 +63,7 @@ try:
         pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
         venv_dt = "Venv"
     elif "ubuntu" in os_name and (final_version >= 16.04):
-        print("Os Dependencies Installing...")
+        print("OS Dependencies Installing...")
         if py_val == "3.8" and flag == 0:
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
@@ -140,7 +140,7 @@ try:
             ).read()
             flag = 1
     elif "debian" in os_name and (final_version >= 8.9):
-        print("Os Dependencies Installing...")
+        print("OS Dependencies Installing...")
         if py_val >= "3.6" and flag == 0:
             os.popen("apt install -y nload 2>/dev/null").read()
             os.popen("apt install -y vnstat 2>/dev/null").read()
@@ -167,7 +167,7 @@ try:
             ).read()
             flag = 1
     elif "red hat" in os_name and final_version >= "7":
-        print("Os Dependencies Installing...")
+        print("OS Dependencies Installing...")
         os.popen("yum install epel-release -y").read()
         os.popen("yum install nload -y").read()
         os.popen("yum install vnstat -y").read()
@@ -183,7 +183,7 @@ try:
         odbc_dt = os.popen("rpm -qa | grep unixODBC-devel").read()
         pydevel_dt = os.popen("rpm -qa | grep python3-devel").read()
     elif "suse" in os_name and final_version >= "12":
-        print("Os Dependencies Installing...")
+        print("OS Dependencies Installing...")
         os.popen("zypper -n install nload").read()
         os.popen("zypper -n install vnstat").read()
         os.popen("zypper -n install gcc gcc-c++").read()
