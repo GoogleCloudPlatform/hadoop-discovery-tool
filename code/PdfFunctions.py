@@ -1109,6 +1109,28 @@ class PdfFunctions:
         if os.path.exists("cluster_memory_usage_plot.png"):
             os.remove("cluster_memory_usage_plot.png")
 
+    def memory_usage_edgenode(self, mean_df):
+        """Add database server like mysql for metadata in PDF.
+
+        Args:
+            database_server (str): Database server present in cluster.
+        """
+
+        self.pdf.set_font("Arial", "", 12)
+        self.pdf.set_text_color(r=1, g=1, b=1)
+        if len(mean_df) > 0:
+            plt.figure()
+            mean_df = mean_df["Mean"].plot(color="steelblue", label="Avg Memory Usage")
+            mean_df.legend()
+            mean_df.set_ylabel("Capacity(GB)")
+            plt.title("Memory Usage Pattern")
+            plt.savefig("memory_usage_edgenode.png")
+            self.pdf.image(
+                "memory_usage_edgenode.png", x=0, y=None, w=250, h=85, type="", link=""
+            )
+            if os.path.exists("memory_usage_edgenode.png"):
+                os.remove("memory_usage_edgenode.png")
+
     def database_server(self, database_server):
         """Add database server like mysql for metadata in PDF.
 

@@ -768,6 +768,118 @@ class HardwareOSAPI:
             self.logger.error("cluster_memory_usage failed", exc_info=True)
             return None
 
+    def memory_usage_edgenode(self, edgenode_hostid_list):
+        """Get database server like mysql for metadata.
+
+        Returns:
+            database_server (str): Database server present in cluster.
+        """
+
+        try:
+            if len(edgenode_hostid_list) > 0:
+                edgenode_usage_df = pd.DataFrame()
+                edgenode_usage_df_temp = pd.DataFrame()
+                for i in range(len(edgenode_hostid_list)):
+                    r = None
+                    if self.version == 7:
+                        r = requests.get(
+                            "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                                self.http,
+                                self.cloudera_manager_host_ip,
+                                self.cloudera_manager_port,
+                                self.start_date,
+                                edgenode_hostid_list[i],
+                                self.end_date,
+                            ),
+                            auth=HTTPBasicAuth(
+                                self.cloudera_manager_username,
+                                self.cloudera_manager_password,
+                            ),
+                            verify=False,
+                        )
+                    elif self.version == 6:
+                        r = requests.get(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                                self.http,
+                                self.cloudera_manager_host_ip,
+                                self.cloudera_manager_port,
+                                self.start_date,
+                                edgenode_hostid_list[i],
+                                self.end_date,
+                            ),
+                            auth=HTTPBasicAuth(
+                                self.cloudera_manager_username,
+                                self.cloudera_manager_password,
+                            ),
+                            verify=False,
+                        )
+                    elif self.version == 5:
+                        r = requests.get(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                                self.http,
+                                self.cloudera_manager_host_ip,
+                                self.cloudera_manager_port,
+                                self.start_date,
+                                edgenode_hostid_list[i],
+                                self.end_date,
+                            ),
+                            auth=HTTPBasicAuth(
+                                self.cloudera_manager_username,
+                                self.cloudera_manager_password,
+                            ),
+                            verify=False,
+                        )
+                    else:
+                        self.logger.error(
+                            "cluster_memory_usage failed as cloudera does not exist",
+                        )
+                        return None
+                    if r.status_code == 200:
+                        edgenode_usage = r.json()
+                        hdfs_capacity_list_nw_json = edgenode_usage["items"][0][
+                            "timeSeries"
+                        ][0]["data"]
+                        edgenode_usage_df_temp = pd.DataFrame(
+                            hdfs_capacity_list_nw_json
+                        )
+                        edgenode_usage_df_temp = pd.DataFrame(
+                            {
+                                "DateTime": pd.to_datetime(
+                                    edgenode_usage_df_temp["timestamp"]
+                                ).dt.strftime("%Y-%m-%d %H:%M"),
+                                "Mean": edgenode_usage_df_temp["value"] / 1000,
+                            }
+                        )
+                        edgenode_usage_df_temp["Legend"] = pd.DataFrame(
+                            pd.date_range(
+                                edgenode_usage_df_temp["DateTime"].min(),
+                                edgenode_usage_df_temp["DateTime"].max(),
+                                freq="H",
+                            )
+                        )
+                        edgenode_usage_df_temp[
+                            "Time"
+                        ] = edgenode_usage_df_temp.Legend.dt.strftime("%d-%b %H:%M")
+                        edgenode_usage_df = edgenode_usage_df.append(
+                            edgenode_usage_df_temp
+                        )
+                    else:
+                        self.logger.error(
+                            "memory_usage_edgenode failed due to invalid API call. HTTP Response: ",
+                            r.status_code,
+                        )
+                grouped_df = edgenode_usage_df.groupby("Time")
+                mean_df = grouped_df.mean()
+                mean_df = mean_df.reset_index()
+                mean_df.set_index("Time", inplace=True)
+                self.logger.info("cluster_memory_usage successful")
+                return mean_df
+            else:
+                return None
+        except Exception as e:
+            self.logger.error("memory_usage_edgenode failed", exc_info=True)
+            return None
+
     def database_server(self):
         """Get database server like mysql for metadata.
 

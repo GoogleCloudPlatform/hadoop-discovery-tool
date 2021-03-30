@@ -240,6 +240,7 @@ def cloudera_cluster_name(
                 auth=HTTPBasicAuth(
                     cloudera_manager_username, cloudera_manager_password
                 ),
+                timeout=5,
             )
         elif version == 6:
             initial_run = requests.get(
@@ -249,6 +250,7 @@ def cloudera_cluster_name(
                 auth=HTTPBasicAuth(
                     cloudera_manager_username, cloudera_manager_password
                 ),
+                timeout=5,
             )
         elif version == 5:
             initial_run = requests.get(
@@ -258,6 +260,7 @@ def cloudera_cluster_name(
                 auth=HTTPBasicAuth(
                     cloudera_manager_username, cloudera_manager_password
                 ),
+                timeout=5,
             )
         else:
             print("Unable to fetch cloudera clusters as cloudera does not exist")
@@ -369,6 +372,7 @@ def get_yarn_creds(inputs):
                     r = requests.get(
                         "{}://{}:{}/ws/v1/cluster".format(http, yarn_rm, yarn_port),
                         verify=False,
+                        timeout=5,
                     )
                     if r.status_code == 200:
                         return yarn_rm, yarn_port
@@ -699,6 +703,14 @@ def get_input(version):
                         print("Incorrect input, try again!")
                 else:
                     break
+        else:
+            (
+                inputs["cloudera_manager_host_ip"],
+                inputs["cloudera_manager_port"],
+                inputs["cloudera_manager_username"],
+                inputs["cloudera_manager_password"],
+                inputs["cluster_name"],
+            ) = (None, None, None, None, None)
         inputs["yarn_rm"], inputs["yarn_port"] = get_yarn_creds(inputs)
         if inputs["cloudera_manager_host_ip"] == None:
             inputs["hive_username"], inputs["hive_password"] = None, None
@@ -730,17 +742,47 @@ def get_input(version):
                     inputs["end_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
                     break
                 elif t == 3:
-                    print("Enter start date: YYYY-MM-DD HH:MM: ")
-                    t = input()
-                    inputs["start_date"] = datetime.strptime(
-                        t, "%Y-%m-%d %H:%M"
-                    ).strftime("%Y-%m-%dT%H:%M:%S")
-                    print("Enter end date: YYYY-MM-DD HH:MM: ")
-                    t = input()
-                    inputs["end_date"] = datetime.strptime(
-                        t, "%Y-%m-%d %H:%M"
-                    ).strftime("%Y-%m-%dT%H:%M:%S")
-                    break
+                    c1 = 3
+                    while c1 > 0:
+                        print("Enter start date: YYYY-MM-DD HH:MM: ")
+                        t = input()
+                        try:
+                            start_date = datetime.strptime(t, "%Y-%m-%d %H:%M")
+                            break
+                        except Exception as e:
+                            c1 = c1 - 1
+                            if c1 == 0:
+                                print(
+                                    "Received incorrect input 3 times, exiting the tool"
+                                )
+                                exit()
+                            else:
+                                print("Incorrect input, try again!")
+                    inputs["start_date"] = start_date.strftime("%Y-%m-%dT%H:%M:%S")
+                    c1 = 3
+                    while c1 > 0:
+                        print("Enter end date: YYYY-MM-DD HH:MM: ")
+                        t = input()
+                        try:
+                            end_date = datetime.strptime(t, "%Y-%m-%d %H:%M")
+                            break
+                        except Exception as e:
+                            c1 = c1 - 1
+                            if c1 == 0:
+                                print(
+                                    "Received incorrect input 3 times, exiting the tool"
+                                )
+                                exit()
+                            else:
+                                print("Incorrect input, try again!")
+                    inputs["end_date"] = end_date.strftime("%Y-%m-%dT%H:%M:%S")
+                    cur_date = datetime.now()
+                    if (
+                        (start_date < end_date)
+                        and (start_date < cur_date)
+                        and (end_date < cur_date)
+                    ):
+                        break
             c = c - 1
             if c == 0:
                 print("Received incorrect input 3 times, exiting the tool")
@@ -752,7 +794,7 @@ def get_input(version):
         return {}
 
 
-def get_logger():
+def get_logger(cur_date):
     """Defining custom logger object with custom formatter and file handler.
 
     Returns:
@@ -761,7 +803,7 @@ def get_logger():
 
     logger = logging.getLogger("hadoop_assessment_tool")
     handler = logging.FileHandler(
-        "../../hadoop_assessment_tool_{}.log".format(datetime.now())
+        "../../hadoop_assessment_tool_{}.log".format(cur_date)
     )
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))

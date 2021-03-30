@@ -321,6 +321,21 @@ class PdfGenerator:
                 cluster_total_memory_df, cluster_memory_usage_df
             )
 
+        if type(all_host_data) != type(None):
+            edgenode_hostid_list = []
+            for i, host in enumerate(all_host_data):
+                for role in host["roleRefs"]:
+                    if (
+                        re.search(r"\bGATEWAY\b", role["roleName"])
+                        and "hdfs" in role["serviceName"]
+                    ):
+                        edgenode_hostid_list.append(host["hostId"])
+            if len(edgenode_hostid_list) > 0:
+                temp = obj1.memory_usage_edgenode(edgenode_hostid_list)
+                if type(temp) != type(None):
+                    mean_df = temp
+                    obj_pdf.memory_usage_edgenode(mean_df)
+
         print("[STATUS][03/18][###...............][17%] Cluster Metrics added in PDF")
 
         pdf.add_page()
@@ -1366,4 +1381,7 @@ class PdfGenerator:
 
         print("[STATUS][18/18][##################][100%] Completed!!")
 
-        pdf.output("../../hadoop_assessment_report.pdf", "F")
+        pdf.output(
+            "../../hadoop_assessment_report_{}.pdf".format(self.inputs["cur_date"]), "F"
+        )
+
