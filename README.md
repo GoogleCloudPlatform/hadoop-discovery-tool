@@ -36,11 +36,11 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
    2. CDH 6.x
    3. CDH 7.x
 4. This tool runs on the following Linux flavours:
-   1. Centos 7.9
-   2. Redhat 7.9
-   3. Debian 9
-   4. Ubuntu 16.04 and 18.04
-   5. Sles 12sp5
+   1. Centos 7 and above
+   2. Redhat 7 and above
+   3. Debian 9 and above
+   4. Ubuntu 16 and above
+   5. Sles 12sp5 and above
 5. This tool requires pip installed.
 6. This tool requires an updated command line package manager before running the script. This will update the package list for the packages to be upgraded, from the operating system’s central repository. The package manager can be upgraded with the help of the below respective OS commands:
     1. Redhat/Centos:
