@@ -7,8 +7,6 @@
 
 # Packages
 *.zip
-*.tar
-*.gz
 *.jar
 *.tgz
 
