@@ -1338,9 +1338,12 @@ class HardwareOSAPI:
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             if "centos" in os_name or "red hat" in os_name:
-                subprocess.getoutput(
-                    "sudo yum updateinfo list security installed | grep /Sec > security_level.csv"
-                )
+                subprocess.Popen(
+                    "sudo yum -y updateinfo list security installed 2>/dev/null | grep /Sec > security_level.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait(10)
                 fin = open("security_level.csv", "r")
                 fout = open("security_final.csv", "w")
                 for iterator in fin:
