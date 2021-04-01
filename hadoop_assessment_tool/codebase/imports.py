@@ -558,6 +558,7 @@ def broker_list_input():
                     n = input()
                     if n.isnumeric():
                         n = int(n)
+                        broker_list = []
                         for i in range(0, n):
                             broker = {"host": "", "port": "", "log_dir": ""}
                             c2 = 3
@@ -608,6 +609,7 @@ def broker_list_input():
                                             exit()
                                         else:
                                             print("Incorrect input, try again!")
+                                    break
                                 c2 = c2 - 1
                                 if c2 == 0:
                                     print(
@@ -643,7 +645,13 @@ def broker_list_input():
                                     exit()
                                 else:
                                     print("Incorrect input, try again!")
+                            broker_list.append(broker)
                         try:
+                            broker_connection = ""
+                            for i in broker_list:
+                                conn_temp = str(i["host"]) + str(":") + str(i["port"]) + str(",")
+                                broker_connection = broker_connection + conn_temp
+                            broker_connection = broker_connection.strip(",")
                             conn_flag = subprocess.Popen(
                                 "timeout 20 kafka-run-class kafka.tools.GetOffsetShell --broker-list "
                                 + str(broker_connection)
@@ -654,7 +662,12 @@ def broker_list_input():
                             )
                             conn_flag.wait()
                             conn_flag, err = conn_flag.communicate()
-                            return broker_list
+                            if conn_flag == "":
+                                print(
+                                "Kafka credentials are incorrect or unable to connect to kafka brokers!"
+                            )
+                            else:
+                                return broker_list
                         except Exception as e:
                             print(
                                 "Kafka credentials are incorrect or unable to connect to kafka brokers!"
