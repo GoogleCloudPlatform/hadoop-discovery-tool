@@ -7,8 +7,6 @@
 
 # Packages
 *.zip
-*.tar
-*.gz
 *.jar
 *.tgz
 
@@ -56,6 +54,7 @@ coverage
 .vs
 .code
 typings
+.vscode
 
 # Certificates
 # Never, ever, ever, ever check this in to git. No exceptions.
