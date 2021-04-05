@@ -387,7 +387,7 @@ def get_yarn_creds(inputs):
                 c = c - 1
                 if c == 0:
                     print("Received incorrect input 3 times, exiting the tool")
-                    return None, None
+                    exit()
                 else:
                     print("Incorrect input, try again!")
     except Exception as e:
@@ -534,7 +534,7 @@ def get_hive_creds(inputs):
             c = c - 1
             if c == 0:
                 print("Received incorrect input 3 times, exiting the tool")
-                return None, None
+                exit()
             else:
                 print("Incorrect input, try again!")
     except Exception as e:
@@ -558,12 +558,27 @@ def broker_list_input():
                     n = input()
                     if n.isnumeric():
                         n = int(n)
+                        broker_list = []
                         for i in range(0, n):
                             broker = {"host": "", "port": "", "log_dir": ""}
-                            print(
-                                "\nEnter the hostname or IP of broker {}:".format(i + 1)
-                            )
-                            broker["host"] = input()
+                            c2 = 3
+                            while c2 > 0:
+                                print(
+                                    "\nEnter the hostname or IP of broker {}:".format(
+                                        i + 1
+                                    )
+                                )
+                                broker["host"] = input()
+                                if not broker["host"].isnumeric():
+                                    break
+                                c2 = c2 - 1
+                                if c2 == 0:
+                                    print(
+                                        "Received incorrect input 3 times, exiting the tool"
+                                    )
+                                    exit()
+                                else:
+                                    print("Incorrect input, try again!")
                             c2 = 3
                             while c2 > 0:
                                 print(
@@ -576,12 +591,24 @@ def broker_list_input():
                                     broker["port"] = "9092"
                                     break
                                 elif t1 in ["n", "N"]:
-                                    print(
-                                        "\nPlease enter the port number of broker hosted on {}:".format(
-                                            broker["host"]
+                                    c3 = 3
+                                    while c3 > 0:
+                                        print(
+                                            "\nPlease enter the port number of broker hosted on {}:".format(
+                                                broker["host"]
+                                            )
                                         )
-                                    )
-                                    broker["port"] = input()
+                                        broker["port"] = input()
+                                        if broker["port"].isnumeric():
+                                            break
+                                        c3 = c3 - 1
+                                        if c3 == 0:
+                                            print(
+                                                "Received incorrect input 3 times, exiting the tool"
+                                            )
+                                            exit()
+                                        else:
+                                            print("Incorrect input, try again!")
                                     break
                                 c2 = c2 - 1
                                 if c2 == 0:
@@ -618,7 +645,33 @@ def broker_list_input():
                                     exit()
                                 else:
                                     print("Incorrect input, try again!")
-                        return broker_list
+                            broker_list.append(broker)
+                        try:
+                            broker_connection = ""
+                            for i in broker_list:
+                                conn_temp = str(i["host"]) + str(":") + str(i["port"]) + str(",")
+                                broker_connection = broker_connection + conn_temp
+                            broker_connection = broker_connection.strip(",")
+                            conn_flag = subprocess.Popen(
+                                "timeout 20 kafka-run-class kafka.tools.GetOffsetShell --broker-list "
+                                + str(broker_connection)
+                                + " --topic __consumer_offsets 2>/dev/null",
+                                shell=True,
+                                stdout=subprocess.PIPE,
+                                encoding="utf-8",
+                            )
+                            conn_flag.wait()
+                            conn_flag, err = conn_flag.communicate()
+                            if conn_flag == "":
+                                print(
+                                "Kafka credentials are incorrect or unable to connect to kafka brokers!"
+                            )
+                            else:
+                                return broker_list
+                        except Exception as e:
+                            print(
+                                "Kafka credentials are incorrect or unable to connect to kafka brokers!"
+                            )
                     c1 = c1 - 1
                     if c1 == 0:
                         print("Received incorrect input 3 times, exiting the tool")
