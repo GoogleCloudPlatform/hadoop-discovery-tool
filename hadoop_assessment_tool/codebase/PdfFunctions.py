@@ -1122,7 +1122,7 @@ class PdfFunctions:
             plt.figure()
             mean_df = mean_df["Mean"].plot(color="steelblue", label="Avg Memory Usage")
             mean_df.legend()
-            mean_df.set_ylabel("Capacity(GB)")
+            mean_df.set_ylabel("Capacity(MB)")
             plt.title("Memory Usage Pattern")
             plt.savefig("memory_usage_edgenode.png")
             self.pdf.image(

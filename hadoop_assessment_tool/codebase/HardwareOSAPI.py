@@ -783,7 +783,7 @@ class HardwareOSAPI:
                     r = None
                     if self.version == 7:
                         r = requests.get(
-                            "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                            "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint="/"&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -799,7 +799,7 @@ class HardwareOSAPI:
                         )
                     elif self.version == 6:
                         r = requests.get(
-                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint="/"&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -815,7 +815,7 @@ class HardwareOSAPI:
                         )
                     elif self.version == 5:
                         r = requests.get(
-                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint="/"&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -847,7 +847,7 @@ class HardwareOSAPI:
                                 "DateTime": pd.to_datetime(
                                     edgenode_usage_df_temp["timestamp"]
                                 ).dt.strftime("%Y-%m-%d %H:%M"),
-                                "Mean": edgenode_usage_df_temp["value"] / 1000,
+                                "Mean": edgenode_usage_df_temp["value"] / 1024/1024,
                             }
                         )
                         edgenode_usage_df_temp["Legend"] = pd.DataFrame(
@@ -1607,7 +1607,7 @@ class HardwareOSAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
             ).wait(10)
-            
+
             self.logger.info("check_libraries_installed successful")
             return python_flag, java_flag, scala_flag
         except Exception as e:
