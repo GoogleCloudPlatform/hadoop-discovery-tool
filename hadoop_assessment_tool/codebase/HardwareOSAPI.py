@@ -1589,19 +1589,23 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
-            os.popen("timeout -k 30 29 spark-shell > ./scala.csv 2>/dev/null").read()
+            os.popen('spark-submit --version 2>/dev/null; echo $? > ./status.csv').read()
+            scala_flag=0
             spark_scala = subprocess.Popen(
-                "cat ./scala.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                    "cat ./status.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
             spark_scala.wait(10)
             out, err = spark_scala.communicate()
-            if "Spark context available as" in out:
-                scala_flag = 1
+            with open("status.csv", "r") as fp:
+                    for line in fp:
+                            if "0" in line:
+                                    scala_flag=1
+                                    break
             subprocess.Popen(
-                "rm -rf ./scala.csv 2>/dev/null",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
+                    "rm -rf ./status.csv 2>/dev/null",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
             ).wait(10)
             self.logger.info("check_libraries_installed successful")
             return python_flag, java_flag, scala_flag
