@@ -1607,6 +1607,7 @@ class HardwareOSAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
             ).wait(10)
+            
             self.logger.info("check_libraries_installed successful")
             return python_flag, java_flag, scala_flag
         except Exception as e:
