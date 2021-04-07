@@ -783,7 +783,7 @@ class HardwareOSAPI:
                     r = None
                     if self.version == 7:
                         r = requests.get(
-                            "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint="/"&to={}".format(
+                            "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint='/'&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -799,7 +799,7 @@ class HardwareOSAPI:
                         )
                     elif self.version == 6:
                         r = requests.get(
-                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint="/"&to={}".format(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint='/'&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -815,7 +815,7 @@ class HardwareOSAPI:
                         )
                     elif self.version == 5:
                         r = requests.get(
-                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint="/"&to={}".format(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint='/'&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
