@@ -191,7 +191,7 @@ class PdfFunctions:
 
         if type(base_size) != type(None):
             self.pdf.cell(175, 5, "Hbase data size", 1, 0, "L", True)
-            self.pdf.cell(50, 5, "{: 2f} GB".format(base_size), 1, 1, "C", True)
+            self.pdf.cell(50, 5, "{: .2f} GB".format(base_size), 1, 1, "C", True)
 
         if type(new_ref_df) != type(None):
             if not new_ref_df[new_ref_df["name"] == "hbase"].empty:
