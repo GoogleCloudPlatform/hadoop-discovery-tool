@@ -1,13 +1,13 @@
 #!bin/bash
 var=0
-python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' | grep -E '3.3|3.4|3.5|3.9'  > /dev/null
+python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' 2> /dev/null | grep -E '3.6|3.7|3.8|3.9'  > /dev/null
 var=$?
-if [ $var -eq 0 ]
+if [ $var -eq 1 ]
 then
     echo "ERROR - Python version not satisfied"
     exit 1
 fi
-if [ $var -eq 1 ]
+if [ $var -eq 0 ]
 then
     echo "*****************************************************************"
     echo "INFO - Python version satisfied"
