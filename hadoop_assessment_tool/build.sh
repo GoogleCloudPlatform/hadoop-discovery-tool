@@ -18,7 +18,12 @@ python3 --version &>/dev/null
 var=$?
 if [ $var -eq 1 ]
 then
-    echo "ERROR - Python version error"
+    echo "ERROR - Error in python environment configurations"
+    exit 1
+fi
+if [ $var -eq 127 ]
+then
+    echo "ERROR - Python not found"
     exit 1
 fi
 flag=0
@@ -46,6 +51,11 @@ then
                 exit 1
             fi
         fi
+        if [ $check -eq 127 ]
+        then
+            echo "ERROR - OS Packages not Installed Successfully"
+            exit 1
+        fi
     fi
     flag=8
 else
@@ -66,6 +76,11 @@ else
                 echo "ERROR - OS Packages not Installed Successfully"
                 exit 1
             fi
+        fi
+        if [ $check -eq 127 ]
+        then
+            echo "ERROR - OS Packages not Installed Successfully"
+            exit 1
         fi
     fi
     flag=6
@@ -156,6 +171,11 @@ var=$?
 if [ $var -eq 1 ]
 then
     echo "ERROR - Cannot update pip in python environment"
+    exit 1
+fi
+if [ $var -eq 127 ]
+then
+    echo "ERROR - pip3 not found"
     exit 1
 fi
 if [ $var -eq 0 ]
