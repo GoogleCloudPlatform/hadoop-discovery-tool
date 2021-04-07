@@ -7,6 +7,11 @@ then
     echo "ERROR - Python version not satisfied"
     exit 1
 fi
+if [ $var -eq 127 ]
+then
+    echo "ERROR - Python version not satisfied"
+    exit 1
+fi
 if [ $var -eq 0 ]
 then
     echo "*****************************************************************"
