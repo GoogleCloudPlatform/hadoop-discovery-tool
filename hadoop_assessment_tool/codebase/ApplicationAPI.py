@@ -1943,6 +1943,8 @@ class ApplicationAPI:
             if isinstance(int(dt[0]), int) == True:
                 base_size = int(dt[0]) / 1024 / 1024 / 1024
             disk_space_consumed = int(disk_space_consumed) / 1024 / 1024 / 1024
+            base_size='{: .2f}'.format(base_size)
+            disk_space_consumed='{: .2f}'.format(disk_space_consumed)
             self.logger.info("get_hbase_data_size successful")
             return base_size, disk_space_consumed
         except Exception as e:
@@ -2825,7 +2827,7 @@ class ApplicationAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait(30)
             broker_id_df = pd.read_csv("./broker_id.csv", delimiter="\n", header=None)
             subprocess.Popen(
                 "rm ./broker_id.csv",
