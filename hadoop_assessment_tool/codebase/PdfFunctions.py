@@ -1361,7 +1361,7 @@ class PdfFunctions:
                     True,
                 )
             self.pdf.cell(230, 5, "", 0, ln=1)
-        elif os_name == "":
+        elif "debian" in os_name or "ubuntu" in os_name:
             self.pdf.set_font("Arial", "", 12)
             self.pdf.set_text_color(r=66, g=133, b=244)
             self.pdf.cell(230, 8, "Security Patches Details: ", 0, ln=1)
@@ -1383,7 +1383,8 @@ class PdfFunctions:
                     True,
                 )
             self.pdf.cell(230, 5, "", 0, ln=1)
-
+        else:
+            pass
     def list_hadoop_nonHadoop_libs(self, hadoop_native_df):
         """Add List of hadoop and non-hadoop libraries present in cluster in PDF.
 
