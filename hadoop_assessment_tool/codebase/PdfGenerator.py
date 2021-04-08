@@ -147,8 +147,8 @@ class PdfGenerator:
         database_df = None
         size_breakdown_df = None
         table_df = None
-        if (type(self.hive_username) == type(None)) or (
-            type(self.hive_password) == type(None)
+        if (type(self.hive_username) != type(None)) and (
+            type(self.hive_password) != type(None)
         ):
             temp = obj2.get_hive_config_items(cluster_name)
             if type(temp) != type(None):
@@ -666,8 +666,8 @@ class PdfGenerator:
 
         print("[STATUS][06/18][######............][33%] HDFS Metrics added in PDF")
 
-        if (type(self.hive_username) == type(None)) or (
-            type(self.hive_password) == type(None)
+        if (type(self.hive_username) != type(None)) and (
+            type(self.hive_password) != type(None)
         ):
             pdf.add_page()
             pdf.set_font("Arial", "B", 18)
