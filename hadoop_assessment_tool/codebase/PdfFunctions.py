@@ -2270,10 +2270,13 @@ class PdfFunctions:
             os.remove("table_type_count_plot.png")
 
     def hive_adhoc_etl_query(self, query_type_count_df):
-        """Add structure v/s unstructure data details in PDF.
+        """Get Hive adhoc and etl query count over a date range.
 
         Args:
-            size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown.
+            yarn_rm (str): Yarn resource manager IP.
+            yarn_port (str): Yarn resource port.
+        Returns:
+            query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
         """
 
         plt.figure()
@@ -2291,10 +2294,10 @@ class PdfFunctions:
             os.remove("hive_query_type_plot.png")
 
     def structured_vs_unstructured(self, size_breakdown_df):
-        """Add Hive adhoc and etl query count graph in PDF.
+        """Get structure v/s unstructure data details.
 
         Args:
-            query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
+            size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown
         """
 
         self.pdf.set_font("Arial", "B", 12)

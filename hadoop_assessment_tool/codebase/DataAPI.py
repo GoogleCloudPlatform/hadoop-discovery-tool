@@ -1504,6 +1504,7 @@ class DataAPI:
 
         Args:
             yarn_rm (str): Yarn resource manager IP.
+            yarn_port (str): Yarn resource port.
         Returns:
             query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
         """

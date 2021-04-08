@@ -105,6 +105,7 @@ class SecurityAPI:
                     "cluster_kerberos_info failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_kerberos_info failed", exc_info=True)
             return None
@@ -409,6 +410,7 @@ class SecurityAPI:
                     "kerberos_http_auth failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("kerberos_http_auth failed", exc_info=True)
             return None

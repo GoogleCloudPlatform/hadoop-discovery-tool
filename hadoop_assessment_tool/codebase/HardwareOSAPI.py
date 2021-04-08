@@ -121,6 +121,7 @@ class HardwareOSAPI:
                     "cluster_items failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_items failed", exc_info=True)
             return None
@@ -192,6 +193,7 @@ class HardwareOSAPI:
                     "cluster_host_items failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_host_items failed", exc_info=True)
             return None
@@ -261,6 +263,7 @@ class HardwareOSAPI:
                     "cluster_service_item failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_service_item failed", exc_info=True)
             return None
@@ -328,6 +331,7 @@ class HardwareOSAPI:
                     "host_data failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("host_data failed", exc_info=True)
             return None
@@ -433,6 +437,7 @@ class HardwareOSAPI:
                     "cluster_total_cores failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_total_cores failed", exc_info=True)
             return None
@@ -549,6 +554,7 @@ class HardwareOSAPI:
                     "cluster_cpu_usage failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_cpu_usage failed", exc_info=True)
             return None
@@ -654,6 +660,7 @@ class HardwareOSAPI:
                     "cluster_total_memory failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_total_memory failed", exc_info=True)
             return None
@@ -764,15 +771,18 @@ class HardwareOSAPI:
                     "cluster_memory_usage failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_memory_usage failed", exc_info=True)
             return None
 
     def memory_usage_edgenode(self, edgenode_hostid_list):
-        """Get database server like mysql for metadata.
+        """Get memory usage data over a date range.
 
+        Args:
+            edgenode_hostid_list (str): list of edgenodes in the cluster.
         Returns:
-            database_server (str): Database server present in cluster.
+            mean_df (DataFrame): Memory usage over time
         """
 
         try:
@@ -939,6 +949,7 @@ class HardwareOSAPI:
                     "database_server failed due to invalid API call. HTTP Response: ",
                     r.status_code,
                 )
+                return None
         except Exception as e:
             self.logger.error("database_server failed", exc_info=True)
             return None

@@ -1941,7 +1941,7 @@ class ApplicationAPI:
                         if count > 1:
                             disk_space_consumed = i
                 except:
-                    pass
+                    return None
             if isinstance(int(dt[0]), int) == True:
                 base_size = int(dt[0]) / 1024 / 1024 / 1024
             disk_space_consumed = int(disk_space_consumed) / 1024 / 1024 / 1024
