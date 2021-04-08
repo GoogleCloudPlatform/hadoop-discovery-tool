@@ -99,7 +99,7 @@ class FrameworkDetailsAPI:
             elif re.search(r"\bcdh5\b", a):
                 distribution = "CDH5"
             else:
-                distribution = None 
+                distribution = None
             if self.version == 0:
                 hadoop_minor, distribution = None, None
             self.logger.info("hadoop_version successful")
@@ -212,7 +212,7 @@ class FrameworkDetailsAPI:
             else:
                 self.logger.error(
                     "version_mapping failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:

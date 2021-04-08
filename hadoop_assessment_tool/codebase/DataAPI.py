@@ -345,7 +345,7 @@ class DataAPI:
             else:
                 self.logger.error(
                     "get_hdfs_capacity failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -459,7 +459,7 @@ class DataAPI:
             else:
                 self.logger.error(
                     "get_hdfs_capacity_used failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -744,7 +744,7 @@ class DataAPI:
             else:
                 self.logger.error(
                     "get_hive_config_items failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1586,7 +1586,7 @@ class DataAPI:
             else:
                 self.logger.error(
                     "get_hive_adhoc_etl_query failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:

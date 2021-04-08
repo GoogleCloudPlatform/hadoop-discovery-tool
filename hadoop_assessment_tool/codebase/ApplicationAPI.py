@@ -197,7 +197,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_application_details failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -615,7 +615,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_yarn_total_vcore failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
         except Exception as e:
             self.logger.error("get_yarn_total_vcore failed", exc_info=True)
@@ -726,7 +726,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_yarn_vcore_available failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -870,7 +870,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_yarn_vcore_allocated failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -903,7 +903,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_yarn_total_memory failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1015,7 +1015,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_yarn_memory_available failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1161,7 +1161,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_yarn_memory_allocated failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1352,7 +1352,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_pending_application failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1464,7 +1464,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_pending_memory failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1576,7 +1576,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_pending_vcore failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1688,7 +1688,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_running_application failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -1719,7 +1719,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_queue_details failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -2022,7 +2022,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_hbase_replication failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -2102,7 +2102,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_hbase_secondary_index failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -3102,7 +3102,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "get_cloudera_services_used_for_ingestion failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
         except Exception as e:
             self.logger.error(
@@ -3171,7 +3171,7 @@ class ApplicationAPI:
             else:
                 self.logger.error(
                     "backup_and_recovery failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    str(r.status_code),
                 )
         except Exception as e:
             self.logger.error("backup_and_recovery failed", exc_info=True)

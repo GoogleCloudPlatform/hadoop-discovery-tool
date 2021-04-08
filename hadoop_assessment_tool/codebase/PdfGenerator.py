@@ -147,73 +147,76 @@ class PdfGenerator:
         database_df = None
         size_breakdown_df = None
         table_df = None
-        temp = obj2.get_hive_config_items(cluster_name)
-        if type(temp) != type(None):
-            mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
+        if (type(self.hive_username) == type(None)) or (
+            type(self.hive_password) == type(None)
+        ):
+            temp = obj2.get_hive_config_items(cluster_name)
+            if type(temp) != type(None):
+                mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
 
-            flag = True
-            if mt_db_type == "postgresql":
-                database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
-                    self.hive_username,
-                    self.hive_password,
-                    mt_db_host,
-                    mt_db_port,
-                    mt_db_name,
-                )
-            elif mt_db_type == "mysql":
-                database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
-                    self.hive_username,
-                    self.hive_password,
-                    mt_db_host,
-                    mt_db_port,
-                    mt_db_name,
-                )
-            elif mt_db_type == "mssql":
-                sql_server_driver = ""
-                driver_names = [
-                    x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
-                ]
-                if driver_names:
-                    sql_server_driver = driver_names[0]
-                    sql_server_driver = sql_server_driver.replace(" ", "+")
-                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}?driver={}".format(
+                flag = True
+                if mt_db_type == "postgresql":
+                    database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
                         self.hive_username,
                         self.hive_password,
                         mt_db_host,
                         mt_db_port,
                         mt_db_name,
-                        sql_server_driver,
                     )
+                elif mt_db_type == "mysql":
+                    database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                    )
+                elif mt_db_type == "mssql":
+                    sql_server_driver = ""
+                    driver_names = [
+                        x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
+                    ]
+                    if driver_names:
+                        sql_server_driver = driver_names[0]
+                        sql_server_driver = sql_server_driver.replace(" ", "+")
+                        database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}?driver={}".format(
+                            self.hive_username,
+                            self.hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                            sql_server_driver,
+                        )
+                    else:
+                        database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}".format(
+                            self.hive_username,
+                            self.hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                        )
                 else:
-                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}".format(
-                        self.hive_username,
-                        self.hive_password,
-                        mt_db_host,
-                        mt_db_port,
-                        mt_db_name,
-                    )
-            else:
-                flag = False
+                    flag = False
 
-            if flag:
-                temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
-                if type(temp1) != type(None):
-                    database_df = temp1
+                if flag:
+                    temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
+                    if type(temp1) != type(None):
+                        database_df = temp1
 
-                if (type(hdfs_storage_used) != type(None)) and (
-                    type(database_df) != type(None)
-                ):
+                    if (type(hdfs_storage_used) != type(None)) and (
+                        type(database_df) != type(None)
+                    ):
 
-                    temp = obj2.structured_vs_unstructured(
-                        hdfs_storage_used, database_df
-                    )
-                    if type(temp) != type(None):
-                        size_breakdown_df = temp
+                        temp = obj2.structured_vs_unstructured(
+                            hdfs_storage_used, database_df
+                        )
+                        if type(temp) != type(None):
+                            size_breakdown_df = temp
 
-                table_df = None
-                temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
-                if type(temp1) != type(None):
-                    table_df = temp1
+                    table_df = None
+                    temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
+                    if type(temp1) != type(None):
+                        table_df = temp1
 
         (
             yarn_vcore_allocated_avg,
@@ -663,7 +666,9 @@ class PdfGenerator:
 
         print("[STATUS][06/18][######............][33%] HDFS Metrics added in PDF")
 
-        if (self.hive_username == None) or (self.hive_password == None):
+        if (type(self.hive_username) == type(None)) or (
+            type(self.hive_password) == type(None)
+        ):
             pdf.add_page()
             pdf.set_font("Arial", "B", 18)
             pdf.set_text_color(r=66, g=133, b=244)
