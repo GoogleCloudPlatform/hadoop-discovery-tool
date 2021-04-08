@@ -192,7 +192,7 @@ class DataAPI:
             )
             data.wait(10)
             data_out, data_err = data.communicate()
-            final_val = "false"
+            final_val = "true"
             if len(data_out) > 0:
                 lst = []
                 res = []
@@ -232,10 +232,12 @@ class DataAPI:
                     ["hadoop", "fs", "-du", "-h", path],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
-                )
+                )    
                 out.wait(10)
                 stdout, stderr = out.communicate()
                 hdfs_root_dir = stdout
+            else:
+                hdfs_root_dir = None
             self.logger.info("get_cliresult successful")
             return hdfs_root_dir
         except Exception as e:

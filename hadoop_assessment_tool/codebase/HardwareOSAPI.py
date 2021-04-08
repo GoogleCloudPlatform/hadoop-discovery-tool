@@ -868,6 +868,7 @@ class HardwareOSAPI:
                             "memory_usage_edgenode failed due to invalid API call. HTTP Response: ",
                             r.status_code,
                         )
+                        return None
                 grouped_df = edgenode_usage_df.groupby("Time")
                 mean_df = grouped_df.mean()
                 mean_df = mean_df.reset_index()
@@ -1035,6 +1036,8 @@ class HardwareOSAPI:
                     web_server = "Web server is not enabled"
                 else:
                     web_server = "Web server is enabled"
+            else:
+                web_server = None
             self.logger.info("web_server successful")
             return web_server
         except Exception as e:
@@ -1108,6 +1111,8 @@ class HardwareOSAPI:
                         ntp_server = "not enabled"
                     else:
                         ntp_server = "enabled"
+            else:
+                ntp_server = None            
             self.logger.info("ntp_server successful")
             return ntp_server
         except Exception as e:
@@ -1576,6 +1581,8 @@ class HardwareOSAPI:
                     encoding="utf-8",
                 )
                 softwares_installed.wait(10)
+            else:
+                softwares_installed = None    
             if "Python 3." in python_check:
                 python_flag = 1
             with open("java_check.csv", "r") as fp:

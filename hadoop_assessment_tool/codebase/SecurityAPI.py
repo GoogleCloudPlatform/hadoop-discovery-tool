@@ -88,6 +88,9 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("cluster_kerberos_info as cloudera does not exist")
+                r = None    
             if r.status_code == 200:
                 cluster_kerberos_info = r.json()
                 kerberized_status = str(cluster_kerberos_info["kerberized"])
@@ -156,6 +159,9 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("ad_server_name_and_port as cloudera does not exist")
+                r = None    
             if r.status_code == 200:
                 ad_server = r.json()
                 ADServer = "LDAP server not present"
@@ -225,6 +231,9 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("ad_server_based_dn as cloudera does not exist")
+                r = None    
             if r.status_code == 200:
                 ad_server = r.json()
                 Server_dn = None
@@ -357,6 +366,9 @@ class SecurityAPI:
                     ),
                     verify=False,
                 )
+            else:
+                self.logger.error("kerberos_http_auth as cloudera does not exist")
+                r = None    
             if r.status_code == 200:
                 keytab1 = r.json()
                 if len(keytab1["items"]) > 0:
@@ -519,6 +531,8 @@ class SecurityAPI:
                     line = hdfs_line
                     df_port = {"service": "HDFS Port", "port": value}
                 port_df = port_df.append(df_port, ignore_index=True)
+            else:
+                pass    
             yarn_line = ""
             path_status = path.exists("{}".format(self.config_path["yarn"]))
             if path_status == True:
@@ -544,6 +558,8 @@ class SecurityAPI:
                     line = yarn_line
                     df_port = {"service": "Yarn Port", "port": value}
                 port_df = port_df.append(df_port, ignore_index=True)
+            else:
+                pass    
             mapred_line = ""
             path_status = path.exists("{}".format(self.config_path["mapred"]))
             if path_status == True:
@@ -569,6 +585,8 @@ class SecurityAPI:
                     line = mapred_line
                     df_port = {"service": "Mapreduce Port", "port": value}
                 port_df = port_df.append(df_port, ignore_index=True)
+            else:
+                pass    
             kafka_line = ""
             path_status = path.exists("{}".format(self.config_path["kafka"]))
             if path_status == True:
@@ -600,6 +618,8 @@ class SecurityAPI:
                     line = kafka_line
                     df_port = {"service": "Kafka Port", "port": line}
                 port_df = port_df.append(df_port, ignore_index=True)
+            else:
+                pass    
             spark_line = ""
             path_status = path.exists("{}".format(self.config_path["spark"]))
             if path_status == True:
@@ -627,6 +647,8 @@ class SecurityAPI:
                     line = spark_line
                     df_port = {"service": "Spark Port", "port": line.rstrip()}
                 port_df = port_df.append(df_port, ignore_index=True)
+            else:
+                pass    
             kerberos_line = ""
             path_status = path.exists("/var/kerberos/krb5kdc/kdc.conf")
             if path_status == True:
@@ -654,6 +676,8 @@ class SecurityAPI:
                     line = kerberos_line
                     df_port = {"service": "Kerberos Port", "port": line.rstrip()}
                 port_df = port_df.append(df_port, ignore_index=True)
+            else:
+                pass    
             zookeeper_line = ""
             dt = subprocess.Popen(
                 'find / -name "zoo.cfg" 2>/dev/null',

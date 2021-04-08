@@ -219,6 +219,8 @@ class NetworkMonitoringAPI:
                 )
                 softwares_installed.wait(10)
                 softwares_installed, err = softwares_installed.communicate()
+            else:
+                softwares_installed = None    
             prometheus_server = subprocess.Popen(
                 "systemctl status prometheus 2>/dev/null | grep active",
                 shell=True,

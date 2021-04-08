@@ -301,6 +301,8 @@ class ApplicationAPI:
                 only_streaming = only_streaming.append(
                     insert_spark_if_streaming, ignore_index=True
                 )
+            else:
+                only_streaming = None  
             self.logger.info("streaming_jobs successful")
             return only_streaming
         except Exception as e:
