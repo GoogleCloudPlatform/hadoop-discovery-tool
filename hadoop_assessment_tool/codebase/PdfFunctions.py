@@ -1446,9 +1446,9 @@ class PdfFunctions:
         else:
             self.pdf.cell(230, 8, "Java not installed", 0, ln=1)
         if scala_flag == 1:
-            self.pdf.cell(230, 8, "Scala not installed", 0, ln=1)
-        else:
             self.pdf.cell(230, 8, "Scala installed", 0, ln=1)
+        else:
+            self.pdf.cell(230, 8, "Scala not installed", 0, ln=1)
 
     def security_software(self, security_software):
         """Add list of security software present in cluster in PDF.
