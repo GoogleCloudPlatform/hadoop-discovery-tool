@@ -857,7 +857,7 @@ class HardwareOSAPI:
                                 "DateTime": pd.to_datetime(
                                     edgenode_usage_df_temp["timestamp"]
                                 ).dt.strftime("%Y-%m-%d %H:%M"),
-                                "Mean": edgenode_usage_df_temp["value"] / 1024/1024,
+                                "Mean": edgenode_usage_df_temp["value"] / 1024 / 1024,
                             }
                         )
                         edgenode_usage_df_temp["Legend"] = pd.DataFrame(
@@ -1123,7 +1123,7 @@ class HardwareOSAPI:
                     else:
                         ntp_server = "enabled"
             else:
-                ntp_server = None            
+                ntp_server = None
             self.logger.info("ntp_server successful")
             return ntp_server
         except Exception as e:
@@ -1593,7 +1593,7 @@ class HardwareOSAPI:
                 )
                 softwares_installed.wait(10)
             else:
-                softwares_installed = None    
+                softwares_installed = None
             if "Python 3." in python_check:
                 python_flag = 1
             with open("java_check.csv", "r") as fp:
@@ -1607,23 +1607,25 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
-            os.popen('spark-submit --version 2>/dev/null; echo $? > ./status.csv').read()
-            scala_flag=0
+            os.popen(
+                "spark-submit --version 2>/dev/null; echo $? > ./status.csv"
+            ).read()
+            scala_flag = 0
             spark_scala = subprocess.Popen(
-                    "cat ./status.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                "cat ./status.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
             spark_scala.wait(10)
             out, err = spark_scala.communicate()
             with open("status.csv", "r") as fp:
-                    for line in fp:
-                            if "0" in line:
-                                    scala_flag=1
-                                    break
+                for line in fp:
+                    if "0" in line:
+                        scala_flag = 1
+                        break
             subprocess.Popen(
-                    "rm -rf ./status.csv 2>/dev/null",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    encoding="utf-8",
+                "rm -rf ./status.csv 2>/dev/null",
+                shell=True,
+                stdout=subprocess.PIPE,
+                encoding="utf-8",
             ).wait(10)
 
             self.logger.info("check_libraries_installed successful")

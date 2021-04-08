@@ -302,7 +302,7 @@ class ApplicationAPI:
                     insert_spark_if_streaming, ignore_index=True
                 )
             else:
-                only_streaming = None  
+                only_streaming = None
             self.logger.info("streaming_jobs successful")
             return only_streaming
         except Exception as e:
@@ -1708,7 +1708,8 @@ class ApplicationAPI:
             r = requests.get(
                 "{}://{}:{}/ws/v1/cluster/scheduler".format(
                     self.http, yarn_rm, yarn_port
-                )
+                ),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_queues = r.json()

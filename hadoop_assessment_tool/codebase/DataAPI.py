@@ -232,7 +232,7 @@ class DataAPI:
                     ["hadoop", "fs", "-du", "-h", path],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
-                )    
+                )
                 out.wait(10)
                 stdout, stderr = out.communicate()
                 hdfs_root_dir = stdout
@@ -803,6 +803,8 @@ class DataAPI:
                 d.NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 table_count = table_count + 1
                 table_name = row[0]
@@ -887,6 +889,8 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 db = row[0]
                 table_count = 0
@@ -935,6 +939,8 @@ class DataAPI:
                             db
                         )
                     )
+                else:
+                    return None
                 for row in result:
                     table_count = row[0]
                 if database_type == "postgresql":
@@ -973,6 +979,8 @@ class DataAPI:
                             db
                         )
                     )
+                else:
+                    return None
                 for row in result:
                     database_location = row[0]
                     command = "hdfs dfs -du -s -h {}".format(database_location)
@@ -1027,6 +1035,8 @@ class DataAPI:
                 select count(DB_ID) from DBS where NAME not in ('information_schema','sys')
                 """
                 )
+            else:
+                return None
             for row in result:
                 database_count = row[0]
             self.logger.info("get_hive_database_count successful")
@@ -1069,6 +1079,8 @@ class DataAPI:
                 select count(distinct(TBL_ID)) from PARTITIONS
                 """
                 )
+            else:
+                return None
             for row in result:
                 number_of_tables_with_partition = row[0]
             if database_type == "postgresql":
@@ -1107,6 +1119,8 @@ class DataAPI:
                 d.NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 total_tables = row[0]
             number_of_tables_without_partition = (
@@ -1172,6 +1186,8 @@ class DataAPI:
                 GROUP BY a.DB_ID
                 """
                 )
+            else:
+                return None
             for row in result:
                 internal_tables = row[0]
             if database_type == "postgresql":
@@ -1213,6 +1229,8 @@ class DataAPI:
                 GROUP BY a.DB_ID
                 """
                 )
+            else:
+                return None
             for row in result:
                 external_tables = row[0]
             self.logger.info("get_hive_internal_external_tables successful")
@@ -1316,6 +1334,8 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 db = row[0]
                 db_id = row[1]
@@ -1355,6 +1375,8 @@ class DataAPI:
                             db_id
                         )
                     )
+                else:
+                    return None
                 table_name = ""
                 for row in result:
                     table_name = row[0]
@@ -1511,7 +1533,8 @@ class DataAPI:
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_application = r.json()

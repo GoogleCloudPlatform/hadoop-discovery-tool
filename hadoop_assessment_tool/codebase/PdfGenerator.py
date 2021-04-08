@@ -151,6 +151,7 @@ class PdfGenerator:
         if type(temp) != type(None):
             mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
 
+            flag = True
             if mt_db_type == "postgresql":
                 database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
                     self.hive_username,
@@ -159,7 +160,7 @@ class PdfGenerator:
                     mt_db_port,
                     mt_db_name,
                 )
-            if mt_db_type == "mysql":
+            elif mt_db_type == "mysql":
                 database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
                     self.hive_username,
                     self.hive_password,
@@ -167,23 +168,52 @@ class PdfGenerator:
                     mt_db_port,
                     mt_db_name,
                 )
+            elif mt_db_type == "mssql":
+                sql_server_driver = ""
+                driver_names = [
+                    x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
+                ]
+                if driver_names:
+                    sql_server_driver = driver_names[0]
+                    sql_server_driver = sql_server_driver.replace(" ", "+")
+                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}?driver={}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                        sql_server_driver,
+                    )
+                else:
+                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                    )
+            else:
+                flag = False
 
-            temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
-            if type(temp1) != type(None):
-                database_df = temp1
+            if flag:
+                temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
+                if type(temp1) != type(None):
+                    database_df = temp1
 
-            if (type(hdfs_storage_used) != type(None)) and (
-                type(database_df) != type(None)
-            ):
+                if (type(hdfs_storage_used) != type(None)) and (
+                    type(database_df) != type(None)
+                ):
 
-                temp = obj2.structured_vs_unstructured(hdfs_storage_used, database_df)
-                if type(temp) != type(None):
-                    size_breakdown_df = temp
+                    temp = obj2.structured_vs_unstructured(
+                        hdfs_storage_used, database_df
+                    )
+                    if type(temp) != type(None):
+                        size_breakdown_df = temp
 
-            table_df = None
-            temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
-            if type(temp1) != type(None):
-                table_df = temp1
+                table_df = None
+                temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
+                if type(temp1) != type(None):
+                    table_df = temp1
 
         (
             yarn_vcore_allocated_avg,
@@ -633,132 +663,141 @@ class PdfGenerator:
 
         print("[STATUS][06/18][######............][33%] HDFS Metrics added in PDF")
 
-        pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
-        pdf.set_text_color(r=66, g=133, b=244)
-        pdf.cell(230, 10, "Hive Metrics", 0, ln=1)
+        if (self.hive_username == None) or (self.hive_password == None):
+            pdf.add_page()
+            pdf.set_font("Arial", "B", 18)
+            pdf.set_text_color(r=66, g=133, b=244)
+            pdf.cell(230, 10, "Hive Metrics", 0, ln=1)
 
-        mt_db_host, mt_db_name, mt_db_type, mt_db_port = None, None, None, None
-        temp = obj2.get_hive_config_items(cluster_name)
-        if type(temp) != type(None):
-            mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
-            obj_pdf.hive_metastore_details(
-                mt_db_host, mt_db_name, mt_db_type, mt_db_port
-            )
+            mt_db_host, mt_db_name, mt_db_type, mt_db_port = None, None, None, None
+            temp = obj2.get_hive_config_items(cluster_name)
+            if type(temp) != type(None):
+                mt_db_host, mt_db_name, mt_db_type, mt_db_port = temp
 
-            if mt_db_type == "postgresql":
-                database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
-                    self.hive_username,
-                    self.hive_password,
-                    mt_db_host,
-                    mt_db_port,
-                    mt_db_name,
-                )
-            if mt_db_type == "mysql":
-                database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
-                    self.hive_username,
-                    self.hive_password,
-                    mt_db_host,
-                    mt_db_port,
-                    mt_db_name,
-                )
-            if mt_db_type == "mssql":
-                sql_server_driver = ""
-                driver_names = [
-                    x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
-                ]
-                if driver_names:
-                    sql_server_driver = driver_names[0]
-                    sql_server_driver = sql_server_driver.replace(" ", "+")
-                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}?driver={}".format(
+                flag = True
+                if mt_db_type == "postgresql":
+                    database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
                         self.hive_username,
                         self.hive_password,
                         mt_db_host,
                         mt_db_port,
                         mt_db_name,
-                        sql_server_driver,
                     )
+                elif mt_db_type == "mysql":
+                    database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                    )
+                elif mt_db_type == "mssql":
+                    sql_server_driver = ""
+                    driver_names = [
+                        x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
+                    ]
+                    if driver_names:
+                        sql_server_driver = driver_names[0]
+                        sql_server_driver = sql_server_driver.replace(" ", "+")
+                        database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}?driver={}".format(
+                            self.hive_username,
+                            self.hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                            sql_server_driver,
+                        )
+                    else:
+                        database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}".format(
+                            self.hive_username,
+                            self.hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                        )
                 else:
-                    database_uri = "mssql+pyodbc://{}:{}@{}:{}/{}".format(
-                        self.hive_username,
-                        self.hive_password,
-                        mt_db_host,
-                        mt_db_port,
-                        mt_db_name,
+                    flag = False
+
+                if flag:
+                    obj_pdf.hive_metastore_details(
+                        mt_db_host, mt_db_name, mt_db_type, mt_db_port
                     )
+                    (
+                        database_count,
+                        [tables_with_partition, tables_without_partition],
+                        [internal_tables, external_tables],
+                        hive_execution_engine,
+                        formats,
+                        transaction_locking_concurrency,
+                        hive_interactive_status,
+                    ) = (None, [None, None], [None, None], None, None, None, None)
+                    t1 = obj2.get_hive_database_count(database_uri, mt_db_type)
+                    t2 = obj2.get_hive_partitioned_table_count(database_uri, mt_db_type)
+                    t3 = obj2.get_hive_internal_external_tables(
+                        database_uri, mt_db_type
+                    )
+                    t4 = obj2.get_hive_execution_engine()
+                    t5 = obj2.get_hive_file_formats(database_uri, mt_db_type)
+                    t6 = obj2.get_transaction_locking_concurrency()
+                    t7 = obj2.interactive_queries_status()
+                    if (
+                        (type(t1) != type(None))
+                        and (type(t2) != type(None))
+                        and (type(t3) != type(None))
+                        and (type(t4) != type(None))
+                        and (type(t5) != type(None))
+                        and (type(t6) != type(None))
+                        and (type(t7) != type(None))
+                    ):
+                        (
+                            database_count,
+                            [tables_with_partition, tables_without_partition],
+                            [internal_tables, external_tables],
+                            hive_execution_engine,
+                            formats,
+                            transaction_locking_concurrency,
+                            hive_interactive_status,
+                        ) = (t1, t2, t3, t4, t5, t6, t7)
+                        obj_pdf.hive_details(
+                            database_count,
+                            tables_with_partition,
+                            tables_without_partition,
+                            internal_tables,
+                            external_tables,
+                            hive_execution_engine,
+                            formats,
+                            transaction_locking_concurrency,
+                            hive_interactive_status,
+                        )
 
-            (
-                database_count,
-                [tables_with_partition, tables_without_partition],
-                [internal_tables, external_tables],
-                hive_execution_engine,
-                formats,
-                transaction_locking_concurrency,
-                hive_interactive_status,
-            ) = (None, [None, None], [None, None], None, None, None, None)
-            t1 = obj2.get_hive_database_count(database_uri, mt_db_type)
-            t2 = obj2.get_hive_partitioned_table_count(database_uri, mt_db_type)
-            t3 = obj2.get_hive_internal_external_tables(database_uri, mt_db_type)
-            t4 = obj2.get_hive_execution_engine()
-            t5 = obj2.get_hive_file_formats(database_uri, mt_db_type)
-            t6 = obj2.get_transaction_locking_concurrency()
-            t7 = obj2.interactive_queries_status()
-            if (
-                (type(t1) != type(None))
-                and (type(t2) != type(None))
-                and (type(t3) != type(None))
-                and (type(t4) != type(None))
-                and (type(t5) != type(None))
-                and (type(t6) != type(None))
-                and (type(t7) != type(None))
-            ):
-                (
-                    database_count,
-                    [tables_with_partition, tables_without_partition],
-                    [internal_tables, external_tables],
-                    hive_execution_engine,
-                    formats,
-                    transaction_locking_concurrency,
-                    hive_interactive_status,
-                ) = (t1, t2, t3, t4, t5, t6, t7)
-                obj_pdf.hive_details(
-                    database_count,
-                    tables_with_partition,
-                    tables_without_partition,
-                    internal_tables,
-                    external_tables,
-                    hive_execution_engine,
-                    formats,
-                    transaction_locking_concurrency,
-                    hive_interactive_status,
-                )
+                    database_df = None
+                    temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
+                    if type(temp1) != type(None):
+                        database_df = temp1
+                        obj_pdf.hive_databases_size(database_df)
 
-            database_df = None
-            temp1 = obj2.get_hive_database_info(database_uri, mt_db_type)
-            if type(temp1) != type(None):
-                database_df = temp1
-                obj_pdf.hive_databases_size(database_df)
+                    if (type(hdfs_storage_used) != type(None)) and (
+                        type(database_df) != type(None)
+                    ):
+                        size_breakdown_df = None
+                        temp = obj2.structured_vs_unstructured(
+                            hdfs_storage_used, database_df
+                        )
+                        if type(temp) != type(None):
+                            size_breakdown_df = temp
+                            obj_pdf.structured_vs_unstructured(size_breakdown_df)
 
-            if (type(hdfs_storage_used) != type(None)) and (
-                type(database_df) != type(None)
-            ):
-                size_breakdown_df = None
-                temp = obj2.structured_vs_unstructured(hdfs_storage_used, database_df)
-                if type(temp) != type(None):
-                    size_breakdown_df = temp
-                    obj_pdf.structured_vs_unstructured(size_breakdown_df)
+                    table_df = None
+                    temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
+                    if type(temp1) != type(None):
+                        table_df = temp1
+                        obj_pdf.hive_access_frequency(table_df)
 
-            table_df = None
-            temp1 = obj2.get_hive_metaStore(database_uri, mt_db_type)
-            if type(temp1) != type(None):
-                table_df = temp1
-                obj_pdf.hive_access_frequency(table_df)
-
-            query_type_count_df = None
-            temp1 = obj2.get_hive_adhoc_etl_query(yarn_rm, yarn_port)
-            if type(temp1) != type(None):
-                query_type_count_df = temp1
-                obj_pdf.hive_adhoc_etl_query(query_type_count_df)
+                    query_type_count_df = None
+                    temp1 = obj2.get_hive_adhoc_etl_query(yarn_rm, yarn_port)
+                    if type(temp1) != type(None):
+                        query_type_count_df = temp1
+                        obj_pdf.hive_adhoc_etl_query(query_type_count_df)
 
         print("[STATUS][07/18][#######...........][39%] Hive Metrics added in PDF")
 

@@ -241,6 +241,7 @@ def cloudera_cluster_name(
                     cloudera_manager_username, cloudera_manager_password
                 ),
                 timeout=5,
+                verify=False,
             )
         elif version == 6:
             initial_run = requests.get(
@@ -251,6 +252,7 @@ def cloudera_cluster_name(
                     cloudera_manager_username, cloudera_manager_password
                 ),
                 timeout=5,
+                verify=False,
             )
         elif version == 5:
             initial_run = requests.get(
@@ -261,6 +263,7 @@ def cloudera_cluster_name(
                     cloudera_manager_username, cloudera_manager_password
                 ),
                 timeout=5,
+                verify=False,
             )
         else:
             print("Unable to fetch cloudera clusters as cloudera does not exist")
@@ -488,7 +491,7 @@ def get_hive_creds(inputs):
                             mt_db_name,
                         )
                         engine = create_engine(database_uri)
-                    if mt_db_type == "mysql":
+                    elif mt_db_type == "mysql":
                         database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
                             hive_username,
                             hive_password,
@@ -497,7 +500,7 @@ def get_hive_creds(inputs):
                             mt_db_name,
                         )
                         engine = create_engine(database_uri)
-                    if mt_db_type == "mssql":
+                    elif mt_db_type == "mssql":
                         sql_server_driver = ""
                         driver_names = [
                             x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
@@ -522,11 +525,15 @@ def get_hive_creds(inputs):
                                 mt_db_name,
                             )
                         engine = create_engine(database_uri)
+                    else:
+                        print("Metastore database type not supported!")
+                        return None, None
                     try:
                         engine.connect()
                         return hive_username, hive_password
                     except Exception as ee:
                         print("Unable to connect to Hive Metastore!")
+                        print(ee)
                 else:
                     print("Unable to connect to Cloudera Manager!")
             elif t in ["n", "N"]:
@@ -649,7 +656,12 @@ def broker_list_input():
                         try:
                             broker_connection = ""
                             for i in broker_list:
-                                conn_temp = str(i["host"]) + str(":") + str(i["port"]) + str(",")
+                                conn_temp = (
+                                    str(i["host"])
+                                    + str(":")
+                                    + str(i["port"])
+                                    + str(",")
+                                )
                                 broker_connection = broker_connection + conn_temp
                             broker_connection = broker_connection.strip(",")
                             conn_flag = subprocess.Popen(
@@ -664,8 +676,8 @@ def broker_list_input():
                             conn_flag, err = conn_flag.communicate()
                             if conn_flag == "":
                                 print(
-                                "Kafka credentials are incorrect or unable to connect to kafka brokers!"
-                            )
+                                    "Kafka credentials are incorrect or unable to connect to kafka brokers!"
+                                )
                             else:
                                 return broker_list
                         except Exception as e:

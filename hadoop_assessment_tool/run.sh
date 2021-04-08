@@ -17,7 +17,7 @@ then
 	exit 1
 fi
 #run python file which will generate the pdf
-python3 __main__.py 2>/dev/null
+python3 __main__.py 2>../../hadoop_assessment_tool_terminal.log
 var=$?
 if [ $var -eq 1 ]
 then
