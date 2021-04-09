@@ -211,8 +211,8 @@ class FrameworkDetailsAPI:
                 return list_services_installed_df, new_ref_df
             else:
                 self.logger.error(
-                    "version_mapping failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "version_mapping failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code),
                 )
                 return None
         except Exception as e:

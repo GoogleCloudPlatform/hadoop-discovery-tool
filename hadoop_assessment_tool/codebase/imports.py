@@ -424,7 +424,7 @@ def get_hive_creds(inputs):
                     http = "http"
                 if inputs["version"] == 7:
                     r = requests.get(
-                        "{}://{}:{}/api/v40/clusters/{}/services/hive/config".format(
+                        "{}://{}:{}/api/v40/clusters/{}/services/hive/config?view=full".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
@@ -438,7 +438,7 @@ def get_hive_creds(inputs):
                     )
                 elif inputs["version"] == 6:
                     r = requests.get(
-                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
@@ -452,7 +452,7 @@ def get_hive_creds(inputs):
                     )
                 elif inputs["version"] == 5:
                     r = requests.get(
-                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
@@ -475,13 +475,25 @@ def get_hive_creds(inputs):
                     mt_db_port = ""
                     for i in hive_config_items:
                         if i["name"] == "hive_metastore_database_host":
-                            mt_db_host = i["value"]
+                            if "value" in i:
+                                mt_db_host = i["value"]
+                            else:
+                                mt_db_host = i["default"]
                         elif i["name"] == "hive_metastore_database_name":
-                            mt_db_name = i["value"]
+                            if "value" in i:
+                                mt_db_name = i["value"]
+                            else:
+                                mt_db_name = i["default"]
                         elif i["name"] == "hive_metastore_database_port":
-                            mt_db_port = i["value"]
+                            if "value" in i:
+                                mt_db_port = i["value"]
+                            else:
+                                mt_db_port = i["default"]
                         elif i["name"] == "hive_metastore_database_type":
-                            mt_db_type = i["value"]
+                            if "value" in i:
+                                mt_db_type = i["value"]
+                            else:
+                                mt_db_type = i["default"]
                     if mt_db_type == "postgresql":
                         database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
                             hive_username,
@@ -493,6 +505,15 @@ def get_hive_creds(inputs):
                         engine = create_engine(database_uri)
                     elif mt_db_type == "mysql":
                         database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
+                            hive_username,
+                            hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                        )
+                        engine = create_engine(database_uri)
+                    elif mt_db_type == "oracle":
+                        database_uri = "oracle+cx_oracle://{}:{}@{}:{}/{}".format(
                             hive_username,
                             hive_password,
                             mt_db_host,

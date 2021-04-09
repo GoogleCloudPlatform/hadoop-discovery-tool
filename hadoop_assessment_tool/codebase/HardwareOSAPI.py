@@ -118,8 +118,8 @@ class HardwareOSAPI:
                 return cluster_items
             else:
                 self.logger.error(
-                    "cluster_items failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_items failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -190,8 +190,8 @@ class HardwareOSAPI:
                 return cluster_host_items, cluster_host_len
             else:
                 self.logger.error(
-                    "cluster_host_items failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_host_items failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -260,8 +260,8 @@ class HardwareOSAPI:
                 return cluster_service_item
             else:
                 self.logger.error(
-                    "cluster_service_item failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_service_item failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -328,8 +328,8 @@ class HardwareOSAPI:
                 return host_data
             else:
                 self.logger.error(
-                    "host_data failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "host_data failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -434,8 +434,8 @@ class HardwareOSAPI:
                 return cluster_total_cores_df
             else:
                 self.logger.error(
-                    "cluster_total_cores failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_total_cores failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -551,8 +551,8 @@ class HardwareOSAPI:
                 return cluster_cpu_usage_df, cluster_cpu_usage_avg
             else:
                 self.logger.error(
-                    "cluster_cpu_usage failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_cpu_usage failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -657,8 +657,8 @@ class HardwareOSAPI:
                 return cluster_total_memory_df
             else:
                 self.logger.error(
-                    "cluster_total_memory failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_total_memory failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -768,8 +768,8 @@ class HardwareOSAPI:
                 return cluster_memory_usage_df, cluster_memory_usage_avg
             else:
                 self.logger.error(
-                    "cluster_memory_usage failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_memory_usage failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -857,7 +857,10 @@ class HardwareOSAPI:
                                 "DateTime": pd.to_datetime(
                                     edgenode_usage_df_temp["timestamp"]
                                 ).dt.strftime("%Y-%m-%d %H:%M"),
-                                "Mean": edgenode_usage_df_temp["value"] / 1024 / 1024,
+                                "Mean": edgenode_usage_df_temp["value"]
+                                / 1024
+                                / 1024
+                                / 1024,
                             }
                         )
                         edgenode_usage_df_temp["Legend"] = pd.DataFrame(
@@ -876,7 +879,7 @@ class HardwareOSAPI:
                     else:
                         self.logger.error(
                             "memory_usage_edgenode failed due to invalid API call. HTTP Response: ",
-                            str(r.status_code),
+                            +str(r.status_code),
                         )
                         return None
                 grouped_df = edgenode_usage_df.groupby("Time")
@@ -946,8 +949,8 @@ class HardwareOSAPI:
                 return database_server
             else:
                 self.logger.error(
-                    "database_server failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "database_server failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:

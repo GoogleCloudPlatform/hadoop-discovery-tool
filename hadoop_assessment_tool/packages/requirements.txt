@@ -2,6 +2,7 @@ certifi==2020.12.5
 cffi==1.14.5
 chardet==4.0.0
 cryptography==3.4.7
+cx_oracle==8.1.0
 cycler==0.10.0
 DateTime==4.3
 fpdf==1.7.2

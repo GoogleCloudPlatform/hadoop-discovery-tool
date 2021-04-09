@@ -171,6 +171,14 @@ class PdfGenerator:
                         mt_db_port,
                         mt_db_name,
                     )
+                elif mt_db_type == "oracle":
+                    database_uri = "oracle+cx_oracle://{}:{}@{}:{}/{}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                    )
                 elif mt_db_type == "mssql":
                     sql_server_driver = ""
                     driver_names = [
@@ -690,6 +698,14 @@ class PdfGenerator:
                     )
                 elif mt_db_type == "mysql":
                     database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
+                        self.hive_username,
+                        self.hive_password,
+                        mt_db_host,
+                        mt_db_port,
+                        mt_db_name,
+                    )
+                elif mt_db_type == "oracle":
+                    database_uri = "oracle+cx_oracle://{}:{}@{}:{}/{}".format(
                         self.hive_username,
                         self.hive_password,
                         mt_db_host,

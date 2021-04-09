@@ -102,8 +102,8 @@ class SecurityAPI:
                 return cluster_kerberos_info
             else:
                 self.logger.error(
-                    "cluster_kerberos_info failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "cluster_kerberos_info failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -174,8 +174,8 @@ class SecurityAPI:
                 return ADServer
             else:
                 self.logger.error(
-                    "ad_server_name_and_port failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "ad_server_name_and_port failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -246,8 +246,8 @@ class SecurityAPI:
                 return Server_dn
             else:
                 self.logger.error(
-                    "ad_server_based_dn failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "ad_server_based_dn failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -407,8 +407,8 @@ class SecurityAPI:
                 return hue_flag, mapred_flag, hdfs_flag, yarn_flag, keytab
             else:
                 self.logger.error(
-                    "kerberos_http_auth failed due to invalid API call. HTTP Response: ",
-                    str(r.status_code),
+                    "kerberos_http_auth failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:

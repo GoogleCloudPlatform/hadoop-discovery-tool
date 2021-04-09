@@ -1122,7 +1122,7 @@ class PdfFunctions:
             plt.figure()
             mean_df = mean_df["Mean"].plot(color="steelblue", label="Avg Memory Usage")
             mean_df.legend()
-            mean_df.set_ylabel("Capacity(MB)")
+            mean_df.set_ylabel("Capacity(GB)")
             plt.title("Memory Usage Pattern")
             plt.savefig("memory_usage_edgenode.png")
             self.pdf.image(
@@ -1385,6 +1385,7 @@ class PdfFunctions:
             self.pdf.cell(230, 5, "", 0, ln=1)
         else:
             pass
+
     def list_hadoop_nonHadoop_libs(self, hadoop_native_df):
         """Add List of hadoop and non-hadoop libraries present in cluster in PDF.
 
