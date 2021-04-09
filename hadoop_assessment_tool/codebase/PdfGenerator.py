@@ -762,13 +762,13 @@ class PdfGenerator:
                     t6 = obj2.get_transaction_locking_concurrency()
                     t7 = obj2.interactive_queries_status()
                     if (
-                        (type(t1) != type(None))
-                        and (type(t2) != type(None))
-                        and (type(t3) != type(None))
-                        and (type(t4) != type(None))
-                        and (type(t5) != type(None))
-                        and (type(t6) != type(None))
-                        and (type(t7) != type(None))
+                        (type(t1) == type(None))
+                        and (type(t2) == type(None))
+                        and (type(t3) == type(None))
+                        and (type(t4) == type(None))
+                        and (type(t5) == type(None))
+                        and (type(t6) == type(None))
+                        and (type(t7) == type(None))
                     ):
                         (
                             database_count,
@@ -1160,7 +1160,7 @@ class PdfGenerator:
             "[STATUS][12/18][############......][67%] Yarn Application Metrics added in PDF"
         )
 
-        if type(temp) != type(None):    
+        if type(temp) != type(None):
             bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = (
                 None,
                 None,
