@@ -762,13 +762,13 @@ class PdfGenerator:
                     t6 = obj2.get_transaction_locking_concurrency()
                     t7 = obj2.interactive_queries_status()
                     if (
-                        (type(t1) == type(None))
-                        and (type(t2) == type(None))
-                        and (type(t3) == type(None))
-                        and (type(t4) == type(None))
-                        and (type(t5) == type(None))
-                        and (type(t6) == type(None))
-                        and (type(t7) == type(None))
+                        (type(t1) != type(None))
+                        or (type(t2) != type(None))
+                        or (type(t3) != type(None))
+                        or (type(t4) != type(None))
+                        or (type(t5) != type(None))
+                        or (type(t6) != type(None))
+                        or (type(t7) != type(None))
                     ):
                         (
                             database_count,
