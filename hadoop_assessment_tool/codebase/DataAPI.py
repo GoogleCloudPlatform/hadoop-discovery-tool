@@ -808,11 +808,11 @@ class DataAPI:
                     """
                 select t.TBL_NAME,t.LAST_ACCESS_TIME, d.NAME 
                 from 
-                DBS as d join TBLS as t 
+                DBS d join TBLS t 
                 on 
                 t.DB_ID=d.DB_ID 
                 where 
-                d.NAME not in ('information_schema','sys');
+                d.NAME not in ('information_schema','sys')
                 """
                 )
             elif database_type == "mssql":
@@ -910,7 +910,7 @@ class DataAPI:
                 from
                 DBS
                 where
-                NAME not in ('information_schema','sys');
+                NAME not in ('information_schema','sys')
                 """
                 )
             elif database_type == "mssql":
@@ -963,12 +963,12 @@ class DataAPI:
                         """
                     SELECT count(t.TBL_ID)
                     FROM
-                    DBS as d join TBLS as t
+                    DBS d join TBLS t
                     on
                     d.DB_ID=t.DB_ID
                     where
                     d.NAME = '{}'
-                    GROUP BY d.DB_ID;
+                    GROUP BY d.DB_ID
                     """.format(
                             db
                         )
@@ -1023,7 +1023,7 @@ class DataAPI:
                     FROM
                     DBS
                     where
-                    NAME = '{}';
+                    NAME = '{}'
                     """.format(
                             db
                         )
@@ -1185,11 +1185,11 @@ class DataAPI:
                     """
                 select count(t.TBL_NAME) 
                 from 
-                DBS as d join TBLS as t 
+                DBS d join TBLS t 
                 on 
                 t.DB_ID=d.DB_ID 
                 where 
-                d.NAME not in ('information_schema','sys');
+                d.NAME not in ('information_schema','sys')
                 """
                 )
             elif database_type == "mssql":
@@ -1263,7 +1263,7 @@ class DataAPI:
                     """
                 SELECT count(b.TBL_ID)
                 FROM
-                DBS as a join TBLS as b
+                DBS a join TBLS b
                 on
                 a.DB_ID=b.DB_ID
                 where
@@ -1319,7 +1319,7 @@ class DataAPI:
                     """
                 SELECT count(b.TBL_ID)
                 FROM
-                DBS as a join TBLS as b
+                DBS a join TBLS b
                 on
                 a.DB_ID=b.DB_ID
                 where
@@ -1442,7 +1442,7 @@ class DataAPI:
                 from 
                 DBS 
                 where 
-                NAME not in ('information_schema','sys');
+                NAME not in ('information_schema','sys')
                 """
                 )
             elif database_type == "mssql":
@@ -1491,7 +1491,7 @@ class DataAPI:
                     from 
                     TBLS
                     where 
-                    DB_ID = {};
+                    DB_ID = {}
                     """.format(
                             db_id
                         )
