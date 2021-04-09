@@ -2158,11 +2158,11 @@ class PdfFunctions:
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Hive Details:", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        if type(database_count) == type(None):
+        if type(database_count) != type(None):
             self.pdf.cell(
                 230, 8, "Number of Databases: {}".format(database_count), 0, 1,
             )
-        if type(tables_with_partition) == type(None):
+        if type(tables_with_partition) != type(None):
             self.pdf.cell(
                 230,
                 8,
@@ -2170,7 +2170,7 @@ class PdfFunctions:
                 0,
                 1,
             )
-        if type(tables_without_partition) == type(None):
+        if type(tables_without_partition) != type(None):
             self.pdf.cell(
                 230,
                 8,
@@ -2180,23 +2180,23 @@ class PdfFunctions:
                 0,
                 1,
             )
-        if type(internal_tables) == type(None):
+        if type(internal_tables) != type(None):
             self.pdf.cell(
                 230, 8, "Number of Internal Tables: {}".format(internal_tables), 0, 1,
             )
-        if type(external_tables) == type(None):
+        if type(external_tables) != type(None):
             self.pdf.cell(
                 230, 8, "Number of External Tables: {}".format(external_tables), 0, 1,
             )
-        if type(hive_execution_engine) == type(None):
+        if type(hive_execution_engine) != type(None):
             self.pdf.cell(
                 230, 8, "Hive Execution Engine: {}".format(hive_execution_engine), 0, 1,
             )
-        if type(formats) == type(None):
+        if type(formats) != type(None):
             self.pdf.cell(
                 230, 8, "File Formats used in hive datasets: {}".format(formats), 0, 1,
             )
-        if type(transaction_locking_concurrency) == type(None):
+        if type(transaction_locking_concurrency) != type(None):
             self.pdf.cell(
                 230,
                 8,
@@ -2206,7 +2206,7 @@ class PdfFunctions:
                 0,
                 1,
             )
-        if type(hive_interactive_status) == type(None):
+        if type(hive_interactive_status) != type(None):
             self.pdf.cell(
                 230,
                 8,
