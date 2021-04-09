@@ -1156,10 +1156,11 @@ class PdfGenerator:
                 job_launch_df = temp1
                 obj_pdf.yarn_job_launch_frequency(job_launch_df)
 
-            print(
-                "[STATUS][12/18][############......][67%] Yarn Application Metrics added in PDF"
-            )
+        print(
+            "[STATUS][12/18][############......][67%] Yarn Application Metrics added in PDF"
+        )
 
+        if type(temp) != type(None):    
             bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = (
                 None,
                 None,
