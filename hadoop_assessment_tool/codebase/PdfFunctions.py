@@ -191,7 +191,7 @@ class PdfFunctions:
 
         if type(base_size) != type(None):
             self.pdf.cell(175, 5, "Hbase data size", 1, 0, "L", True)
-            self.pdf.cell(50, 5, "{}".format(base_size), 1, 1, "C", True)
+            self.pdf.cell(50, 5, "{: .2f} GB".format(base_size), 1, 1, "C", True)
 
         if type(new_ref_df) != type(None):
             if not new_ref_df[new_ref_df["name"] == "hbase"].empty:
@@ -1361,7 +1361,7 @@ class PdfFunctions:
                     True,
                 )
             self.pdf.cell(230, 5, "", 0, ln=1)
-        elif os_name == "":
+        elif "debian" in os_name or "ubuntu" in os_name:
             self.pdf.set_font("Arial", "", 12)
             self.pdf.set_text_color(r=66, g=133, b=244)
             self.pdf.cell(230, 8, "Security Patches Details: ", 0, ln=1)
@@ -1383,6 +1383,8 @@ class PdfFunctions:
                     True,
                 )
             self.pdf.cell(230, 5, "", 0, ln=1)
+        else:
+            pass
 
     def list_hadoop_nonHadoop_libs(self, hadoop_native_df):
         """Add List of hadoop and non-hadoop libraries present in cluster in PDF.
@@ -1446,9 +1448,9 @@ class PdfFunctions:
         else:
             self.pdf.cell(230, 8, "Java not installed", 0, ln=1)
         if scala_flag == 1:
-            self.pdf.cell(230, 8, "Scala not installed", 0, ln=1)
-        else:
             self.pdf.cell(230, 8, "Scala installed", 0, ln=1)
+        else:
+            self.pdf.cell(230, 8, "Scala not installed", 0, ln=1)
 
     def security_software(self, security_software):
         """Add list of security software present in cluster in PDF.
@@ -2156,51 +2158,62 @@ class PdfFunctions:
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Hive Details:", 0, ln=1)
         self.pdf.set_text_color(r=1, g=1, b=1)
-        self.pdf.cell(
-            230, 8, "Number of Databases: {}".format(database_count), 0, 1,
-        )
-        self.pdf.cell(
-            230,
-            8,
-            "Number of tables with partition: {}".format(tables_with_partition),
-            0,
-            1,
-        )
-        self.pdf.cell(
-            230,
-            8,
-            "Number of tables without partition: {}".format(tables_without_partition),
-            0,
-            1,
-        )
-        self.pdf.cell(
-            230, 8, "Number of Internal Tables: {}".format(internal_tables), 0, 1,
-        )
-        self.pdf.cell(
-            230, 8, "Number of External Tables: {}".format(external_tables), 0, 1,
-        )
-        self.pdf.cell(
-            230, 8, "Hive Execution Engine: {}".format(hive_execution_engine), 0, 1,
-        )
-        self.pdf.cell(
-            230, 8, "File Formats used in hive datasets: {}".format(formats), 0, 1,
-        )
-        self.pdf.cell(
-            230,
-            8,
-            "Do tables require Transaction Locking concurrency: {}".format(
-                transaction_locking_concurrency
-            ),
-            0,
-            1,
-        )
-        self.pdf.cell(
-            230,
-            8,
-            "Hive Interactive Queries: {}".format(hive_interactive_status),
-            0,
-            1,
-        )
+        if type(database_count) != type(None):
+            self.pdf.cell(
+                230, 8, "Number of Databases: {}".format(database_count), 0, 1,
+            )
+        if type(tables_with_partition) != type(None):
+            self.pdf.cell(
+                230,
+                8,
+                "Number of tables with partition: {}".format(tables_with_partition),
+                0,
+                1,
+            )
+        if type(tables_without_partition) != type(None):
+            self.pdf.cell(
+                230,
+                8,
+                "Number of tables without partition: {}".format(
+                    tables_without_partition
+                ),
+                0,
+                1,
+            )
+        if type(internal_tables) != type(None):
+            self.pdf.cell(
+                230, 8, "Number of Internal Tables: {}".format(internal_tables), 0, 1,
+            )
+        if type(external_tables) != type(None):
+            self.pdf.cell(
+                230, 8, "Number of External Tables: {}".format(external_tables), 0, 1,
+            )
+        if type(hive_execution_engine) != type(None):
+            self.pdf.cell(
+                230, 8, "Hive Execution Engine: {}".format(hive_execution_engine), 0, 1,
+            )
+        if type(formats) != type(None):
+            self.pdf.cell(
+                230, 8, "File Formats used in hive datasets: {}".format(formats), 0, 1,
+            )
+        if type(transaction_locking_concurrency) != type(None):
+            self.pdf.cell(
+                230,
+                8,
+                "Do tables require Transaction Locking concurrency: {}".format(
+                    transaction_locking_concurrency
+                ),
+                0,
+                1,
+            )
+        if type(hive_interactive_status) != type(None):
+            self.pdf.cell(
+                230,
+                8,
+                "Hive Interactive Queries: {}".format(hive_interactive_status),
+                0,
+                1,
+            )
 
     def hive_databases_size(self, database_df):
         """Add Hive databases size table in PDF.
@@ -2270,10 +2283,13 @@ class PdfFunctions:
             os.remove("table_type_count_plot.png")
 
     def hive_adhoc_etl_query(self, query_type_count_df):
-        """Add structure v/s unstructure data details in PDF.
+        """Get Hive adhoc and etl query count over a date range.
 
         Args:
-            size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown.
+            yarn_rm (str): Yarn resource manager IP.
+            yarn_port (str): Yarn resource port.
+        Returns:
+            query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
         """
 
         plt.figure()
@@ -2291,10 +2307,10 @@ class PdfFunctions:
             os.remove("hive_query_type_plot.png")
 
     def structured_vs_unstructured(self, size_breakdown_df):
-        """Add Hive adhoc and etl query count graph in PDF.
+        """Get structure v/s unstructure data details.
 
         Args:
-            query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
+            size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown
         """
 
         self.pdf.set_font("Arial", "B", 12)

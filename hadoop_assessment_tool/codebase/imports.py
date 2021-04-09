@@ -241,6 +241,7 @@ def cloudera_cluster_name(
                     cloudera_manager_username, cloudera_manager_password
                 ),
                 timeout=5,
+                verify=False,
             )
         elif version == 6:
             initial_run = requests.get(
@@ -251,6 +252,7 @@ def cloudera_cluster_name(
                     cloudera_manager_username, cloudera_manager_password
                 ),
                 timeout=5,
+                verify=False,
             )
         elif version == 5:
             initial_run = requests.get(
@@ -261,6 +263,7 @@ def cloudera_cluster_name(
                     cloudera_manager_username, cloudera_manager_password
                 ),
                 timeout=5,
+                verify=False,
             )
         else:
             print("Unable to fetch cloudera clusters as cloudera does not exist")
@@ -387,7 +390,7 @@ def get_yarn_creds(inputs):
                 c = c - 1
                 if c == 0:
                     print("Received incorrect input 3 times, exiting the tool")
-                    return None, None
+                    exit()
                 else:
                     print("Incorrect input, try again!")
     except Exception as e:
@@ -421,7 +424,7 @@ def get_hive_creds(inputs):
                     http = "http"
                 if inputs["version"] == 7:
                     r = requests.get(
-                        "{}://{}:{}/api/v40/clusters/{}/services/hive/config".format(
+                        "{}://{}:{}/api/v40/clusters/{}/services/hive/config?view=full".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
@@ -435,7 +438,7 @@ def get_hive_creds(inputs):
                     )
                 elif inputs["version"] == 6:
                     r = requests.get(
-                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
@@ -449,7 +452,7 @@ def get_hive_creds(inputs):
                     )
                 elif inputs["version"] == 5:
                     r = requests.get(
-                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
@@ -472,13 +475,25 @@ def get_hive_creds(inputs):
                     mt_db_port = ""
                     for i in hive_config_items:
                         if i["name"] == "hive_metastore_database_host":
-                            mt_db_host = i["value"]
+                            if "value" in i:
+                                mt_db_host = i["value"]
+                            else:
+                                mt_db_host = i["default"]
                         elif i["name"] == "hive_metastore_database_name":
-                            mt_db_name = i["value"]
+                            if "value" in i:
+                                mt_db_name = i["value"]
+                            else:
+                                mt_db_name = i["default"]
                         elif i["name"] == "hive_metastore_database_port":
-                            mt_db_port = i["value"]
+                            if "value" in i:
+                                mt_db_port = i["value"]
+                            else:
+                                mt_db_port = i["default"]
                         elif i["name"] == "hive_metastore_database_type":
-                            mt_db_type = i["value"]
+                            if "value" in i:
+                                mt_db_type = i["value"]
+                            else:
+                                mt_db_type = i["default"]
                     if mt_db_type == "postgresql":
                         database_uri = "postgres+psycopg2://{}:{}@{}:{}/{}".format(
                             hive_username,
@@ -488,7 +503,7 @@ def get_hive_creds(inputs):
                             mt_db_name,
                         )
                         engine = create_engine(database_uri)
-                    if mt_db_type == "mysql":
+                    elif mt_db_type == "mysql":
                         database_uri = "mysql+pymysql://{}:{}@{}:{}/{}".format(
                             hive_username,
                             hive_password,
@@ -497,7 +512,16 @@ def get_hive_creds(inputs):
                             mt_db_name,
                         )
                         engine = create_engine(database_uri)
-                    if mt_db_type == "mssql":
+                    elif mt_db_type == "oracle":
+                        database_uri = "oracle+cx_oracle://{}:{}@{}:{}/{}".format(
+                            hive_username,
+                            hive_password,
+                            mt_db_host,
+                            mt_db_port,
+                            mt_db_name,
+                        )
+                        engine = create_engine(database_uri)
+                    elif mt_db_type == "mssql":
                         sql_server_driver = ""
                         driver_names = [
                             x for x in pyodbc.drivers() if x.endswith(" for SQL Server")
@@ -522,11 +546,15 @@ def get_hive_creds(inputs):
                                 mt_db_name,
                             )
                         engine = create_engine(database_uri)
+                    else:
+                        print("Metastore database type not supported!")
+                        return None, None
                     try:
                         engine.connect()
                         return hive_username, hive_password
                     except Exception as ee:
                         print("Unable to connect to Hive Metastore!")
+                        print(ee)
                 else:
                     print("Unable to connect to Cloudera Manager!")
             elif t in ["n", "N"]:
@@ -534,7 +562,7 @@ def get_hive_creds(inputs):
             c = c - 1
             if c == 0:
                 print("Received incorrect input 3 times, exiting the tool")
-                return None, None
+                exit()
             else:
                 print("Incorrect input, try again!")
     except Exception as e:
@@ -558,12 +586,27 @@ def broker_list_input():
                     n = input()
                     if n.isnumeric():
                         n = int(n)
+                        broker_list = []
                         for i in range(0, n):
                             broker = {"host": "", "port": "", "log_dir": ""}
-                            print(
-                                "\nEnter the hostname or IP of broker {}:".format(i + 1)
-                            )
-                            broker["host"] = input()
+                            c2 = 3
+                            while c2 > 0:
+                                print(
+                                    "\nEnter the hostname or IP of broker {}:".format(
+                                        i + 1
+                                    )
+                                )
+                                broker["host"] = input()
+                                if not broker["host"].isnumeric():
+                                    break
+                                c2 = c2 - 1
+                                if c2 == 0:
+                                    print(
+                                        "Received incorrect input 3 times, exiting the tool"
+                                    )
+                                    exit()
+                                else:
+                                    print("Incorrect input, try again!")
                             c2 = 3
                             while c2 > 0:
                                 print(
@@ -576,12 +619,24 @@ def broker_list_input():
                                     broker["port"] = "9092"
                                     break
                                 elif t1 in ["n", "N"]:
-                                    print(
-                                        "\nPlease enter the port number of broker hosted on {}:".format(
-                                            broker["host"]
+                                    c3 = 3
+                                    while c3 > 0:
+                                        print(
+                                            "\nPlease enter the port number of broker hosted on {}:".format(
+                                                broker["host"]
+                                            )
                                         )
-                                    )
-                                    broker["port"] = input()
+                                        broker["port"] = input()
+                                        if broker["port"].isnumeric():
+                                            break
+                                        c3 = c3 - 1
+                                        if c3 == 0:
+                                            print(
+                                                "Received incorrect input 3 times, exiting the tool"
+                                            )
+                                            exit()
+                                        else:
+                                            print("Incorrect input, try again!")
                                     break
                                 c2 = c2 - 1
                                 if c2 == 0:
@@ -618,7 +673,38 @@ def broker_list_input():
                                     exit()
                                 else:
                                     print("Incorrect input, try again!")
-                        return broker_list
+                            broker_list.append(broker)
+                        try:
+                            broker_connection = ""
+                            for i in broker_list:
+                                conn_temp = (
+                                    str(i["host"])
+                                    + str(":")
+                                    + str(i["port"])
+                                    + str(",")
+                                )
+                                broker_connection = broker_connection + conn_temp
+                            broker_connection = broker_connection.strip(",")
+                            conn_flag = subprocess.Popen(
+                                "timeout 20 kafka-run-class kafka.tools.GetOffsetShell --broker-list "
+                                + str(broker_connection)
+                                + " --topic __consumer_offsets 2>/dev/null",
+                                shell=True,
+                                stdout=subprocess.PIPE,
+                                encoding="utf-8",
+                            )
+                            conn_flag.wait()
+                            conn_flag, err = conn_flag.communicate()
+                            if conn_flag == "":
+                                print(
+                                    "Kafka credentials are incorrect or unable to connect to kafka brokers!"
+                                )
+                            else:
+                                return broker_list
+                        except Exception as e:
+                            print(
+                                "Kafka credentials are incorrect or unable to connect to kafka brokers!"
+                            )
                     c1 = c1 - 1
                     if c1 == 0:
                         print("Received incorrect input 3 times, exiting the tool")

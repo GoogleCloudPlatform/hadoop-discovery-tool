@@ -1,13 +1,18 @@
 #!bin/bash
 var=0
-python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' | grep -E '3.3|3.4|3.5|3.9'  > /dev/null
+python3 -c 'import sys; print(".".join(map(str, sys.version_info[:2])))' 2> /dev/null | grep -E '3.6|3.7|3.8|3.9'  > /dev/null
 var=$?
-if [ $var -eq 0 ]
+if [ $var -eq 1 ]
 then
     echo "ERROR - Python version not satisfied"
     exit 1
 fi
-if [ $var -eq 1 ]
+if [ $var -eq 127 ]
+then
+    echo "ERROR - Python version not satisfied"
+    exit 1
+fi
+if [ $var -eq 0 ]
 then
     echo "*****************************************************************"
     echo "INFO - Python version satisfied"
@@ -18,7 +23,12 @@ python3 --version &>/dev/null
 var=$?
 if [ $var -eq 1 ]
 then
-    echo "ERROR - Python version error"
+    echo "ERROR - Error in python environment configurations"
+    exit 1
+fi
+if [ $var -eq 127 ]
+then
+    echo "ERROR - Python not found"
     exit 1
 fi
 flag=0
@@ -46,6 +56,11 @@ then
                 exit 1
             fi
         fi
+        if [ $check -eq 127 ]
+        then
+            echo "ERROR - OS Packages not Installed Successfully"
+            exit 1
+        fi
     fi
     flag=8
 else
@@ -66,6 +81,11 @@ else
                 echo "ERROR - OS Packages not Installed Successfully"
                 exit 1
             fi
+        fi
+        if [ $check -eq 127 ]
+        then
+            echo "ERROR - OS Packages not Installed Successfully"
+            exit 1
         fi
     fi
     flag=6
@@ -156,6 +176,11 @@ var=$?
 if [ $var -eq 1 ]
 then
     echo "ERROR - Cannot update pip in python environment"
+    exit 1
+fi
+if [ $var -eq 127 ]
+then
+    echo "ERROR - pip3 not found"
     exit 1
 fi
 if [ $var -eq 0 ]

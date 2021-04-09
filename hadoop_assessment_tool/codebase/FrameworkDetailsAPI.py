@@ -98,6 +98,8 @@ class FrameworkDetailsAPI:
                 distribution = "CDH6"
             elif re.search(r"\bcdh5\b", a):
                 distribution = "CDH5"
+            else:
+                distribution = None
             if self.version == 0:
                 hadoop_minor, distribution = None, None
             self.logger.info("hadoop_version successful")
@@ -209,8 +211,8 @@ class FrameworkDetailsAPI:
                 return list_services_installed_df, new_ref_df
             else:
                 self.logger.error(
-                    "version_mapping failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "version_mapping failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code),
                 )
                 return None
         except Exception as e:
@@ -269,6 +271,8 @@ class FrameworkDetailsAPI:
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
                 ).wait(10)
+            else:
+                third_party_package = None
             self.logger.info("third_party_software successful")
             return third_party_package
         except Exception as e:
@@ -379,6 +383,8 @@ class FrameworkDetailsAPI:
                 package_version = package_version[1:10]
             elif "suse" in os_name:
                 pass
+            else:
+                package_version = None
             self.logger.info("version_package successful")
             return package_version
         except Exception as e:

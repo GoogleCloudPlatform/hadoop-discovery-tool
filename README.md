@@ -93,11 +93,16 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
    |tqdm==4.59.0|typing-extensions==3.7.4.3|urllib3==1.26.4|
    |virtualenv==15.1.04|zipp==3.4.1|zope.interface==5.2.0|
    |wheel=0.36.2|pip=21.0.1|cffi=1.14.5|
-   |cryptography==3.4.7|pycparser=2.20||
+   |cryptography==3.4.7|pycparser=2.20|cx-Oracle=8.1.0|
 
-10. Detail execution information will be logged in the log file, which will be present at location:
+10. Tool supports below hive metastores
+    1. PostgreSQL
+    2. MySQL
+    3. Oracle
+11. Tool needs access to dfsadmin utility.   
+12. Detail execution information will be logged in the log file, which will be present at location:
 `./hadoop_assessment_tool_{YYYY-MM-DD_HH:MM:SS}.log`
-11. After a successful tool execution, a PDF report will be generated at the location:
+13. After a successful tool execution, a PDF report will be generated at the location:
 ` ./hadoop_assessment_report_{YYYY-MM-DD_HH-MM-SS}.pdf`
 
 ## User Input Requirements

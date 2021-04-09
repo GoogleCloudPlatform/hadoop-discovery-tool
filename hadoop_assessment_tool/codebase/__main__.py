@@ -50,9 +50,20 @@ if os.path.exists("../../hadoop_assessment_report_{}.pdf".format(cur_date)):
     )
 else:
     if os.path.exists("../../hadoop_assessment_tool_{}.log".format(cur_date)):
-        response = "\nUnable to generate PDF report, check logs for more details and log is available in the following location: \n{}".format(
-            os.path.abspath("../../hadoop_assessment_tool_{}.log".format(cur_date))
-        )
+        if os.path.exists("../../hadoop_assessment_tool_terminal.log"):
+            response = "\nUnable to generate PDF report, check logs for more details and logs are available in the following locations: \n{}\n{}".format(
+                os.path.abspath("../../hadoop_assessment_tool_{}.log".format(cur_date)),
+                os.path.abspath("../../hadoop_assessment_tool_terminal.log"),
+            )
+        else:
+            response = "\nUnable to generate PDF report, check logs for more details and log is available in the following location: \n{}".format(
+                os.path.abspath("../../hadoop_assessment_tool_{}.log".format(cur_date))
+            )
     else:
-        response = "\nUnable to generate PDF report"
+        if os.path.exists("../../hadoop_assessment_tool_terminal.log"):
+            response = "\nUnable to generate PDF report, check logs for more details and log is available in the following location: \n{}".format(
+                os.path.abspath("../../hadoop_assessment_tool_terminal.log")
+            )
+        else:
+            response = "\nUnable to generate PDF report"
 print(response)

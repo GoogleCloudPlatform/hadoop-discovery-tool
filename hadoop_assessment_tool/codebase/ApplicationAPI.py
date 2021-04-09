@@ -196,8 +196,8 @@ class ApplicationAPI:
                 return yarn_application_df
             else:
                 self.logger.error(
-                    "get_application_details failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_application_details failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -301,6 +301,8 @@ class ApplicationAPI:
                 only_streaming = only_streaming.append(
                     insert_spark_if_streaming, ignore_index=True
                 )
+            else:
+                only_streaming = None
             self.logger.info("streaming_jobs successful")
             return only_streaming
         except Exception as e:
@@ -612,8 +614,8 @@ class ApplicationAPI:
                 return yarn_total_vcores_count
             else:
                 self.logger.error(
-                    "get_yarn_total_vcore failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_yarn_total_vcore failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
         except Exception as e:
             self.logger.error("get_yarn_total_vcore failed", exc_info=True)
@@ -723,8 +725,8 @@ class ApplicationAPI:
                 return yarn_vcore_available_df
             else:
                 self.logger.error(
-                    "get_yarn_vcore_available failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_yarn_vcore_available failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -867,8 +869,8 @@ class ApplicationAPI:
                 )
             else:
                 self.logger.error(
-                    "get_yarn_vcore_allocated failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_yarn_vcore_allocated failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -900,8 +902,8 @@ class ApplicationAPI:
                 return yarn_total_memory_count
             else:
                 self.logger.error(
-                    "get_yarn_total_memory failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_yarn_total_memory failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1012,8 +1014,8 @@ class ApplicationAPI:
                 return yarn_memory_available_df
             else:
                 self.logger.error(
-                    "get_yarn_memory_available failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_yarn_memory_available failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1158,8 +1160,8 @@ class ApplicationAPI:
                 )
             else:
                 self.logger.error(
-                    "get_yarn_memory_allocated failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_yarn_memory_allocated failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1349,8 +1351,8 @@ class ApplicationAPI:
                 return yarn_pending_apps_df
             else:
                 self.logger.error(
-                    "get_pending_application failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_pending_application failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1461,8 +1463,8 @@ class ApplicationAPI:
                 return yarn_pending_memory_df
             else:
                 self.logger.error(
-                    "get_pending_memory failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_pending_memory failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1573,8 +1575,8 @@ class ApplicationAPI:
                 return yarn_pending_vcore_df
             else:
                 self.logger.error(
-                    "get_pending_vcore failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_pending_vcore failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1685,8 +1687,8 @@ class ApplicationAPI:
                 return yarn_running_apps_df
             else:
                 self.logger.error(
-                    "get_running_application failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_running_application failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1706,7 +1708,8 @@ class ApplicationAPI:
             r = requests.get(
                 "{}://{}:{}/ws/v1/cluster/scheduler".format(
                     self.http, yarn_rm, yarn_port
-                )
+                ),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_queues = r.json()
@@ -1715,8 +1718,8 @@ class ApplicationAPI:
                 return yarn_queues_list
             else:
                 self.logger.error(
-                    "get_queue_details failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_queue_details failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -1939,7 +1942,7 @@ class ApplicationAPI:
                         if count > 1:
                             disk_space_consumed = i
                 except:
-                    pass
+                    return None
             if isinstance(int(dt[0]), int) == True:
                 base_size = int(dt[0]) / 1024 / 1024 / 1024
             disk_space_consumed = int(disk_space_consumed) / 1024 / 1024 / 1024
@@ -2018,8 +2021,8 @@ class ApplicationAPI:
                 return replication
             else:
                 self.logger.error(
-                    "get_hbase_replication failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_hbase_replication failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -2098,8 +2101,8 @@ class ApplicationAPI:
                 return indexing
             else:
                 self.logger.error(
-                    "get_hbase_secondary_index failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_hbase_secondary_index failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -2825,7 +2828,7 @@ class ApplicationAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
+            ).wait(50)
             broker_id_df = pd.read_csv("./broker_id.csv", delimiter="\n", header=None)
             subprocess.Popen(
                 "rm ./broker_id.csv",
@@ -3098,8 +3101,8 @@ class ApplicationAPI:
                 return services
             else:
                 self.logger.error(
-                    "get_cloudera_services_used_for_ingestion failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_cloudera_services_used_for_ingestion failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
         except Exception as e:
             self.logger.error(
@@ -3167,8 +3170,8 @@ class ApplicationAPI:
                 return br
             else:
                 self.logger.error(
-                    "backup_and_recovery failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "backup_and_recovery failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
         except Exception as e:
             self.logger.error("backup_and_recovery failed", exc_info=True)

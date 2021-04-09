@@ -192,7 +192,7 @@ class DataAPI:
             )
             data.wait(10)
             data_out, data_err = data.communicate()
-            final_val = "false"
+            final_val = "true"
             if len(data_out) > 0:
                 lst = []
                 res = []
@@ -236,6 +236,8 @@ class DataAPI:
                 out.wait(10)
                 stdout, stderr = out.communicate()
                 hdfs_root_dir = stdout
+            else:
+                hdfs_root_dir = None
             self.logger.info("get_cliresult successful")
             return hdfs_root_dir
         except Exception as e:
@@ -342,8 +344,8 @@ class DataAPI:
                 return hdfs_capacity_df, hdfs_storage_config
             else:
                 self.logger.error(
-                    "get_hdfs_capacity failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_hdfs_capacity failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -456,8 +458,8 @@ class DataAPI:
                 return hdfs_capacity_used_df, hdfs_storage_used
             else:
                 self.logger.error(
-                    "get_hdfs_capacity_used failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_hdfs_capacity_used failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -679,7 +681,7 @@ class DataAPI:
             r = None
             if self.version == 7:
                 r = requests.get(
-                    "{}://{}:{}/api/v40/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v40/clusters/{}/services/hive/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -692,7 +694,7 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -705,7 +707,7 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config".format(
+                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -730,19 +732,31 @@ class DataAPI:
                 mt_db_port = ""
                 for i in hive_config_items:
                     if i["name"] == "hive_metastore_database_host":
-                        mt_db_host = i["value"]
+                        if "value" in i:
+                            mt_db_host = i["value"]
+                        else:
+                            mt_db_host = i["default"]
                     elif i["name"] == "hive_metastore_database_name":
-                        mt_db_name = i["value"]
+                        if "value" in i:
+                            mt_db_name = i["value"]
+                        else:
+                            mt_db_name = i["default"]
                     elif i["name"] == "hive_metastore_database_port":
-                        mt_db_port = i["value"]
+                        if "value" in i:
+                            mt_db_port = i["value"]
+                        else:
+                            mt_db_port = i["default"]
                     elif i["name"] == "hive_metastore_database_type":
-                        mt_db_type = i["value"]
+                        if "value" in i:
+                            mt_db_type = i["value"]
+                        else:
+                            mt_db_type = i["default"]
                 self.logger.info("get_hive_config_items successful")
                 return mt_db_host, mt_db_name, mt_db_type, mt_db_port
             else:
                 self.logger.error(
-                    "get_hive_config_items failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_hive_config_items failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:
@@ -789,6 +803,18 @@ class DataAPI:
                 d.NAME not in ('information_schema','sys');
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                select t.TBL_NAME,t.LAST_ACCESS_TIME, d.NAME 
+                from 
+                DBS d join TBLS t 
+                on 
+                t.DB_ID=d.DB_ID 
+                where 
+                d.NAME not in ('information_schema','sys')
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
@@ -801,6 +827,8 @@ class DataAPI:
                 d.NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 table_count = table_count + 1
                 table_name = row[0]
@@ -875,6 +903,16 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                select NAME
+                from
+                DBS
+                where
+                NAME not in ('information_schema','sys')
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
@@ -885,6 +923,8 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 db = row[0]
                 table_count = 0
@@ -918,6 +958,21 @@ class DataAPI:
                             db
                         )
                     )
+                elif database_type == "oracle":
+                    result = engine.execute(
+                        """
+                    SELECT count(t.TBL_ID)
+                    FROM
+                    DBS d join TBLS t
+                    on
+                    d.DB_ID=t.DB_ID
+                    where
+                    d.NAME = '{}'
+                    GROUP BY d.DB_ID
+                    """.format(
+                            db
+                        )
+                    )
                 elif database_type == "mssql":
                     result = engine.execute(
                         """
@@ -933,6 +988,8 @@ class DataAPI:
                             db
                         )
                     )
+                else:
+                    return None
                 for row in result:
                     table_count = row[0]
                 if database_type == "postgresql":
@@ -959,6 +1016,18 @@ class DataAPI:
                             db
                         )
                     )
+                elif database_type == "oracle":
+                    result = engine.execute(
+                        """
+                    SELECT DB_LOCATION_URI
+                    FROM
+                    DBS
+                    where
+                    NAME = '{}'
+                    """.format(
+                            db
+                        )
+                    )
                 elif database_type == "mssql":
                     result = engine.execute(
                         """
@@ -971,6 +1040,8 @@ class DataAPI:
                             db
                         )
                     )
+                else:
+                    return None
                 for row in result:
                     database_location = row[0]
                     command = "hdfs dfs -du -s -h {}".format(database_location)
@@ -1019,12 +1090,20 @@ class DataAPI:
                 select count(DB_ID) from DBS where NAME not in ('information_schema','sys')
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                select count(DB_ID) from DBS where NAME not in ('information_schema','sys')
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
                 select count(DB_ID) from DBS where NAME not in ('information_schema','sys')
                 """
                 )
+            else:
+                return None
             for row in result:
                 database_count = row[0]
             self.logger.info("get_hive_database_count successful")
@@ -1061,12 +1140,20 @@ class DataAPI:
                 select count(distinct(TBL_ID)) from PARTITIONS
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                select count(distinct(TBL_ID)) from PARTITIONS
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
                 select count(distinct(TBL_ID)) from PARTITIONS
                 """
                 )
+            else:
+                return None
             for row in result:
                 number_of_tables_with_partition = row[0]
             if database_type == "postgresql":
@@ -1093,6 +1180,18 @@ class DataAPI:
                 d.NAME not in ('information_schema','sys');
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                select count(t.TBL_NAME) 
+                from 
+                DBS d join TBLS t 
+                on 
+                t.DB_ID=d.DB_ID 
+                where 
+                d.NAME not in ('information_schema','sys')
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
@@ -1105,6 +1204,8 @@ class DataAPI:
                 d.NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 total_tables = row[0]
             number_of_tables_without_partition = (
@@ -1157,6 +1258,19 @@ class DataAPI:
                 GROUP BY a.DB_ID
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                SELECT count(b.TBL_ID)
+                FROM
+                DBS a join TBLS b
+                on
+                a.DB_ID=b.DB_ID
+                where
+                a.NAME not in('information_schema','sys') and b.TBL_TYPE = 'MANAGED_TABLE'
+                GROUP BY a.DB_ID
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
@@ -1170,6 +1284,8 @@ class DataAPI:
                 GROUP BY a.DB_ID
                 """
                 )
+            else:
+                return None
             for row in result:
                 internal_tables = row[0]
             if database_type == "postgresql":
@@ -1198,6 +1314,19 @@ class DataAPI:
                 GROUP BY a.DB_ID
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                SELECT count(b.TBL_ID)
+                FROM
+                DBS a join TBLS b
+                on
+                a.DB_ID=b.DB_ID
+                where
+                a.NAME not in('information_schema','sys') and b.TBL_TYPE = 'EXTERNAL_TABLE'
+                GROUP BY a.DB_ID
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
@@ -1211,6 +1340,8 @@ class DataAPI:
                 GROUP BY a.DB_ID
                 """
                 )
+            else:
+                return None
             for row in result:
                 external_tables = row[0]
             self.logger.info("get_hive_internal_external_tables successful")
@@ -1304,6 +1435,16 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            elif database_type == "oracle":
+                result = engine.execute(
+                    """
+                select NAME, DB_ID
+                from 
+                DBS 
+                where 
+                NAME not in ('information_schema','sys')
+                """
+                )
             elif database_type == "mssql":
                 result = engine.execute(
                     """
@@ -1314,6 +1455,8 @@ class DataAPI:
                 NAME not in ('information_schema','sys');
                 """
                 )
+            else:
+                return None
             for row in result:
                 db = row[0]
                 db_id = row[1]
@@ -1341,6 +1484,18 @@ class DataAPI:
                             db_id
                         )
                     )
+                elif database_type == "oracle":
+                    result = engine.execute(
+                        """
+                    select TBL_NAME
+                    from 
+                    TBLS
+                    where 
+                    DB_ID = {}
+                    """.format(
+                            db_id
+                        )
+                    )
                 elif database_type == "mssql":
                     result = engine.execute(
                         """
@@ -1353,6 +1508,8 @@ class DataAPI:
                             db_id
                         )
                     )
+                else:
+                    return None
                 table_name = ""
                 for row in result:
                     table_name = row[0]
@@ -1502,13 +1659,15 @@ class DataAPI:
 
         Args:
             yarn_rm (str): Yarn resource manager IP.
+            yarn_port (str): Yarn resource port.
         Returns:
             query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
         """
 
         try:
             r = requests.get(
-                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port)
+                "{}://{}:{}/ws/v1/cluster/apps".format(self.http, yarn_rm, yarn_port),
+                verify=False,
             )
             if r.status_code == 200:
                 yarn_application = r.json()
@@ -1559,8 +1718,8 @@ class DataAPI:
                 return query_type_count_df
             else:
                 self.logger.error(
-                    "get_hive_adhoc_etl_query failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "get_hive_adhoc_etl_query failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
                 return None
         except Exception as e:

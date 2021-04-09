@@ -118,9 +118,10 @@ class HardwareOSAPI:
                 return cluster_items
             else:
                 self.logger.error(
-                    "cluster_items failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "cluster_items failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_items failed", exc_info=True)
             return None
@@ -189,9 +190,10 @@ class HardwareOSAPI:
                 return cluster_host_items, cluster_host_len
             else:
                 self.logger.error(
-                    "cluster_host_items failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "cluster_host_items failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_host_items failed", exc_info=True)
             return None
@@ -258,9 +260,10 @@ class HardwareOSAPI:
                 return cluster_service_item
             else:
                 self.logger.error(
-                    "cluster_service_item failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "cluster_service_item failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_service_item failed", exc_info=True)
             return None
@@ -325,9 +328,10 @@ class HardwareOSAPI:
                 return host_data
             else:
                 self.logger.error(
-                    "host_data failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "host_data failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("host_data failed", exc_info=True)
             return None
@@ -430,9 +434,10 @@ class HardwareOSAPI:
                 return cluster_total_cores_df
             else:
                 self.logger.error(
-                    "cluster_total_cores failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "cluster_total_cores failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_total_cores failed", exc_info=True)
             return None
@@ -546,9 +551,10 @@ class HardwareOSAPI:
                 return cluster_cpu_usage_df, cluster_cpu_usage_avg
             else:
                 self.logger.error(
-                    "cluster_cpu_usage failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "cluster_cpu_usage failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_cpu_usage failed", exc_info=True)
             return None
@@ -651,9 +657,10 @@ class HardwareOSAPI:
                 return cluster_total_memory_df
             else:
                 self.logger.error(
-                    "cluster_total_memory failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "cluster_total_memory failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_total_memory failed", exc_info=True)
             return None
@@ -761,18 +768,21 @@ class HardwareOSAPI:
                 return cluster_memory_usage_df, cluster_memory_usage_avg
             else:
                 self.logger.error(
-                    "cluster_memory_usage failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "cluster_memory_usage failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("cluster_memory_usage failed", exc_info=True)
             return None
 
     def memory_usage_edgenode(self, edgenode_hostid_list):
-        """Get database server like mysql for metadata.
+        """Get memory usage data over a date range.
 
+        Args:
+            edgenode_hostid_list (str): list of edgenodes in the cluster.
         Returns:
-            database_server (str): Database server present in cluster.
+            mean_df (DataFrame): Memory usage over time
         """
 
         try:
@@ -783,7 +793,7 @@ class HardwareOSAPI:
                     r = None
                     if self.version == 7:
                         r = requests.get(
-                            "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                            "{}://{}:{}/api/v40/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint='/'&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -799,7 +809,7 @@ class HardwareOSAPI:
                         )
                     elif self.version == 6:
                         r = requests.get(
-                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint='/'&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -815,7 +825,7 @@ class HardwareOSAPI:
                         )
                     elif self.version == 5:
                         r = requests.get(
-                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}&to={}".format(
+                            "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20capacity_used%20where%20hostId%20%3D%20{}%20AND%20mountpoint='/'&to={}".format(
                                 self.http,
                                 self.cloudera_manager_host_ip,
                                 self.cloudera_manager_port,
@@ -847,7 +857,10 @@ class HardwareOSAPI:
                                 "DateTime": pd.to_datetime(
                                     edgenode_usage_df_temp["timestamp"]
                                 ).dt.strftime("%Y-%m-%d %H:%M"),
-                                "Mean": edgenode_usage_df_temp["value"] / 1000,
+                                "Mean": edgenode_usage_df_temp["value"]
+                                / 1024
+                                / 1024
+                                / 1024,
                             }
                         )
                         edgenode_usage_df_temp["Legend"] = pd.DataFrame(
@@ -866,8 +879,9 @@ class HardwareOSAPI:
                     else:
                         self.logger.error(
                             "memory_usage_edgenode failed due to invalid API call. HTTP Response: ",
-                            r.status_code,
+                            +str(r.status_code),
                         )
+                        return None
                 grouped_df = edgenode_usage_df.groupby("Time")
                 mean_df = grouped_df.mean()
                 mean_df = mean_df.reset_index()
@@ -935,9 +949,10 @@ class HardwareOSAPI:
                 return database_server
             else:
                 self.logger.error(
-                    "database_server failed due to invalid API call. HTTP Response: ",
-                    r.status_code,
+                    "database_server failed due to invalid API call. HTTP Response: "
+                    + str(r.status_code)
                 )
+                return None
         except Exception as e:
             self.logger.error("database_server failed", exc_info=True)
             return None
@@ -1035,6 +1050,8 @@ class HardwareOSAPI:
                     web_server = "Web server is not enabled"
                 else:
                     web_server = "Web server is enabled"
+            else:
+                web_server = None
             self.logger.info("web_server successful")
             return web_server
         except Exception as e:
@@ -1108,6 +1125,8 @@ class HardwareOSAPI:
                         ntp_server = "not enabled"
                     else:
                         ntp_server = "enabled"
+            else:
+                ntp_server = None
             self.logger.info("ntp_server successful")
             return ntp_server
         except Exception as e:
@@ -1338,9 +1357,12 @@ class HardwareOSAPI:
             os_name, err = os_name.communicate()
             os_name = os_name.lower()
             if "centos" in os_name or "red hat" in os_name:
-                subprocess.getoutput(
-                    "sudo yum updateinfo list security installed | grep /Sec > security_level.csv"
-                )
+                subprocess.Popen(
+                    "sudo yum -y updateinfo list security installed 2>/dev/null | grep /Sec > security_level.csv",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                ).wait(10)
                 fin = open("security_level.csv", "r")
                 fout = open("security_final.csv", "w")
                 for iterator in fin:
@@ -1573,6 +1595,8 @@ class HardwareOSAPI:
                     encoding="utf-8",
                 )
                 softwares_installed.wait(10)
+            else:
+                softwares_installed = None
             if "Python 3." in python_check:
                 python_flag = 1
             with open("java_check.csv", "r") as fp:
@@ -1586,20 +1610,27 @@ class HardwareOSAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
-            os.popen("timeout -k 30 29 spark-shell > ./scala.csv 2>/dev/null").read()
+            os.popen(
+                "spark-submit --version 2>/dev/null; echo $? > ./status.csv"
+            ).read()
+            scala_flag = 0
             spark_scala = subprocess.Popen(
-                "cat ./scala.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
+                "cat ./status.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8"
             )
             spark_scala.wait(10)
             out, err = spark_scala.communicate()
-            if "Spark context available as" in out:
-                scala_flag = 1
+            with open("status.csv", "r") as fp:
+                for line in fp:
+                    if "0" in line:
+                        scala_flag = 1
+                        break
             subprocess.Popen(
-                "rm -rf ./scala.csv 2>/dev/null",
+                "rm -rf ./status.csv 2>/dev/null",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
+
             self.logger.info("check_libraries_installed successful")
             return python_flag, java_flag, scala_flag
         except Exception as e:
