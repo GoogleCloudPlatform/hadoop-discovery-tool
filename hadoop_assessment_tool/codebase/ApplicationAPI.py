@@ -2828,7 +2828,7 @@ class ApplicationAPI:
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(50)
+            ).wait()
             broker_id_df = pd.read_csv("./broker_id.csv", delimiter="\n", header=None)
             subprocess.Popen(
                 "rm ./broker_id.csv",
