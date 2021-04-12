@@ -44,6 +44,7 @@ class ApplicationAPI:
 
         Args:
             yarn_rm (str): Yarn resource manager IP.
+            yarn_port (str): Yarn resource manager port.
         Returns:
             yarn_application_df (DataFrame): List of yarn related application in cluster.
         """
