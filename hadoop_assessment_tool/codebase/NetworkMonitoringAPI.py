@@ -150,8 +150,7 @@ class NetworkMonitoringAPI:
             subprocess.Popen(
                 "rm ./disk.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8",
             ).wait(10)
-            disk_df = disk_df.fillna(0)
-            #disk_df.dropna(inplace = True)
+            disk_df.dropna(inplace = True)
             disk_df.columns = ["disk_read", "disk_write"]
             total_disk_read = 0
             for i in disk_df["disk_read"]:
