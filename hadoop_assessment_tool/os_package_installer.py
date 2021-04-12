@@ -3,7 +3,15 @@ import re
 import sys
 
 # initialise flags to identify packages
-nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt, pydevel_dt,iostat_dt = "", "", "", "", "", "",""
+nload_dt, vnstat_dt, gcc_dt, odbc_dt, sasl_dt, pydevel_dt, iostat_dt = (
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+)
 # list to hold installed and non installed data
 installed, not_installed = [], []
 # This command will fetch os-name for ex. centos,debian,opensuse etc.
@@ -252,7 +260,7 @@ else:
 if iostat_dt != "":
     installed.append(iostat_dt)
 else:
-    not_installed.append("Iostat")    
+    not_installed.append("Iostat")
 installed_string = ":".join(installed)
 not_installed_string = ":".join(not_installed)
 # Here the code will decide based on the size of list which message to show to user about os packages installation

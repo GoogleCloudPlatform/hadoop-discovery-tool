@@ -20,17 +20,18 @@ from NetworkMonitoringAPI import *
 
 class PDF(FPDF):
     def header(self):
-        self.image('gcp_logo.png', 15, 8, 30)
-        self.set_font('Arial', 'B', 15)
+        self.image("gcp_logo.png", 15, 8, 30)
+        self.set_font("Arial", "B", 15)
         self.ln(15)
-        
+
     def footer(self):
         self.set_y(-15)
         self.set_text_color(r=0, g=0, b=0)
-        self.set_font('Arial', 'I', 8)
-        self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
+        self.set_font("Arial", "I", 8)
+        self.cell(0, 10, "Page " + str(self.page_no()) + "/{nb}", 0, 0, "C")
 
-class PdfGenerator():
+
+class PdfGenerator:
     """This Class has functions for PDF generation based on different 
     Cloudera versions.
 
@@ -58,8 +59,7 @@ class PdfGenerator():
     def run(self):
         """Generate PDF for CDH-5, CDH-6 and CDP-7"""
 
-        # pdf = FPDF(format=(250, 350))
-        pdf = PDF(format=(250,350))
+        pdf = PDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
         obj3 = FrameworkDetailsAPI(self.inputs)
@@ -71,7 +71,6 @@ class PdfGenerator():
         yarn_port = self.inputs["yarn_port"]
         cluster_name = self.cluster_name
 
-        # pdf.add_page()
         pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 26)
