@@ -256,7 +256,7 @@ def cloudera_cluster_name(
             )
         elif version == 5:
             initial_run = requests.get(
-                "{}://{}:{}/api/v19/clusters".format(
+                "{}://{}:{}/api/v18/clusters".format(
                     http, cloudera_manager_host_ip, cloudera_manager_port
                 ),
                 auth=HTTPBasicAuth(
@@ -452,7 +452,7 @@ def get_hive_creds(inputs):
                     )
                 elif inputs["version"] == 5:
                     r = requests.get(
-                        "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
+                        "{}://{}:{}/api/v18/clusters/{}/services/hive/config?view=full".format(
                             http,
                             inputs["cloudera_manager_host_ip"],
                             inputs["cloudera_manager_port"],
