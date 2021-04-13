@@ -18,6 +18,19 @@ from PdfFunctions import *
 from NetworkMonitoringAPI import *
 
 
+class PDF(FPDF):
+    def header(self):
+        self.image("gcp_logo.png", 15, 8, 30)
+        self.set_font("Arial", "B", 15)
+        self.ln(15)
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_text_color(r=0, g=0, b=0)
+        self.set_font("Arial", "I", 8)
+        self.cell(0, 10, "Page " + str(self.page_no()) + "/{nb}", 0, 0, "C")
+
+
 class PdfGenerator:
     """This Class has functions for PDF generation based on different 
     Cloudera versions.
@@ -46,7 +59,7 @@ class PdfGenerator:
     def run(self):
         """Generate PDF for CDH-5, CDH-6 and CDP-7"""
 
-        pdf = FPDF(format=(250, 350))
+        pdf = PDF(format=(250, 350))
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
         obj3 = FrameworkDetailsAPI(self.inputs)
@@ -58,6 +71,7 @@ class PdfGenerator:
         yarn_port = self.inputs["yarn_port"]
         cluster_name = self.cluster_name
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 26)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -284,6 +298,7 @@ class PdfGenerator:
 
         print("\n[STATUS][01/18][#.................][06%] Key Metrics added in PDF")
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -325,6 +340,7 @@ class PdfGenerator:
             "[STATUS][02/18][##................][11%] Cluster Information added in PDF"
         )
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -379,6 +395,7 @@ class PdfGenerator:
 
         print("[STATUS][03/18][###...............][17%] Cluster Metrics added in PDF")
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -507,6 +524,7 @@ class PdfGenerator:
             "[STATUS][04/18][####..............][22%] Hardware and OS Metrics added in PDF"
         )
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -568,6 +586,7 @@ class PdfGenerator:
             "[STATUS][05/18][#####.............][28%] Framework and software details added in PDF"
         )
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -677,6 +696,7 @@ class PdfGenerator:
         if (type(self.hive_username) != type(None)) and (
             type(self.hive_password) != type(None)
         ):
+            pdf.alias_nb_pages()
             pdf.add_page()
             pdf.set_font("Arial", "B", 18)
             pdf.set_text_color(r=66, g=133, b=244)
@@ -822,6 +842,7 @@ class PdfGenerator:
 
         print("[STATUS][07/18][#######...........][39%] Hive Metrics added in PDF")
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -891,6 +912,7 @@ class PdfGenerator:
 
         print("[STATUS][08/18][########..........][44%] Security Metrics added in PDF")
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -1018,6 +1040,7 @@ class PdfGenerator:
             "[STATUS][10/18][##########........][56%] Monitoring Metrics added in PDF"
         )
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -1066,6 +1089,7 @@ class PdfGenerator:
             obj_pdf.yarn_vcore_usage(yarn_vcore_available_df, yarn_vcore_allocated_df)
             obj_pdf.yarn_vcore_seasonality(yarn_vcore_allocated_pivot_df)
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -1109,6 +1133,7 @@ class PdfGenerator:
         if type(temp) != type(None):
             yarn_application_df = temp
 
+            pdf.alias_nb_pages()
             pdf.add_page()
             pdf.set_font("Arial", "B", 18)
             pdf.set_text_color(r=66, g=133, b=244)
@@ -1170,12 +1195,14 @@ class PdfGenerator:
             if type(temp1) != type(None):
                 bursty_app_time_df, bursty_app_vcore_df, bursty_app_mem_df = temp1
                 if bursty_app_time_df.size != 0:
+                    pdf.alias_nb_pages()
                     pdf.add_page()
                     pdf.set_font("Arial", "B", 18)
                     pdf.set_text_color(r=66, g=133, b=244)
                     pdf.cell(230, 10, "Bursty Applications", 0, ln=1)
                     obj_pdf.yarn_bursty_app_time(bursty_app_time_df)
                     obj_pdf.yarn_bursty_app_vcore(bursty_app_vcore_df)
+                    pdf.alias_nb_pages()
                     pdf.add_page()
                     obj_pdf.yar_bursty_app_memory(bursty_app_mem_df)
 
@@ -1190,6 +1217,7 @@ class PdfGenerator:
             #     yarn_failed_app = temp1
             #     obj_pdf.yarnFailedApp(yarn_failed_app)
 
+            pdf.alias_nb_pages()
             pdf.add_page()
             pdf.set_font("Arial", "B", 18)
             pdf.set_text_color(r=66, g=133, b=244)
@@ -1235,6 +1263,7 @@ class PdfGenerator:
             "[STATUS][13/18][#############.....][72%] Yarn Queue Metrics added in PDF"
         )
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
@@ -1268,6 +1297,7 @@ class PdfGenerator:
             "[STATUS][14/18][##############....][78%] Yarn Running and Pending Application Metrics added in PDF"
         )
 
+        pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_font("Arial", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)

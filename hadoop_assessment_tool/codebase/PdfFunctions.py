@@ -573,6 +573,7 @@ class PdfFunctions:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
             if y > 300:
+                self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
@@ -1710,6 +1711,7 @@ class PdfFunctions:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
             if y > 300:
+                self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()

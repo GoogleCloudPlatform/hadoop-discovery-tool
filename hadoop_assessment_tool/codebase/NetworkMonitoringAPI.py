@@ -150,7 +150,7 @@ class NetworkMonitoringAPI:
             subprocess.Popen(
                 "rm ./disk.csv", shell=True, stdout=subprocess.PIPE, encoding="utf-8",
             ).wait(10)
-            disk_df = disk_df.fillna(0)
+            disk_df.dropna(inplace=True)
             disk_df.columns = ["disk_read", "disk_write"]
             total_disk_read = 0
             for i in disk_df["disk_read"]:
@@ -220,7 +220,7 @@ class NetworkMonitoringAPI:
                 softwares_installed.wait(10)
                 softwares_installed, err = softwares_installed.communicate()
             else:
-                softwares_installed = None    
+                softwares_installed = None
             prometheus_server = subprocess.Popen(
                 "systemctl status prometheus 2>/dev/null | grep active",
                 shell=True,
@@ -315,8 +315,41 @@ class NetworkMonitoringAPI:
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             ).wait(10)
-            remove_list = ["root", "chrony", "ntp"]
+            df11.drop(df11[df11["name"].str.contains("cron")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("boot")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("dnf.")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("grubby")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("spooler")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("messages")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("maillog")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("lastlog")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("dmesg")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("dnf.log")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("hawkey.log")].index, inplace=True)
+            df11.drop(df11[df11["name"].str.contains("secure")].index, inplace=True)
+            df11.drop(df11[df11["owner"].str.contains("landscape")].index, inplace=True)
+            df11.drop(df11[df11["owner"].str.contains("syslog")].index, inplace=True)
+            remove_list = [
+                "root",
+                "chrony",
+                "ntp",
+                "adm",
+                "landscape",
+                "systemd-journal",
+                "utml",
+                "syslog",
+            ]
             logs = df11[~df11["owner"].isin(remove_list)]
+            remove_list_2 = [
+                "alternatives.log",
+                "auth.log",
+                "fontconfig.log",
+                "sysstat",
+                "tallylog",
+                "audit",
+                "btmp",
+            ]
+            logs = df11[~df11["name"].isin(remove_list_2)]
             logs.reset_index(inplace=True)
             self.logger.info("get_logs successful")
             return logs

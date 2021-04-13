@@ -1,4 +1,4 @@
-# Hadoop Assessment Tool
+# 1. Hadoop Assessment Tool
 
 This tool is developed to enable detailed Assessment and automated assessment of Hadoop clusters. It helps measure the migration efforts from the current Hadoop cluster. It generates a PDF report with information related to the complete cluster according to different categories.
 
@@ -11,126 +11,135 @@ Following are the specific categories:
 5. Operations & Monitoring
 6. Application
 
-## Tool Functionality
+## 2 .Tool Functionality
 
 The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment based on various factors/metrics. 
 
 ![Alt text](architectural_diagram.png?raw=true)
 
 
-1. This python-based tool will use Cloudera API, Generic - YARN API, and OS based CLI request to retrieve information from the Hadoop cluster
+1. This python-based tool will use **Cloudera API**, Generic - **YARN API**, and OS based **CLI** request to retrieve information from the Hadoop cluster
 2. Information from the APIs will come in the form of JSON files
 3. Information from CLI command request will be outputs stored in variables
 4. With the help of Python parsing methods, required insights about the features will be retrieved
-5. As an output of tool execution, a PDF report will be generated which will contain information about all the features
-6. Script will also generate a log file, which will contain execution information & errors (if any)
+5. As an output of tool execution, a **PDF report** will be generated which will contain information about all the features
+6. Script will also generate a **log file**, which will contain execution information & errors (if any)
 
-## Prerequisites
-1. The tool runs only on one of the **master nodes**
-2. This tool supports the following **Python versions**
-   1. python 3.6
-   2. python 3.7
-   3. python 3.8
-3. This tool supports the following Cloudera versions:
-   1. CDH 5.16.2 and above
-   2. CDH 6.x
-   3. CDH 7.x
-4. This tool runs on the following Linux flavours:
-   1. Centos 7 and above
-   2. Redhat 7 and above
-   3. Debian 9 and above
-   4. Ubuntu 16 and above
-   5. Sles 12sp5 and above
-5. This tool requires pip installed.
-6. This tool requires an updated command line package manager before running the script. This will update the package list for the packages to be upgraded, from the operating system’s central repository. The package manager can be upgraded with the help of the below respective OS commands:
-    1. Redhat/Centos:
-       ```bash
-        yum -y update && upgrade
-       ```
-    2. Ubuntu/Debian:
-       ```bash
-        sudo apt-get update
-       ```
-    3. Open Suse:
-       ```bash
-         sudo zypper update
-       ```
-7. Cloudera manager user should have one of the following roles:
-   
-   | Hadoop Version | Roles |
-   |-----------------|:-------------|
-   | CDH 5.16.2 | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
-   | CDH 6.x | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
-   | CDH 7.x | Auditor, Cluster Administrator, Configurator, Dashboard User, Full Administrator, Key Administrator, Limited Cluster Administrator, Limited Operator, Navigator Administrator, Operator, Read Only, Replication Administrator, User Administrator |
+## 3. Prerequisites
+1. Important highlights of the Tool
+   1. The tool runs on versions above **python 3.6, 3.7 & 3.8**
+   2. The tool supports Cloudera version - **CDH 5.16.2 and above; CDH 6.X, CDH 7.X**
+   3. The tool runs on the following OS versions **Centos 7, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all**.
+   4. The tool requires **pip** installed
+2. Complete information to run the tool   
+   1. The tool runs only on one of the **master nodes**
+   2. The tool requires **~265 megabytes** of space
+   3. **Preferred time** to run the tool: It is recommended to run the tool during hours when there is the least workload on the Hadoop cluster
+   4. This tool supports the following **Python versions:**
+      1. python 3.6
+      2. python 3.7
+      3. python 3.8
+   5. This tool supports the following **Cloudera versions:**
+      1. CDH 5.16.2 and above
+      2. CDH 6.x
+      3. CDH 7.x
+   6. This tool runs on the following **Linux versions:**
+      1. Centos 7 and above
+      2. Redhat 7 and above
+      3. Debian 9 and above
+      4. Ubuntu 16 and above
+      5. Sles 12sp5 and above
+   7. This tool requires **pip** installed.
+   8. This tool requires an updated **command line package manager** before running the script. This will update the package list for the packages to be upgraded, from the operating system’s central repository. The package manager can be upgraded with the help of the below respective OS commands:
+      1. Redhat/Centos:
+         ```bash
+         yum -y update && upgrade
+         ```
+      2. Ubuntu/Debian:
+         ```bash
+         sudo apt-get update
+         ```
+      3. Open Suse:
+         ```bash
+            sudo zypper update
+         ```
+   9. Cloudera manager user should have one of the following **roles:**
+      
+      | Hadoop Version | Roles |
+      |-----------------|:-------------|
+      | CDH 5.16.2 | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
+      | CDH 6.x | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
+      | CDH 7.x | Auditor, Cluster Administrator, Configurator, Dashboard User, Full Administrator, Key Administrator, Limited Cluster Administrator, Limited Operator, Navigator Administrator, Operator, Read Only, Replication Administrator, User Administrator |
 
-8. Following OS packages will be installed to generate metrics: 
-   1. Tool checks if each package is already installed
-   2. If the package is not already installed, it will install from a local repo
-   3. If it is not present in the local repo, then it will download it from the internet
+   10. Following **OS packages** will be installed to generate metrics: 
+         1. Tool checks if each package is already installed
+         2. If the package is not already installed, it will install from a local repo
+         3. If it is not present in the local repo, then it will download it from the internet
 
-   | Package | Package Description |
-   |-----------------|:-------------|
-   | Python-dev | package contains the header files and dependent packages which need to fabricate python augmentations. Hence, those files and packages need to be on the system in such a way that they can be found while running the script |
-   | Gcc gcc-c++ | The package is used in python pandas functions which are used to build data frames in the script. |
-   | unixODBC-devel | The package is used to define a database-neutral interface to connect relational databases. |
-   | cyrus-sasl-devel | The package is used to connect with the hive metastore which helps in the retrieval of features related to the hive. |
-   | Nload | The package is a third-party monitoring tool used for the system monitoring and checking ingress-egress-related information. |
-   | Vnstat | A package is a third-party tool, used to check network utilization over a period of time. |
-   | Iostat | The package is used for monitoring system input/output statistics for devices and partitions. |
-   | Libsasl2-dev (ubuntu specific) | To install python3-venv in Ubuntu, libsasl2-dev packages will be installed as ubuntu does not provide venv inside a python package. |
-9. This tool comes with below python packages and will be locally installed in ephemeral python virtual environment:
-   
-   | Python packages in tool | Python packages in tool | Python packages in tool |
-   |-----------------|:-------------|:-------------|
-   |certifi==2020.12.5|chardet==4.0.0|cycler==0.10.0|
-   |DateTime==4.3|fpdf==1.7.2|greenlet==1.0.0|
-   |idna==2.10|importlib-metadata==3.7.3|kiwisolver==1.3.1|
-   |matplotlib==3.3.4|numpy==1.19.5|pandas==1.1.5|
-   |Pillow==8.1.2|psycopg2-binary==2.8.6|PyMySQL==1.0.2|
-   |pyodbc==4.0.30|pyparsing==2.4.7|python-dateutil==2.8.1|
-   |pytz==2021.1|requests==2.25.1|scipy==1.5.4|
-   |seaborn==0.11.1|six==1.15.0|SQLAlchemy==1.3.22|
-   |tqdm==4.59.0|typing-extensions==3.7.4.3|urllib3==1.26.4|
-   |virtualenv==15.1.04|zipp==3.4.1|zope.interface==5.2.0|
-   |wheel=0.36.2|pip=21.0.1|cffi=1.14.5|
-   |cryptography==3.4.7|pycparser=2.20|cx-Oracle=8.1.0|
+      | Package | Package Description |
+      |-----------------|:-------------|
+      | Python-dev | package contains the header files and dependent packages which need to fabricate python augmentations. Hence, those files and packages need to be on the system in such a way that they can be found while running the script |
+      | Gcc gcc-c++ | The package is used in python pandas functions which are used to build data frames in the script. |
+      | unixODBC-devel | The package is used to define a database-neutral interface to connect relational databases. |
+      | cyrus-sasl-devel | The package is used to connect with the hive metastore which helps in the retrieval of features related to the hive. |
+      | Nload | The package is a third-party monitoring tool used for the system monitoring and checking ingress-egress-related information. |
+      | Vnstat | A package is a third-party tool, used to check network utilization over a period of time. |
+      | Iostat | The package is used for monitoring system input/output statistics for devices and partitions. |
+      | Libsasl2-dev (ubuntu specific) | To install python3-venv in Ubuntu, libsasl2-dev packages will be installed as ubuntu does not provide venv inside a python package. |
+   11. This tool comes with below python packages and will be locally installed in ephemeral python virtual environment:
+      
+      | Python packages in tool | Python packages in tool | Python packages in tool |
+      |-----------------|:-------------|:-------------|
+      |certifi==2020.12.5|chardet==4.0.0|cycler==0.10.0|
+      |DateTime==4.3|fpdf==1.7.2|greenlet==1.0.0|
+      |idna==2.10|importlib-metadata==3.7.3|kiwisolver==1.3.1|
+      |matplotlib==3.3.4|numpy==1.19.5|pandas==1.1.5|
+      |Pillow==8.1.2|psycopg2-binary==2.8.6|PyMySQL==1.0.2|
+      |pyodbc==4.0.30|pyparsing==2.4.7|python-dateutil==2.8.1|
+      |pytz==2021.1|requests==2.25.1|scipy==1.5.4|
+      |seaborn==0.11.1|six==1.15.0|SQLAlchemy==1.3.22|
+      |tqdm==4.59.0|typing-extensions==3.7.4.3|urllib3==1.26.4|
+      |virtualenv==15.1.04|zipp==3.4.1|zope.interface==5.2.0|
+      |wheel=0.36.2|pip=21.0.1|cffi=1.14.5|
+      |cryptography==3.4.7|pycparser=2.20|cx-Oracle=8.1.0|
 
-10. Tool supports below hive metastores
-    1. PostgreSQL
-    2. MySQL
-    3. Oracle
-11. Tool needs access to dfsadmin utility.   
-12. Detail execution information will be logged in the log file, which will be present at location:
-`./hadoop_assessment_tool_{YYYY-MM-DD_HH:MM:SS}.log`
-13. After a successful tool execution, a PDF report will be generated at the location:
-` ./hadoop_assessment_report_{YYYY-MM-DD_HH-MM-SS}.pdf`
+   12. Tool supports below hive metastore
+          1. PostgreSQL
+          2. MySQL
+          3. Oracle
+   13. Tool needs access to **dfsadmin** utility.   
+   14. Detailed execution information will be logged in the two log files, which will be present at location :
+         1. Python Log:- `./hadoop_assessment_tool_{YYYY-MM-DD_HH:MM:SS}.log`
+         2. Shell Log:- `./hadoop_assessment_tool_terminal.log`
+   15. After a successful tool execution, a PDF report will be generated at the location:
+   ` ./hadoop_assessment_report_{YYYY-MM-DD_HH-MM-SS}.pdf`
 
-## User Input Requirements
-1. The tool needs the below permissions to run the code and generate the PDF report:
-    1. Sudo permission on the node.
-    2. Cloudera Manager(User should have one of the roles mentioned in 3.1.7)
-        1. Host IP
-        2. Port Number
-        3. User Name
-        4. Password
-        5. Cluster Name
-    3. Hive Metastore
-        1. User Name
-        2. Password
-    4. Kafka
-        1. Number of brokers
-        2. Host Name of each broker
-        3. IP of each broker
-        4. Port number of each broker
-        5. Log directory path of each broker
-    5. SSL is enabled or not(conditional input - if automatic detection doesn't work it will be prompted)
-    6. Yarn (conditional input - if automatic detection doesn't work it will be prompted)
-        1. Resource managers hostname or IP address
-        2. Port Number
+3. User Input Requirements
+   1. The tool needs the below permissions to run the code and generate the PDF report:
+      1. Sudo permission on the node.
+      2. Cloudera Manager(User should have one of the roles mentioned in 3.1.9)
+         1. Host IP
+         2. Port Number
+         3. User Name
+         4. Password
+         5. Cluster Name
+      3. Hive Metastore
+         1. User Name
+         2. Password
+      4. Kafka
+         1. Number of brokers
+         2. Host Name of each broker
+         3. IP of each broker
+         4. Port number of each broker
+         5. Log directory path of each broker
+      5. SSL is enabled or not(conditional input - if automatic detection doesn't work it will be prompted)
+      6. Yarn (conditional input - if automatic detection doesn't work it will be prompted)
+         1. Resource managers hostname or IP address
+         2. Port Number
 
-## Installation Steps
+## 4. Installation Steps
 
-1. **Step 1**: Upload the Tarball  in the MasterNode of the cluster. It can be uploaded in multiple ways, one of them being with the help of SCP command between the local machine and node or by using tools like Winscp if the local system is windows.
+1. **Step 1**: **Upload the Tarball**  in the MasterNode of the cluster. It can be uploaded in multiple ways, one of them being with the help of **SCP command** between the local machine and node or by using tools like Winscp if the local system is windows.
 
 2. **Step 2**: Go to the Tarball location (the location where it was uploaded in Step 1)
 
@@ -157,13 +166,13 @@ chmod +x python_package_installer.py
 ```bash
 sudo bash build.sh
 ```
-**Step success message: Hadoop Assessment tool deployed successfully**
+   **Step success message: Hadoop Assessment tool deployed successfully**
 
-7. **Step 7**: Run the second script to run the python script, using the command
+7. **Step 7**: **Run** the second script to run the python script, using the command
 ```bash
 sudo bash run.sh
 ```
-**Step success criteria: Hadoop Assessment Tool has been successfully completed and the report is available at the following location**
+   **Step success criteria: Hadoop Assessment Tool has been successfully completed and the report is available at the following location**
 
 8. **Step 8**: Following details would be required for further execution of the script:
     1. **Step 8.1(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
