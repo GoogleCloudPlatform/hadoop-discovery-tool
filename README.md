@@ -27,10 +27,10 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 ## 3. Prerequisites
 1. Important highlights of the Tool
-   1. The tool runs on versions above python 3.6, 3.7 & 3.8
-   2. The tool supports Cloudera version - CDH 5.16.2 and above; CDH 6.X, CDH 7.X
-   3. The tool runs on the following OS versions Centos 7, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all.
-   4. The tool requires pip installed
+   1. The tool runs on versions above **python 3.6, 3.7 & 3.8**
+   2. The tool supports Cloudera version - **CDH 5.16.2 and above; CDH 6.X, CDH 7.X**
+   3. The tool runs on the following OS versions **Centos 7, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all**.
+   4. The tool requires **pip** installed
 2. Complete information to run the tool   
    1. The tool runs only on one of the **master nodes**
    2. The tool requires **~265 megabytes** of space
