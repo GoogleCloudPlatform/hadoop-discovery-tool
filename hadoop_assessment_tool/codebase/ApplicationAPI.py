@@ -650,7 +650,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -665,7 +665,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -764,7 +764,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -779,7 +779,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -939,7 +939,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -954,7 +954,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_available_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1053,7 +1053,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1068,7 +1068,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_allocated_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1276,7 +1276,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1291,7 +1291,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_pending_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1388,7 +1388,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1403,7 +1403,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_memory_mb_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1500,7 +1500,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1515,7 +1515,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_pending_vcores_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1612,7 +1612,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_running_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_running_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1627,7 +1627,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_running_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20total_apps_running_across_yarn_pools%20where%20entityName%3Dyarn%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1979,7 +1979,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v30/clusters/{}/services/hbase/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1992,7 +1992,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v18/clusters/{}/services/hbase/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2056,7 +2056,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v30/clusters/{}/services/hbase/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2069,7 +2069,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hbase/config".format(
+                    "{}://{}:{}/api/v18/clusters/{}/services/hbase/config".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2423,7 +2423,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                    "{}://{}:{}/api/v30/clusters/{}/services/{}/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2437,7 +2437,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                    "{}://{}:{}/api/v18/clusters/{}/services/{}/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2860,7 +2860,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                    "{}://{}:{}/api/v30/clusters/{}/services/{}/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -2874,7 +2874,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/{}/config?view=full".format(
+                    "{}://{}:{}/api/v18/clusters/{}/services/{}/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -3051,7 +3051,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services".format(
+                    "{}://{}:{}/api/v30/clusters/{}/services".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -3064,7 +3064,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services".format(
+                    "{}://{}:{}/api/v18/clusters/{}/services".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -3134,7 +3134,7 @@ class ApplicationAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/cm/peers".format(
+                    "{}://{}:{}/api/v30/cm/peers".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -3146,7 +3146,7 @@ class ApplicationAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/cm/peers".format(
+                    "{}://{}:{}/api/v18/cm/peers".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,

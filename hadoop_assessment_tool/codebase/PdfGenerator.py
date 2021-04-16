@@ -20,15 +20,16 @@ from NetworkMonitoringAPI import *
 
 class PDF(FPDF):
     def header(self):
-        self.image("gcp_logo.png", 15, 8, 30)
+        self.image("header.jpg", 0, 0, 250)
         self.set_font("Arial", "B", 15)
         self.ln(15)
 
     def footer(self):
-        self.set_y(-15)
-        self.set_text_color(r=0, g=0, b=0)
-        self.set_font("Arial", "I", 8)
-        self.cell(0, 10, "Page " + str(self.page_no()) + "/{nb}", 0, 0, "C")
+        self.image("footer.png", 10, 340, 32, 6)
+        self.set_y(-10)
+        self.set_text_color(r=67, g=67, b=67)
+        self.set_font("Arial", "B", 10)
+        self.cell(0, 10, "Page " + str(self.page_no()) + "/{nb}", 0, 0, "R")
 
 
 class PdfGenerator:
@@ -60,6 +61,10 @@ class PdfGenerator:
         """Generate PDF for CDH-5, CDH-6 and CDP-7"""
 
         pdf = PDF(format=(250, 350))
+        pdf.add_font("Google Sans", "", "./GoogleSans-Regular.ttf", uni=True)
+        pdf.add_font("Google Sans", "B", "./GoogleSans-Bold.ttf", uni=True)
+        pdf.add_font("Google Sans", "I", "./GoogleSans-Italic.ttf", uni=True)
+        pdf.add_font("Google Sans", "BI", "./GoogleSans-BoldItalic.ttf", uni=True)
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
         obj3 = FrameworkDetailsAPI(self.inputs)
@@ -73,10 +78,10 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 26)
+        pdf.set_font("Google Sans", "B", 26)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 12, "Hadoop Assessment Report", 0, ln=1, align="C")
-        pdf.set_font("Arial", "B", 12)
+        pdf.set_font("Google Sans", "B", 12)
         pdf.set_fill_color(r=66, g=133, b=244)
         pdf.set_text_color(r=255, g=255, b=255)
         pdf.cell(0, 10, "", 0, 1)
@@ -84,9 +89,9 @@ class PdfGenerator:
         pdf.cell(40, 8, "Start Date", 1, 0, "C", True)
         pdf.cell(40, 8, "End Date", 1, 1, "C", True)
         pdf.cell(60, 8, "", 0, 0)
-        pdf.set_text_color(r=1, g=1, b=1)
-        pdf.set_fill_color(r=244, g=244, b=244)
-        pdf.set_font("Arial", "", 12)
+        pdf.set_text_color(r=67, g=67, b=67)
+        pdf.set_fill_color(r=243, g=243, b=243)
+        pdf.set_font("Google Sans", "", 12)
         pdf.cell(
             40,
             8,
@@ -109,7 +114,7 @@ class PdfGenerator:
         )
         pdf.cell(0, 8, "", 0, 1)
 
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Key Metrics", 0, ln=1)
 
@@ -300,7 +305,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Cluster Information", 0, ln=1)
 
@@ -310,7 +315,7 @@ class PdfGenerator:
             cluster_items = temp
             obj_pdf.cluster_info(cluster_items)
 
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(
             230, 10, "Listing Details for Cluster: {}".format(cluster_name), 0, ln=1
@@ -342,7 +347,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Cluster Metrics", 0, ln=1)
 
@@ -397,11 +402,11 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Hardware and OS Metrics", 0, ln=1)
 
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Google Sans", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 8, "Types of Servers Details:", 0, ln=1)
 
@@ -427,7 +432,7 @@ class PdfGenerator:
             ntp_server = t4
             obj_pdf.ntp_server(ntp_server)
 
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Google Sans", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 8, "Manufacturer and Processor Details:", 0, ln=1)
 
@@ -526,7 +531,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Frameworks and Software Details", 0, ln=1)
 
@@ -546,7 +551,7 @@ class PdfGenerator:
         temp = obj3.third_party_software()
         if type(temp) != type(None):
             third_party_package = temp
-            pdf.set_font("Arial", "", 12)
+            pdf.set_font("Google Sans", "", 12)
             pdf.set_text_color(r=66, g=133, b=244)
             pdf.cell(230, 8, "Third Party Software and Their Version:", 0, ln=1)
             obj_pdf.third_party_software(third_party_package)
@@ -555,12 +560,12 @@ class PdfGenerator:
         temp = obj3.version_package()
         if type(temp) != type(None):
             package_version = temp
-            pdf.set_font("Arial", "", 12)
+            pdf.set_font("Google Sans", "", 12)
             pdf.set_text_color(r=66, g=133, b=244)
             pdf.cell(230, 8, "Details of Services/Software and Their Version:", 0, ln=1)
             obj_pdf.version_package(package_version)
 
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Google Sans", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 8, "Drivers and Connectors:", 0, ln=1)
 
@@ -588,7 +593,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "HDFS Section", 0, ln=1)
 
@@ -644,11 +649,11 @@ class PdfGenerator:
         temp = obj2.get_cliresult("/")
         if type(temp) != type(None):
             hdfs_root_dir = temp
-            pdf.set_font("Arial", "", 12)
+            pdf.set_font("Google Sans", "", 12)
             pdf.set_text_color(r=66, g=133, b=244)
             pdf.cell(230, 8, "HDFS Size Breakdown:", 0, ln=1)
-            pdf.set_font("Arial", "", 12)
-            pdf.set_text_color(r=1, g=1, b=1)
+            pdf.set_font("Google Sans", "", 12)
+            pdf.set_text_color(r=67, g=67, b=67)
             for i in hdfs_root_dir.splitlines():
                 hdfs_dir = i.split()
                 if len(hdfs_dir) == 5:
@@ -698,7 +703,7 @@ class PdfGenerator:
         ):
             pdf.alias_nb_pages()
             pdf.add_page()
-            pdf.set_font("Arial", "B", 18)
+            pdf.set_font("Google Sans", "B", 18)
             pdf.set_text_color(r=66, g=133, b=244)
             pdf.cell(230, 10, "Hive Metrics", 0, ln=1)
 
@@ -844,7 +849,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Security", 0, ln=1)
 
@@ -914,7 +919,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Network, Traffic and Monitoring Metrics", 0, ln=1)
 
@@ -1042,7 +1047,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Yarn Metrics", 0, ln=1)
 
@@ -1058,7 +1063,7 @@ class PdfGenerator:
             zookeeper_ha, hive_ha, yarn_ha, hdfs_ha = temp
             obj_pdf.identify_ha(zookeeper_ha, hive_ha, yarn_ha, hdfs_ha)
 
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Google Sans", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "VCore Details:", 0, ln=1)
 
@@ -1091,7 +1096,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "", 12)
+        pdf.set_font("Google Sans", "", 12)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Memory Details:", 0, ln=1)
 
@@ -1135,7 +1140,7 @@ class PdfGenerator:
 
             pdf.alias_nb_pages()
             pdf.add_page()
-            pdf.set_font("Arial", "B", 18)
+            pdf.set_font("Google Sans", "B", 18)
             pdf.set_text_color(r=66, g=133, b=244)
             pdf.cell(230, 10, "Yarn Application Metrics", 0, ln=1)
 
@@ -1197,17 +1202,17 @@ class PdfGenerator:
                 if bursty_app_time_df.size != 0:
                     pdf.alias_nb_pages()
                     pdf.add_page()
-                    pdf.set_font("Arial", "B", 18)
+                    pdf.set_font("Google Sans", "B", 18)
                     pdf.set_text_color(r=66, g=133, b=244)
                     pdf.cell(230, 10, "Bursty Applications", 0, ln=1)
                     obj_pdf.yarn_bursty_app_time(bursty_app_time_df)
                     obj_pdf.yarn_bursty_app_vcore(bursty_app_vcore_df)
                     pdf.alias_nb_pages()
                     pdf.add_page()
-                    obj_pdf.yar_bursty_app_memory(bursty_app_mem_df)
+                    obj_pdf.yarn_bursty_app_memory(bursty_app_mem_df)
 
             # pdf.add_page()
-            # pdf.set_font("Arial", "B", 18)
+            # pdf.set_font("Google Sans", "B", 18)
             # pdf.set_text_color(r=66, g=133, b=244)
             # pdf.cell(230, 10, "Failed Applications", 0, ln=1)
 
@@ -1219,7 +1224,7 @@ class PdfGenerator:
 
             pdf.alias_nb_pages()
             pdf.add_page()
-            pdf.set_font("Arial", "B", 18)
+            pdf.set_font("Google Sans", "B", 18)
             pdf.set_text_color(r=66, g=133, b=244)
             pdf.cell(230, 10, "Yarn Queues", 0, ln=1)
 
@@ -1265,7 +1270,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Yarn Pending and Running Applications", 0, ln=1)
 
@@ -1299,7 +1304,7 @@ class PdfGenerator:
 
         pdf.alias_nb_pages()
         pdf.add_page()
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "HBase Metrics", 0, ln=1)
 
@@ -1348,7 +1353,7 @@ class PdfGenerator:
         print("[STATUS][15/18][###############...][83%] HBase Metrics added in PDF")
 
         pdf.cell(230, 10, "", 0, ln=1)
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Spark Metrics", 0, ln=1)
 
@@ -1390,7 +1395,7 @@ class PdfGenerator:
         print("[STATUS][16/18][################..][89%] Spark Metrics added in PDF")
 
         pdf.cell(230, 10, "", 0, ln=1)
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Kafka Metrics", 0, ln=1)
 
@@ -1436,7 +1441,7 @@ class PdfGenerator:
         print("[STATUS][17/18][#################.][94%] Kafka Metrics added in PDF")
 
         pdf.cell(230, 10, "", 0, ln=1)
-        pdf.set_font("Arial", "B", 18)
+        pdf.set_font("Google Sans", "B", 18)
         pdf.set_text_color(r=66, g=133, b=244)
         pdf.cell(230, 10, "Cloudera Services", 0, ln=1)
 

@@ -273,7 +273,7 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -288,7 +288,7 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -381,7 +381,7 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v30/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -396,7 +396,7 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -694,7 +694,7 @@ class DataAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
+                    "{}://{}:{}/api/v30/clusters/{}/services/hive/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -707,7 +707,7 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
+                    "{}://{}:{}/api/v18/clusters/{}/services/hive/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -1392,7 +1392,7 @@ class DataAPI:
             hive_execution_engine = hive_execution_engine.split("\\n")
             for line in hive_execution_engine:
                 if line.find("hive.execution.engine") != -1:
-                    hive_execution_engine = line.split("=")[1]
+                    hive_execution_engine = line.split("=")[1].split("WARN")[0]
                     if hive_execution_engine.find("|") != -1:
                         hive_execution_engine = hive_execution_engine.split("|")[0]
                         hive_execution_engine = hive_execution_engine.strip()
