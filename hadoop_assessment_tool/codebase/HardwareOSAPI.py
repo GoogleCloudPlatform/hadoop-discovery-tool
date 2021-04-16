@@ -56,7 +56,7 @@ class HardwareOSAPI:
             )
             os_version, err = os_version.communicate()
             os_version = os_version.split("=")
-            os_version = os_version[1]
+            os_version = os_version[1].split('"')[1]
             self.logger.info("os_version successful")
             return os_version
         except Exception as e:
