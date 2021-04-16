@@ -288,7 +288,7 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -396,7 +396,7 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
+                    "{}://{}:{}/api/v18/timeseries?contentType=application%2Fjson&from={}&desiredRollup=HOURLY&mustUseDesiredRollup=true&query=select%20dfs_capacity_used%2Bdfs_capacity_used_non_hdfs%20where%20entityName%3Dhdfs%20and%20clusterName%20%3D%20{}&to={}".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -707,7 +707,7 @@ class DataAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services/hive/config?view=full".format(
+                    "{}://{}:{}/api/v18/clusters/{}/services/hive/config?view=full".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,

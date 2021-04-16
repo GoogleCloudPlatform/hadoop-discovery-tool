@@ -77,7 +77,7 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/kerberosInfo".format(
+                    "{}://{}:{}/api/v18/clusters/{}/kerberosInfo".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -149,7 +149,7 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/cm/deployment".format(
+                    "{}://{}:{}/api/v18/cm/deployment".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -221,7 +221,7 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/cm/deployment".format(
+                    "{}://{}:{}/api/v18/cm/deployment".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
@@ -357,7 +357,7 @@ class SecurityAPI:
                 )
             elif self.version == 5:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/cm/kerberosPrincipals".format(
+                    "{}://{}:{}/api/v18/cm/kerberosPrincipals".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
