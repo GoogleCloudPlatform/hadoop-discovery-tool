@@ -135,7 +135,7 @@ class FrameworkDetailsAPI:
                 )
             elif self.version == 6:
                 r = requests.get(
-                    "{}://{}:{}/api/v19/clusters/{}/services".format(
+                    "{}://{}:{}/api/v30/clusters/{}/services".format(
                         self.http,
                         self.cloudera_manager_host_ip,
                         self.cloudera_manager_port,
