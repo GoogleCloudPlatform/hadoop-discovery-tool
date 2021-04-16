@@ -61,7 +61,10 @@ class PdfGenerator:
         """Generate PDF for CDH-5, CDH-6 and CDP-7"""
 
         pdf = PDF(format=(250, 350))
-        pdf.add_font("Google Sans", "", "./GoogleSans.ttf", uni=True)
+        pdf.add_font("Google Sans", "", "./GoogleSans-Regular.ttf", uni=True)
+        pdf.add_font("Google Sans", "B", "./GoogleSans-Bold.ttf", uni=True)
+        pdf.add_font("Google Sans", "I", "./GoogleSans-Italic.ttf", uni=True)
+        pdf.add_font("Google Sans", "BI", "./GoogleSans-BoldItalic.ttf", uni=True)
         obj1 = HardwareOSAPI(self.inputs)
         obj2 = DataAPI(self.inputs)
         obj3 = FrameworkDetailsAPI(self.inputs)
