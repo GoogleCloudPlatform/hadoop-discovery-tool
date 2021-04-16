@@ -141,7 +141,7 @@ class PdfFunctions:
 
         if type(replication_factor) != type(None):
             self.pdf.cell(175, 5, "HDFS Replication Factor", 1, 0, "L", True)
-            self.pdf.cell(50, 5, "{}".format(replication_factor), 1, 1, "C", True)
+            self.pdf.cell(50, 5, replication_factor, 1, 1, "C", True)
 
         if type(size_breakdown_df) != type(None):
             self.pdf.cell(175, 5, "Structured Data", 1, 0, "L", True)
@@ -278,6 +278,13 @@ class PdfFunctions:
                 "entityStatus": "Health Status",
             }
         )
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -562,10 +569,17 @@ class PdfFunctions:
             0,
             1,
         )
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(65, 5, "Hostname", 1, 0, "C", True)
+        self.pdf.cell(70, 5, "Hostname", 1, 0, "C", True)
         self.pdf.cell(30, 5, "Host IP", 1, 0, "C", True)
         self.pdf.cell(15, 5, "Cores", 1, 0, "C", True)
         self.pdf.cell(25, 5, "Memory", 1, 0, "C", True)
@@ -586,7 +600,7 @@ class PdfFunctions:
             line_width = max(
                 line_width, self.pdf.get_string_width(host_df["Hostname"].iloc[pos]),
             )
-            cell_y = line_width / 64.0
+            cell_y = line_width / 69.0
             line_width = max(
                 line_width, self.pdf.get_string_width(host_df["Host IP"].iloc[pos]),
             )
@@ -617,19 +631,19 @@ class PdfFunctions:
             cell_y = max(cell_y, 1)
             cell_y = cell_y * 5
             line_width = self.pdf.get_string_width(host_df["Hostname"].iloc[pos])
-            y_pos = line_width / 64.0
+            y_pos = line_width / 69.0
             y_pos = math.ceil(y_pos)
             y_pos = max(y_pos, 1)
             y_pos = cell_y / y_pos
             self.pdf.multi_cell(
-                65,
+                70,
                 y_pos,
                 "{}".format(host_df["Hostname"].iloc[pos]),
                 1,
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 65, y)
+            self.pdf.set_xy(x + 70, y)
             line_width = self.pdf.get_string_width(host_df["Host IP"].iloc[pos])
             y_pos = line_width / 29.0
             y_pos = math.ceil(y_pos)
@@ -638,7 +652,7 @@ class PdfFunctions:
             self.pdf.multi_cell(
                 30, y_pos, "{}".format(host_df["Host IP"].iloc[pos]), 1, "C", fill=True,
             )
-            self.pdf.set_xy(x + 95, y)
+            self.pdf.set_xy(x + 100, y)
             line_width = self.pdf.get_string_width(
                 str(host_df["Number of cores"].iloc[pos])
             )
@@ -654,7 +668,7 @@ class PdfFunctions:
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 110, y)
+            self.pdf.set_xy(x + 115, y)
             line_width = self.pdf.get_string_width(
                 str(host_df["Physical Memory"].iloc[pos])
             )
@@ -670,7 +684,7 @@ class PdfFunctions:
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 135, y)
+            self.pdf.set_xy(x + 140, y)
             line_width = self.pdf.get_string_width(host_df["Health Status"].iloc[pos])
             y_pos = line_width / 34.0
             y_pos = math.ceil(y_pos)
@@ -684,7 +698,7 @@ class PdfFunctions:
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 170, y)
+            self.pdf.set_xy(x + 175, y)
             line_width = self.pdf.get_string_width(host_df["Distribution"].iloc[pos])
             y_pos = line_width / 54.0
             y_pos = math.ceil(y_pos)
@@ -721,10 +735,17 @@ class PdfFunctions:
             1,
         )
         if len(masternodes_df) != 0:
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            if y > 275:
+                self.pdf.alias_nb_pages()
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             self.pdf.set_font("Google Sans", "B", 12)
             self.pdf.set_fill_color(r=66, g=133, b=244)
             self.pdf.set_text_color(r=255, g=255, b=255)
-            self.pdf.cell(120, 5, "Hostname", 1, 0, "C", True)
+            self.pdf.cell(150, 5, "Hostname", 1, 0, "C", True)
             self.pdf.cell(20, 5, "Cores", 1, 0, "C", True)
             self.pdf.cell(30, 5, "Memory", 1, 1, "C", True)
             self.pdf.set_text_color(r=67, g=67, b=67)
@@ -739,7 +760,7 @@ class PdfFunctions:
                     x = self.pdf.get_x()
                     y = self.pdf.get_y()
                 self.pdf.cell(
-                    120,
+                    150,
                     5,
                     "{}".format(masternodes_df["HostName"].iloc[pos]),
                     1,
@@ -788,10 +809,17 @@ class PdfFunctions:
             1,
         )
         if len(datanodes_df) != 0:
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            if y > 275:
+                self.pdf.alias_nb_pages()
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             self.pdf.set_font("Google Sans", "B", 12)
             self.pdf.set_fill_color(r=66, g=133, b=244)
             self.pdf.set_text_color(r=255, g=255, b=255)
-            self.pdf.cell(120, 5, "Hostname", 1, 0, "C", True)
+            self.pdf.cell(150, 5, "Hostname", 1, 0, "C", True)
             self.pdf.cell(20, 5, "Cores", 1, 0, "C", True)
             self.pdf.cell(30, 5, "Memory", 1, 1, "C", True)
             self.pdf.set_text_color(r=67, g=67, b=67)
@@ -806,7 +834,7 @@ class PdfFunctions:
                     x = self.pdf.get_x()
                     y = self.pdf.get_y()
                 self.pdf.cell(
-                    120,
+                    150,
                     5,
                     "{}".format(datanodes_df["HostName"].iloc[pos]),
                     1,
@@ -849,10 +877,17 @@ class PdfFunctions:
             1,
         )
         if len(edgenodes_df) != 0:
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            if y > 275:
+                self.pdf.alias_nb_pages()
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             self.pdf.set_font("Google Sans", "B", 12)
             self.pdf.set_fill_color(r=66, g=133, b=244)
             self.pdf.set_text_color(r=255, g=255, b=255)
-            self.pdf.cell(120, 5, "Hostname", 1, 0, "C", True)
+            self.pdf.cell(150, 5, "Hostname", 1, 0, "C", True)
             self.pdf.cell(20, 5, "Cores", 1, 0, "C", True)
             self.pdf.cell(30, 5, "Memory", 1, 1, "C", True)
             self.pdf.set_text_color(r=67, g=67, b=67)
@@ -867,7 +902,7 @@ class PdfFunctions:
                     x = self.pdf.get_x()
                     y = self.pdf.get_y()
                 self.pdf.cell(
-                    120,
+                    150,
                     5,
                     "{}".format(edgenodes_df["HostName"].iloc[pos]),
                     1,
@@ -888,13 +923,20 @@ class PdfFunctions:
                     True,
                 )
         self.pdf.cell(230, 5, "", 0, ln=1)
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Clients Installed on Gateway : ", 0, ln=1)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Services", 1, 1, "C", True)
+        self.pdf.cell(120, 5, "Services", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_fill_color(r=243, g=243, b=243)
         self.pdf.set_font("Google Sans", "", 12)
@@ -907,7 +949,7 @@ class PdfFunctions:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
             self.pdf.cell(
-                100,
+                120,
                 5,
                 "{}".format(client_gateway_df["service"].iloc[pos]),
                 1,
@@ -948,8 +990,14 @@ class PdfFunctions:
                 ),
                 ignore_index=True,
             )
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
-        self.pdf.cell(230, 3, "", 0, ln=1)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Services Running in the Cluster : ", 0, ln=1)
         self.pdf.set_text_color(r=67, g=67, b=67)
@@ -1355,13 +1403,20 @@ class PdfFunctions:
             nic_details (str): NIC details
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Network Interface Card Details: ", 0, ln=1)
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Network Adapter", 1, 0, "C", True)
+        self.pdf.cell(120, 5, "Network Adapter", 1, 0, "C", True)
         self.pdf.cell(70, 5, "IP Address", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_fill_color(r=243, g=243, b=243)
@@ -1375,7 +1430,7 @@ class PdfFunctions:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
             self.pdf.cell(
-                100, 5, "{}".format(nic_details["nic"].iloc[pos]), 1, 0, "C", True
+                120, 5, "{}".format(nic_details["nic"].iloc[pos]), 1, 0, "C", True
             )
             self.pdf.cell(
                 70, 5, "{}".format(nic_details["ipv4"].iloc[pos]), 1, 1, "C", True
@@ -1391,6 +1446,13 @@ class PdfFunctions:
         """
 
         if "centos" in os_name or "red hat" in os_name:
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            if y > 275:
+                self.pdf.alias_nb_pages()
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             self.pdf.set_font("Google Sans", "", 12)
             self.pdf.set_text_color(r=66, g=133, b=244)
             self.pdf.cell(230, 8, "Security Patches Details: ", 0, ln=1)
@@ -1450,13 +1512,20 @@ class PdfFunctions:
                 )
             self.pdf.cell(230, 5, "", 0, ln=1)
         elif "debian" in os_name or "ubuntu" in os_name:
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            if y > 275:
+                self.pdf.alias_nb_pages()
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             self.pdf.set_font("Google Sans", "", 12)
             self.pdf.set_text_color(r=66, g=133, b=244)
             self.pdf.cell(230, 8, "Security Patches Details: ", 0, ln=1)
             self.pdf.set_font("Google Sans", "B", 12)
             self.pdf.set_fill_color(r=66, g=133, b=244)
             self.pdf.set_text_color(r=255, g=255, b=255)
-            self.pdf.cell(100, 5, "Installed Security Packages", 1, 1, "C", True)
+            self.pdf.cell(120, 5, "Installed Security Packages", 1, 1, "C", True)
             self.pdf.set_text_color(r=67, g=67, b=67)
             self.pdf.set_fill_color(r=243, g=243, b=243)
             self.pdf.set_font("Google Sans", "", 12)
@@ -1469,7 +1538,7 @@ class PdfFunctions:
                     x = self.pdf.get_x()
                     y = self.pdf.get_y()
                 self.pdf.cell(
-                    100,
+                    120,
                     5,
                     "{}".format(patch_dataframe["Security_Package"].iloc[pos]),
                     1,
@@ -1488,6 +1557,13 @@ class PdfFunctions:
             hadoop_native_df (DataFrame): List of hadoop and non-hadoop libraries.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "List of Hadoop and Non-Hadoop Libraries: ", 0, ln=1)
@@ -1623,13 +1699,20 @@ class PdfFunctions:
             new_ref_df (DataFrame): Services mapped with their version.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "List of Services Installed  : ", 0, ln=1)
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Name", 1, 0, "C", True)
+        self.pdf.cell(120, 5, "Name", 1, 0, "C", True)
         self.pdf.cell(70, 5, "Version", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_fill_color(r=243, g=243, b=243)
@@ -1643,7 +1726,7 @@ class PdfFunctions:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
             self.pdf.cell(
-                100, 5, "{}".format(new_ref_df["name"].iloc[pos]), 1, 0, "C", True
+                120, 5, "{}".format(new_ref_df["name"].iloc[pos]), 1, 0, "C", True
             )
             self.pdf.cell(
                 70, 5, "{}".format(new_ref_df["sub_version"].iloc[pos]), 1, 1, "C", True
@@ -1657,10 +1740,17 @@ class PdfFunctions:
             third_party_package (DataFrame): List of rd party software.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Softwares", 1, 0, "C", True)
+        self.pdf.cell(120, 5, "Softwares", 1, 0, "C", True)
         self.pdf.cell(100, 5, "Version", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_fill_color(r=243, g=243, b=243)
@@ -1674,7 +1764,7 @@ class PdfFunctions:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
             self.pdf.cell(
-                100,
+                120,
                 5,
                 "{}".format(third_party_package["name"].iloc[pos]),
                 1,
@@ -1700,10 +1790,17 @@ class PdfFunctions:
             package_version (DataFrame): List of software installed.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(100, 5, "Name", 1, 0, "C", True)
+        self.pdf.cell(120, 5, "Name", 1, 0, "C", True)
         self.pdf.cell(70, 5, "Version", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_fill_color(r=243, g=243, b=243)
@@ -1717,7 +1814,7 @@ class PdfFunctions:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
             self.pdf.cell(
-                100, 5, "{}".format(package_version["name"].iloc[pos]), 1, 0, "C", True
+                120, 5, "{}".format(package_version["name"].iloc[pos]), 1, 0, "C", True
             )
             self.pdf.cell(
                 70,
@@ -1756,6 +1853,13 @@ class PdfFunctions:
             final_df (DataFrame): List of JDBC and ODBC driver.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -1783,6 +1887,13 @@ class PdfFunctions:
             connectors_present (DataFrame): List of connectors.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -1833,12 +1944,19 @@ class PdfFunctions:
             mapped_df (DataFrame): Storage for each node of cluster.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.cell(230, 8, "Size Configured for each Node in the Cluster: ", 0, ln=1)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(120, 5, "Host Name", 1, 0, "C", True)
+        self.pdf.cell(150, 5, "Host Name", 1, 0, "C", True)
         self.pdf.cell(50, 5, "Storage Capacity", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_fill_color(r=243, g=243, b=243)
@@ -1860,7 +1978,7 @@ class PdfFunctions:
             line_width = max(
                 line_width, self.pdf.get_string_width(mapped_df["Hostname"].iloc[pos])
             )
-            cell_y = line_width / 119.0
+            cell_y = line_width / 149.0
             line_width = max(
                 line_width,
                 self.pdf.get_string_width(mapped_df["Configured_Capacity"].iloc[pos]),
@@ -1870,19 +1988,19 @@ class PdfFunctions:
             cell_y = max(cell_y, 1)
             cell_y = cell_y * 5
             line_width = self.pdf.get_string_width(mapped_df["Hostname"].iloc[pos])
-            y_pos = line_width / 119.0
+            y_pos = line_width / 149.0
             y_pos = math.ceil(y_pos)
             y_pos = max(y_pos, 1)
             y_pos = cell_y / y_pos
             self.pdf.multi_cell(
-                120,
+                150,
                 y_pos,
                 "{}".format(mapped_df["Hostname"].iloc[pos]),
                 1,
                 "C",
                 fill=True,
             )
-            self.pdf.set_xy(x + 120, y)
+            self.pdf.set_xy(x + 150, y)
             line_width = self.pdf.get_string_width(
                 mapped_df["Configured_Capacity"].iloc[pos]
             )
@@ -2016,6 +2134,13 @@ class PdfFunctions:
             self.pdf.set_text_color(r=66, g=133, b=244)
             self.pdf.cell(230, 8, "HDFS Folder and File Structure: ", 0, ln=1)
             if hdfs_flag == 0:
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
+                if y > 275:
+                    self.pdf.alias_nb_pages()
+                    self.pdf.add_page()
+                    x = self.pdf.get_x()
+                    y = self.pdf.get_y()
                 self.pdf.set_font("Google Sans", "B", 12)
                 self.pdf.set_fill_color(r=66, g=133, b=244)
                 self.pdf.set_text_color(r=255, g=255, b=255)
@@ -2132,6 +2257,13 @@ class PdfFunctions:
                     )
                 self.pdf.cell(230, 5, "", 0, ln=1)
             else:
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
+                if y > 275:
+                    self.pdf.alias_nb_pages()
+                    self.pdf.add_page()
+                    x = self.pdf.get_x()
+                    y = self.pdf.get_y()
                 self.pdf.set_font("Google Sans", "B", 12)
                 self.pdf.set_fill_color(r=66, g=133, b=244)
                 self.pdf.set_text_color(r=255, g=255, b=255)
@@ -2242,6 +2374,13 @@ class PdfFunctions:
         self.pdf.cell(
             230, 8, "Average Size of a file: {: .2f} MB".format(avg_value), 0, 1,
         )
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -2393,13 +2532,20 @@ class PdfFunctions:
             database_df (DataFrame): List of databases and thier size in hive.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=66, g=133, b=244)
         self.pdf.cell(230, 8, "Hive Databases:", 0, ln=1)
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(80, 5, "Database", 1, 0, "C", True)
+        self.pdf.cell(100, 5, "Database", 1, 0, "C", True)
         self.pdf.cell(40, 5, "Size", 1, 0, "C", True)
         self.pdf.cell(40, 5, "No. of Tables", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
@@ -2414,7 +2560,7 @@ class PdfFunctions:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
             self.pdf.cell(
-                80, 5, "{}".format(database_df["Database"].iloc[pos]), 1, 0, "C", True
+                100, 5, "{}".format(database_df["Database"].iloc[pos]), 1, 0, "C", True
             )
             self.pdf.cell(
                 40,
@@ -2505,6 +2651,13 @@ class PdfFunctions:
             size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -2651,10 +2804,17 @@ class PdfFunctions:
             port_df (DataGrame): port number for different services.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
-        self.pdf.cell(80, 5, "Service", 1, 0, "C", True)
+        self.pdf.cell(100, 5, "Service", 1, 0, "C", True)
         self.pdf.cell(50, 5, "Port", 1, 1, "C", True)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.set_fill_color(r=243, g=243, b=243)
@@ -2668,7 +2828,7 @@ class PdfFunctions:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
             self.pdf.cell(
-                80, 5, "{}".format(port_df["service"].iloc[pos]), 1, 0, "C", True
+                100, 5, "{}".format(port_df["service"].iloc[pos]), 1, 0, "C", True
             )
             self.pdf.cell(
                 50, 5, "{}".format(port_df["port"].iloc[pos]), 1, 1, "C", True
@@ -2953,6 +3113,13 @@ class PdfFunctions:
             logs (str): List of logs path.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -3229,6 +3396,13 @@ class PdfFunctions:
             app_count_df (DataFrame): Application count in yarn.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "B", 12)
         self.pdf.set_fill_color(r=66, g=133, b=244)
         self.pdf.set_text_color(r=255, g=255, b=255)
@@ -3271,8 +3445,6 @@ class PdfFunctions:
             app_status_count_df (DataFrame): Application count by status in yarn.
         """
 
-        x = self.pdf.get_x()
-        y = self.pdf.get_y()
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
@@ -3323,10 +3495,17 @@ class PdfFunctions:
         """
 
         if not only_streaming.empty:
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            if y > 275:
+                self.pdf.alias_nb_pages()
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             self.pdf.set_font("Google Sans", "B", 12)
             self.pdf.set_fill_color(r=66, g=133, b=244)
             self.pdf.set_text_color(r=255, g=255, b=255)
-            self.pdf.cell(70, 5, "Streaming Applications", 1, 1, "C", True)
+            self.pdf.cell(100, 5, "Streaming Applications", 1, 1, "C", True)
             self.pdf.set_text_color(r=67, g=67, b=67)
             self.pdf.set_fill_color(r=243, g=243, b=243)
             self.pdf.set_font("Google Sans", "", 12)
@@ -3339,7 +3518,7 @@ class PdfFunctions:
                     x = self.pdf.get_x()
                     y = self.pdf.get_y()
                 self.pdf.cell(
-                    70,
+                    100,
                     5,
                     "{}".format(only_streaming["ApplicationType"].iloc[pos]),
                     1,
@@ -3357,8 +3536,6 @@ class PdfFunctions:
             app_memory_df (DataFrame): Memory usage by applications
         """
 
-        x = self.pdf.get_x()
-        y = self.pdf.get_y()
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
@@ -3508,6 +3685,13 @@ class PdfFunctions:
             job_launch_df (DataFrame): Job launch frequency of applications.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.cell(230, 8, "Job Launch Frequency:", 0, ln=1)
@@ -3552,6 +3736,13 @@ class PdfFunctions:
             bursty_app_time_df (DataFrame): Time taken by bursty application.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.cell(230, 8, "Bursty Applications - Elapsed Time", 0, ln=1)
@@ -3640,6 +3831,13 @@ class PdfFunctions:
             bursty_app_vcore_df (DataFrame): Vcores taken by bursty application.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.cell(230, 8, "Bursty Applications - Vcore Seconds", 0, ln=1)
@@ -3721,7 +3919,7 @@ class PdfFunctions:
         if os.path.exists("bursty_app_vcore_plot.png"):
             os.remove("bursty_app_vcore_plot.png")
 
-    def yar_bursty_app_memory(self, bursty_app_mem_df):
+    def yarn_bursty_app_memory(self, bursty_app_mem_df):
         """Add yarn bursty application memory graph in PDF.
 
         Args:
@@ -3730,6 +3928,13 @@ class PdfFunctions:
             bursty_app_mem_df (DataFrame): Memory taken by bursty application.
         """
 
+        x = self.pdf.get_x()
+        y = self.pdf.get_y()
+        if y > 275:
+            self.pdf.alias_nb_pages()
+            self.pdf.add_page()
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
         self.pdf.set_font("Google Sans", "", 12)
         self.pdf.set_text_color(r=67, g=67, b=67)
         self.pdf.cell(230, 8, "Bursty Applications - Memory Seconds", 0, ln=1)
@@ -3848,6 +4053,13 @@ class PdfFunctions:
             1,
         )
         if yarn_failed_app.size != 0:
+            x = self.pdf.get_x()
+            y = self.pdf.get_y()
+            if y > 275:
+                self.pdf.alias_nb_pages()
+                self.pdf.add_page()
+                x = self.pdf.get_x()
+                y = self.pdf.get_y()
             yarn_failed_app = yarn_failed_app.head(10)
             self.pdf.set_font("Google Sans", "", 12)
             self.pdf.cell(230, 3, "", 0, ln=1)
@@ -4102,8 +4314,6 @@ class PdfFunctions:
             self.pdf.add_page()
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-        x = self.pdf.get_x()
-        y = self.pdf.get_y()
         queue_app_count_plot = queue_app_count_df.plot.pie(
             y="Application Count",
             figsize=(6, 6),

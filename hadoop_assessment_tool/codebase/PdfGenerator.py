@@ -1209,7 +1209,7 @@ class PdfGenerator:
                     obj_pdf.yarn_bursty_app_vcore(bursty_app_vcore_df)
                     pdf.alias_nb_pages()
                     pdf.add_page()
-                    obj_pdf.yar_bursty_app_memory(bursty_app_mem_df)
+                    obj_pdf.yarn_bursty_app_memory(bursty_app_mem_df)
 
             # pdf.add_page()
             # pdf.set_font("Google Sans", "B", 18)
