@@ -141,7 +141,7 @@ class PdfFunctions:
 
         if type(replication_factor) != type(None):
             self.pdf.cell(175, 5, "HDFS Replication Factor", 1, 0, "L", True)
-            self.pdf.cell(50, 5, replication_factor, 1, 1, "C", True)
+            self.pdf.cell(50, 5, "{}".format(int(replication_factor)), 1, 1, "C", True)
 
         if type(size_breakdown_df) != type(None):
             self.pdf.cell(175, 5, "Structured Data", 1, 0, "L", True)
@@ -280,7 +280,7 @@ class PdfFunctions:
         )
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -297,7 +297,7 @@ class PdfFunctions:
         for pos in range(0, len(cluster_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -571,7 +571,7 @@ class PdfFunctions:
         )
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -737,7 +737,7 @@ class PdfFunctions:
         if len(masternodes_df) != 0:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -754,7 +754,7 @@ class PdfFunctions:
             for pos in range(0, len(masternodes_df)):
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -811,7 +811,7 @@ class PdfFunctions:
         if len(datanodes_df) != 0:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -828,7 +828,7 @@ class PdfFunctions:
             for pos in range(0, len(datanodes_df)):
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -879,7 +879,7 @@ class PdfFunctions:
         if len(edgenodes_df) != 0:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -896,7 +896,7 @@ class PdfFunctions:
             for pos in range(0, len(edgenodes_df)):
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -925,7 +925,7 @@ class PdfFunctions:
         self.pdf.cell(230, 5, "", 0, ln=1)
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -943,7 +943,7 @@ class PdfFunctions:
         for pos in range(0, len(client_gateway_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -992,7 +992,7 @@ class PdfFunctions:
             )
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1013,7 +1013,7 @@ class PdfFunctions:
         for pos in range(0, len(service_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1112,7 +1112,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1132,7 +1132,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1186,7 +1186,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1206,7 +1206,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1237,7 +1237,7 @@ class PdfFunctions:
             plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1405,7 +1405,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1424,7 +1424,7 @@ class PdfFunctions:
         for pos in range(0, len(nic_details)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1448,7 +1448,7 @@ class PdfFunctions:
         if "centos" in os_name or "red hat" in os_name:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1469,7 +1469,7 @@ class PdfFunctions:
             for pos in range(0, len(patch_dataframe)):
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -1514,7 +1514,7 @@ class PdfFunctions:
         elif "debian" in os_name or "ubuntu" in os_name:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1532,7 +1532,7 @@ class PdfFunctions:
             for pos in range(0, len(patch_dataframe)):
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -1559,7 +1559,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1578,7 +1578,7 @@ class PdfFunctions:
         for pos in range(0, len(hadoop_native_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1701,7 +1701,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1720,7 +1720,7 @@ class PdfFunctions:
         for pos in range(0, len(new_ref_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1742,7 +1742,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1758,7 +1758,7 @@ class PdfFunctions:
         for pos in range(0, len(third_party_package)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1792,7 +1792,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1808,7 +1808,7 @@ class PdfFunctions:
         for pos in range(0, len(package_version)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1855,7 +1855,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1870,7 +1870,7 @@ class PdfFunctions:
         for pos in range(0, len(final_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1889,7 +1889,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1904,7 +1904,7 @@ class PdfFunctions:
         for pos in range(0, len(connectors_present)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -1946,7 +1946,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -1964,7 +1964,7 @@ class PdfFunctions:
         for pos in range(0, len(mapped_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -2098,7 +2098,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -2136,7 +2136,7 @@ class PdfFunctions:
             if hdfs_flag == 0:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -2160,7 +2160,7 @@ class PdfFunctions:
                 for pos in range(0, len(hdfs_storage_df)):
                     x = self.pdf.get_x()
                     y = self.pdf.get_y()
-                    if y > 275:
+                    if y > 300:
                         self.pdf.alias_nb_pages()
                         self.pdf.add_page()
                         x = self.pdf.get_x()
@@ -2259,7 +2259,7 @@ class PdfFunctions:
             else:
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -2280,7 +2280,7 @@ class PdfFunctions:
                 for pos in range(0, len(hdfs_storage_df)):
                     x = self.pdf.get_x()
                     y = self.pdf.get_y()
-                    if y > 275:
+                    if y > 300:
                         self.pdf.alias_nb_pages()
                         self.pdf.add_page()
                         x = self.pdf.get_x()
@@ -2376,7 +2376,7 @@ class PdfFunctions:
         )
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -2392,7 +2392,7 @@ class PdfFunctions:
         for pos in range(0, len(grpby_data)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -2534,7 +2534,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -2554,7 +2554,7 @@ class PdfFunctions:
         for pos in range(0, len(database_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -2586,7 +2586,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -2626,7 +2626,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -2653,7 +2653,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -2669,7 +2669,7 @@ class PdfFunctions:
         for pos in range(0, len(size_breakdown_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -2806,7 +2806,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -2822,7 +2822,7 @@ class PdfFunctions:
         for pos in range(0, len(port_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3115,7 +3115,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3131,7 +3131,7 @@ class PdfFunctions:
         for i in logs.index:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3244,7 +3244,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3278,7 +3278,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3339,7 +3339,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3373,7 +3373,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3398,7 +3398,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3415,7 +3415,7 @@ class PdfFunctions:
         for pos in range(0, len(app_count_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3448,7 +3448,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3469,7 +3469,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3497,7 +3497,7 @@ class PdfFunctions:
         if not only_streaming.empty:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3512,7 +3512,7 @@ class PdfFunctions:
             for pos in range(0, len(only_streaming)):
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -3539,7 +3539,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3558,7 +3558,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3587,7 +3587,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3637,7 +3637,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3687,7 +3687,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3707,7 +3707,7 @@ class PdfFunctions:
         for pos in range(0, len(job_launch_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3738,7 +3738,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3759,7 +3759,7 @@ class PdfFunctions:
         for pos in range(0, len(bursty_app_time_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3804,7 +3804,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3833,7 +3833,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3854,7 +3854,7 @@ class PdfFunctions:
         for pos in range(0, len(bursty_app_vcore_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3899,7 +3899,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3930,7 +3930,7 @@ class PdfFunctions:
 
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -3951,7 +3951,7 @@ class PdfFunctions:
         for pos in range(0, len(bursty_app_mem_df)):
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -3996,7 +3996,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4055,7 +4055,7 @@ class PdfFunctions:
         if yarn_failed_app.size != 0:
             x = self.pdf.get_x()
             y = self.pdf.get_y()
-            if y > 275:
+            if y > 300:
                 self.pdf.alias_nb_pages()
                 self.pdf.add_page()
                 x = self.pdf.get_x()
@@ -4079,7 +4079,7 @@ class PdfFunctions:
             for pos in range(0, len(yarn_failed_app)):
                 x = self.pdf.get_x()
                 y = self.pdf.get_y()
-                if y > 275:
+                if y > 300:
                     self.pdf.alias_nb_pages()
                     self.pdf.add_page()
                     x = self.pdf.get_x()
@@ -4309,7 +4309,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4330,7 +4330,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4359,7 +4359,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4411,7 +4411,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4463,7 +4463,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4515,7 +4515,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4543,7 +4543,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4571,7 +4571,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()
@@ -4599,7 +4599,7 @@ class PdfFunctions:
         plt.figure()
         x = self.pdf.get_x()
         y = self.pdf.get_y()
-        if y > 275:
+        if y > 300:
             self.pdf.alias_nb_pages()
             self.pdf.add_page()
             x = self.pdf.get_x()

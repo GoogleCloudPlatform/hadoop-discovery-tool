@@ -25,8 +25,8 @@ class PDF(FPDF):
         self.ln(15)
 
     def footer(self):
-        self.image("footer.png", 10, 335, 32, 6)
-        self.set_y(-15)
+        self.image("footer.png", 10, 340, 32, 6)
+        self.set_y(-10)
         self.set_text_color(r=67, g=67, b=67)
         self.set_font("Arial", "B", 10)
         self.cell(0, 10, "Page " + str(self.page_no()) + "/{nb}", 0, 0, "R")
