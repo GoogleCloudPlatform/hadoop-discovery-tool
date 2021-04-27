@@ -176,15 +176,21 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            os_name = subprocess.Popen(
-                "grep PRETTY_NAME /etc/os-release",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            os_name.wait(10)
-            os_name, err = os_name.communicate()
-            os_name = os_name.lower()
+            os_name = ''
+            if os.path.exists("/etc/os-release"):
+                os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_name.wait(10)
+                os_name, err = os_name.communicate()
+                os_name = os_name.lower()
+            else:
+                os_id= subprocess.Popen('lsb_release -i 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_id.wait(10)
+                os_id, err = os_id.communicate()
+                trash, os_identification = os_id.split(":")
+                final_os_identification = os_identification.replace('"', "")
+                final_os_identification = final_os_identification.strip("\n")
+                final_name = final_os_identification.strip("\t")
+                os_name = final_name.lower()
             softwares_installed = ""
             if "centos" in os_name:
                 softwares_installed = subprocess.Popen(

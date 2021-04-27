@@ -48,15 +48,33 @@ class HardwareOSAPI:
         """
 
         try:
-            os_version = subprocess.Popen(
-                "grep PRETTY_NAME /etc/os-release",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            os_version, err = os_version.communicate()
-            os_version = os_version.split("=")
-            os_version = os_version[1].split('"')[1]
+            os_version = ""
+            if os.path.exists("/etc/os-release"):
+                os_version = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_version.wait(10)
+                os_version, err = os_version.communicate()
+                os_version = os_version.split("=")
+                os_version = os_version[1].split('"')[1]
+            else:
+                version= subprocess.Popen('lsb_release -r 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                version.wait(10)
+                version, err = version.communicate()
+                trash, version = version.split(":")
+                final_version = version.replace('"', "")
+                final_version = final_version.strip("\n")
+                final_version = final_version.strip("\t")
+                os_ver = final_version
+                part_string = final_version.partition('.')
+                final_version = float(part_string[0])
+                os_id= subprocess.Popen('lsb_release -i 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_id.wait(10)
+                os_id, err = os_id.communicate()
+                trash, os_identification = os_id.split(":")
+                final_os_identification = os_identification.replace('"', "")
+                final_os_identification = final_os_identification.strip("\n")
+                final_name = final_os_identification.strip("\t")
+                final_name = final_name.lower()
+                os_version = final_name +' '+ os_ver
             self.logger.info("os_version successful")
             return os_version
         except Exception as e:
@@ -991,8 +1009,21 @@ class HardwareOSAPI:
         """
 
         try:
-            os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
-            os_name = os_name.lower()
+            os_name = ''
+            if os.path.exists("/etc/os-release"):
+                os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_name.wait(10)
+                os_name, err = os_name.communicate()
+                os_name = os_name.lower()
+            else:
+                os_id= subprocess.Popen('lsb_release -i 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_id.wait(10)
+                os_id, err = os_id.communicate()
+                trash, os_identification = os_id.split(":")
+                final_os_identification = os_identification.replace('"', "")
+                final_os_identification = final_os_identification.strip("\n")
+                final_name = final_os_identification.strip("\t")
+                os_name = final_name.lower()
             web_server = ""
             if "centos" in os_name:
                 web_server = subprocess.Popen(
@@ -1066,8 +1097,21 @@ class HardwareOSAPI:
         """
 
         try:
-            os_name = os.popen("grep PRETTY_NAME /etc/os-release").read()
-            os_name = os_name.lower()
+            os_name = ''
+            if os.path.exists("/etc/os-release"):
+                os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_name.wait(10)
+                os_name, err = os_name.communicate()
+                os_name = os_name.lower()
+            else:
+                os_id= subprocess.Popen('lsb_release -i 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_id.wait(10)
+                os_id, err = os_id.communicate()
+                trash, os_identification = os_id.split(":")
+                final_os_identification = os_identification.replace('"', "")
+                final_os_identification = final_os_identification.strip("\n")
+                final_name = final_os_identification.strip("\t")
+                os_name = final_name.lower()
             ntp_server = ""
             if "centos" in os_name:
                 ntp_server = subprocess.Popen(
@@ -1347,15 +1391,22 @@ class HardwareOSAPI:
         """
 
         try:
-            os_name = subprocess.Popen(
-                "grep PRETTY_NAME /etc/os-release",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            os_name.wait(10)
-            os_name, err = os_name.communicate()
-            os_name = os_name.lower()
+            os_name = ''
+            if os.path.exists("/etc/os-release"):
+                os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_name.wait(10)
+                os_name, err = os_name.communicate()
+                os_name = os_name.lower()
+            else:
+                os_id= subprocess.Popen('lsb_release -i 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_id.wait(10)
+                os_id, err = os_id.communicate()
+                trash, os_identification = os_id.split(":")
+                final_os_identification = os_identification.replace('"', "")
+                final_os_identification = final_os_identification.strip("\n")
+                final_name = final_os_identification.strip("\t")
+                os_name = final_name.lower()
+
             if "centos" in os_name or "red hat" in os_name:
                 subprocess.Popen(
                     "sudo yum -y updateinfo list security installed 2>/dev/null | grep /Sec > security_level.csv",
@@ -1546,15 +1597,22 @@ class HardwareOSAPI:
             )
             python_check.wait(10)
             python_check, err = python_check.communicate()
-            os_name = subprocess.Popen(
-                "grep PRETTY_NAME /etc/os-release",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            os_name.wait(10)
-            os_name, err = os_name.communicate()
-            os_name = os_name.lower()
+            os_name = ''
+            if os.path.exists("/etc/os-release"):
+                os_name = subprocess.Popen("grep PRETTY_NAME /etc/os-release",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_name.wait(10)
+                os_name, err = os_name.communicate()
+                os_name = os_name.lower()
+            else:
+                os_id= subprocess.Popen('lsb_release -i 2>/dev/null',shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_id.wait(10)
+                os_id, err = os_id.communicate()
+                trash, os_identification = os_id.split(":")
+                final_os_identification = os_identification.replace('"', "")
+                final_os_identification = final_os_identification.strip("\n")
+                final_name = final_os_identification.strip("\t")
+                os_name = final_name.lower()
+                
             if "centos" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa 2>/dev/null | grep java > ./java_check.csv",
