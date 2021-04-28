@@ -983,18 +983,28 @@ class HardwareOSAPI:
         """
 
         try:
-            dns_server = subprocess.Popen(
-                "systemctl status named 2>/dev/null | grep Active",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            dns_server.wait(10)
-            dns_server, err = dns_server.communicate()
-            if not dns_server:
-                dns_server = "DNS server does not enabled within machine"
+            os_version = subprocess.Popen("lsb_release -r | awk '{print $2}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_version.wait(10)
+            os_version, err = os_version.communicate()
+            os_version= os_version.strip("\n")
+            part_string = os_version.partition('.')
+            os_version = float(part_string[0])
+            if os_version >= 6 and os_version < 7:
+                dns_server = subprocess.Popen("service named status 2>/dev/null | grep named",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                dns_server.wait(10)
+                dns_server, err = dns_server.communicate()
+                if "running" in dns_server:
+                    dns_server = "DNS server is enabled within machine"
+                else:
+                    dns_server = "DNS server is not enabled within machine"   
             else:
-                dns_server = "DNS server not enabled within machine"
+                dns_server = subprocess.Popen("systemctl status named 2>/dev/null | grep Active | grep running",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                dns_server.wait(10)
+                dns_server, err = dns_server.communicate()
+                if not dns_server:
+                    dns_server = "DNS server is not enabled within machine"
+                else:
+                    dns_server = "DNS server is enabled within machine"
             self.logger.info("dns_server successful")
             return dns_server
         except Exception as e:
@@ -1026,22 +1036,32 @@ class HardwareOSAPI:
                 os_name = final_name.lower()
             web_server = ""
             if "centos" in os_name:
-                web_server = subprocess.Popen(
-                    "systemctl status httpd 2>/dev/null | grep Active",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    encoding="utf-8",
-                )
-                web_server.wait(10)
-                web_server, err = web_server.communicate()
-                web_server = web_server.split(":")
-                if "inactive" in web_server[1]:
-                    web_server = "Web server is not enabled"
+                os_version = subprocess.Popen("lsb_release -r | awk '{print $2}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_version.wait(10)
+                os_version, err = os_version.communicate()
+                os_version= os_version.strip("\n")
+                part_string = os_version.partition('.')
+                os_version = float(part_string[0])
+                if os_version >= 7:
+                    web_server = subprocess.Popen("sudo systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    web_server.wait(10)
+                    web_server, err = web_server.communicate()
+                    web_server = web_server.split(":")
+                    if "inactive" in web_server[1]:
+                        web_server = "Web server is not enabled"
+                    else:
+                        web_server = "Web server is enabled"
                 else:
-                    web_server = "Web server is enabled"
+                    web_server = subprocess.Popen("sudo service httpd status 2>/dev/null ",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    web_server.wait(10)
+                    web_server, err = web_server.communicate()
+                    if "running" in web_server:
+                        web_server = "Web server is enabled"
+                    else:
+                        web_server = "Web server is not enabled"
             elif "ubuntu" in os_name:
                 web_server = subprocess.Popen(
-                    "systemctl status apache2  2>/dev/null | grep Active",
+                    "sudo systemctl status apache2  2>/dev/null | grep Active",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -1054,22 +1074,32 @@ class HardwareOSAPI:
                 else:
                     web_server = "Web server is enabled"
             elif "red hat" in os_name:
-                web_server = subprocess.Popen(
-                    "systemctl status httpd 2>/dev/null | grep Active",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    encoding="utf-8",
-                )
-                web_server.wait(10)
-                web_server, err = web_server.communicate()
-                web_server = web_server.split(":")
-                if "inactive" in web_server[1]:
-                    web_server = "Web server is not enabled"
+                os_version = subprocess.Popen("lsb_release -r | awk '{print $2}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_version.wait(10)
+                os_version, err = os_version.communicate()
+                os_version= os_version.strip("\n")
+                part_string = os_version.partition('.')
+                os_version = float(part_string[0])
+                if os_version >= 7:
+                    web_server = subprocess.Popen("sudo systemctl status httpd 2>/dev/null | grep Active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    web_server.wait(10)
+                    web_server, err = web_server.communicate()
+                    web_server = web_server.split(":")
+                    if "inactive" in web_server[1]:
+                        web_server = "Web server is not enabled"
+                    else:
+                        web_server = "Web server is enabled"
                 else:
-                    web_server = "Web server is enabled"
+                    web_server = subprocess.Popen("sudo service httpd status 2>/dev/null ",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    web_server.wait(10)
+                    web_server, err = web_server.communicate()
+                    if "running" in web_server:
+                        web_server = "Web server is enabled"
+                    else:
+                        web_server = "Web server is not enabled"
             elif "suse" in os_name:
                 web_server = subprocess.Popen(
-                    "systemctl status apache2  2>/dev/null | grep Active",
+                    " status apache2  2>/dev/null | grep Active",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -1114,19 +1144,31 @@ class HardwareOSAPI:
                 os_name = final_name.lower()
             ntp_server = ""
             if "centos" in os_name:
-                ntp_server = subprocess.Popen(
-                    "timedatectl status 2>/dev/null | grep NTP | grep enabled",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    encoding="utf-8",
-                )
-                ntp_server.wait(10)
-                ntp_server, err = ntp_server.communicate()
-                ntp_server = ntp_server.split(":")
-                ntp_server = ntp_server[1]
+                os_version = subprocess.Popen("lsb_release -r | awk '{print $2}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_version.wait(10)
+                os_version, err = os_version.communicate()
+                os_version= os_version.strip("\n")
+                part_string = os_version.partition('.')
+                os_version = float(part_string[0])
+                if os_version >= 7:
+                    ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    ntp_server.wait(10)
+                    ntp_server, err = ntp_server.communicate()
+                    if "yes" in ntp_server:
+                        ntp_server = "enabled"
+                    else:
+                        ntp_server = "not enabled"   
+                else:
+                    ntp_server = subprocess.Popen("service ntpd status 2>/dev/null",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    ntp_server.wait(10)
+                    ntp_server, err = ntp_server.communicate()
+                    if "running" in ntp_server:
+                        ntp_server = "enabled"
+                    else:
+                        ntp_server = "not enabled"
             elif "ubuntu" in os_name:
                 ntp_server = subprocess.Popen(
-                    "systemctl status ntp 2>/dev/null| grep Active",
+                    "sudo systemctl status ntp 2>/dev/null| grep Active",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -1142,19 +1184,31 @@ class HardwareOSAPI:
                     else:
                         ntp_server = "enabled"
             elif "red hat" in os_name:
-                ntp_server = subprocess.Popen(
-                    "timedatectl status 2>/dev/null | grep NTP | grep enabled",
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    encoding="utf-8",
-                )
-                ntp_server.wait(10)
-                ntp_server, err = ntp_server.communicate()
-                ntp_server = ntp_server.split(":")
-                ntp_server = ntp_server[1]
+                os_version = subprocess.Popen("lsb_release -r | awk '{print $2}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                os_version.wait(10)
+                os_version, err = os_version.communicate()
+                os_version= os_version.strip("\n")
+                part_string = os_version.partition('.')
+                os_version = float(part_string[0])
+                if os_version >= 7:
+                    ntp_server = subprocess.Popen("timedatectl status 2>/dev/null | grep NTP | grep enabled",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    ntp_server.wait(10)
+                    ntp_server, err = ntp_server.communicate()
+                    if "yes" in ntp_server:
+                        ntp_server = "enabled"
+                    else:
+                        ntp_server = "not enabled"   
+                else:
+                    ntp_server = subprocess.Popen("service ntpd status 2>/dev/null",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                    ntp_server.wait(10)
+                    ntp_server, err = ntp_server.communicate()
+                    if "running" in ntp_server:
+                        ntp_server = "enabled"
+                    else:
+                        ntp_server = "not enabled"
             elif "suse" in os_name:
                 ntp_server = subprocess.Popen(
-                    "systemctl status chronyd 2>/dev/null| grep Active",
+                    "sudo systemctl status chronyd 2>/dev/null| grep Active",
                     shell=True,
                     stdout=subprocess.PIPE,
                     encoding="utf-8",
@@ -1612,7 +1666,7 @@ class HardwareOSAPI:
                 final_os_identification = final_os_identification.strip("\n")
                 final_name = final_os_identification.strip("\t")
                 os_name = final_name.lower()
-                
+
             if "centos" in os_name:
                 softwares_installed = subprocess.Popen(
                     "rpm -qa 2>/dev/null | grep java > ./java_check.csv",

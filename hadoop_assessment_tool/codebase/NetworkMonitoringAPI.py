@@ -227,18 +227,29 @@ class NetworkMonitoringAPI:
                 softwares_installed, err = softwares_installed.communicate()
             else:
                 softwares_installed = None
-            prometheus_server = subprocess.Popen(
-                "systemctl status prometheus 2>/dev/null | grep active",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            prometheus_server.wait(10)
-            out, err = prometheus_server.communicate()
-            if not out:
-                prometheus_server = "Prometheus server is not present"
+            os_version = subprocess.Popen("lsb_release -r | awk '{print $2}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_version.wait(10)
+            os_version, err = os_version.communicate()
+            os_version= os_version.strip("\n")
+            part_string = os_version.partition('.')
+            os_version = float(part_string[0])
+            prometheus_server = ''
+            if os_version >= 6 and os_version < 7:
+                prometheus_server = subprocess.Popen("sudo service prometheus status 2>/dev/null | grep active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                prometheus_server.wait(10)
+                out, err = prometheus_server.communicate()
+                if not out:
+                    prometheus_server = "Prometheus server is not enabled"
+                else:
+                    prometheus_server = "Prometheus server is enabled"   
             else:
-                prometheus_server = "Prometheus server is present"
+                prometheus_server = subprocess.Popen("sudo systemctl status prometheus 2>/dev/null | grep active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                prometheus_server.wait(10)
+                out, err = prometheus_server.communicate()
+                if not out:
+                    prometheus_server = "Prometheus server is not enabled"
+                else:
+                    prometheus_server = "Prometheus server is enabled"
             grafana_server = subprocess.Popen(
                 "grafana-server -v 2>/dev/null | grep Version",
                 shell=True,
@@ -426,18 +437,29 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            ddog = subprocess.Popen(
-                "systemctl status datadog-agent 2>/dev/null | grep active",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            ddog.wait(10)
-            out, err = ddog.communicate()
-            if not out:
-                ddog = "Datadog is not installed"
+            os_version = subprocess.Popen("lsb_release -r | awk '{print $2}'",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            os_version.wait(10)
+            os_version, err = os_version.communicate()
+            os_version= os_version.strip("\n")
+            part_string = os_version.partition('.')
+            os_version = float(part_string[0])
+            ddog = ''
+            if os_version >= 6 and os_version < 7:
+                ddog = subprocess.Popen("sudo service datadog-agent status 2>/dev/null | grep active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ddog.wait(10)
+                out, err = ddog.communicate()
+                if not out:
+                    ddog = "Datadog is not enabled"
+                else:
+                    ddog = "Datadog is enabled"   
             else:
-                ddog = "Datadog is installed"
+                ddog = subprocess.Popen("sudo systemctl status datadog-agent 2>/dev/null | grep active",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+                ddog.wait(10)
+                out, err = ddog.communicate()
+                if not out:
+                    ddog = "Datadog is not enabled"
+                else:
+                    ddog = "Datadog is enabled"
             logging = subprocess.Popen(
                 'find / -type f \( -iname "splunk" -o -iname "newrelic-infra.yml" -o -iname "elasticsearch.yml"\) 2>/dev/null',
                 shell=True,
