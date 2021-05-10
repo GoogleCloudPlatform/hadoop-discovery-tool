@@ -48,20 +48,14 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            subprocess.Popen(
-                "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf > MaxBandwidth.csv",
+            max_bandwidth = subprocess.Popen(
+                "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
-            ).wait(10)
-            maxbandwidth_df = pd.read_csv("MaxBandwidth.csv", delimiter="\n")
-            subprocess.Popen(
-                "rm ./MaxBandwidth.csv",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait(10)
-            max_bandwidth = str(maxbandwidth_df["MaxBandwidth"][0])
+            )
+            max_bandwidth.wait(10)
+            max_bandwidth, err = max_bandwidth.communicate()
             self.logger.info("max_bandwidth successful")
             return max_bandwidth
         except Exception as e:
@@ -176,15 +170,31 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            os_name = subprocess.Popen(
-                "grep PRETTY_NAME /etc/os-release",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            )
-            os_name.wait(10)
-            os_name, err = os_name.communicate()
-            os_name = os_name.lower()
+            os_name = ""
+            if os.path.exists("/etc/os-release"):
+                os_name = subprocess.Popen(
+                    "grep PRETTY_NAME /etc/os-release",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
+                os_name.wait(10)
+                os_name, err = os_name.communicate()
+                os_name = os_name.lower()
+            else:
+                os_id = subprocess.Popen(
+                    "lsb_release -i 2>/dev/null",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
+                os_id.wait(10)
+                os_id, err = os_id.communicate()
+                trash, os_identification = os_id.split(":")
+                final_os_identification = os_identification.replace('"', "")
+                final_os_identification = final_os_identification.strip("\n")
+                final_name = final_os_identification.strip("\t")
+                os_name = final_name.lower()
             softwares_installed = ""
             if "centos" in os_name:
                 softwares_installed = subprocess.Popen(
@@ -221,18 +231,44 @@ class NetworkMonitoringAPI:
                 softwares_installed, err = softwares_installed.communicate()
             else:
                 softwares_installed = None
-            prometheus_server = subprocess.Popen(
-                "systemctl status prometheus 2>/dev/null | grep active",
+            os_version = subprocess.Popen(
+                "lsb_release -r | awk '{print $2}'",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            prometheus_server.wait(10)
-            out, err = prometheus_server.communicate()
-            if not out:
-                prometheus_server = "Prometheus server is not present"
+            os_version.wait(10)
+            os_version, err = os_version.communicate()
+            os_version = os_version.strip("\n")
+            part_string = os_version.partition(".")
+            os_version = float(part_string[0])
+            prometheus_server = ""
+            if os_version >= 6 and os_version < 7:
+                prometheus_server = subprocess.Popen(
+                    "sudo service prometheus status 2>/dev/null | grep active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
+                prometheus_server.wait(10)
+                out, err = prometheus_server.communicate()
+                if not out:
+                    prometheus_server = "Prometheus server is not enabled"
+                else:
+                    prometheus_server = "Prometheus server is enabled"
             else:
-                prometheus_server = "Prometheus server is present"
+                prometheus_server = subprocess.Popen(
+                    "sudo systemctl status prometheus 2>/dev/null | grep active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
+                prometheus_server.wait(10)
+                out, err = prometheus_server.communicate()
+                if not out:
+                    prometheus_server = "Prometheus server is not enabled"
+                else:
+                    prometheus_server = "Prometheus server is enabled"
             grafana_server = subprocess.Popen(
                 "grafana-server -v 2>/dev/null | grep Version",
                 shell=True,
@@ -420,18 +456,44 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            ddog = subprocess.Popen(
-                "systemctl status datadog-agent 2>/dev/null | grep active",
+            os_version = subprocess.Popen(
+                "lsb_release -r | awk '{print $2}'",
                 shell=True,
                 stdout=subprocess.PIPE,
                 encoding="utf-8",
             )
-            ddog.wait(10)
-            out, err = ddog.communicate()
-            if not out:
-                ddog = "Datadog is not installed"
+            os_version.wait(10)
+            os_version, err = os_version.communicate()
+            os_version = os_version.strip("\n")
+            part_string = os_version.partition(".")
+            os_version = float(part_string[0])
+            ddog = ""
+            if os_version >= 6 and os_version < 7:
+                ddog = subprocess.Popen(
+                    "sudo service datadog-agent status 2>/dev/null | grep active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
+                ddog.wait(10)
+                out, err = ddog.communicate()
+                if not out:
+                    ddog = "Datadog is not enabled"
+                else:
+                    ddog = "Datadog is enabled"
             else:
-                ddog = "Datadog is installed"
+                ddog = subprocess.Popen(
+                    "sudo systemctl status datadog-agent 2>/dev/null | grep active",
+                    shell=True,
+                    stdout=subprocess.PIPE,
+                    encoding="utf-8",
+                )
+                ddog.wait(10)
+                out, err = ddog.communicate()
+                if not out:
+                    ddog = "Datadog is not enabled"
+                else:
+                    ddog = "Datadog is enabled"
             logging = subprocess.Popen(
                 'find / -type f \( -iname "splunk" -o -iname "newrelic-infra.yml" -o -iname "elasticsearch.yml"\) 2>/dev/null',
                 shell=True,

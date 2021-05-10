@@ -94,6 +94,8 @@ class PdfFunctions:
                             pd.DataFrame({"HostName": [host["hostname"]],}),
                             ignore_index=True,
                         )
+            edgenodes_df.drop_duplicates(inplace=True)
+            namenodes_df.drop_duplicates(inplace=True)            
             self.pdf.cell(175, 5, "Number of Host", 1, 0, "L", True)
             self.pdf.cell(50, 5, str(len(host_df)), 1, 1, "C", True)
             self.pdf.cell(175, 5, "Number of NameNodes", 1, 0, "L", True)
@@ -466,10 +468,10 @@ class PdfFunctions:
                     )
                 if (
                     re.search(r"\bNAMENODE\b", role["roleName"])
-                    or re.search(r"\bkafka-KAFKA_BROKER\b", role["roleName"])
-                    or re.search(r"\bhive-HIVESERVER2\b", role["roleName"])
-                    or re.search(r"\byarn-RESOURCEMANAGER\b", role["roleName"])
-                    or re.search(r"\bSECONDARYNAMENODE\b", role["roleName"])
+                    # or re.search(r"\bkafka-KAFKA_BROKER\b", role["roleName"])
+                    # or re.search(r"\bhive-HIVESERVER2\b", role["roleName"])
+                    # or re.search(r"\byarn-RESOURCEMANAGER\b", role["roleName"])
+                    # or re.search(r"\bSECONDARYNAMENODE\b", role["roleName"])
                     and "hdfs" in role["serviceName"]
                 ):
                     masternodes_df = masternodes_df.append(
@@ -534,6 +536,7 @@ class PdfFunctions:
                         ignore_index=True,
                     )
         client_gateway_df.drop_duplicates(inplace=True)
+        namenodes_df.drop_duplicates(inplace=True)
         masternodes_df.drop_duplicates(inplace=True)
         self.pdf.cell(
             230, 8, "Number of Host: {}".format(len(all_host_data)), 0, 1,

@@ -979,22 +979,25 @@ class PdfGenerator:
             ganglia_server,
             check_mk_server,
         ) = (None, None, None, None, None)
-        temp = obj5.third_party_monitor()
-        if type(temp) != type(None):
-            (
-                softwares_installed,
-                prometheus_server,
-                grafana_server,
-                ganglia_server,
-                check_mk_server,
-            ) = temp
-            obj_pdf.third_party_monitor(
-                softwares_installed,
-                prometheus_server,
-                grafana_server,
-                ganglia_server,
-                check_mk_server,
-            )
+        try:
+            temp = obj5.third_party_monitor()
+            if type(temp) != type(None):
+                (
+                    softwares_installed,
+                    prometheus_server,
+                    grafana_server,
+                   ganglia_server,
+                    check_mk_server,
+               ) = temp
+                obj_pdf.third_party_monitor(
+                    softwares_installed,
+                    prometheus_server,
+                    grafana_server,
+                   ganglia_server,
+                   check_mk_server,
+                )
+        except Exception as e:
+            pass
 
         oozie_flag, crontab_flag, airflow_flag = None, None, None
         temp = obj5.orchestration_tools()

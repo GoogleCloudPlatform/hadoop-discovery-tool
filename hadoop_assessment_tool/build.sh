@@ -56,6 +56,11 @@ then
                 exit 1
             fi
         fi
+        if [ $check -eq 1 ]
+        then
+            echo "ERROR - OS Packages not Installed Successfully"
+            exit 1
+        fi
         if [ $check -eq 127 ]
         then
             echo "ERROR - OS Packages not Installed Successfully"
@@ -81,6 +86,11 @@ else
                 echo "ERROR - OS Packages not Installed Successfully"
                 exit 1
             fi
+        fi
+        if [ $check -eq 1 ]
+        then
+            echo "ERROR - OS Packages not Installed Successfully"
+            exit 1
         fi
         if [ $check -eq 127 ]
         then
