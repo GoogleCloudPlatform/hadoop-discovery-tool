@@ -48,20 +48,9 @@ class NetworkMonitoringAPI:
         """
 
         try:
-            subprocess.Popen(
-                "awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf > MaxBandwidth.csv",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait(10)
-            maxbandwidth_df = pd.read_csv("MaxBandwidth.csv", delimiter="\n")
-            subprocess.Popen(
-                "rm ./MaxBandwidth.csv",
-                shell=True,
-                stdout=subprocess.PIPE,
-                encoding="utf-8",
-            ).wait(10)
-            max_bandwidth = str(maxbandwidth_df["MaxBandwidth"][0])
+            max_bandwidth = subprocess.Popen("awk '/MaxBandwidth/  {print $2}' /etc/vnstat.conf",shell=True,stdout=subprocess.PIPE,encoding="utf-8")
+            max_bandwidth.wait(10)
+            max_bandwidth, err = max_bandwidth.communicate()
             self.logger.info("max_bandwidth successful")
             return max_bandwidth
         except Exception as e:
