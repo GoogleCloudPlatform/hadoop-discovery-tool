@@ -28,8 +28,8 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 ## 3. Prerequisites
 1. Important highlights of the Tool
    1. The tool runs on versions above **python 3.6, 3.7 & 3.8**
-   2. The tool supports Cloudera version - **CDH 5.16.2 and above; CDH 6.X, CDH 7.X**
-   3. The tool runs on the following OS versions **Centos 7, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all**.
+   2. The tool supports Cloudera version - **CDH 5.13.3 and above; CDH 6.X, CDH 7.X**
+   3. The tool runs on the following OS versions **Centos 6, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all**.
    4. The tool requires **pip** installed
 2. Complete information to run the tool   
    1. The tool runs only on one of the **master nodes**
@@ -40,11 +40,11 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
       2. python 3.7
       3. python 3.8
    5. This tool supports the following **Cloudera versions:**
-      1. CDH 5.16.2 and above
+      1. CDH 5.13.3 and above
       2. CDH 6.x
       3. CDH 7.x
    6. This tool runs on the following **Linux versions:**
-      1. Centos 7 and above
+      1. Centos 6 and above
       2. Redhat 7 and above
       3. Debian 9 and above
       4. Ubuntu 16 and above
@@ -67,7 +67,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
       
       | Hadoop Version | Roles |
       |-----------------|:-------------|
-      | CDH 5.16.2 | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
+      | CDH 5.13.3 | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
       | CDH 6.x | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
       | CDH 7.x | Auditor, Cluster Administrator, Configurator, Dashboard User, Full Administrator, Key Administrator, Limited Cluster Administrator, Limited Operator, Navigator Administrator, Operator, Read Only, Replication Administrator, User Administrator |
 
