@@ -168,20 +168,7 @@ then
     echo "*****************************************************************"
     echo "INFO - Python environment activated"
 fi
-# Copy offline packages into new virtual environment for installation
-cp -r $PWD/packages $PWD/python_environment/packages
-var=$?
-if [ $var -eq 1 ]
-then
-    echo "ERROR - Cannot copy package folder in new environment"
-    exit 1
-fi
-if [ $var -eq 0 ]
-then
-echo "*****************************************************************"
-echo "INFO - Packages moved to python environment"
-fi
-pip3 install pip==21.0.1 --no-index --no-deps --find-links $PWD/python_environment/packages/
+pip3 install pip==21.0.1
 var=$?
 if [ $var -eq 1 ]
 then
@@ -198,7 +185,7 @@ then
 echo "*****************************************************************"
 echo "INFO - Pip updated in python environment"
 fi
-pip3 install wheel --no-index --no-deps --find-links $PWD/python_environment/packages/
+pip3 install wheel
 var=$?
 if [ $var -eq 1 ]
 then
@@ -210,22 +197,7 @@ then
 echo "*****************************************************************"
 echo "INFO - Wheel installed in python environment"
 fi
-# Install all the offline packages into the virtual environment
-pip3 wheel wheel -w packages/ cryptography==3.4.7 --no-binary :all
-var=$?
-if [ $var -eq 1 ]
-then
-    echo "ERROR - Cryptocurrency package not unpacked"
-    exit 1
-fi
-pip3 install -f packages/ --no-index cryptography==3.4.7
-var=$?
-if [ $var -eq 1 ]
-then
-    echo "ERROR - Cryptocurrency package not installed"
-    exit 1
-fi
-pip3 install -r $PWD/python_environment/packages/requirements.txt --no-index --no-deps --find-links $PWD/python_environment/packages/
+pip3 install -r $PWD/requirements.txt
 var=$?
 if [ $var -eq 1 ]
 then
