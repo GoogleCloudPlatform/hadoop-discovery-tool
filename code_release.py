@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import ast
 import os
+import sys
 
-pyversion = os.popen("python3 -V | awk '{print $2}'").read()
-pyversion = pyversion.replace("\n", "")
-if pyversion >= "3.8.0":
-    os.popen("python3.8 -m venv $PWD/python_environment/venv").read()
-else:
-    os.popen("python3 -m venv $PWD/python_environment/venv").read()
+class Visitor(ast.NodeVisitor):
+  def visit(self, node):
+    try:
+      docstring = ast.get_docstring(node)
+    except TypeError:
+      docstring = None
+    if docstring:
+      print(docstring)
+      print('---')
+    super().visit(node)
+
+for d, _, filenames in os.walk('.'):
+  for name in filenames:
+    if not name.endswith('.py'): continue
+    p = os.path.join(d, name)
+    print(p)
+    with open(p) as f:
+      Visitor().visit(ast.parse(f.read()))
+    print('\n')

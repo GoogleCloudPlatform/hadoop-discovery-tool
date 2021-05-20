@@ -1,0 +1,1615 @@
+./code_release.py
+
+
+./hadoop_assessment_tool/python_package_installer.py
+
+
+./hadoop_assessment_tool/os_package_installer.py
+
+
+./hadoop_assessment_tool/codebase/__main__.py
+
+
+./hadoop_assessment_tool/codebase/PdfGenerator.py
+This Class has functions for PDF generation based on different 
+Cloudera versions.
+
+Args:
+    inputs (dict): Contains user input attributes
+---
+Initialize inputs
+---
+Generate PDF for CDH-5, CDH-6 and CDP-7
+---
+
+
+./hadoop_assessment_tool/codebase/HardwareOSAPI.py
+This Class has functions related to Hardware and OS Footprint category.
+
+Has functions which fetch different hardware and os metrics from Hadoop 
+cluster like list of host and their details, list of services, core and 
+memory usage pattern over time, etc.
+
+Args:
+    inputs (dict): Contains user input attributes
+---
+Initialize inputs
+---
+Get OS version using system CLI command.
+
+Returns:
+    os_version (str): OS version and distribution of host
+---
+Get list of all clusters present in Cloudera Manager.
+
+Returns:
+    cluster_items (dict): Metrics of all clusters
+---
+Get List of all hosts present in a cluster.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    cluster_host_items (dict): Summary of all hosts in cluster
+    cluster_host_len (int): Number of hosts in cluster
+---
+Get a list of services present in a cluster with its details.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    cluster_service_item (dict): All services installed in cluster
+---
+Get detailed specs of a host.
+
+Args:
+    hostId (str): Host ID present in cloudera manager.
+Returns:
+    host_data (dict): Detailed specs of host
+---
+Get cores availability data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    cluster_total_cores_df (DataFrame): Total cores available over time.
+---
+Get cores usage data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    cluster_cpu_usage_df (DataFrame): CPU usage over time
+    cluster_cpu_usage_avg (float): Average CPU usage in cluster
+---
+Get memory availability data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    cluster_total_memory_df (DataFrame): Total memory available over time
+---
+Get memory usage data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    cluster_memory_usage_df (DataFrame): Memory usage over time
+    cluster_memory_usage_avg (float): Average memory usage in cluster
+---
+Get memory usage data over a date range.
+
+Args:
+    edgenode_hostid_list (str): list of edgenodes in the cluster.
+Returns:
+    mean_df (DataFrame): Memory usage over time
+---
+Get database server like mysql for metadata.
+
+Returns:
+    database_server (str): Database server present in cluster.
+---
+Get DNS server details.
+
+Returns:
+    dns_server (str): DNS server present in cluster.
+---
+Get web server details.
+
+Returns:
+    web_server (str): Web server present in cluster.
+---
+Get NTP server details.
+
+Returns:
+    ntp_server (str): NTP server present in cluster.
+---
+Get manufacturer name of processor.
+
+Returns:
+    manufacturer_name (str): Manufacturer name of processor present in cluster.
+---
+Get serial number of processor.
+
+Returns:
+    serial_no (str): Serial number of processor present in cluster.
+---
+Get family of processor.
+
+Returns:
+    family (str): Family of processor present in cluster.
+---
+Get model name of processor.
+
+Returns:
+    model_name (str): Model name of processor present in cluster.
+---
+Get microcode of processor.
+
+Returns:
+    microcode (str): Microcode of processor present in cluster.
+---
+Get CPU MHz of processor.
+
+Returns:
+    cpu_mhz (str): CPU MHz of processor present in cluster.
+---
+Get CPU family of processor.
+
+Returns:
+    cpu_family (str): CPU family of processor present in cluster.
+---
+Get NIC details for cluster hardware.
+
+Returns:
+    nic_details (str): NIC details
+---
+Get List of security patches present in cluster.
+
+Returns:
+    patch_dataframe (DataFrame): List of security patches.
+    os_name (str): OS distribution
+---
+Get List of hadoop and non-hadoop libraries present in cluster.
+
+Returns:
+    hadoop_native_df (DataFrame): List of hadoop and non-hadoop libraries.
+---
+Get check whether python, java and scala are installed in cluster.
+
+Returns:
+    python_flag (int): Check for python installation.
+    java_flag (int): Check for java installation.
+    scala_flag (int): Check for scala installation.
+---
+Get list of security software present in cluster.
+
+Returns:
+    security_software (dict): List of security software.
+---
+Get check whether GPU is present in cluster.
+
+Returns:
+    gpu_status (str): Check for GPU.
+---
+
+
+./hadoop_assessment_tool/codebase/DataAPI.py
+This Class has functions related to the Cluster Data category.
+
+Has functions which fetch different data metrics from Hadoop cluster 
+like HDFS metrics, hive metrics, etc.
+
+Args:
+    inputs (dict): Contains user input attributes
+---
+Initialize inputs
+---
+Get total storage size and storage at each node for HDFS.
+
+Returns:
+    individual_node_size (list): Total storage of all nodes.
+    total_storage (float): Total storage of cluster.
+---
+Get HDFS replication factor.
+
+Returns:
+    replication_factor (str): Replication factor value
+---
+Get config value for HDFS trash interval.
+
+Returns:
+    trash_flag (str): Trash interval value
+---
+Get HDFS size breakdown based on HDFS directory system.
+
+Args:
+    clipath (str): HDFS path for storage breakdown
+Returns:
+    hdfs_root_dir (str): HDFS storage breakdown
+---
+Get HDFS storage available data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    hdfs_capacity_df (DataFrame): HDFS storage available over time
+    hdfs_storage_config (float): Average HDFS storage available
+---
+Get HDFS storage used data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    hdfs_capacity_used_df (DataFrame): HDFS storage used over time
+    hdfs_storage_used (float): Average HDFS storage used
+---
+Get HDFS folders and files details in cluster.
+
+Returns:
+    hdfs_storage_df (DataFrame): HDFS folders and files details
+    hdfs_flag (bool): Check whether acl is enabled or not
+---
+Get structure v/s unstructure data details.
+
+Args:
+    total_used_size (float): Total storage size.
+    hadoop_db_names (DataFrame): Hive database size.
+Returns:
+    size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown
+---
+Get HDFS file compression details in cluster.
+
+Returns:
+    value (str): HDFS file compression details.
+---
+Get HDFS files distribution in cluster.
+
+Returns:
+    grpby_data (DataFrame): File type distribution with its size.
+    max_value (float): Maximum size of file.
+    min_value (float): Minimum size of file.
+    avg_value (float): Average size of file.
+---
+Get Hive metastore config details from cluster.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    mt_db_host (str): Metastore database host name
+    mt_db_name (str): Metastore database name
+    mt_db_type (str): Metastore database type
+    mt_db_port (str): Metastore database port number
+---
+Get Hive tables and databases details.
+
+Args:
+    database_uri (str): Metastore database connection URI.
+    database_type (str): Metastore database type.
+Returns:
+    table_df (DataFrame): List of tables and database in hive.
+---
+Get Hive databases details.
+
+Args:
+    database_uri (str): Metastore database connection URI.
+    database_type (str): Metastore database type.
+Returns:
+    database_df (DataFrame): List of databases and thier size in hive.
+---
+Get Hive databases count.
+
+Args:
+    database_uri (str): Metastore database connection URI.
+    database_type (str): Metastore database type.
+Returns:
+    database_count (int): Number of databases in hive.
+---
+Get Hive partitioned and non-partitioned tables details.
+
+Args:
+    database_uri (str): Metastore database connection URI.
+    database_type (str): Metastore database type.
+Returns:
+    number_of_tables_with_partition (int): Number of tables with partition in hive
+    number_of_tables_without_partition (int): Number of tables without partition in hive
+---
+Get Hive internal and external tables count.
+
+Args:
+    database_uri (str): Metastore database connection URI.
+    database_type (str): Metastore database type.
+Returns:
+    internal_tables (int): Number of internal tables in hive
+    external_tables (int): Number of external tables in hive
+---
+Get Hive execution engine details.
+
+Returns:
+    hive_execution_engine (str): Execution engine used by hive.
+---
+Get Hive file formats.
+
+Args:
+    database_uri (str): Metastore database connection URI.
+    database_type (str): Metastore database type.
+Returns:
+    formats (str): List of formats used by Hive.
+---
+Get Hive concurrency and locking config.
+
+Returns:
+    transaction_locking_concurrency (str): Concurrency and locking config value.
+---
+Get Hive adhoc and etl query count over a date range.
+
+Args:
+    yarn_rm (str): Yarn resource manager IP.
+    yarn_port (str): Yarn resource port.
+Returns:
+    query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
+---
+Get Hive interactive queries status in cluster.
+
+Returns:
+    hive_interactive_status (str): Hive interactive queries status.
+---
+
+
+./hadoop_assessment_tool/codebase/ApplicationAPI.py
+This Class has functions related to Application category.
+
+Has functions which fetch different application metrics from Hadoop cluster 
+like yarn, Hbase, Kafka, etc.
+
+Args:
+    inputs (dict): Contains user input attributes
+---
+Initialize inputs
+---
+Get list of all yarn related application over a date range.
+
+Args:
+    yarn_rm (str): Yarn resource manager IP.
+    yarn_port (str): Yarn resource manager port.
+Returns:
+    yarn_application_df (DataFrame): List of yarn related application in cluster.
+---
+Get yarn related application count based to its type and status.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn related application in cluster.
+Returns:
+    app_count_df (DataFrame): Application count in yarn.
+    app_type_count_df (DataFrame): Application count by type in yarn.
+    app_status_count_df (DataFrame): Application count by status in yarn.
+---
+Get a list of streaming application in cluster.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    only_streaming (str): List of streaming application.
+---
+Get dynamic resource pool information of cluster.
+
+Returns:
+    resource (str): Dynamic resource pool information.
+---
+Get HA config for various services.
+
+Returns:
+    zookeeper_ha (str): ZooKeeper HA config
+    hive_ha (str): Hive HA config
+    yarn_ha (str): Yarn HA config
+    hdfs_ha (str): HDFS HA config
+---
+Get vcore and memory usage of yarn application.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    app_vcore_df (DataFrame): Vcores usage by applications
+    app_memory_df (DataFrame): Memory usage by applications
+---
+Get details about job launch frequency of yarn application.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    job_launch_df (DataFrame): Job launch frequency of applications.
+---
+Get details about busrty yarn application.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    bursty_app_time_df (DataFrame): Time taken by bursty application.
+    bursty_app_vcore_df (DataFrame): Vcores taken by bursty application.
+    bursty_app_mem_df (DataFrame): Memory taken by bursty application.
+---
+Get details about failed or killed yarn application.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    yarn_failed_app (DataFrame): RCA of failed or killed application.
+---
+Get total vcores allocated to yarn.
+
+Args:
+    yarn_rm (str): Yarn resource manager IP.
+Returns:
+    yarn_total_vcores_count (float): Total vcores configured to yarn
+---
+Get yarn vcore availability data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_vcore_available_df (DataFrame): Vcores available over time.
+---
+Get yarn vcore allocation data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_vcore_allocated_avg (float): Average vcores allocated in cluster.
+    yarn_vcore_allocated_df (DataFrame): Vcores allocation over time.
+    yarn_vcore_allocated_pivot_df (DataFrame): Seasonality of vcores allocation over time.
+---
+Get total memory allocated to yarn.
+
+Args:
+    yarn_rm (str): Yarn resource manager IP.
+Returns:
+    yarn_total_memory_count (float): Total memory configured to yarn.
+---
+Get yarn memory availability data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_memory_available_df (DataFrame): Memory available over time.
+---
+Get yarn memory allocation data over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_memory_allocated_avg (float): Average memory allocated in cluster.
+    yarn_memory_allocated_df (DataFrame): Memory allocation over time.
+    yarn_memory_allocated_pivot_df (DataFrame): Seasonality of memory allocation over time.
+---
+Get vcore and memory breakdown by yarn application.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    app_vcore_df (DataFrame): Vcore breakdown by application
+    app_vcore_usage_df (DataFrame): Vcore usage over time
+    app_memory_df (DataFrame): Memory breakdown by application
+    app_memory_usage_df (DataFrame): Memory usage over time
+---
+Get pending application over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_pending_apps_df (DataFrame): Pending application count over time.
+---
+Get pending memory over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_pending_memory_df (DataFrame): Pending memory over time.
+---
+Get pending vcore over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_pending_vcore_df (DataFrame): Pending vcores over time.
+---
+Get running application over a date range.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    yarn_running_apps_df (DataFrame): Running application count over time.
+---
+Get details about yarn queues.
+
+Args:
+    yarn_rm (str): Yarn resource manager IP.
+Returns:
+    yarn_queues_list (list): Yarn queue details
+---
+Get yarn application count based on different yarn queues.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    queue_app_count_df (DataFrame): Queued application count
+    queue_elapsed_time_df (DataFrame): Queued application elapsed time
+---
+Get details about yarn application pending in yarn queues.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    app_queue_df (DataFrame): Pending queued application list
+    app_queue_usage_df (DataFrame): Pending queued application usage over time.
+---
+Get vcore and memory used by yarn queues.
+
+Args:
+    yarn_application_df (DataFrame): List of yarn application in cluster.
+Returns:
+    queue_vcore_df (DataFrame): Queue vcores details
+    queue_vcore_usage_df (DataFrame): Queue vcores usage over time
+    queue_memory_df (DataFrame): Queue memory details
+    queue_memory_usage_df (DataFrame): Queue memory usage over time
+---
+Get number of nodes serving Hbase.
+
+Returns:
+    NumNodesServing (int) : number of nodes serving Hbase
+---
+Get HBase storage details.
+
+Returns:
+    base_size (float) : Base size of HBase
+    disk_space_consumed (float) : Disk size consumed by HBase
+---
+Get HBase replication factor.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    replication (str): HBase replication factor.
+---
+Get HBase secondary indexing details.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    indexing (str): HBase secondary index value.
+---
+Get HBase-hive information.
+
+Returns:
+    hbasehive_var (str): HBase-hive information.
+---
+Get HBase phoenix information.
+
+Returns:
+    phoenixHbase (str): HBase phoenix information.
+---
+Get HBase coprocessor information.
+
+Returns:
+    coprocessorHbase (str): HBase coprocessor information.
+---
+Get spark config details.
+
+Returns:
+    dynamic_allocation (str): Dynamic Allocation value.
+    spark_resource_manager (str): Spark resource manager value.
+---
+Get Spark version details.
+
+Returns:
+    spark_version (str): Spark version
+---
+Get list of languages used by spark programs.
+
+Returns:
+    language_list (str): List of languages separated by comma.
+---
+Get components of spark used in programming.
+
+Returns:
+    rdd_flag (bool) : Use of Spark RDD
+    dataset_flag (bool) : Use of Spark Dataset
+    sql_flag (bool) : Use of Spark SQL
+    df_flag (bool) : Use of Spark Dataframe
+    mllib_flag (bool) : Use of Spark ML
+    stream_flag (bool) : Use of Spark Streaming
+---
+Get retention period of kafka.
+
+Returns:
+    retention_period (str): Kafka retention period
+---
+Get zookeeper connection string in kafka.
+
+Returns:
+    zookeeper_conn (str): Returns the zookeeper connection string for kafka
+---
+Get num of topics in kafka.
+
+Args:
+    zookeeper_conn (str) : Zookeeper Connection string for kafka
+Returns:
+    num_topics (int): Number of topics in kafka.
+---
+Get volume of message in kafka in bytes.
+
+Args:
+    zookeeper_conn (str) Zookeeper Connection string for kafka
+Returns:
+    sum_size (int): Message size of Kafka
+---
+Get count of messages in kafka topics.
+
+Args:
+    zookeeper_conn (str) Zookeeper Connection string for kafka
+Returns:
+    sum_count (int): Number of messages in Kafka
+---
+Get Total size of Kafka Cluster.
+
+Returns:
+    total_size (int): Total size of Kafka Cluster in KB
+---
+Get individual broker size in the Kafka Cluster.
+
+Returns:
+    brokersize (DataFrame): Returns a df with the sizes of all the brokers in the Kafka Cluster
+---
+Check High Availability of Kafka Cluster
+
+Args:
+    zookeeper_conn (str) Zookeeper Connection string for kafka
+Returns:
+    HA_Strategy (str): returns whether High availability in kafka is enabled or not
+---
+Get impala service in cluster.
+
+Returns:
+    output (str): Impala information for cluster.
+---
+Get sentry service in cluster.
+
+Returns:
+    output (str): Sentry information for cluster.
+---
+Get kudu service in cluster.
+
+Returns:
+    output (str): Kudu information for cluster.
+---
+Get a list of services used for ingestion.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    services (str): List services used for ingestion.
+---
+Get backup and disaster recovery information.
+
+Returns:
+    br (str): backup and disaster recovery information.
+---
+
+
+./hadoop_assessment_tool/codebase/PdfFunctions.py
+This Class has helper functions for pdf generation.
+
+Args:
+    inputs (dict): Contains user input attributes.
+    pdf (obj): PDF object.
+---
+Initialize inputs
+---
+Add cluster information in PDF
+
+Args:
+    data (dict): Key value pair data for summary table
+---
+Add cluster information in PDF
+
+Args:
+    cluster_items (dict): Metrics of all clusters
+---
+Add detailed information of all host in cluster in PDF.
+
+Args:
+    cluster_host_items (dict): Summary of all hosts in cluster
+    all_host_all (list) : Detailed specs of all hosts
+    os_version (str): OS version and distribution of host
+---
+Add service installed data in PDF.
+
+Args:
+    cluster_service_item (dict): All services installed in cluster
+---
+Add average vcore utilization of cluster in PDF.
+
+Args:
+    cluster_cpu_usage_avg (float): Average CPU usage in cluster
+---
+Add cluster vcore data graph in PDF.
+
+Args:
+    cluster_total_cores_df (DataFrame): Total cores available over time.
+    cluster_cpu_usage_df (DataFrame): CPU usage over time
+---
+Add average memory utilization of cluster in PDF.
+
+Args:
+    cluster_memory_usage_avg (float): Average memory usage in cluster
+---
+Add cluster memory data graph in PDF.
+
+Args:
+    cluster_total_memory_df (DataFrame): Total memory available over time
+    cluster_memory_usage_df (DataFrame): Memory usage over time
+---
+Add database server like mysql for metadata in PDF.
+
+Args:
+    database_server (str): Database server present in cluster.
+---
+Add database server like mysql for metadata in PDF.
+
+Args:
+    database_server (str): Database server present in cluster.
+---
+Add DNS server details in PDF.
+
+Args:
+    dns_server (str): DNS server present in cluster.
+---
+Add web server details in PDF.
+
+Args:
+    web_server (str): Web server present in cluster.
+---
+Add NTP server details in PDF.
+
+Args:
+    ntp_server (str): NTP server present in cluster.
+---
+Add manufacturer name of processor in PDF.
+
+Args:
+    manufacturer_name (str): Manufacturer name of processor present in cluster.
+---
+Add serial number of processor in PDF.
+
+Args:
+    serial_no (str): Serial number of processor present in cluster.
+---
+Add family of processor in PDF.
+
+Args:
+    family (str): Family of processor present in cluster.
+---
+Add model name of processor in PDF.
+
+Args:
+    model_name (str): Model name of processor present in cluster.
+---
+Add microcode of processor in PDF.
+
+Args:
+    microcode (str): Microcode of processor present in cluster.
+---
+Add CPU MHz of processor in PDF.
+
+Args:
+    cpu_mhz (str): CPU MHz of processor present in cluster.
+---
+Add CPU family of processor in PDF.
+
+Args:
+    cpu_family (str): CPU family of processor present in cluster.
+---
+Add NIC details for cluster hardware in PDF.
+
+Args:
+    nic_details (str): NIC details
+---
+Add List of security patches present in clusterr in PDF.
+
+Args:
+    patch_dataframe (DataFrame): List of security patches.
+    os_name (str): OS distribution
+---
+Add List of hadoop and non-hadoop libraries present in cluster in PDF.
+
+Args:
+    hadoop_native_df (DataFrame): List of hadoop and non-hadoop libraries.
+---
+Add check whether python, java and scala are installed in cluster in PDF.
+
+Args:
+    python_flag (int): Check for python installation.
+    java_flag (int): Check for java installation.
+    scala_flag (int): Check for scala installation.
+---
+Add list of security software present in cluster in PDF.
+
+Args:
+    security_software (dict): List of security software.
+---
+Add heck whether GPU is present in cluster in PDF.
+
+Args:
+    gpu_status (str): Check for GPU.
+---
+Add Hadoop version details in PDF.
+
+Args:
+    hadoop_major (str): Hadoop major version
+    hadoop_minor (str): Hadoop miror version
+    distribution (str): Hadoop vendor name
+---
+Add list of service installed with their versions in PDF.
+
+Args:
+    new_ref_df (DataFrame): Services mapped with their version.
+---
+Add list of 3rd party software installed in cluster in PDF.
+
+Args:
+    third_party_package (DataFrame): List of rd party software.
+---
+Add list of software installed in cluster with their versions in PDF.
+
+Args:
+    package_version (DataFrame): List of software installed.
+---
+Add SalesForce and SAP driver in cluster in PDF.
+
+Args:
+    df_ngdbc (DataFrame): SAP driver.
+    df_salesforce (DataFrame): SalesForce driver.
+---
+Add list of JDBC and ODBC driver in cluster in PDF.
+
+Args:
+    final_df (DataFrame): List of JDBC and ODBC driver.
+---
+Add list of connectors present in cluster in PDF.
+
+Args:
+    connectors_present (DataFrame): List of connectors.
+---
+Add HDFS configured size in PDF.
+
+Args:
+    total_storage (float): Total storage of cluster.
+---
+Add HDFS configured size for each node in PDF.
+
+Args:
+    mapped_df (DataFrame): Storage for each node of cluster.
+---
+Add HDFS replication faction in PDF.
+
+Args:
+    replication_factor (str): Replication factor value
+---
+Add HDFS trash interval data in PDF.
+
+Args:
+    trash_flag (str): Trash interval value
+---
+Add HDFS file compression details in PDF.
+
+Args:
+    value (str): HDFS file compression details.
+---
+Add HDFS available size in PDF.
+
+Args:
+    hdfs_storage_config (float): Average HDFS storage available
+---
+Add HDFS used size in PDF.
+
+Args:
+    hdfs_storage_used (float): Average HDFS storage used
+---
+Add HDFS storage size graph in PDF.
+
+Args:
+    hdfs_capacity_df (DataFrame): HDFS storage available over time
+    hdfs_capacity_used_df (DataFrame): HDFS storage used over time
+---
+Add HDFS folders and files details in PDF.
+
+Args:
+    hdfs_storage_df (DataFrame): HDFS folders and files details
+---
+Add HDFS files distribution in PDF.
+
+Args:
+    grpby_data (DataFrame): File type distribution with its size.
+    max_value (float): Maximum size of file.
+    min_value (float): Minimum size of file.
+    avg_value (float): Average size of file.
+---
+Add Hive metastore details in PDF.
+
+Args:
+    mt_db_host (str): Metastore database host name
+    mt_db_name (str): Metastore database name
+    mt_db_type (str): Metastore database type
+    mt_db_port (str): Metastore database port number
+---
+Add Hive details in PDF.
+
+Args:
+    database_count (int): Number of databases in hive.
+    tables_with_partition (int): Number of tables with partition in hive
+    tables_without_partition (int): Number of tables without partition in hive
+    internal_tables (int): Number of internal tables in hive
+    external_tables (int): Number of external tables in hive
+    hive_execution_engine (str): Execution engine used by hive.
+    formats (str): List of formats used by Hive.
+    transaction_locking_concurrency (str): Concurrency and locking config value.
+    hive_interactive_status (str): Hive interactive queries status.
+---
+Add Hive databases size table in PDF.
+
+Args:
+    database_df (DataFrame): List of databases and thier size in hive.
+---
+Add Hive access frequency graph in PDF.
+
+Args:
+    table_df (DataFrame): List of tables and database in hive.
+---
+Get Hive adhoc and etl query count over a date range.
+
+Args:
+    yarn_rm (str): Yarn resource manager IP.
+    yarn_port (str): Yarn resource port.
+Returns:
+    query_type_count_df (DataFrame): Hive adhoc and etl query count in cluster.
+---
+Get structure v/s unstructure data details.
+
+Args:
+    size_breakdown_df (DataFrame): Structure v/s unstructure data breakdown
+---
+Add Kerberos details in PDF.
+
+Args:
+    kerberos (str): Kerberos information of cluster.
+---
+Add AD server details in PDF.
+
+Args:
+    ADServer (str): Url and port of AD server.
+---
+Add AD server details based on domain name details in PDF.
+
+Args:
+    Server_dn (str): Domain name of LDAP bind parameter.
+---
+Add SSL staus of various services in PDF.
+
+Args:
+    Mr_ssl (str): MapReduce SSL status
+    hdfs_ssl (str): HDFS SSL status
+    yarn_ssl (str): Yarn SSL status
+---
+Add kerberos status of various services in PDF.
+
+Args:
+    hue_flag (str): Hue kerberos status
+    mapred_flag (str): MapReduce kerberos status
+    hdfs_flag (str): HDFS kerberos status
+    yarn_flag (str): Yarn kerberos status
+    keytab (str): Presence of keytab files
+---
+Add LUKS information in PDF.
+
+Args:
+    luks_detect (str): LUKS information.
+---
+Add port number for different services in PDF.
+
+Args:
+    port_df (DataGrame): port number for different services.
+---
+Add list of keys in PDF.
+
+Args:
+    key_list (str): list of keys.
+---
+Add list of encryption zone in PDF.
+
+Args:
+    enc_zoneList (DataGrame): list of encryption zone.
+---
+Add maximum bandwidth information in PDF.
+
+Args:
+    max_bandwidth (str): maximum bandwidth.
+---
+Add ingress network traffic information in PDF.
+
+Args:
+    max_value (str) : Maximun ingress value
+    min_value (str) : Minimun ingress value
+    avg_value (str) : Average ingress value
+    curr_value (str) : Current ingress value
+---
+Add disk read and write speed information in PDF.
+
+Args:
+    total_disk_read (str) : Disk read speed
+    total_disk_write (str) : Disk write speed
+---
+Add list of third party monitoring tools in PDF.
+
+Args:
+    softwares_installed (str): List of software installed in cluster.
+    prometheus_server (str): Presence of prometheus in cluster
+    grafana_server (str): Presence of grafana in cluster
+    ganglia_server (str): Presence of ganglia in cluster
+    check_mk_server (str): Presence of check_mk_server in cluster
+---
+Add orchestration tool details in PDF.
+
+Args:
+    oozie_flag (str): Presence of oozie in cluster
+    crontab_flag (str): Presence of crontab in cluster
+    airflow_flag (str): Presence of airflow in cluster
+---
+Add logging tool details in PDF.
+
+Args:
+    ddog (str): Presence of Datadog in cluster
+    splunk (str): Presence of Splunk in cluster
+    new_relic (str): Presence of Newrelic in cluster
+    elastic_search (str): Presence of Elasticsearch in cluster
+---
+Add logs paths in PDF.
+
+Args:
+    logs (str): List of logs path.
+---
+Add dynamic resource pool information of cluster in PDF.
+
+Args:
+    resource (str): Dynamic resource pool information.
+---
+Add HA config for various services in PDF.
+
+Args:
+    zookeeper_ha (str): ZooKeeper HA config
+    hive_ha (str): Hive HA config
+    yarn_ha (str): Yarn HA config
+    hdfs_ha (str): HDFS HA config
+---
+Add yarn total vcore in PDF.
+
+Args:
+    yarn_total_vcores_count (float): Total vcores configured to yarn
+---
+Add yarn average vcore in PDF.
+
+Args:
+    yarn_vcore_allocated_avg (float): Average vcores allocated in cluster.
+---
+Add yarn vcore usage graph in PDF.
+
+Args:
+    yarn_vcore_available_df (DataFrame): Vcores available over time.
+    yarn_vcore_allocated_df (DataFrame): Vcores allocation over time.
+---
+Add yarn vcore seasonality graph in PDF.
+
+Args:
+    yarn_vcore_allocated_pivot_df (DataFrame): Seasonality of vcores allocation over time.
+---
+Add yarn total memory in PDF.
+
+Args:
+    yarn_total_memory_count (float): Total memory configured to yarn.
+---
+Add yarn average memory in PDF.
+
+Args:
+    yarn_memory_allocated_avg (float): Average memory allocated in cluster.
+---
+Add yarn memory usage graph in PDF
+
+Args:
+    yarn_memory_available_df (DataFrame): Memory available over time.
+    yarn_memory_allocated_df (DataFrame): Memory allocation over time.
+---
+Add yarn memory seasonality graph in PDF.
+
+Args:
+    yarn_memory_allocated_pivot_df (DataFrame): Seasonality of memory allocation over time.
+---
+Add yarn application count table in PDF.
+
+Args:
+    app_count_df (DataFrame): Application count in yarn.
+---
+Add yarn application type and status pie chart in PDF.
+
+Args:
+    app_type_count_df (DataFrame): Application count by type in yarn.
+    app_status_count_df (DataFrame): Application count by status in yarn.
+---
+Add list of streaming application in PDF.
+
+Args:
+    only_streaming (str): List of streaming application.
+---
+Add yarn vcore and memory by application pie chart in PDF.
+
+Args:
+    app_vcore_df (DataFrame): Vcores usage by applications
+    app_memory_df (DataFrame): Memory usage by applications
+---
+Add yarn vcore usage graph in PDF.
+
+Args:
+    app_vcore_df (DataFrame): Vcore breakdown by application
+    app_vcore_usage_df (DataFrame): Vcore usage over time
+---
+Add yarn memory usage graph in PDF.
+
+Args:
+    app_memory_df (DataFrame): Memory breakdown by application
+    app_memory_usage_df (DataFrame): Memory usage over time
+---
+Add details about job launch frequency of yarn application in PDF.
+
+Args:
+    job_launch_df (DataFrame): Job launch frequency of applications.
+---
+Add yarn bursty application details in PDF.
+
+Args:
+    bursty_app_time_df (DataFrame): Time taken by bursty application.
+---
+Add yarn bursty application vcore graph in PDF.
+
+Args:
+    bursty_app_vcore_df (DataFrame): Vcores taken by bursty application.
+---
+Add yarn bursty application memory graph in PDF.
+
+Args:
+    bursty_app_time_df (DataFrame): Time taken by bursty application.
+    bursty_app_vcore_df (DataFrame): Vcores taken by bursty application.
+    bursty_app_mem_df (DataFrame): Memory taken by bursty application.
+---
+Add failed or killed yarn application in PDF.
+
+Args:
+    yarn_failed_app (DataFrame): RCA of failed or killed application.
+---
+Add yarn queue details in PDF.
+
+Args:
+    yarn_queues_list (list): Yarn queue details
+---
+Add yarn queued application count pie chart in PDF.
+
+Args:
+    queue_app_count_df (DataFrame): Queued application count
+    queue_elapsed_time_df (DataFrame): Queued application elapsed time
+---
+Add yarn queued application vcore graph in PDF.
+
+Args:
+    queue_vcore_df (DataFrame): Queue vcores details
+    queue_vcore_usage_df (DataFrame): Queue vcores usage over time
+---
+Add yarn queued application memory graph in PDF.
+
+Args:
+    queue_memory_df (DataFrame): Queue memory details
+    queue_memory_usage_df (DataFrame): Queue memory usage over time
+---
+Add yarn pending queued application graph in PDF.
+
+Args:
+    app_queue_df (DataFrame): Pending queued application list
+    app_queue_usage_df (DataFrame): Pending queued application usage over time.
+---
+Add yarn pending application count graph in PDF.
+
+Args:
+    yarn_pending_apps_df (DataFrame): Pending application count over time.
+---
+Add yarn pending application vcore graph in PDF.
+
+Args:
+    yarn_pending_vcore_df (DataFrame): Pending vcores over time.
+---
+Add yarn pending application memory graph in PDF.
+
+Args:
+    yarn_pending_memory_df (DataFrame): Pending memory over time.
+---
+Add yarn running application count graph in PDF.
+
+Args:
+    yarn_running_apps_df (DataFrame): Running application count over time.
+---
+Add number of nodes serving Hbase in PDF.
+
+Args:
+    NumNodesServing (int) : number of nodes serving Hbase
+---
+Add HBase storage details in PDF.
+
+Args:
+    base_size (float) : Base size of HBase
+    disk_space_consumed (float) : Disk size consumed by HBase
+---
+Add HBase replication factor in PDF.
+
+Args:
+    replication (str): HBase replication factor.
+---
+Add HBase secondary indexing details in PDF.
+
+Args:
+    indexing (str): HBase secondary index value.
+---
+Add HBase-hive information in PDF.
+
+Args:
+    hbasehive_var (str): HBase-hive information.
+---
+Add HBase phoenix information in PDF.
+
+Args:
+    phoenixHbase (str): HBase phoenix information.
+---
+Add HBase coprocessor information in PDF.
+
+Args:
+    coprocessorHbase (str): HBase coprocessor information
+---
+Add Spark version details in PDF.
+
+Args:
+    spark_version (str): Spark version
+---
+Add list of languages used by spark programs in PDF.
+
+Args:
+    language_list (str): List of languages separated by comma.
+---
+Add spark config details in PDF.
+
+Args:
+    dynamic_allocation (str): Dynamic Allocation value.
+    spark_resource_manager (str): Spark resource manager value.
+---
+Add components of spark used in programming in PDF.
+
+Args:
+    rdd_flag (bool) : Use of Spark RDD
+    dataset_flag (bool) : Use of Spark Dataset
+    sql_flag (bool) : Use of Spark SQL
+    df_flag (bool) : Use of Spark Dataframe
+    mllib_flag (bool) : Use of Spark ML
+    stream_flag (bool) : Use of Spark Streaming
+---
+Add retention period of kafka in PDF.
+
+Args:
+    retention_period (str): Kafka retention period
+---
+Add num of topics in kafka in PDF.
+
+Args:
+    num_topics (int): Number of topics in kafka.
+---
+Add volume of message in kafka in bytes in PDF.
+
+Args:
+    sum_size (int): Message size of Kafka
+---
+Add count of messages in kafka topics in PDF.
+
+Args:
+    sum_count (int): Number of messages in Kafka
+---
+Add per cluster storage and kafka cluster storage in kafka in PDF.
+
+Args:
+    total_size (float): Total size of kafka cluster
+    brokersize (DataFrame): Size for each broker.
+---
+Check High Availability of Kafka Cluster.
+
+Args:
+   HA_Strategy (str): returns whether High availability in kafka is enabled or not
+---
+Add services used for ingestion in PDF.
+
+Args:
+    services (str): List of services.
+---
+Add backup and disaster recovery information in PDF.
+
+Args:
+    br (str): backup and disaster recovery information.
+---
+Add Impala information in PDF.
+
+Args:
+    impala (str): Impala service value
+---
+Add Sentry information in PDF.
+
+Args:
+    impala (str): Sentry service value
+---
+Add Kudu information in PDF.
+
+Args:
+    impala (str): Kudu service value
+---
+
+
+./hadoop_assessment_tool/codebase/FrameworkDetailsAPI.py
+This Class has functions related to Frameworks and Software Details 
+category.
+
+Has functions which fetch different frameworks and software metrics 
+from a Hadoop cluster like Hadoop version, services version, etc.
+
+Args:
+    inputs (dict): Contains user input attributes
+---
+Initialize inputs
+---
+Get Hadoop major and minor versions and Hadoop Distribution.
+
+Returns:
+    hadoop_major (str): Hadoop major version
+    hadoop_minor (str): Hadoop minor version
+    distribution (str): Hadoop vendor name
+---
+Get list of services installed in cluster with their versions.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    list_services_installed_df (DataFrame): List of services installed.
+    new_ref_df (DataFrame): Services mapped with their version.
+---
+Get list of 3rd party software installed in cluster.
+
+Returns:
+    third_party_package (DataFrame): List of rd party software.
+---
+Get list of software installed in cluster with their versions.
+
+Returns:
+    package_version (DataFrame): List of software installed.
+---
+Get list of JDBC and ODBC driver in cluster.
+
+Returns:
+    final_df (DataFrame): List of JDBC and ODBC driver.
+---
+Get SalesForce and SAP driver in cluster.
+
+Returns:
+    df_ngdbc (DataFrame): SAP driver.
+    df_salesforce (DataFrame): SalesForce driver.
+---
+Get list of connectors present in cluster.
+
+Returns:
+    connectors_present (DataFrame): List of connectors.
+---
+
+
+./hadoop_assessment_tool/codebase/NetworkMonitoringAPI.py
+This Class has functions related to Network, Traffic, Operation and 
+Monitoring category.
+
+Has functions which fetch different network, monitoring, etc metrics from 
+Hadoop cluster like bandwidth, ingress, egress, disk speed, monitoring 
+tools, etc.
+
+Args:
+    inputs (dict): Contains user input attributes
+---
+Initialize inputs
+---
+Get maximum bandwidth of cluster.
+
+Returns:
+    max_bandwidth (str): maximum bandwidth.
+---
+Get ingress_egress network traffic cluster.
+
+Returns:
+    max_value_in (str) : Maximun ingress value
+    min_value_in (str) : Minimun ingress value
+    avg_value_in (str) : Average ingress value
+    curr_value_in (str) : Current ingress value
+    max_value_in (str) : Maximun egress value
+    min_value_in (str) : Minimun egress value
+    avg_value_in (str) : Average egress value
+    curr_value_in (str) : Current egress value
+---
+Get disk read and write speed of cluster.
+
+Returns:
+    total_disk_read (str) : Disk read speed
+    total_disk_write (str) : Disk write speed
+---
+Get list of third party monitoring tools in cluster.
+
+Returns:
+    softwares_installed (str): List of software installed in cluster.
+    prometheus_server (str): Presence of prometheus in cluster
+    grafana_server (str): Presence of grafana in cluster
+    ganglia_server (str): Presence of ganglia in cluster
+    check_mk_server (str): Presence of check_mk_server in cluster
+---
+Get logs paths in cluster.
+
+Returns:
+    logs (str): List of logs path.
+---
+Get orchestration tool details present in cluster.
+
+Returns:
+    oozie_flag (str): Presence of oozie in cluster
+    crontab_flag (str): Presence of crontab in cluster
+    airflow_flag (str): Presence of airflow in cluster
+---
+Get logging tool details present in cluster.
+
+Returns:
+    ddog (str): Presence of Datadog in cluster
+    splunk (str): Presence of Splunk in cluster
+    new_relic (str): Presence of Newrelic in cluster
+    elastic_search (str): Presence of Elasticsearch in cluster
+---
+Get orchestration tool details present in cluster.
+
+Returns:
+    oozie_flag (str): Presence of oozie in cluster
+    crontab_flag (str): Presence of crontab in cluster
+    airflow_flag (str): Presence of airflow in cluster
+---
+
+
+./hadoop_assessment_tool/codebase/SecurityAPI.py
+This Class has functions related to the Security category.
+
+Has functions which fetch different security metrics from Hadoop
+cluster like kerberos details, AD server details, etc.
+
+Args:
+    inputs (dict): Contains user input attributes
+---
+Initialize inputs
+---
+Get Kerberos details in a cluster.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    cluster_kerberos_info (str): Kerberos information of cluster.
+---
+Get AD server details for a cluster.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    ADServer (str): Url and port of AD server.
+---
+Get AD server details based on domain name.
+
+Args:
+    cluster_name (str): Cluster name present in cloudera manager.
+Returns:
+    Server_dn (str): Domain name of LDAP bind parameter.
+---
+Get SSL staus of various services.
+
+Returns:
+    Mr_ssl (str): MapReduce SSL status
+    hdfs_ssl (str): HDFS SSL status
+    yarn_ssl (str): Yarn SSL status
+---
+Get kerberos status of various services.
+
+Returns:
+    hue_flag (str): Hue kerberos status
+    mapred_flag (str): MapReduce kerberos status
+    hdfs_flag (str): HDFS kerberos status
+    yarn_flag (str): Yarn kerberos status
+    keytab (str): Presence of keytab files
+---
+Get LUKS information in cluster.
+
+Returns:
+    luks_detect (str): LUKS information.
+---
+Get port number for different services.
+
+Returns:
+    port_df (DataGrame): port number for different services.
+---
+Get list of keys in cluster.
+
+Returns:
+    key_list (str): list of keys.
+---
+Get list of encryption zone in cluster.
+
+Returns:
+    enc_zoneList (DataGrame): list of encryption zone.
+---
+
+
+./hadoop_assessment_tool/codebase/imports.py
+Check whether SSL is enabled or not
+
+Returns:
+    ssl (bool): SSL flag
+---
+Check whether configuration files exists or not
+
+Returns:
+    config_path (dict): config paths
+---
+Get input from user related to cloudera manager.
+
+Returns:
+    inputs (dict): Contains user input attributes
+---
+Get Cluster Name from User.
+
+Args:
+    version (int): Cloudera distributed Hadoop version
+    cloudera_manager_host_ip (str): Cloudera Manager Host IP.
+    cloudera_manager_port (str): Cloudera Manager Port Number.
+    cloudera_manager_username (str): Cloudera Manager Username.
+    cloudera_manager_password (str): Cloudera Manager Password.
+
+Returns:
+    cluster_name (str): Cluster name present in cloudera manager.
+---
+Get input from user related to Hive.
+
+Returns:
+    inputs (dict): Contains user input attributes
+---
+Get input from user related to Hive.
+
+Returns:
+    inputs (dict): Contains user input attributes
+---
+Get input from user related to cloudera manager like Host Ip, Username, 
+Password and Cluster Name.
+
+Args:
+    version (int): Cloudera distributed Hadoop version
+Returns:
+    inputs (dict): Contains user input attributes
+---
+Defining custom logger object with custom formatter and file handler.
+
+Returns:
+    logger (obj): Custom logger object
+---
+
+

@@ -337,7 +337,4 @@ sudo bash run.sh
 9. **Step 9:** PDF Report - A PDF report will be generated at the end of successful execution, which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1.
 
 ## Contributing
-
-
-
-## License
+We'd love to accept your patches and contributions to this project. For more details on how to contribute read CONTRIBUTING.md .

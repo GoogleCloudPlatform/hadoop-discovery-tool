@@ -68,4 +68,9 @@ typings
 .pfx
 .p12
 .pem
-.key
+.key.idea/.gitignore
+.idea/google-java-format.xml
+.idea/hadoop_discovery.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
