@@ -139,20 +139,20 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 ## 4. Installation Steps
 
-1. **Step 1**: **Upload the Tarball**  in the MasterNode of the cluster. It can be uploaded in multiple ways, one of them being with the help of **SCP command** between the local machine and node or by using tools like Winscp if the local system is windows.
+1. **Step 1**: Create tarball of this repository or clone this repo directly to execute it on an EdgeNode that has access to the cluster management services. It can be uploaded in multiple ways, one of them being with the help of **SCP command** between the local machine and node or by using tools like Winscp if the local system is windows.
 
 2. **Step 2**: Go to the Tarball location (the location where it was uploaded in Step 1)
 
-3. **Step 3**: Extract the Tarball **hadoop_assessment_tool.tar**
+3. **Step 3**: Extract the Tarball **hadoop-discovery-tool.tar**
 
 ```bash
-tar -xvf hadoop_assessment_tool.tar
+tar -xvf hadoop-discovery-tool.tar
 ```
 
-4. **Step 4**: Go to the **hadoop_assessment_tool** directory
+4. **Step 4**: Go to the hadoop-discovery-tool **tool** directory
 
 ```bash
-cd hadoop_assessment_tool
+cd hadoop-discovery-tool/tool
 ```
 5. **Step 5**: Give **execute** permission to the scripts 
 
@@ -235,7 +235,7 @@ sudo bash run.sh
           ```bash
            A major number of metrics generation would require Cloudera manager credentials Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]: 
           ```
-    3. **Step 8.3: Hive Metastore credentials** - This would only be prompted if  Cloudera Manager credentials were provided in the previous step. The prompt would ask you if you want to provide Hive Metastore credentials, you would have to select **'y'** or **'n'**
+    3. **Step 8.3: Hive Metastore database credentials** - This would only be prompted if Cloudera Manager credentials were provided in the previous step. The prompt would ask you if you want to provide Hive Metastore database credentials, you would have to select **'y'** or **'n'**
        1. **Step 8.3.1:** If you select **'y'**, continue to Step 8.3.1.1
           ```bash
            To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: 
