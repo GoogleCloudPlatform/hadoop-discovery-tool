@@ -338,28 +338,28 @@ sudo bash run.sh
 
 ## FAQ
 
-* What is this tool?
+* What is this tool?\
 The Hadoop assessment tool (https://github.com/GoogleCloudPlatform/hadoop-discovery-tool) is a quick way to get an understanding of your Hadoop cluster topology, workloads, and utilization; it's a combination of scripts that interact with Cloudera Manager / YARN.
-&nbsp; 
-* Are the scripts invasive? 
+
+* Are the scripts invasive?\
 The scripts are not invasive and make read-only API calls.
-&nbsp;
-* Why should I run this tool?
+
+* Why should I run this tool?\
 The tool provides critical information that helps everyone understand the current state and where optimizations can be gained during the migration phase.
-&nbsp;
-* How long will it take to run?
+
+* How long will it take to run?\
 A Hadoop Administrator can run the tool in less than half a day.
-&nbsp;
-* What's the output?
+
+* What's the output?\
 A PDF report will be generated at the end with a summary of insights and recommendations (Hadoop Assessment tool sample report: https://drive.google.com/file/d/1NmVj4uvxUPj5QwHATsb5aKTVgB9vfpZf/view?resourcekey=0-RMr51QdyjWWL81KvzgxGHw).
-&nbsp;
-* Why does it require Linux packages to be installed?
+
+* Why does it require Linux packages to be installed?\
 The tool installs some Linux packages to generate a pdf report and corresponding visualizations; the package upgrades are not mandatory if the required dependencies are already satisfied. If so, the upgrade command can be commented out.
-&nbsp;
-* What if I don't want to install this tool on my cluster?
+
+* What if I don't want to install this tool on my cluster?\
 You could add a temporary edge node where you can install this discovery tool and then remove the edge node once a pdf report is generated.
-&nbsp;
-* Is dfsadmin access mandatory?
+
+* Is dfsadmin access mandatory?\
 No, dfsadmin access is optional.
 
 ## Contributing
