@@ -32,7 +32,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
    3. The tool runs on the following OS versions **Centos 6, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all**.
    4. The tool requires **pip** installed
 2. Complete information to run the tool   
-   1. The tool runs only on one of the **master nodes**
+   1. It is recommended to run this tool on an edge node.
    2. The tool requires **~265 megabytes** of space
    3. **Preferred time** to run the tool: It is recommended to run the tool during hours when there is the least workload on the Hadoop cluster
    4. This tool supports the following **Python versions:**
