@@ -27,13 +27,16 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 ## 3. Prerequisites
 1. Important highlights of the Tool
-   1. The tool runs on versions above **python 3.6, 3.7 & 3.8**
-   2. The tool supports Cloudera version - **CDH 5.13.3 and above; CDH 6.X, CDH 7.X**
-   3. The tool runs on the following OS versions **Centos 6, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all**.
-   4. The tool requires **pip** installed
+
+    | Supported Technology | Versions |
+    |-----------------|:-------------|
+    | Python Version | python 3.6, 3.7 & 3.8 |
+    | Cloudera Version | CDH 5.13.3 and above; CDH 6.X, CDH 7.X |
+    | Operating System Version | Centos 6, Redhat 7, Debian 9, Ubuntu 16, Sles 12sp5 and above versions for all |
+    | Pip | 21.0.1 & above |
 2. Complete information to run the tool   
-   1. It is recommended to run this tool on an edge node.
-   2. The tool requires **~265 megabytes** of space
+   1. The tool runs on one of the **master nodes or edge nodes (depends on user’s choice)**
+   2. The tool requires **~277 megabytes** of space
    3. **Preferred time** to run the tool: It is recommended to run the tool during hours when there is the least workload on the Hadoop cluster
    4. This tool supports the following **Python versions:**
       1. python 3.6
@@ -61,7 +64,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
          ```
       3. Open Suse:
          ```bash
-            sudo zypper update
+        sudo zypper update
          ```
    9. Cloudera manager user should have one of the following **roles:**
       
@@ -71,11 +74,10 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
       | CDH 6.x | Dashboard User, User Administrator, Full Administrator, Operator, BDR Administrator, Cluster Administrator, Limited Operator, Configurator, Read-Only, Auditor, Key Administrator, Navigator Administrator |
       | CDH 7.x | Auditor, Cluster Administrator, Configurator, Dashboard User, Full Administrator, Key Administrator, Limited Cluster Administrator, Limited Operator, Navigator Administrator, Operator, Read Only, Replication Administrator, User Administrator |
 
-   10. Following **OS packages** will be installed to generate metrics: 
+   10. Following **OS packages** need to be installed to generate metrics, they have been detailed out in the installation steps:  
          1. Tool checks if each package is already installed
-         2. If the package is not already installed, it will install from a local repo
-         3. If it is not present in the local repo, then it will download it from the internet
-
+         2. If the package is not already installed, it will not proceed ahead. Additionally, the tool installation steps will display the packages that still need to be installed and **Step 6.1** from the installation steps has the commands that can be leveraged to download them
+         
       | Package | Package Description |
       |-----------------|:-------------|
       | Python-dev | package contains the header files and dependent packages which need to fabricate python augmentations. Hence, those files and packages need to be on the system in such a way that they can be found while running the script |
@@ -139,39 +141,57 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 ## 4. Installation Steps
 
-1. **Step 1**: Create tarball of this repository or clone this repo directly to execute it on an EdgeNode that has access to the cluster management services. It can be uploaded in multiple ways, one of them being with the help of **SCP command** between the local machine and node or by using tools like Winscp if the local system is windows.
+1. **Step 1**: Upload the Tarball or clone the git repository in the MasterNode or EdgeNode of the cluster. 
 
-2. **Step 2**: Go to the Tarball location (the location where it was uploaded in Step 1)
+    **For using the Tar Ball:** It can be uploaded in multiple ways, one of them being with the help of **SCP command** between the local machine and node or by using **tools like [Winscp](https://winscp.net/eng/docs/installation)** if the local system is windows.
 
-3. **Step 3**: Extract the Tarball **hadoop-discovery-tool.tar**
 
-```bash
-tar -xvf hadoop-discovery-tool.tar
-```
+2. **Step 2**: Go to the tarball location/cloned Repo location (the location where it was uploaded/cloned in Step 1)
+
+
+3. **(Optinal step - If tarball is downloaded else go to Step 4)**
+  
+   **Step 3**: Extract the Tarball **hadoop-discovery-tool.tar** 
+    ```bash
+    tar -xvf hadoop-discovery-tool.tar
+    ```
 
 4. **Step 4**: Go to the hadoop-discovery-tool **tool** directory
 
-```bash
-cd hadoop-discovery-tool/tool
-```
-5. **Step 5**: Give **execute** permission to the scripts 
+    ```bash
+    cd hadoop-discovery-tool/tool
+    ```
+5. **(Optional step - If the script has executable permissions, Step 5 can be skipped)**
 
-```bash
-chmod +x build.sh
-chmod +x run.sh
-chmod +x os_package_installer.py
-chmod +x python_package_installer.py
-```
+    **Step 5**: Give **execute** permission to the scripts 
+
+    ```bash
+    chmod +x build.sh
+    chmod +x run.sh
+    chmod +x os_package_installer.py
+    chmod +x python_package_installer.py
+    ```
 6. **Step 6**: Run the first script called **build.sh** for building the environment, using the following command
 ```bash
 sudo bash build.sh
 ```
    **Step success message: Hadoop Assessment tool deployed successfully**
+   
+    1. **Step 6.1**: This step would give the list of packages that need to be installed. Following are the commands for each OS that would need to be added for the OS dependencies.
+    
+    | Operating System | Commands |
+    |-----------------|:-------------|
+    | Red Hat (RHEL) | ```yum install epel-release nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat -y``` |
+    | Centos | ```yum install epel-release nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat -y``` |
+    | Ubuntu | ```apt install -y nload vnstat g++ sasl2-bin unixodbc-dev python3.8-dev python3.8-venv libsasl2-dev jq sysstat``` |
+    | SUSE Linux Enterprise Server (SLES) | ```zypper -n install nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat``` |
+    | Debian | ```apt install -y nload vnstat g++ sasl2-bin unixodbc-dev python3-dev python3 python3-venv virtualenv python3-virtualenv libsasl2-dev sysstat``` |
+
 
 7. **Step 7**: **Run** the second script to run the python script, using the command
-```bash
-sudo bash run.sh
-```
+    ```bash
+    sudo bash run.sh
+    ```
    **Step success criteria: Hadoop Assessment Tool has been successfully completed and the report is available at the following location**
 
 8. **Step 8**: Following details would be required for further execution of the script:
