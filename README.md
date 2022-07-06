@@ -63,9 +63,9 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
          sudo apt-get update
          ```
       3. Open Suse:
-         ```bash
-        sudo zypper update
-         ```
+			```
+			sudo zypper update
+			```         
    9. Cloudera manager user should have one of the following **roles:**
       
       | Hadoop Version | Roles |
@@ -177,38 +177,36 @@ sudo bash build.sh
 ```
    **Step success message: Hadoop Assessment tool deployed successfully**
    
-    1. **Step 6.1**: This step would give the list of packages that need to be installed. Following are the commands for each OS that would need to be added for the OS dependencies.
-    
-    | Operating System | Commands |
-    |-----------------|:-------------|
-    | Red Hat (RHEL) | ```yum install epel-release nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat -y``` |
-    | Centos | ```yum install epel-release nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat -y``` |
-    | Ubuntu | ```apt install -y nload vnstat g++ sasl2-bin unixodbc-dev python3.8-dev python3.8-venv libsasl2-dev jq sysstat``` |
-    | SUSE Linux Enterprise Server (SLES) | ```zypper -n install nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat``` |
-    | Debian | ```apt install -y nload vnstat g++ sasl2-bin unixodbc-dev python3-dev python3 python3-venv virtualenv python3-virtualenv libsasl2-dev sysstat``` |
+  1.  **Step 6.1**: This step would give the list of packages that need to be installed. Following are the commands for each OS that would need 	to be added for the OS dependencies. 
+	    | Operating System | Commands |
+	    |-----------------|:-------------|
+	    | Red Hat (RHEL) |``` yum install epel-release nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat -y ```|
+	     | Centos | ```yum install epel-release nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat -y ```|
+	     Ubuntu | ```apt install -y nload vnstat g++ sasl2-bin unixodbc-dev python3.8-dev python3.8-venv libsasl2-dev jq sysstat ```|
+	    | SUSE Linux Enterprise Server (SLES) |``` zypper -n install nload vnstat gcc gcc-c++ cyrus-sasl-devel unixODBC-devel python3-devel jq sysstat```|
+	    | Debian | ```apt install -y nload vnstat g++ sasl2-bin unixodbc-dev python3-dev python3 python3-venv virtualenv python3-virtualenv libsasl2-dev sysstat``` |
 
-
-7. **Step 7**: **Run** the second script to run the python script, using the command
+7.**Step 7**: **Run** the second script to run the python script, using the command
     ```bash
     sudo bash run.sh
     ```
    **Step success criteria: Hadoop Assessment Tool has been successfully completed and the report is available at the following location**
 
-8. **Step 8**: Following details would be required for further execution of the script:
-    1. **Step 8.1(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
-       ```bash
-       Do you have SSL enabled for your cluster? [y/n]
-       ```
-       1. **Step 8.1.1:** If you select **'y'**, continue to Step 8.2 -
+8.**Step 8**: Following details would be required for further execution of the script:
+1. **Step 8.1(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
+    ```bash
+    Do you have SSL enabled for your cluster? [y/n]
+    ```
+      1. **Step 8.1.1:** If you select **'y'**, continue to Step 8.2 -
           ```bash
            As SSL is enabled, enter the details accordingly
           ```
-       2. **Step 8.1.2:** If you select **'n'**, continue to Step 8.2 -
+      2. **Step 8.1.2:** If you select **'n'**, continue to Step 8.2 -
           ```bash
            As SSL is disabled, enter the details accordingly
           ```
-    2. **Step 8.2 - Cloudera Manager credentials:** the prompt would ask you if you want to provide the Cloudera Manager credentials, you would have to select **'y'** or **'n'**
-       1. **Step 8.2.1:** If you select **'y'**, continue to Step 8.2.1.1 -
+2. **Step 8.2 - Cloudera Manager credentials:** the prompt would ask you if you want to provide the Cloudera Manager credentials, you would have to select **'y'** or **'n'**
+      1. **Step 8.2.1:** If you select **'y'**, continue to Step 8.2.1.1 -
           ```bash
            A major number of metrics generation would require Cloudera manager credentials Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]: 
           ```
@@ -251,12 +249,12 @@ sudo bash build.sh
              n] Cluster n
              Enter the serial number (1/2/../n) for the selected cluster name:
              ```
-       2. **Step 8.2.2:** If you select **'n'**, continue to Step 8.4
+      2. **Step 8.2.2:** If you select **'n'**, continue to Step 8.4
           ```bash
            A major number of metrics generation would require Cloudera manager credentials Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]: 
           ```
-    3. **Step 8.3: Hive Metastore database credentials** - This would only be prompted if Cloudera Manager credentials were provided in the previous step. The prompt would ask you if you want to provide Hive Metastore database credentials, you would have to select **'y'** or **'n'**
-       1. **Step 8.3.1:** If you select **'y'**, continue to Step 8.3.1.1
+3. **Step 8.3: Hive Metastore database credentials** - This would only be prompted if Cloudera Manager credentials were provided in the previous step. The prompt would ask you if you want to provide Hive Metastore database credentials, you would have to select **'y'** or **'n'**
+      1. **Step 8.3.1:** If you select **'y'**, continue to Step 8.3.1.1
           ```bash
            To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: 
           ```
@@ -268,12 +266,12 @@ sudo bash build.sh
              ```bash
                Enter Hive Metastore password:
              ```
-       2. **Step 8.3.2:** If you select ‘n’, continue to the next step
+      2. **Step 8.3.2:** If you select ‘n’, continue to the next step
           ```bash
            To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: 
           ```
-    4. **Step 8.4 (Conditional step) - YARN Configurations:** If the tool is unable to automatically detect YARN configurations, it would prompt you to enter Yarn credentials,  you would have to select **'y'** or **'n'**
-       1. **Step 8.4.1:** If you select **'y'**, continue to Step 8.4.1.1 
+4. **Step 8.4 (Conditional step) - YARN Configurations:** If the tool is unable to automatically detect YARN configurations, it would prompt you to enter Yarn credentials,  you would have to select **'y'** or **'n'**
+      1. **Step 8.4.1:** If you select **'y'**, continue to Step 8.4.1.1 
           ```bash
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
@@ -285,13 +283,13 @@ sudo bash build.sh
              ```bash
               Enter Yarn Resource Manager Port:
              ```
-       2. **Step 8.4.2:** If you select **'n'**, continue to Step 8.5
+      2. **Step 8.4.2:** If you select **'n'**, continue to Step 8.5
           ```bash
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
-    5. **Step 8.5: Kafka credentials -** the prompt would ask you whether you want to enter your Kafka credentials; you would have to select **'y'** or **'n'**
+5. **Step 8.5: Kafka credentials -** the prompt would ask you whether you want to enter your Kafka credentials; you would have to select **'y'** or **'n'**
     <br>WARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
-       1. **8.5.1:** If you select **'y'**, continue to Step 8.5.1.1
+      1. **8.5.1:** If you select **'y'**, continue to Step 8.5.1.1
           ```bash
            To view Kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: 
           ```
@@ -321,24 +319,27 @@ sudo bash build.sh
                     ```bash
                     Please enter the port number of broker hosted on <broker_name>
                     ```
-             3. **Step 8.5.1.2.3:** Confirm the log directory path of the broker - the prompt would ask you if the broker is on a certain log directory path, you will have to confirm the path. If the given path is correct, select **'y'** or **'n'**
-                 1. **Step 8.5.1.2.3.1:** If you select **'y'** and there are more brokers left, steps from 8.5.1.2 would be repeated
+              3. **Step 8.5.1.2.3 :** Confirm the log directory path of the broker - the prompt would ask you if the broker is on a certain log directory path, you will have to confirm the path. If the given path is correct, select **'y'** or **'n'**
+              
+                  1. **Step 8.5.1.2.3.1:** If you select **'y'** and there are more brokers left, steps from 8.5.1.2 would be repeated
                     ```bash
                     Does the broker hosted on  <broker_name> have the following path to the log directory path/var/local/kafka/data/?[y/n]: 
                     ```
-                 2. **Step 8.5.1.2.3.2:** If you select **'n'**, continue to the next step
+                    
+                  2. **Step 8.5.1.2.3.2:** If you select **'n'**, continue to the next step
                     ```bash
                     Does the broker hosted on <broker_name> have the following path to the log directory path/var/local/kafka/data/?[y/n]:
                     ```
-                 3. **Step 8.5.1.2.3.3:** Since the port number path was different
+                  3. **Step 8.5.1.2.3.3:** Since the port number path was different
                     ```bash
                     Enter the log directory path of broker hosted on <broker_name>:
                     ```
-             1. **Step 8.5.2:** If you select **'n'**, continue to Step 8.6
-                ```bash
-                To view kafka-related metrics, would you be able to enter Kafka credentials?[y/n]: 
-                 ```
-   6. **Step 8.6:** Date range for the Assessment report - Select one of the below options for a date range to generate the report for this time period
+      2. **8.5.2:** If you select **'n'**, continue to Step 8.6
+          ```bash
+            To view kafka-related metrics, would you be able to enter Kafka credentials?[y/n]: 
+          ```
+         
+6. **Step 8.6:** Date range for the Assessment report - Select one of the below options for a date range to generate the report for this time period
       ```bash
       Select the time range of the PDF Assessment report from the options below:
       [1] Week: generates the report from today to 7 days prior
@@ -354,7 +355,8 @@ sudo bash build.sh
          Enter end date: [YYYY-MM-DD HH:MM]
          2021-03-30 00:00
          ```
-9. **Step 9:** PDF Report - A PDF report will be generated at the end of successful execution, which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1.
+         
+9 **Step 9:** PDF Report - A PDF report will be generated at the end of successful execution, which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1.
 
 ## FAQ
 
