@@ -9,6 +9,8 @@ With Version 2 (current version) the tool has been completely containerized ther
 
 The current version of the tool is a Bash Script + Docker Container approach to ensure that no changes are made to the customer's environments and the docker container (tool) can be deleted after the assessment is complete and this ensure that sanity of your Hadoop Cluster Environment remains intact.
 
+**How do I get access to the Docker Image of the Tool?** Please reach out to the Google account teams or PSO teams to get access to the Docker image of the tool.
+
 **What's Next?** Support for Kafka Assessments and expand the tool for Debian, SLES/RHEL Operating Systems
 
 **No data that is collected is sent outside your worker/edge nodes from where the tool is being run. The PDF generated can be shared with the Google teams after the customer's perusal of the collected data**
@@ -121,10 +123,7 @@ CentOS - hadoop-discovery-centos.sh
 Ubuntu - hadoop-discovery-ubuntu.sh
 
 
-1. **Step 1**: Pull the CentOS bash script with the below command
-               gs://hadoop-discovery/hadoop-discovery-centos.sh .
-                  (or)
-               download the hadoop-discovery-centos.sh from git clone sso://team/gdc-atc-solutions/hadoop-discovery-tool
+1. **Step 1**: Obtain the CentOS bash script from the Google account teams and place it in your edge/worker node
 
 2. **Step 2**: Provide execute permission on Bash script
                ```bash
@@ -354,6 +353,8 @@ Delete the container
 ```bash
 sudo docker container prune 
 ```
+Please be mindful of the fact that there should not be any other stopped/running containers in your server while running prune command. 
+
 * What if I don't want to install this tool on my cluster?\
 You could add a temporary edge node where you can install this discovery tool and then remove the edge node once a pdf report is generated.
 
