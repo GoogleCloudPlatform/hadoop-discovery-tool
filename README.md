@@ -1,5 +1,8 @@
 # 1. Hadoop Assessment Tool
 
+## For containerized docker version of the tool, please refer to the README file udner discovery-v2 branch to know how to get access to the docker image of the this tool
+
+
 This tool is developed to enable detailed Assessment and automated assessment of Hadoop clusters. It helps measure the migration efforts from the current Hadoop cluster. It generates a PDF report with information related to the complete cluster according to different categories.
 
 Following are the specific categories: 
