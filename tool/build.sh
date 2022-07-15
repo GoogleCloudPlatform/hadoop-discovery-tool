@@ -1,4 +1,5 @@
-#!bin/bash
+#!/bin/bash
+
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -66,18 +67,18 @@ then
             rm -rf hat_latest_flag.txt
             if [ $value -eq "1" ]
             then
-                echo "ERROR - OS Packages not Installed Successfully"
+                echo "ERROR - Cannot proceed as OS Packages dependency not satisfied"
                 exit 1
             fi
         fi
         if [ $check -eq 1 ]
         then
-            echo "ERROR - OS Packages not Installed Successfully"
+            echo "ERROR - Cannot proceed as OS Packages dependency not satisfied"
             exit 1
         fi
         if [ $check -eq 127 ]
         then
-            echo "ERROR - OS Packages not Installed Successfully"
+            echo "ERROR - Cannot proceed as OS Packages dependency not satisfied"
             exit 1
         fi
     fi
@@ -97,18 +98,18 @@ else
             rm -rf hat_latest_flag.txt
             if [ $value -eq "1" ]
             then
-                echo "ERROR - OS Packages not Installed Successfully"
+                echo "ERROR - Cannot proceed as OS Packages dependency not satisfied"
                 exit 1
             fi
         fi
         if [ $check -eq 1 ]
         then
-            echo "ERROR - OS Packages not Installed Successfully"
+            echo "ERROR - Cannot proceed as OS Packages dependency not satisfied"
             exit 1
         fi
         if [ $check -eq 127 ]
         then
-            echo "ERROR - OS Packages not Installed Successfully"
+            echo "ERROR - Cannot proceed as OS Packages dependency not satisfied"
             exit 1
         fi
     fi
@@ -122,7 +123,7 @@ then
 fi
 if [ $var -eq 0 ]
 then
-    echo "INFO - OS Dependencies Installed "
+    echo "INFO - OS Dependencies Satisfied "
     echo "###########################################################################################################"
     echo "During python installation, some error messages might pop up , but those can be ignored if last message says,"
     echo "Python Dependencies Installed Successfully"
