@@ -11,7 +11,7 @@ The current version of the tool is a Bash Script + Docker Container approach to 
 
 **How do I get access to the Docker Image of the Tool?** Please reach out to the Google account teams or PSO teams to get access to the Docker image of the tool.
 
-**What's Next?** Support for Kafka Assessments and expand the tool for Debian, SLES/RHEL Operating Systems
+**What's Next?** Support for Kafka Assessments
 
 **No data that is collected is sent outside your worker/edge nodes from where the tool is being run. The PDF generated can be shared with the Google teams after the customer's perusal of the collected data**
 
@@ -44,17 +44,17 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
    2. You must have **gsutil** or **git** or a way to download the Bash script file and the Docker Image. The preferred method would be to have **gsutil** as this would automate the whole deployment process
       You can install gsutil from https://cloud.google.com/storage/docs/gsutil_install
    3. The tool supports Cloudera version - **CDH 5.13.3 and above; CDH 6.X, CDH 7.X**
-   4. The tool runs on the following OS versions **Centos, Ubuntu**
+   4. The tool runs on the following OS versions **Centos, Ubuntu** **Debian** **RHEL**
 2. Complete information to run the tool   
    1. It is recommended to run this tool on an edge node.
-   2. The tool requires **~265 megabytes** of space
+   2. The tool requires **~ 1.3 gigabytes** of space
    3. **Preferred time** to run the tool: It is recommended to run the tool during hours when there is the least workload on the Hadoop cluster
    4. This tool supports the following **Cloudera versions:**
       1. CDH 5.13.3 and above
       2. CDH 6.x
       3. CDH 7.x
    5. This tool runs on the following **Linux versions:**
-      1. Centos and Ubuntu versions
+      1. Centos, Ubuntu, Debian, RHEL versions
    6. This tool requires an updated **command line package manager** before running the script. This will update the package list for the packages to be upgraded, from the operating system’s central repository. The package manager can be upgraded with the help of the below respective OS commands:
       1. Redhat/Centos:
          ```bash
@@ -91,7 +91,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 3. User Input Requirements
    1. The tool needs the below permissions to run the code and generate the PDF report:
       1. Sudo permission on the node.
-      2. Cloudera Manager(User should have one of the roles mentioned in 3.1.9)
+      2. Cloudera Manager(User should have one of the roles mentioned in 3.1.9) and edge/worker nodes from where the tool is being run should have firewal ports open for Cloudera manager host and IP
          1. Host IP
          2. Port Number
          3. User Name
@@ -119,22 +119,26 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 **Name of Script Files based on Operating System to be Used**
 
-CentOS - hadoop-discovery-centos.sh
-Ubuntu - hadoop-discovery-ubuntu.sh
+hadoop-discovery.sh
 
 
-1. **Step 1**: Obtain the CentOS bash script from the Google account teams and place it in your edge/worker node
+1. **Step 1**: Obtain the bash script from the Google account teams and place it in your edge/worker node
 
 2. **Step 2**: Provide execute permission on Bash script
                ```bash
-               chmod +x hadoop-discovery-centos.sh
+               chmod +x hadoop-discover.sh
                ```
 
 3. **Step 3**: Execute the Bash script 
                ```bash
-               ./hadoop-discovery-centos.sh
+               ./hadoop-discovery.sh
                ```
-
+**Step 3.1**: Enter your choice of Operating System
+               1. CentOS
+               2. Ubuntu
+               3. Debian
+               4. RedHat
+               
 4. **Step 4**: At the checkpoint seeking confirmation, provide Y or y to continue. The tool will check for docker-cli if its installed in the node. If its not installed, the script will install docker-cli. This is mandatory for the tool to run.
 
 5. **Step 5**: 
@@ -146,61 +150,58 @@ Ubuntu - hadoop-discovery-ubuntu.sh
 
 7. **Step 7**: Log into the deployed docker container with the below command and container ID received from Step 6
                sudo docker exec -it -u 0 <container id> /bin/bash
-   
-8. **Step 8**: Execute the build.sh script
-               bash build.sh
 
-9. **Step 9**: Once Step 8 is successfully complete, execute run.sh script
+8. **Step 8**: Once Step 8 is successfully complete, execute run.sh script
                bash run.sh
 
-10. **Step 10**: Following details would be required for further execution of the script:
-    1. **Step 10.1(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
+9. **Step 9**: Following details would be required for further execution of the script:
+    1. **Step 9.1(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
        ```bash
        Do you have SSL enabled for your cluster? [y/n]
        ```
-       1. **Step 10.1.1:** If you select **'y'**, continue to Step 8.2 -
+       1. **Step 9.1.1:** If you select **'y'**, continue to Step 9.2 -
           ```bash
            As SSL is enabled, enter the details accordingly
           ```
-       2. **Step 10.1.2:** If you select **'n'**, continue to Step 8.2 -
+       2. **Step 9.1.2:** If you select **'n'**, continue to Step 9.2 -
           ```bash
            As SSL is disabled, enter the details accordingly
           ```
-    2. **Step 10.2 - Cloudera Manager credentials:** the prompt would ask you if you want to provide the Cloudera Manager credentials, you would have to select **'y'** or **'n'**
-       1. **Step 10.2.1:** If you select **'y'**, continue to Step 8.2.1.1 -
+    2. **Step 9.2 - Cloudera Manager credentials:** the prompt would ask you if you want to provide the Cloudera Manager credentials, you would have to select **'y'** or **'n'**
+       1. **Step 9.2.1:** If you select **'y'**, continue to Step 8.2.1.1 -
           ```bash
            A major number of metrics generation would require Cloudera manager credentials Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]: 
           ```
-          1. **Step 10.2.1.1:** Enter Cloudera Manager Host IP
+          1. **Step 9.2.1.1:** Enter Cloudera Manager Host IP
              ```bash
              Enter Cloudera Manager Host IP:
              ```
-          2. **Step 10.2.1.2:** Cloudera Manager Port - the prompt would ask you if your  Cloudera Manager Port is 7180. If true select **'y'** else select **'n'**
+          2. **Step 9.2.1.2:** Cloudera Manager Port - the prompt would ask you if your  Cloudera Manager Port is 7180. If true select **'y'** else select **'n'**
 
              ```bash
              Enter Cloudera Manager Host IP:
              ```
-             1. **Step 10.2.1.2.1:** If you select **'y'**, continue to Step 8.2.1.3
+             1. **Step 9.2.1.2.1:** If you select **'y'**, continue to Step 8.2.1.3
                 ```bash
                 Is your Cloudera Manager Port number 7180? [y/n]: 
                 ```
-             2. **Step 10.2.1.2.2:** If you select **'n'**, continue to Step 8.2.1.2.2
+             2. **Step 9.2.1.2.2:** If you select **'n'**, continue to Step 8.2.1.2.2
                 ```bash
                 Is your Cloudera Manager Port number 7180? [y/n]: 
                 ```
-             3. **Step 10.2.1.2.3:** Since the port number is not 7180, enter your Cloudera Manager Port number
+             3. **Step 9.2.1.2.3:** Since the port number is not 7180, enter your Cloudera Manager Port number
                 ```bash
                 Enter your Cloudera Manager Port number: 
                 ```
-          3. **Step 10.2.1.3:** Cloudera Manager username
+          3. **Step 9.2.1.3:** Cloudera Manager username
              ```bash
              Enter Cloudera Manager username:
              ```
-          4. **Step 10.2.1.4:** Cloudera Manager password 
+          4. **Step 9.2.1.4:** Cloudera Manager password 
              ```bash
              Enter Cloudera Manager password:
              ```
-          5. **Step 10.2.1.5:** Select the Cluster
+          5. **Step 9.2.1.5:** Select the Cluster
              ```bash
              Select the cluster from the list below:
              1] Cluster 1
@@ -210,94 +211,46 @@ Ubuntu - hadoop-discovery-ubuntu.sh
              n] Cluster n
              Enter the serial number (1/2/../n) for the selected cluster name:
              ```
-       2. **Step 10.2.2:** If you select **'n'**, continue to Step 8.4
+       2. **Step 9.2.2:** If you select **'n'**, continue to Step 8.4
           ```bash
            A major number of metrics generation would require Cloudera manager credentials Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]: 
           ```
-    3. **Step 10.3: Hive Metastore database credentials** - This would only be prompted if Cloudera Manager credentials were provided in the previous step. The prompt would ask you if you want to provide Hive Metastore database credentials, you would have to select **'y'** or **'n'**
-       1. **Step 10.3.1:** If you select **'y'**, continue to Step 8.3.1.1
+    3. **Step 9.3: Hive Metastore database credentials** - This would only be prompted if Cloudera Manager credentials were provided in the previous step. The prompt would ask you if you want to provide Hive Metastore database credentials, you would have to select **'y'** or **'n'**
+       1. **Step 9.3.1:** If you select **'y'**, continue to Step 8.3.1.1
           ```bash
            To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: 
           ```
-          1. **Step 10.3.1.1:** Hive Metastore username - the prompt would ask you to enter your Hive Metastore username
+          1. **Step 9.3.1.1:** Hive Metastore username - the prompt would ask you to enter your Hive Metastore username
              ```bash
               Enter Hive Metastore username: hive
              ```
-          2. **Step 10.3.1.2:** Hive Metastore password - the prompt would ask you to enter your Hive Metastore password
+          2. **Step 9.3.1.2:** Hive Metastore password - the prompt would ask you to enter your Hive Metastore password
              ```bash
                Enter Hive Metastore password:
              ```
-       2. **Step 10.3.2:** If you select ‘n’, continue to the next step
+       2. **Step 9.3.2:** If you select ‘n’, continue to the next step
           ```bash
            To view hive-related metrics, would you be able to enter Hive credentials?[y/n]: 
           ```
-    4. **Step 10.4 (Conditional step) - YARN Configurations:** If the tool is unable to automatically detect YARN configurations, it would prompt you to enter Yarn credentials,  you would have to select **'y'** or **'n'**
-       1. **Step 10.4.1:** If you select **'y'**, continue to Step 8.4.1.1 
+    4. **Step 9.4 (Conditional step) - YARN Configurations:** If the tool is unable to automatically detect YARN configurations, it would prompt you to enter Yarn credentials,  you would have to select **'y'** or **'n'**
+       1. **Step 9.4.1:** If you select **'y'**, continue to Step 8.4.1.1 
           ```bash
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
-          1. **Step 10.4.1.1:** Enter Yarn Resource Manager Host IP or Hostname:
+          1. **Step 9.4.1.1:** Enter Yarn Resource Manager Host IP or Hostname:
              ```bash
               Enter Yarn Resource Manager Host IP or Hostname:
              ```
-          2. **Step 10.4.1.2:** Enter Yarn Resource Manager Port:
+          2. **Step 9.4.1.2:** Enter Yarn Resource Manager Port:
              ```bash
               Enter Yarn Resource Manager Port:
              ```
-       2. **Step 10.4.2:** If you select **'n'**, continue to Step 8.5
+       2. **Step 9.4.2:** If you select **'n'**, continue to Step 8.5
           ```bash
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
-    5. **Step 10.5: Kafka credentials -** the prompt would ask you whether you want to enter your Kafka credentials; you would have to select **'y'** or **'n'**
-    <br>WARNING: If a user enters wrong inputs, the tool doesn’t prompt for invalid user inputs. 
-       1. **10.5.1:** If you select **'y'**, continue to Step 8.5.1.1
-          ```bash
-           To view Kafka-related metrics, would you be able to provide Kafka credentials?[y/n]: 
-          ```
-          1. **Step 10.5.1.1:** Number of brokers in Kafka
-             ```bash
-              Enter the number of Kafka brokers:
-             ```
-          2. **Step 10.5.1.2:** Enter the hostname and port name of each broker
-(n times) - iterated for the number of brokers present
-              1. **Step 10.5.1.2.1:** Hostname or IP of Broker n1
-                 ```bash
-                 Enter the hostname or IP of broker n1:
-                 ```
-              2. **Step 10.5.1.2.2:** Port Number of Broker- the prompt would ask you if the broker has the port number 9092. If it is 9092, select **'y'** else select **'n'** 
-                 ```bash
-                 Enter the hostname or IP of broker n1:
-                 ```
-                 1. **Step 10.5.1.2.2.1:** If you select **'y'**, continue to Step 8.5.1.2.3
-                    ```bash
-                    Is your broker hosted on <broker_name> have port number 9092? [y/n]:
-                    ```
-                 2. **Step 10.5.1.2.2.2:** If you select **'n'**, continue to next step
-                    ```bash
-                    Is your broker hosted on <broker_name> have port number 9092? [y/n]:
-                    ```
-                 3. **Step 10.5.1.2.2.3:** Since the port number is not 9092, enter the port number of broker n1, enter a valid port number
-                    ```bash
-                    Please enter the port number of broker hosted on <broker_name>
-                    ```
-             3. **Step 10.5.1.2.3:** Confirm the log directory path of the broker - the prompt would ask you if the broker is on a certain log directory path, you will have to confirm the path. If the given path is correct, select **'y'** or **'n'**
-                 1. **Step 10.5.1.2.3.1:** If you select **'y'** and there are more brokers left, steps from 8.5.1.2 would be repeated
-                    ```bash
-                    Does the broker hosted on  <broker_name> have the following path to the log directory path/var/local/kafka/data/?[y/n]: 
-                    ```
-                 2. **Step 10.5.1.2.3.2:** If you select **'n'**, continue to the next step
-                    ```bash
-                    Does the broker hosted on <broker_name> have the following path to the log directory path/var/local/kafka/data/?[y/n]:
-                    ```
-                 3. **Step 10.5.1.2.3.3:** Since the port number path was different
-                    ```bash
-                    Enter the log directory path of broker hosted on <broker_name>:
-                    ```
-             1. **Step 10.5.2:** If you select **'n'**, continue to Step 8.6
-                ```bash
-                To view kafka-related metrics, would you be able to enter Kafka credentials?[y/n]: 
-                 ```
-   6. **Step 10.6:** Date range for the Assessment report - Select one of the below options for a date range to generate the report for this time period
+          
+   5. **Step 9.5:** Date range for the Assessment report - Select one of the below options for a date range to generate the report for this time period
       ```bash
       Select the time range of the PDF Assessment report from the options below:
       [1] Week: generates the report from today to 7 days prior
@@ -313,7 +266,7 @@ Ubuntu - hadoop-discovery-ubuntu.sh
          Enter end date: [YYYY-MM-DD HH:MM]
          2021-03-30 00:00
          ```
-11. **Step 11:** PDF Report - A PDF report will be generated at the end of successful execution, which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1.
+10. **Step 10:** PDF Report - A PDF report will be generated at the end of successful execution, which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1.
 
 ## FAQ
 
