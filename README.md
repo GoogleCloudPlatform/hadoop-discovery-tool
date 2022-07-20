@@ -122,11 +122,15 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 hadoop-discovery.sh
 
 
-1. **Step 1**: Obtain the bash script from the Google account teams and place it in your edge/worker node
+1. **Step 1**: Obtain the bash script from the Google account teams and place it in your edge/worker node. If you have been given access to the Docker image upon confirmation from Google team, please install gsutil command line tool and run the below command to obtain the bash script.
+
+               ```bash
+               gsutil -m cp -r gs://hadoop-discovery/hadoop-discovery.sh
+               ```
 
 2. **Step 2**: Provide execute permission on Bash script
                ```bash
-               chmod +x hadoop-discover.sh
+               chmod +x hadoop-discovery.sh
                ```
 
 3. **Step 3**: Execute the Bash script 
