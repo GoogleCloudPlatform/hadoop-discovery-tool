@@ -163,14 +163,11 @@ On pressing Y/y the script file continue to pull the docker container image of t
 9. **Step 9**: Following details would be required for further execution of the script:
     1. **Step 9.1** Enter the installation directory for Hadoop, Hive and Spark
     
-    Enter the Hadoop installation directory, for example if Hadoop is installed in /etc/hadoop enter /etc 
-      **/etc**
+    Enter the Hadoop installation directory, for example if Hadoop is installed in /etc/hadoop enter **/etc **
     
-    Enter the Hive installation directory, for example if Hive is installed in /etc/hive enter /etc 
-      **/etc**
+    Enter the Hive installation directory, for example if Hive is installed in /etc/hive enter **/etc**
      
-    Enter the Spark installation directory, for example if Spark is installed in /etc/spark enter /etc 
-      **/etc**
+    Enter the Spark installation directory, for example if Spark is installed in /etc/spark enter **/etc**
       
     2. **Step 9.2(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
        ```bash
