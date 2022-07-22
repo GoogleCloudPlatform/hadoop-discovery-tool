@@ -40,7 +40,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 ## 3. Prerequisites
 1. Important highlights of the Tool
-   1. The worker or the edge node must either have docker cli pre installed or have network connectivity so that the tool can download and install docker cli automatically on confirmation from the end user.
+   1. The worker or the edge node must either have docker cli pre installed (either enterprise or community version) or have network connectivity so that the tool can download and install docker cli (community version) automatically on confirmation from the end user.
    2. You must have **gsutil** or **git** or a way to download the Bash script file and the Docker Image. The preferred method would be to have **gsutil** as this would automate the whole deployment process.
       You can install gsutil from https://cloud.google.com/storage/docs/gsutil_install for your respective Operating System.
    3. The tool supports Cloudera version - **CDH 5.13.3 and above; CDH 6.X, CDH 7.X**
@@ -122,7 +122,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
                3. Debian
                4. RedHat
                
-4. **Step 4**: At the checkpoint seeking confirmation, provide Y or y to continue. The tool will check for docker-cli if its installed in the node. If its not installed, the script will install docker-cli. This is mandatory for the tool to run.
+4. **Step 4**: At the checkpoint seeking confirmation, provide Y or y to continue. The tool will check for docker-cli (community version or enterprise version) if its installed in the node. If its not installed, the script will install docker-cli (community version). This is mandatory for the tool to run.
 
 5. **Step 5**: The tool will stop here for you to go through list of detais collected at this step
       1. Hadoop Cluster Data - Hardware, Storage, Directory structure
