@@ -46,7 +46,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
    3. The tool supports Cloudera version - **CDH 5.13.3 and above; CDH 6.X, CDH 7.X**
    4. The tool runs on the following OS versions **Centos, Ubuntu** **Debian** **RHEL**
 2. Complete information to run the tool   
-   1. It is recommended to run this tool on an edge node.
+   1. It is recommended to run this tool on an edge/worker node that has access to Cloudera Manager URLs, HDFS filesystem to get best results.
    2. The tool requires **~ 1.3 gigabytes** of space
    3. **Preferred time** to run the tool: It is recommended to run the tool during hours when there is the least workload on the Hadoop cluster
    4. This tool supports the following **Cloudera versions:**
@@ -116,6 +116,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
                ```bash
                ./hadoop-discovery.sh
                ```
+
 **Step 3.1**: Enter your choice of Operating System
                1. CentOS
                2. Ubuntu
@@ -147,23 +148,23 @@ On pressing Y/y the script file continue to pull the docker container image of t
 6. **Step 6**: Identify the container id of the deployed container with the below command. Copy it and keep it as this will be used in the next step
                ```bash
                sudo docker ps
-               ````
+               ```
 
 7. **Step 7**: Log into the deployed docker container with the below command and container ID received from Step 6
                ```bash
                sudo docker exec -it -u 0 <container id> /bin/bash
-               ````
+               ```
    This will log you into the container with root access to perform the next step of tool execution.
    
 8. **Step 8**: Once Step 8 is successfully complete, execute run.sh script
                ```bash
-               bash run.sh
-               ````
+               run.sh
+               ```
 
 9. **Step 9**: Following details would be required for further execution of the script:
     1. **Step 9.1** Enter the installation directory for Hadoop, Hive and Spark
     
-    Enter the Hadoop installation directory, for example if Hadoop is installed in /etc/hadoop enter **/etc **
+    Enter the Hadoop installation directory, for example if Hadoop is installed in /etc/hadoop enter **/etc**
     
     Enter the Hive installation directory, for example if Hive is installed in /etc/hive enter **/etc**
      
