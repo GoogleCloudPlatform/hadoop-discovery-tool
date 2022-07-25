@@ -151,6 +151,7 @@ On pressing Y/y the script file continue to pull the docker container image of t
                ```
 
 7. **Step 7**: Log into the deployed docker container with the below command and container ID received from Step 6
+
                ```bash
                sudo docker exec -it -u 0 <container id> /bin/bash
                ```
