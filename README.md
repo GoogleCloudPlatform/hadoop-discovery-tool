@@ -1,6 +1,6 @@
 # 1. Hadoop Assessment Tool
 
-## This tool will install additional libraries in your Tool execution environment. For a containerized deployment of this tool, please check the README.md in the main brach of this repository.
+## This tool will install additional libraries in your Tool execution environment. For a containerized deployment of this tool, please check the README.md in the main branch of this repository.
 
 
 This tool is developed to enable detailed Assessment and automated assessment of Hadoop clusters. It helps measure the migration efforts from the current Hadoop cluster. It generates a PDF report with information related to the complete cluster according to different categories.
