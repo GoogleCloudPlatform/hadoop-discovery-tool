@@ -138,6 +138,8 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 5. **Step 5**: **Ensure that __consumer_offsets topic exists in all brokers that you are providing inputs for, else the connectivity to Kafka broker would be considered as a failure after 3 attempts**
 
+For more information, https://kafka.apache.org/11/documentation.html#impl_offsettracking
+
 Enter your Kafka Broker Details [Ensure that you have Zookeeper installed on the worker/edge nodes with zookeeper.conf files]
             1. Number of Brokers
             2. Broker host [FQDN/ IP]
