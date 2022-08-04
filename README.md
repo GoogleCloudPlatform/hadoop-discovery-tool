@@ -136,7 +136,9 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
                
 4. **Step 4**: At the checkpoint seeking confirmation, provide Y or y to continue. The tool will check for docker-cli (community version or enterprise version) if its installed in the node. If its not installed, the script will install docker-cli (community version). This is mandatory for the tool to run.
 
-5. **Step 5**: Enter your Kafka Broker Details [Ensure that you have Zookeeper installed on the worker/edge nodes with zookeeper.conf files]
+5. **Step 5**: **Ensure that __consumer_offsets topic exists in all brokers that you are providing inputs for, else the connectivity to Kafka broker would be considered as a failure after 3 attempts**
+
+Enter your Kafka Broker Details [Ensure that you have Zookeeper installed on the worker/edge nodes with zookeeper.conf files]
             1. Number of Brokers
             2. Broker host [FQDN/ IP]
             3. Broker port number
@@ -144,6 +146,8 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
             5. kafka-client.conf path
 
 The tool collects Kafka related metrics - Number of Topics, Size of Topics etc. This will take a few minutes depending on the number of Kafka topics.
+
+
 
 **The tool considers Kafka connecitivty a success only if you have a topic existing with the name __consumer_offsets**
 
