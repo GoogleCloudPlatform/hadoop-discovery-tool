@@ -39,7 +39,7 @@ Following are the specific categories that the tool gathers information about:
 
 The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment based on various factors/metrics. 
 
-![Alt text](https://github.com/GoogleCloudPlatform/hadoop-discovery-tool/blob/8384caf597e21041b863215a2295926bf1d9ab75/architectural_diagram.png)
+![Alt text](https://github.com/GoogleCloudPlatform/hadoop-discovery-tool/blob/937921809fd79463c13a2af0d859ca704bdfb533/architecture_diagram_v2.png)
 
 
 1. This python-based tool will use **Cloudera API**, **YARN API**, **File system config files** and OS based native **CLI** request to retrieve information from the Hadoop cluster
