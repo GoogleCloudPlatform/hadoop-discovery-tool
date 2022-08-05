@@ -112,19 +112,19 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
 
 1. **Step 1**: Please reach out to your Google account teams for detailed user guide. For other users, please execxute the below bash script to download the bash script.
 
-               ```bash
-               gsutil -m cp -r gs://hadoop-discovery/hadoop-discovery.sh .
-               ```
+   ```bash
+   gsutil -m cp -r gs://hadoop-discovery/hadoop-discovery.sh .
+   ```
 
 2. **Step 2**: Provide execute permission on Bash script
-               ```bash
-               chmod +x hadoop-discovery.sh
-               ```
+   ```bash
+   chmod +x hadoop-discovery.sh
+   ```
 
 3. **Step 3**: Execute the Bash script 
-               ```bash
-               ./hadoop-discovery.sh
-               ```
+   ```bash
+   ./hadoop-discovery.sh
+   ```
 
 **The tool will ask you for your permission to enter your Email Address and Organization - This is purely to track the end user utilization of the tool and no other data is being transmitted. It would be greatly help if these details can be filled at least once to solicit tool's feedback**
 
@@ -174,88 +174,94 @@ On pressing Y/y the script file continue to pull the docker container image of t
    **Step success message: Hadoop Assessment tool deployed successfully**
 
 7. **Step 7**: Identify the container id of the deployed container with the below command. Copy it and keep it as this will be used in the next step
-               ```bash
-               sudo docker ps
-               ```
+   ```bash
+   sudo docker ps
+   ```
 
 8. **Step 8**: Log into the deployed docker container with the below command and container ID received from Step 6
 
-               ```bash
-               sudo docker exec -it -u 0 <container id> /bin/bash
-               ```
+   ```bash
+   sudo docker exec -it -u 0 <container id> /bin/bash
+   ```
    This will log you into the container with root access to perform the next step of tool execution.
    
 9. **Step 9**: Once Step 8 is successfully complete, execute run.sh script
-               ```bash
-               run.sh
-               ```
+   ```bash
+   run.sh
+   ```
 
 10. **Step 10**: Following details would be required for further execution of the script:
     1. **Step 10.1** Enter the installation directory for Hadoop, Hive and Spark
+
+       Enter the Hadoop installation directory, for example if Hadoop is installed in /etc/hadoop enter **/etc**
+       
+       Enter the Hive installation directory, for example if Hive is installed in /etc/hive enter **/etc**
     
-    Enter the Hadoop installation directory, for example if Hadoop is installed in /etc/hadoop enter **/etc**
-    
-    Enter the Hive installation directory, for example if Hive is installed in /etc/hive enter **/etc**
-     
-    Enter the Spark installation directory, for example if Spark is installed in /etc/spark enter **/etc**
+       Enter the Spark installation directory, for example if Spark is installed in /etc/spark enter **/etc**
       
     2. **Step 10.2(Conditional step) - SSL:**  If the tool is unable to automatically detect SSL enabled on the cluster, it would display the following message
-       ```bash
+       ```
        Do you have SSL enabled for your cluster? [y/n]
        ```
        1. **Step 10.2.1:** If you select **'y'**, continue to Step 9.3 -
-          ```bash
-           As SSL is enabled, enter the details accordingly
+          ```
+          As SSL is enabled, enter the details accordingly
           ```
        2. **Step 10.2.2:** If you select **'n'**, continue to Step 9.3 -
-          ```bash
-           As SSL is disabled, enter the details accordingly
+          ```
+          As SSL is disabled, enter the details accordingly
           ```
        **Note** - If you have SSL enabled and the input is y, please ensure there is connectivity from Edge/worker node from where the tool is being run to Clouder Manager Host and Port through HTTPS
     3. **Step 10.3 - Cloudera Manager credentials:** the prompt would ask you if you want to provide the Cloudera Manager credentials, you would have to select **'y'** or **'n'**
        1. **Step 10.3.1:** If you select **'y'**, continue to Step 8.2.1.1 -
-          ```bash
+       
+           `
            A major number of metrics generation would require Cloudera manager credentials Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]: 
-          ```
-          1. **Step 10.3.1.1:** Enter Cloudera Manager Host IP
-             ```bash
-             Enter Cloudera Manager Host IP:
-             ```
-          2. **Step 10.3.1.2:** Cloudera Manager Port - the prompt would ask you if your  Cloudera Manager Port is 7180. If true select **'y'** else select **'n'**
+           `
 
-             ```bash
-             Enter Cloudera Manager Host IP:
-             ```
-             1. **Step 10.3.1.2.1:** If you select **'y'**, continue to Step 9.3.1.3
-                ```bash
-                Is your Cloudera Manager Port number 7180? [y/n]: 
-                ```
-             2. **Step 10.3.1.2.2:** If you select **'n'**, continue to Step 9.3.1.2.2
-                ```bash
-                Is your Cloudera Manager Port number 7180? [y/n]: 
-                ```
-             3. **Step 10.3.1.2.3:** Since the port number is not 7180, enter your Cloudera Manager Port number
-                ```bash
-                Enter your Cloudera Manager Port number: 
-                ```
-          3. **Step 10.3.1.3:** Cloudera Manager username. Preferably provide your Cloudera Manager admin credentials.
-             ```bash
-             Enter Cloudera Manager username:
-             ```
-          4. **Step 10.3.1.4:** Cloudera Manager password 
-             ```bash
-             Enter Cloudera Manager password:
-             ```
-          5. **Step 10.3.1.5:** Select the Cluster
-             ```bash
-             Select the cluster from the list below:
-             1] Cluster 1
-             2] Cluster 2
-              .
-              .
-             n] Cluster n
-             Enter the serial number (1/2/../n) for the selected cluster name:
-             ```
+           1. **Step 10.3.1.1:** Enter Cloudera Manager Host IP
+          
+              `
+              Enter Cloudera Manager Host IP:
+              `
+           2. **Step 10.3.1.2:** Cloudera Manager Port - the prompt would ask you if your  Cloudera Manager Port is 7180. If true select **'y'** else select **'n'**
+          
+              `
+              Enter Cloudera Manager Host IP:
+              `
+                1. **Step 10.3.1.2.1:** If you select **'y'**, continue to Step 9.3.1.3
+              
+                    `
+                    Is your Cloudera Manager Port number 7180? [y/n]: 
+                    `
+                2. **Step 10.3.1.2.2:** If you select **'n'**, continue to Step 9.3.1.2.2
+              
+                    `
+                    Is your Cloudera Manager Port number 7180? [y/n]: 
+                    `
+                3. **Step 10.3.1.2.3:** Since the port number is not 7180, enter your Cloudera Manager Port number
+              
+                    `
+                    Enter your Cloudera Manager Port number: 
+                    `
+           3. **Step 10.3.1.3:** Cloudera Manager username. Preferably provide your Cloudera Manager admin credentials.
+              ```bash
+              Enter Cloudera Manager username:
+              ```
+           4. **Step 10.3.1.4:** Cloudera Manager password 
+              ```bash
+              Enter Cloudera Manager password:
+              ```
+           5. **Step 10.3.1.5:** Select the Cluster
+              ```bash
+              Select the cluster from the list below:
+              1] Cluster 1
+              2] Cluster 2
+               .
+               .
+              n] Cluster n
+              Enter the serial number (1/2/../n) for the selected cluster name:
+              ```
        2. **Step 10.3.2:** If you select **'n'**, continue to Step 9.4
           ```bash
            A major number of metrics generation would require Cloudera manager credentials Therefore, would you be able to provide your Cloudera Manager credentials? [y/n]: 
@@ -295,27 +301,26 @@ On pressing Y/y the script file continue to pull the docker container image of t
            To view yarn-related metrics, would you be able to enter Yarn credentials?[y/n]:
           ```
           
-   6. **Step 10.6:** Date range for the Assessment report - Select one of the below options for a date range to generate the report for this time period
-      ```bash
-      Select the time range of the PDF Assessment report from the options below:
-      [1] Week: generates the report from today to 7 days prior
-      [2] Month: generates the report from today to 30 days prior
-      [3] Custom: generates the report for a custom time period
-      Enter the serial number [1/2/3] as required:
-      ```
-      1. If you select 1 and 2, the report automatically gets generated based on the selected range as per the description.
-      2. If you select 3, here’s the prompt that appears, Important note: Please enter the timing details according to the timezone of the tool hosting node:
-         ```bash
-         Enter start date: [YYYY-MM-DD HH:MM]
-         2021-03-15 00:00
-         Enter end date: [YYYY-MM-DD HH:MM]
-         2021-03-30 00:00
-         ```
+    6. **Step 10.6:** Date range for the Assessment report - Select one of the below options for a date range to generate the report for this time period
+       ```bash
+       Select the time range of the PDF Assessment report from the options below:
+       [1] Week: generates the report from today to 7 days prior
+       [2] Month: generates the report from today to 30 days prior
+       [3] Custom: generates the report for a custom time period
+       Enter the serial number [1/2/3] as required:
+       ```
+       1. If you select 1 and 2, the report automatically gets generated based on the selected range as per the description.
+       2. If you select 3, here’s the prompt that appears, Important note: Please enter the timing details according to the timezone of the tool hosting node:
+          ```bash
+          Enter start date: [YYYY-MM-DD HH:MM]
+          2021-03-15 00:00
+          Enter end date: [YYYY-MM-DD HH:MM]
+          2021-03-30 00:00
+          ```
 11. **Step 11:** PDF Report - A PDF report will be generated at the end of successful execution in the same location inside docker container from where the script is being run [/app/] , which can be downloaded with the help of the same SCP client or WinSCP tool with the help of which we uploaded the tar in Step1. If you want to move the PDF file to your host from docker container, exit from the docker container and run the command
-   
-            ```bash
-              docker cp <containerid>:/app/<pdf file name> .
-             ```
+   ```bash
+   docker cp <containerid>:/app/<pdf file name> .
+   ```
 ## FAQ
 
 * What is this tool?\
