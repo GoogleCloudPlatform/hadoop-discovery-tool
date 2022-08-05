@@ -5,7 +5,7 @@ This tool is developed to enable detailed Assessment and automated assessment of
 
 The tool has been completely containerized thereby ensuring that no external libraries and dependencies are installed directly on the worker/edge nodes of your Hadoop Cluster.
 
-The current version of the tool is a Bash Script + Docker Container approach to ensure that no changes are made to the customer's environments and the docker container (tool) can be deleted after the assessment is complete and this ensures that the sanity of your Hadoop Cluster Environment remains intact.
+The current version of the tool is a Bash Script + Docker Container approach to ensure that no changes are made to the customer's environments and the docker container (tool) can be deleted after the assessment is complete, this ensures that the sanity of your Hadoop Cluster Environment remains intact.
 
 **How do I get access to the Automated Script or Docker Image of the Tool?** Please reach out to your Google account teams or PSO teams to get access to the Docker image of the tool along with the detailed user guide.
 
@@ -26,13 +26,13 @@ Following are the specific categories that the tool gathers information about:
 8. Kafka Metrics
 9. Yarn application metrics
 
-**The more integrated Edge/worker node on which the tool is being run with the rest of the cluster wrt HDFS, Kafla, API calls, the better would the be the data collection and result set**
+**The more integrated Edge/worker node on which the tool is being run with the rest of the cluster wrt HDFS, Kafka and API calls, the better would be the data collection and result set**
 
 **Ensure that in case of SSL communications, the worker/edge node has SSL access to Cloudera Manager URL ports**
 
 **It is recommended that you run the bash script and the tool with a sudo equivalent user to avoid permission issues**
 
-**It is recommended that you use an admin equivalent user to connect to Cloudera Admin portal to avoid authorization issues during API calls**
+**It is recommended that you use an admin equivalent user to connect to the Cloudera Admin portal to avoid authorization issues during API calls**
 
 
 ## 2 .Tool Functionality
@@ -55,10 +55,10 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
    2. You must have **gsutil** or **git** or a way to download the Bash script file and the Docker Image. The preferred method would be to have **gsutil** as this would automate the whole deployment process.
       You can install gsutil from https://cloud.google.com/storage/docs/gsutil_install for your respective Operating System.
    3. The tool supports Cloudera version - **CDH 5.13.3 and above; CDH 6.X, CDH 7.X**
-   4. The tool runs on the following OS versions **Centos, Ubuntu** **Debian** **RHEL**
+   4. The tool runs on the following OS versions **Centos**, **Ubuntu**, **Debian** and **RHEL**
 2. Complete information to run the tool   
    1. It is recommended to run this tool on an edge/worker node that has access to Cloudera Manager URLs, HDFS filesystem to get best results.
-   2. The tool requires **~ 1.3 gigabytes** of space
+   2. The tool requires **approx 1.3 gigabytes** of space
    3. **Preferred time** to run the tool: It is recommended to run the tool during hours when there is the least workload on the Hadoop cluster
    4. This tool supports the following **Cloudera versions:**
       1. CDH 5.13.3 and above
@@ -96,7 +96,7 @@ The Hadoop Assessment tool is built to analyze the on-premise Hadoop environment
       4. Hive Metastore
          1. User Name
          2. Password
-      5. SSL is enabled or not(conditional input - if automatic detection doesn't work it will be prompted). Please ensure that your edge/worker node from where the tool is being run has access to SSL ports of the Cloudera Manager portal. If certificate exchange is required, please do so.
+      5. SSL is enabled or not(conditional input - if automatic detection doesn't work it will be prompted). If SSL is enabled please ensure that your edge/worker node from where the tool is being run has access to SSL ports of the Cloudera Manager portal. If certificate exchange is required, please do so.
       6. Yarn (conditional input - if automatic detection doesn't work it will be prompted)
          1. Resource managers hostname or IP address
          2. Port Number
