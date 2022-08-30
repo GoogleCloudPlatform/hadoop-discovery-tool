@@ -368,4 +368,4 @@ You could add a temporary edge node where you can install this discovery tool an
 No, dfsadmin access is optional.
 
 ## Contributing
-We'd love to hear your feedback on the tool. For collaboration opportunities please reach out to @yadavaja@google.com, gdc-atc@google.com
+We'd love to hear your feedback on the tool. For collaboration opportunities please reach out to gdc-atc@google.com
